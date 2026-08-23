@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Frontier Brawler · 原型</title>
+    <style>
+      :root { color-scheme: dark; }
+      html, body {
+        margin: 0; height: 100%;
+        background: #12161a; color: #cfd6dc;
+        font-family: system-ui, sans-serif;
+        display: flex; flex-direction: column;
+        align-items: center; justify-content: center; gap: 12px;
+      }
+      canvas { border-radius: 6px; box-shadow: 0 12px 40px rgba(0,0,0,.5); }
+      .keys { font-size: 13px; opacity: .65; letter-spacing: .02em; }
+      kbd {
+        background: #222b33; border: 1px solid #384450; border-radius: 4px;
+        padding: 1px 6px; margin: 0 2px; font-size: 12px;
+      }
+    </style>
+  </head>
+  <body>
+    <canvas id="game"></canvas>
+    <div class="keys">
+      <kbd>WASD</kbd>/<kbd>方向键</kbd> 走位（上下是纵深）
+      <kbd>J</kbd>/<kbd>空格</kbd> 攻击（连按接第二段）
+      <kbd>K</kbd>/<kbd>Shift</kbd> 冲刺
+      <kbd>R</kbd> 重来
+    </div>
+    <script type="module" src="/src/main.ts"></script>
+  </body>
+</html>

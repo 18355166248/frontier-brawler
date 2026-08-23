@@ -1,0 +1,39 @@
+{
+  "sheet": "hero.png",
+  "columns": 4,
+  "rows": 4,
+  "cellWidth": 96,
+  "cellHeight": 96,
+  "rowOrder": [
+    "idle",
+    "move",
+    "slash",
+    "hit"
+  ],
+  "detail": [
+    {
+      "clip": "idle",
+      "sourceDir": "output\\frames\\fb\\hero_idle",
+      "available": 4,
+      "used": 4
+    },
+    {
+      "clip": "move",
+      "sourceDir": "output\\frames\\fb\\hero_move",
+      "available": 4,
+      "used": 4
+    },
+    {
+      "clip": "slash",
+      "sourceDir": "output\\frames\\fb\\hero_slash",
+      "available": 4,
+      "used": 4
+    },
+    {
+      "clip": "hit",
+      "sourceDir": "output\\frames\\fb\\hero_hit",
+      "available": 4,
+      "used": 4
+    }
+  ]
+}
