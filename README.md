@@ -4,6 +4,14 @@
 
 技术栈 Vite + TypeScript + Canvas 2D，没有引擎。
 
+## 文档
+
+- [玩法设计](docs/GAME_DESIGN.md) —— 核心循环、战斗设计、职业与装备、经营层、数值框架
+- [路线图](docs/ROADMAP.md) —— 里程碑与可判定的验收标准
+
+两份文档里 `[已验证]` 与 `[待验证]` 是严格区分的：
+前者来自原型实测，后者是设计假设，做出来玩过才能确认。
+
 ## 跑起来
 
 ```bash
@@ -57,7 +65,12 @@ src/render/   Canvas 渲染层。换 Cocos 只重写这里。
 
 ## 美术
 
-角色由 [`ai-asset-pipeline`](../ai-asset-pipeline) 的枢轴动画管线生成：
+**美术设计不在本仓库的自动化范围内。**
+`docs/ROADMAP.md` 末尾列了角色动作表、敌人、建筑的**规格要求**，
+产出交给专业工具或人。管线只负责把合规的几何烘成合规的动作表，
+不解决"好不好看"。
+
+当前 `public/art/` 是占位盒子人，由 [`ai-asset-pipeline`](../ai-asset-pipeline) 的枢轴动画管线生成：
 Blender 里按动作库搭骨架 → K 关键帧 → 正交相机渲成透明序列帧 → 打包成一行一动作的表。
 
 ```bash
@@ -70,8 +83,8 @@ python src/pack_action_sheet.py --rows \
     -o ../frontier-brawler/public/art/hero.png --cols 4 --cell 96
 ```
 
-当前 `public/art/` 里是**占位盒子人**，`enemy.png` 直接复制自 `hero.png`。
-美术方向定的是低多边形卡通 3D，正式角色几何还没做。
+`enemy.png` 直接复制自 `hero.png`，敌我暂时分不开。
+美术方向定的是低多边形卡通 3D，正式角色几何待产出。
 
 ## 开发期调试挂钩
 
@@ -95,7 +108,5 @@ __game.world                      // 读世界状态
 
 ## 下一步
 
-1. 真角色几何（低多边形卡通），替换盒子人
-2. 敌人做出差异：至少两种行为模式和体型
-3. 波次与关卡推进
-4. 之后才是基地经营层
+见 [路线图](docs/ROADMAP.md)。当前在 **M1 · 战斗深度**——
+这是最高风险的里程碑，验收不过就该改机制而不是继续堆功能。
