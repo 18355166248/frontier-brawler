@@ -45,7 +45,11 @@ export type ActionState =
   /** 首领范围技，阶段二才解锁，环形判定覆盖全场大半 */
   | 'bossNova'
   /** 首领召唤，纯表现动作不带判定——阶段切换那一刻只触发一次 */
-  | 'bossSummon';
+  | 'bossSummon'
+  /** 起跳。腾空区间内躲开贴地判定，是冲刺之外的第二种防御手段 */
+  | 'jump'
+  /** 跳劈：腾空中段取消接入的下砸攻击，「跳跃 + 攻击」这个组合的落点 */
+  | 'airSlash';
 
 export interface Hurtbox {
   /** 相对实体中心的偏移 */
@@ -71,6 +75,12 @@ export interface Hitbox {
   hitStop: number;
   /** 无视朝向的环形判定，用于范围技——不跟着 facing 翻转 */
   radial?: boolean;
+  /**
+   * 能不能命中腾空目标。默认 false——大多数攻击是贴地判定，
+   * 跳跃应该能躲开。全场覆盖型的范围技要显式标 true，
+   * 否则连它都能被一跳化解，冲刺的无敌帧就失去了存在意义。
+   */
+  hitsAir?: boolean;
 }
 
 /**
@@ -110,12 +120,28 @@ export interface ActionDef {
   /** 无敌帧区间（相对动作起始），左闭右开。冲刺和处决靠它换生存空间。 */
   invuln?: { from: number; to: number };
   /**
+   * 腾空区间（相对动作起始），左闭右开。这段时间内，非 hitsAir 的判定框
+   * 打不到这个实体——跳跃就是靠这个字段实现「躲开贴地攻击」的效果。
+   * 简化模型：不做真正的高度轴碰撞体积，只用区间 + 布尔标记决定命中。
+   */
+  airborne?: { from: number; to: number };
+  /**
    * 超级护甲：受击不进入 hit 状态、不吃硬直，但照常掉血。
    * 精英和玩家技能靠这个「不被打断」，是拉开二者与杂兵手感差距的关键。
    */
   superArmor?: boolean;
   /** 该动作自带的预警形状，从第 0 帧亮到判定生效为止 */
   telegraph?: { shape: TelegraphShape; until: number };
+  /**
+   * 显式声明从第几帧起允许被打断进入下一个动作（收招段起点）。
+   *
+   * 不写就用旧的隐式规则：有判定框就从最后一个判定框的 activeTo 算起，
+   * 没有判定框就要播到最后一帧——这条隐式规则对纯位移动作（冲刺、跳跃）
+   * 几乎等于「不能取消」，真实窗口只剩 1 帧，玩家按不出来。第一版的
+   * 「冲刺接普攻」就是这样名存实亡的：`cancelInto` 写了，但从没人按到过。
+   * 需要更早取消窗口的动作要显式写这个字段。
+   */
+  cancelFrom?: number;
 }
 
 export type Team = 'player' | 'enemy';
@@ -180,6 +206,8 @@ export interface Entity {
   maxEnergy: number;
   /** 冲刺冷却剩余帧 */
   dashCooldown: number;
+  /** 跳跃冷却剩余帧，防止无限连跳保持贴地判定免疫 */
+  jumpCooldown: number;
   /**
    * 冲刺方向，起手那一帧按输入锁定。
    *

@@ -5,7 +5,7 @@
  * 这是 xianxia-roguelike 的教训反过来用：它的逻辑层零引擎依赖，
  * 所以能搬；耦合全压在编排层。这里从一开始就把那条线画清楚。
  */
-import type { DamageEvent, Entity, Projectile, Telegraph } from '../core/types';
+import type { ActionState, DamageEvent, Entity, Projectile, Telegraph } from '../core/types';
 import { ACTIONS, EXECUTE_THRESHOLD, SKILL_COST } from '../core/actions';
 import { ENEMY_PROFILES } from '../core/enemies';
 import type { StageTheme } from '../core/level';
@@ -16,6 +16,31 @@ import { MAX_UPGRADE_LEVEL, UPGRADE_TRACKS } from '../core/upgrades';
 import type { World } from '../core/world';
 import { Minimap } from './minimap';
 import type { SpriteSheet } from './sprites';
+
+/** 跳跃的视觉离地高度峰值（像素）。纯渲染表现，逻辑层不知道"高度"这个概念。 */
+const JUMP_PEAK_HEIGHT = 44;
+
+/**
+ * 跳跃/跳劈期间角色离地多高，供 drawEntity 抬高角色、缩小影子用。
+ *
+ * 简化成一条纯函数曲线，不是真的物理模拟：jump 用抛物线 4t(1-t) 在
+ * 动作正中间到达峰值，起跳和落地都在地面（t=0 和 t=1 时为 0），
+ * 和 core/actions.ts 里 jump.airborne 的判定区间对得上但不是同一套数据——
+ * 判定用区间布尔值，视觉要一条连续曲线，两者各自最简单地满足自己的需求。
+ * airSlash 继承跳跃末段的高度，随下砸动作线性归零。
+ */
+function jumpHeight(action: ActionState, frame: number): number {
+  if (action === 'jump') {
+    const t = Math.min(1, frame / ACTIONS.jump.frames);
+    return JUMP_PEAK_HEIGHT * 4 * t * (1 - t);
+  }
+  if (action === 'airSlash') {
+    const total = ACTIONS.airSlash.airborne?.to ?? 16;
+    const t = Math.min(1, frame / total);
+    return JUMP_PEAK_HEIGHT * 0.55 * (1 - t);
+  }
+  return 0;
+}
 
 /** 三选一卡片对应的按键，画在卡片上，也是 main.ts 里真实监听的键 */
 const CHOICE_KEYS: Record<UpgradeTrackId, string> = { offense: '1', arcane: '2', guardian: '3' };
@@ -457,17 +482,31 @@ export class Renderer {
     ctx.save();
     ctx.globalAlpha = alpha;
 
-    // 影子先画，钉住角色在地面的位置。没有影子的话角色像飘着。
+    // 跳跃期间角色离地，影子却要钉在地面原位——离地越高，影子越小越淡，
+    // 这是 2D 游戏读「高度」的标准手法，没有它跳跃看起来只是往前挪了一下。
+    const airH = jumpHeight(e.action, e.actionFrame);
+    const shadowShrink = 1 - Math.min(0.55, airH / 90);
+    ctx.save();
+    ctx.globalAlpha *= shadowShrink;
     ctx.fillStyle = PALETTE.shadow;
     ctx.beginPath();
-    ctx.ellipse(e.pos.x, e.pos.y, e.radius * 0.9, e.radius * 0.36, 0, 0, Math.PI * 2);
+    ctx.ellipse(
+      e.pos.x,
+      e.pos.y,
+      e.radius * 0.9 * shadowShrink,
+      e.radius * 0.36 * shadowShrink,
+      0,
+      0,
+      Math.PI * 2,
+    );
     ctx.fill();
+    ctx.restore();
 
     // 受击闪白：最直接的"打到了"反馈
     const flashing = e.invulnFrames > 0 && e.invulnFrames % 4 >= 2;
 
     if (e.team === 'player') {
-      this.drawPlayer(e, flashing);
+      this.drawPlayer(e, flashing, airH);
     } else {
       this.drawEnemy(e, flashing);
     }
@@ -482,7 +521,7 @@ export class Renderer {
     ctx.restore();
   }
 
-  private drawPlayer(e: Entity, flashing: boolean): void {
+  private drawPlayer(e: Entity, flashing: boolean, airH: number): void {
     const { ctx } = this;
     const sheet = this.sheets.get('player');
     const def = ACTIONS[e.action];
@@ -501,7 +540,9 @@ export class Renderer {
       const w = rect.sw * scale;
       const h = rect.sh * scale;
       ctx.save();
-      ctx.translate(e.pos.x, e.pos.y);
+      // airH 把整个角色往上抬——这是跳跃在画面上唯一的体现，
+      // 逻辑层完全不知道"高度"这个概念，纯粹是渲染层的读数。
+      ctx.translate(e.pos.x, e.pos.y - airH);
       ctx.scale(e.facing, 1);
       if (flashing) ctx.filter = 'brightness(2.4) saturate(0.3)';
       ctx.drawImage(sheet.image, rect.sx, rect.sy, rect.sw, rect.sh, -w / 2, -h + 12, w, h);
@@ -509,7 +550,7 @@ export class Renderer {
     } else {
       // 素材没就位时的占位块，保证玩法始终可测
       ctx.fillStyle = flashing ? '#ffffff' : PALETTE.playerTint;
-      ctx.fillRect(e.pos.x - 12, e.pos.y - 52, 24, 52);
+      ctx.fillRect(e.pos.x - 12, e.pos.y - airH - 52, 24, 52);
     }
   }
 
@@ -773,9 +814,12 @@ export class Renderer {
       58,
     );
 
-    // 冲刺冷却，唯一的防御手段必须让玩家随时知道它在不在
+    // 冲刺和跳跃冷却——两种防御手段都得让玩家随时知道在不在，
+    // 不然「这下该冲还是该跳」的判断就无从谈起。
     ctx.fillStyle = player.dashCooldown > 0 ? 'rgba(255,255,255,0.35)' : '#8fd4c8';
     ctx.fillText(player.dashCooldown > 0 ? `冲刺 ${player.dashCooldown}` : '冲刺就绪', 14, 76);
+    ctx.fillStyle = player.jumpCooldown > 0 ? 'rgba(255,255,255,0.35)' : '#8fd4c8';
+    ctx.fillText(player.jumpCooldown > 0 ? `跳跃 ${player.jumpCooldown}` : '跳跃就绪', 100, 76);
   }
 
   /**

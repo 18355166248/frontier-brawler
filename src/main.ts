@@ -79,6 +79,7 @@ let attackLatch = false;
 let dashLatch = false;
 let skillLatch = false;
 let executeLatch = false;
+let jumpLatch = false;
 
 /** 调试注入的输入，和键盘取并集。开发期自动化验证用。 */
 let injected: Partial<InputState> = {};
@@ -93,15 +94,18 @@ function readInput(): InputState {
   const dashHeld = keys.has('KeyK') || keys.has('ShiftLeft') || !!injected.dash;
   const skillHeld = keys.has('KeyU') || keys.has('KeyE') || !!injected.skill;
   const executeHeld = keys.has('KeyI') || keys.has('KeyF') || !!injected.execute;
+  const jumpHeld = keys.has('KeyL') || keys.has('KeyQ') || !!injected.jump;
 
   const attack = attackHeld && !attackLatch;
   const dash = dashHeld && !dashLatch;
   const skill = skillHeld && !skillLatch;
   const execute = executeHeld && !executeLatch;
+  const jump = jumpHeld && !jumpLatch;
   attackLatch = attackHeld;
   dashLatch = dashHeld;
   skillLatch = skillHeld;
   executeLatch = executeHeld;
+  jumpLatch = jumpHeld;
 
   return {
     moveX: (right ? 1 : 0) - (left ? 1 : 0) + (injected.moveX ?? 0),
@@ -110,6 +114,7 @@ function readInput(): InputState {
     dash,
     skill,
     execute,
+    jump,
   };
 }
 

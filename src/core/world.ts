@@ -23,8 +23,10 @@ import {
   DASH_COOLDOWN,
   EXECUTE_RANGE,
   EXECUTE_THRESHOLD,
+  JUMP_COOLDOWN,
   SKILL_COST,
   canInterrupt,
+  isActionAirborne,
   isActionInvulnerable,
 } from './actions';
 import { ENEMY_PROFILES, think } from './enemies';
@@ -42,6 +44,7 @@ export interface Arena {
 export interface InputState extends InputIntent {
   skill: boolean;
   execute: boolean;
+  jump: boolean;
 }
 
 export const EMPTY_INPUT: InputState = {
@@ -51,6 +54,7 @@ export const EMPTY_INPUT: InputState = {
   dash: false,
   skill: false,
   execute: false,
+  jump: false,
 };
 
 /**
@@ -110,6 +114,7 @@ export function createEntity(team: Team, pos: Vec2, overrides: Partial<Entity> =
     energy: 0,
     maxEnergy: 100,
     dashCooldown: 0,
+    jumpCooldown: 0,
     dashDir: { x: 1, y: 0 },
     damageMultiplier: 1,
     skillDamageMultiplier: 1,
@@ -193,6 +198,7 @@ export class World {
       }
       if (e.attackCooldown > 0) e.attackCooldown -= 1;
       if (e.dashCooldown > 0) e.dashCooldown -= 1;
+      if (e.jumpCooldown > 0) e.jumpCooldown -= 1;
       const control = e.team === 'player' ? input : this.enemyThink(e);
       this.stepEntity(e, control);
     }
@@ -254,6 +260,10 @@ export class World {
         this.stats.recordAction('skill');
       } else if (player.attack) {
         this.startAttack(e, def.cancelInto?.[0]);
+      } else if (player.jump && e.action !== 'jump' && e.action !== 'airSlash' && e.jumpCooldown <= 0) {
+        this.setAction(e, 'jump');
+        e.jumpCooldown = JUMP_COOLDOWN;
+        this.stats.recordAction('jump');
       } else if (player.dash && e.action !== 'dash' && e.dashCooldown <= 0) {
         this.setAction(e, 'dash');
         this.lockDashDirection(e, player);
@@ -322,17 +332,29 @@ export class World {
     e.dashDir = { x: e.facing, y: 0 };
   }
 
-  /** 普攻起手／接续连段，顺手记账供验收统计用。 */
+  /**
+   * 普攻起手／接续连段，顺手记账供验收统计用。
+   *
+   * chained 是当前动作声明的 cancelInto 目标——不再写死只认 slash/slash2：
+   * 跳跃取消接的是 airSlash，硬编码两段判断会让这次触发既不计入统计，
+   * 也没有 cancelInto 时还会把玩家从半空的跳劈收招段瞬间拽回地面 slash，
+   * 人明明还没落地，动作却已经站在地上挥刀了。
+   */
   private startAttack(e: Entity, chained: ActionState | undefined): void {
     if (chained && e.action !== chained) {
       this.setAction(e, chained);
-      if (chained === 'slash2') this.stats.recordAction('slash2');
-      else if (chained === 'slash') this.stats.recordAction('slash');
+      this.recordAttackStat(chained);
       return;
     }
-    if (e.action !== 'slash' && e.action !== 'slash2') {
+    if (e.action !== 'slash' && e.action !== 'slash2' && e.action !== 'airSlash') {
       this.setAction(e, 'slash');
-      this.stats.recordAction('slash');
+      this.recordAttackStat('slash');
+    }
+  }
+
+  private recordAttackStat(action: ActionState): void {
+    if (action === 'slash' || action === 'slash2' || action === 'airSlash') {
+      this.stats.recordAction(action);
     }
   }
 
@@ -517,6 +539,9 @@ export class World {
         for (const target of this.entities) {
           if (target.dead || target.team === attacker.team) continue;
           if (this.isInvulnerable(target)) continue;
+          // 腾空目标躲开非 hitsAir 的判定——这是跳跃的核心效果。
+          // 简化模型：不做真正的高度轴碰撞体积，只用区间 + 布尔标记决定命中。
+          if (!box.hitsAir && this.isAirborne(target)) continue;
           if (attacker.hitTargets.has(target.id)) continue;
 
           const tx = target.pos.x + target.hurtbox.offset.x;
@@ -535,6 +560,11 @@ export class World {
   /** 无敌判定合并了两个来源：受击后的保护帧，和动作自带的无敌区间（冲刺、处决）。 */
   private isInvulnerable(e: Entity): boolean {
     return e.invulnFrames > 0 || isActionInvulnerable(e.action, e.actionFrame);
+  }
+
+  /** 是否处于跳跃的腾空区间——注意这不是无敌，只对非 hitsAir 的判定免疫。 */
+  private isAirborne(e: Entity): boolean {
+    return isActionAirborne(e.action, e.actionFrame);
   }
 
   private spawnProjectile(shooter: Entity): void {
@@ -577,6 +607,9 @@ export class World {
       for (const target of this.entities) {
         if (target.dead || target.team === p.team) continue;
         if (this.isInvulnerable(target)) continue;
+        // 弹丸贴地飞行，天然打不到腾空目标——跳过预警射线正是
+        // GAME_DESIGN 3.5 给远程类型写的另一条解法「用纵深躲，或跳过去」。
+        if (this.isAirborne(target)) continue;
         const dx = target.pos.x + target.hurtbox.offset.x - p.pos.x;
         const dy = target.pos.y + target.hurtbox.offset.y - p.pos.y;
         if (

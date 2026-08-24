@@ -8,7 +8,7 @@
 import type { EnemyKind } from './types';
 
 /** 玩家主动出手的分类。占比统计只看这几种，走位和受击不计入。 */
-export type OffensiveAction = 'slash' | 'slash2' | 'skill' | 'dash' | 'execute';
+export type OffensiveAction = 'slash' | 'slash2' | 'skill' | 'dash' | 'execute' | 'jump' | 'airSlash';
 
 export interface UnwarnedHit {
   /** 第几逻辑帧挨的这一下 */
@@ -31,6 +31,8 @@ export class RunStats {
     skill: 0,
     dash: 0,
     execute: 0,
+    jump: 0,
+    airSlash: 0,
   };
 
   /** 玩家横向移动的累计距离（含动作位移） */
@@ -83,7 +85,9 @@ export class RunStats {
       this.actions.slash2 +
       this.actions.skill +
       this.actions.dash +
-      this.actions.execute
+      this.actions.execute +
+      this.actions.jump +
+      this.actions.airSlash
     );
   }
 

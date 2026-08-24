@@ -27,6 +27,13 @@ export const EXECUTE_RANGE = 62;
 /** 冲刺冷却帧数。太短会退化成无脑冲，太长会让唯一的防御手段不可靠。 */
 export const DASH_COOLDOWN = 45;
 
+/**
+ * 跳跃冷却帧数。跳跃只免疫贴地判定（不是全无敌），所以定得比冲刺短一点，
+ * 但也不能太短——腾空区间本身有 24 帧，冷却太短会让「贴地判定基本失效」，
+ * 跳跃就从「读时机的第二种防御手段」退化成「一直挂着的免疫状态」。
+ */
+export const JUMP_COOLDOWN = 40;
+
 export const ACTIONS: Record<ActionState, ActionDef> = {
   idle: {
     id: 'idle',
@@ -105,6 +112,11 @@ export const ACTIONS: Record<ActionState, ActionDef> = {
     // 全程无敌会让冲刺变成万能解，那就没有「什么时候冲」的判断了。
     invuln: { from: 2, to: 15 },
     cancelInto: ['slash'],
+    // 无敌帧结束（第 15 帧）就能取消接普攻——这是「冲刺接攻击」这个组合
+    // 的实际生效点。不写这个字段的话，dash 没有判定框，会落进
+    // canInterrupt 的隐式规则「播到最后一帧才能取消」，26 帧里只有
+    // 第 25 帧能接，窗口窄到基本按不出来，cancelInto 名存实亡。
+    cancelFrom: 15,
   },
 
   hit: {
@@ -360,6 +372,9 @@ export const ACTIONS: Record<ActionState, ActionDef> = {
         knockback: 10.0,
         hitStop: 12,
         radial: true,
+        // 全场覆盖型的范围技——跳跃躲不掉，逼玩家这一招必须靠冲刺
+        // 或者拉开距离应对。不标的话，跳跃会架空冲刺在阶段二的价值。
+        hitsAir: true,
       },
     ],
     telegraph: { shape: { kind: 'circle', radius: 150 }, until: 30 },
@@ -378,6 +393,59 @@ export const ACTIONS: Record<ActionState, ActionDef> = {
     superArmor: true,
     hitboxes: [],
   },
+
+  /**
+   * 起跳：冲刺之外的第二种防御手段，但躲的东西不一样——冲刺是水平方向
+   * 无敌 + 位移，跳跃是腾空期间对贴地判定免疫，不给位移控制权。
+   * 两者互补而不是替代：躲不开的东西不一样，才有「这下该冲还是该跳」
+   * 的判断，不然多出来的键位只是同一个解法的两张皮。
+   *
+   * 没有 invuln——跳跃不是全免疫，是靠 airborne + Hitbox.hitsAir 决定
+   * 哪些判定打得到。全场覆盖型的范围技（比如 bossNova）标了 hitsAir，
+   * 跳了也没用，逼玩家在那种招式面前还是得靠冲刺或拉开距离。
+   */
+  jump: {
+    id: 'jump',
+    frames: 34,
+    loop: false,
+    cancelable: false,
+    // 起跳瞬间带一点前冲，模拟蹬地的重心前移，和 slash 的挥出前冲同一个道理
+    motion: [1.4, 1.2, 0.8, 0.4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    hitboxes: [],
+    airborne: { from: 3, to: 27 },
+    // 腾空中段（离起跳有一点距离，落地还有余裕）就能取消接跳劈或者
+    // 提前进入收招——不用等到 34 帧全播完，那样这个动作会显得又慢又黏。
+    cancelFrom: 16,
+    cancelInto: ['airSlash'],
+  },
+
+  /**
+   * 跳劈：腾空中段取消接入的下砸。伤害 16，卡在普攻两段（12/18）之间——
+   * 这是「读对预警、跳过去、还敢追一下」换来的奖励，不是白给的高伤害，
+   * 真正的收益是「躲开了本该吃的那下」，跳劈只是锦上添花。
+   * 判定生效时仍处于腾空区间，落地瞬间才重新能被贴地判定打中，
+   * 不然会出现「跳劈刚落地就被杂兵秒杀」这种不讲理的衔接。
+   */
+  airSlash: {
+    id: 'airSlash',
+    frames: 26,
+    loop: false,
+    cancelable: false,
+    motion: [3.0, 2.6, 2.0, 1.4, 0.8, 0.3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    hitboxes: [
+      {
+        offset: { x: 28, y: 0 },
+        halfWidth: 32,
+        halfDepth: 24,
+        activeFrom: 6,
+        activeTo: 11,
+        damage: 16,
+        knockback: 5.0,
+        hitStop: 6,
+      },
+    ],
+    airborne: { from: 0, to: 16 },
+  },
 };
 
 /** 一次动作播完需要多少帧 */
@@ -389,6 +457,9 @@ export function actionLength(state: ActionState): number {
 export function canInterrupt(state: ActionState, frame: number): boolean {
   const def = ACTIONS[state];
   if (def.cancelable) return true;
+  // 显式声明的取消点优先——纯位移动作（冲刺、跳跃）没有判定框，
+  // 不写这个字段的话会落进下面的隐式规则，取消窗口只剩最后 1 帧。
+  if (def.cancelFrom !== undefined) return frame >= def.cancelFrom;
   // 一次性动作在判定窗口结束后进入可取消的收招段，
   // 这是连招手感的关键：太早能取消会让攻击没有重量，太晚会觉得黏。
   const last = def.hitboxes[def.hitboxes.length - 1];
@@ -401,4 +472,14 @@ export function isActionInvulnerable(state: ActionState, frame: number): boolean
   const inv = ACTIONS[state].invuln;
   if (!inv) return false;
   return frame >= inv.from && frame < inv.to;
+}
+
+/**
+ * 该动作在这一帧是否处于腾空区间——跳跃靠这个字段实现「躲开贴地攻击」，
+ * 判定命中时要检查目标腾不腾空，见 world.ts 的 resolveHits。
+ */
+export function isActionAirborne(state: ActionState, frame: number): boolean {
+  const ab = ACTIONS[state].airborne;
+  if (!ab) return false;
+  return frame >= ab.from && frame < ab.to;
 }
