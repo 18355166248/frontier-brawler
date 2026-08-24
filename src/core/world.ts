@@ -423,7 +423,15 @@ export class World {
       this.recordAttackStat(chained);
       return;
     }
-    if (e.action !== 'slash' && e.action !== 'slash2' && e.action !== 'airSlash') {
+    // 走到这里说明 chained 是空的——slash/airSlash 都声明了 cancelInto，
+    // 只要 e.action 真的是它们俩，chained 必然非空，早在上面的分支里
+    // return 掉了，根本到不了这一行，所以这两条排除其实是死代码，留着
+    // 只是防御性占位。真正会落到这里的是 slash2（唯一没有 cancelInto 的
+    // 普攻段）——第一版把它也排除在外，导致二段收招时再按攻击键完全没
+    // 反应，连段打完之后有一小段"按键黑洞"，这正是连段显得断掉的一处
+    // 具体成因。这里应该和 idle/move/dash 收招段一样，重新起一次挥砍，
+    // 让二段收招段也能立刻循环回第一段，而不是必须等它播完才能再出手。
+    if (e.action !== 'slash' && e.action !== 'airSlash') {
       this.setAction(e, 'slash');
       this.recordAttackStat('slash');
     }

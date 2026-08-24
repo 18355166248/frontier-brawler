@@ -133,12 +133,23 @@ export const ACTIONS: Record<ActionState, ActionDef> = {
     perfectCancelWindow: { from: 15, to: 19 },
   },
 
+  /**
+   * 受击硬直：动画播 20 帧，但真正锁死行动的是 world.ts 里单独维护的
+   * `stunFrames`（12 帧，和 GAME_DESIGN 数值框架表一致）。这里必须显式写
+   * `cancelFrom: 12`，理由和冲刺/跳跃当年踩的坑一模一样——没有判定框、
+   * 没写这个字段的话，`canInterrupt` 会落进隐式规则「播到最后一帧才能
+   * 打断」，也就是 frame 19。stunFrames 在 frame 12 就已经清零，但玩家
+   * 要一直等到 frame 19 才能重新出手，中间 7 帧是纯粹多出来的、没人
+   * 设计过的隐形硬直——挨一下打实际卡住的时间比文档写的 12 帧多出接近
+   * 三分之二，这正是"打完一下感觉黏"的一处具体成因。
+   */
   hit: {
     id: 'hit',
     frames: 20,
     loop: false,
     cancelable: false,
     hitboxes: [],
+    cancelFrom: 12,
   },
 
   /**
