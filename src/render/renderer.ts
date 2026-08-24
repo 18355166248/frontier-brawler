@@ -48,6 +48,25 @@ function jumpHeight(action: ActionState, frame: number): number {
   return 0;
 }
 
+/**
+ * 走动时身体的上下起伏。玩家有真的走路帧（腿部摆动），但没有配套的
+ * 重心起伏，敌人更是纯几何占位块——完全没有任何动作，贴地平移过来，
+ * 像在冰面上滑而不是在走路。`move` 一圈循环里起伏两次（每一步落地各
+ * 一次），用 `|sin|` 而不是 `sin` 是因为要的是"落地–抬起–落地"的
+ * 弹跳节奏，纯 sin 会在半圈时经过负值，变成"陷进地里"。
+ */
+function walkBob(action: ActionState, frame: number, amplitude: number): number {
+  if (action !== 'move') return 0;
+  const t = frame / ACTIONS.move.frames;
+  return Math.abs(Math.sin(t * Math.PI * 2)) * amplitude;
+}
+
+/** 走动一圈里两次"脚落地"对应的动作帧，踩灰尘特效的触发点用 */
+function isFootfallFrame(frame: number): boolean {
+  const half = ACTIONS.move.frames / 2;
+  return frame === 0 || Math.abs(frame - half) < 1;
+}
+
 /** 三选一卡片对应的按键，画在卡片上，也是 main.ts 里真实监听的键 */
 const CHOICE_KEYS: Record<UpgradeTrackId, string> = { offense: '1', arcane: '2', guardian: '3' };
 /** 三条路线各自的强调色，卡片和进度条都用它，玩家一眼能把颜色和路线对上 */
@@ -165,6 +184,12 @@ export class Renderer {
   private minimap = new Minimap();
   /** 上一帧是否处于腾空状态，按实体 id 记——落地那一帧靠它和当前状态一比较才测得出来 */
   private wasAirborne = new Map<number, boolean>();
+  /**
+   * 上一次画到的 move 动作帧号，按实体 id 记。踩点特效要靠"帧号变化到
+   * 落地点"而不是"当前帧号等于落地点"来触发——后者在显示帧率高于
+   * 逻辑帧率时会连续好几次渲染都读到同一个逻辑帧，同一步会被踩好几次灰。
+   */
+  private lastMoveFrame = new Map<number, number>();
 
   constructor(
     private canvas: HTMLCanvasElement,
@@ -543,6 +568,21 @@ export class Renderer {
     }
     this.wasAirborne.set(e.id, airborneNow);
 
+    // 踩点灰尘：走动一圈里两次"落地"对应的帧号发生变化时才补一次，
+    // 不是"当前帧号等于落地点"就补——见 lastMoveFrame 字段的说明。
+    const lastFrame = this.lastMoveFrame.get(e.id);
+    if (e.action === 'move' && e.actionFrame !== lastFrame && isFootfallFrame(e.actionFrame)) {
+      this.rings.push({
+        x: e.pos.x + e.facing * e.radius * 0.3,
+        y: e.pos.y,
+        radius: 10,
+        life: 10,
+        max: 10,
+        color: 'rgba(200,180,150,0.4)',
+      });
+    }
+    this.lastMoveFrame.set(e.id, e.action === 'move' ? e.actionFrame : -1);
+
     // 冲刺残影画在角色身后，卖"高速位移"的速度感
     this.drawDashTrail(e);
 
@@ -648,6 +688,11 @@ export class Renderer {
       (def.invuln && e.actionFrame >= def.invuln.from && e.actionFrame < def.invuln.to) === true;
     if (invulnerable) ctx.globalAlpha *= 0.55;
 
+    // 走动时叠加的重心起伏——腿部摆动帧本身已经有了，但没有配套的
+    // 上下起伏，走起来还是有点"贴地滑"。幅度比敌人小一档（2px vs 3px），
+    // 玩家有真的走路帧兜底，起伏只是锦上添花，不是唯一的动作信号。
+    const bob = walkBob(e.action, e.actionFrame, 2);
+
     if (rect && sheet) {
       const scale = 1.05;
       const w = rect.sw * scale;
@@ -655,7 +700,7 @@ export class Renderer {
       ctx.save();
       // airH 把整个角色往上抬——这是跳跃在画面上唯一的体现，
       // 逻辑层完全不知道"高度"这个概念，纯粹是渲染层的读数。
-      ctx.translate(e.pos.x, e.pos.y - airH);
+      ctx.translate(e.pos.x, e.pos.y - airH - bob);
       ctx.scale(e.facing, 1);
       if (flashing) ctx.filter = 'brightness(2.4) saturate(0.3)';
       ctx.drawImage(sheet.image, rect.sx, rect.sy, rect.sw, rect.sh, -w / 2, -h + 12, w, h);
@@ -663,7 +708,7 @@ export class Renderer {
     } else {
       // 素材没就位时的占位块，保证玩法始终可测
       ctx.fillStyle = flashing ? '#ffffff' : PALETTE.playerTint;
-      ctx.fillRect(e.pos.x - 12, e.pos.y - airH - 52, 24, 52);
+      ctx.fillRect(e.pos.x - 12, e.pos.y - airH - bob - 52, 24, 52);
     }
   }
 
@@ -695,7 +740,11 @@ export class Renderer {
       e.action === 'bossNova'
         ? 4
         : 0;
-    const top = y - look.h - lift;
+    // 敌人是纯几何占位块，走动时完全没有任何动作——不加这个的话，
+    // 五种敌人贴地平移过来像是在冰面上滑，而不是在走路。幅度按体型
+    // 稍微放大一点（3px），首领这种大体型才看得出来在动。
+    const bob = walkBob(e.action, e.actionFrame, 3);
+    const top = y - look.h - lift - bob;
 
     if (kind === 'shield') {
       // 盾兵：主体 + 正面一块厚盾。盾在哪边一眼可见，玩家才知道要绕到哪一边。
