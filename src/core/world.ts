@@ -272,7 +272,17 @@ export class World {
         this.lockMoveDirection(e, player);
         e.jumpCooldown = JUMP_COOLDOWN;
         this.stats.recordAction('jump');
-      } else if (player.dash && e.action !== 'dash' && e.dashCooldown <= 0) {
+      } else if (
+        player.dash &&
+        e.action !== 'dash' &&
+        e.dashCooldown <= 0 &&
+        !isActionAirborne(e.action, e.actionFrame)
+      ) {
+        // 腾空时不能触发冲刺——冲刺是地面动作，没有腾空语义，
+        // 人还在半空中一按冲刺就会瞬间"凭空消失、贴地冲出去"，
+        // 跟落地那一下的视觉完全脱节。跳跃已经有跳劈作为取消出口，
+        // 不需要再开一个"腾空接地面位移"的口子。反过来「冲刺接跳跃」
+        // 完全自然（贴地滑行后一跃而起），所以只挡这一个方向。
         this.setAction(e, 'dash');
         this.lockMoveDirection(e, player);
         e.dashCooldown = DASH_COOLDOWN;

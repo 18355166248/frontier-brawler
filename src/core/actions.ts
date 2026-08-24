@@ -457,6 +457,14 @@ export const ACTIONS: Record<ActionState, ActionDef> = {
       },
     ],
     airborne: { from: 0, to: 16 },
+    // 落地（腾空结束）就能取消接一次挥砍——「跳跃躲判定 → 跳劈追打 →
+    // 落地立即连段」现在是一条完整的空对地连招，不再是打完跳劈就只能
+    // 回 idle 的孤立招式。cancelFrom 必须等于 airborne.to（16），不能用
+    // 默认的判定框收尾规则（第 11 帧）：那样会在人还悬空时就切成地面
+    // slash，出现「半空中挥地面刀」的违和——这正是当初重构 startAttack
+    // 时特意规避的问题，这里不能重蹈覆辙。
+    cancelFrom: 16,
+    cancelInto: ['slash'],
   },
 };
 
