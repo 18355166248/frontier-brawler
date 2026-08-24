@@ -142,6 +142,15 @@ export interface ActionDef {
    * 需要更早取消窗口的动作要显式写这个字段。
    */
   cancelFrom?: number;
+  /**
+   * 完美取消窗口（相对动作起始），左闭右开，是可取消窗口里最早的一段。
+   * 玩家在这个窗口内接上后续攻击性动作，下一次命中伤害会有加成——
+   * 普通取消窗口宽容度有十几帧，容错率高但没有"打得越准收益越大"这层
+   * 深度；完美窗口窄得多，奖励的是快速反应而不是纯粹的连招记忆。
+   * 只用于进攻性质的取消（普攻连段、冲刺/跳跃/跳劈接攻击），
+   * 纯防御/位移的切换（比如冲刺接跳跃）没有伤害判定，不需要这个字段。
+   */
+  perfectCancelWindow?: { from: number; to: number };
 }
 
 export type Team = 'player' | 'enemy';
@@ -245,6 +254,13 @@ export interface Entity {
   executeHealBonus: number;
 
   /**
+   * 这次出手是不是在上一个动作的完美取消窗口内触发的——只在触发那一刻
+   * setAction 时打标记，下一次命中判定读取并应用伤害加成后立即清空，
+   * 不会持续生效到后续攻击。只有玩家会用到，敌人恒为 false。
+   */
+  perfectCancelPending: boolean;
+
+  /**
    * AI 的内部计时。放在实体上而不是 AI 模块的私有表里，
    * 是为了让「重开一局 = 丢掉整个 World」这件事继续成立，不用额外清理。
    */
@@ -304,6 +320,8 @@ export interface DamageEvent {
    * 任何造成玩家死亡的伤害都必须 telegraphed=true。
    */
   telegraphed?: boolean;
+  /** 这一下是完美取消触发的连段，带了伤害加成——表现层用它画特殊反馈 */
+  perfectCancel?: boolean;
 }
 
 export interface WorldEvents {

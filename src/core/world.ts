@@ -24,10 +24,12 @@ import {
   EXECUTE_RANGE,
   EXECUTE_THRESHOLD,
   JUMP_COOLDOWN,
+  PERFECT_CANCEL_DAMAGE_MULT,
   SKILL_COST,
   canInterrupt,
   isActionAirborne,
   isActionInvulnerable,
+  isPerfectCancel,
 } from './actions';
 import { ENEMY_PROFILES, think } from './enemies';
 import { RunStats } from './stats';
@@ -120,6 +122,7 @@ export function createEntity(team: Team, pos: Vec2, overrides: Partial<Entity> =
     skillDamageMultiplier: 1,
     skillCostMultiplier: 1,
     executeHealBonus: 0,
+    perfectCancelPending: false,
     telegraph: null,
     ai: { turnCooldown: 0, repositionFrames: 0, bossPhase: 1, bossSummoned: false },
     dead: false,
@@ -361,6 +364,13 @@ export class World {
    */
   private startAttack(e: Entity, chained: ActionState | undefined): void {
     if (chained && e.action !== chained) {
+      // 完美取消判定：这一刻 e.action/e.actionFrame 还是"来源动作"，
+      // setAction 之后就没法回头看了，必须在切换前读。只有玩家用得上——
+      // 敌人不需要这层反馈，perfectCancelPending 恒为 false。
+      if (e.team === 'player' && isPerfectCancel(e.action, e.actionFrame)) {
+        e.perfectCancelPending = true;
+        this.stats.perfectCancels += 1;
+      }
       this.setAction(e, chained);
       this.recordAttackStat(chained);
       return;
@@ -672,6 +682,17 @@ export class World {
         attacker.action === 'skill' ? attacker.skillDamageMultiplier : attacker.damageMultiplier;
     }
 
+    // 完美取消加成：只对触发完美取消后紧接着的这一次命中生效，用完立刻
+    // 清空标记——是"反应快"的一次性奖励，不会叠加成持续增益。
+    // 处决/技能不经过这里设置这个标记（它们走 tryExecute/独立分支，
+    // 不经过 startAttack），所以处决的必杀伤害不会被这条额外放大。
+    let perfectHit = false;
+    if (attacker.perfectCancelPending) {
+      dealt *= PERFECT_CANCEL_DAMAGE_MULT;
+      perfectHit = true;
+      attacker.perfectCancelPending = false;
+    }
+
     let backstab = false;
     let guarded = false;
 
@@ -703,6 +724,7 @@ export class World {
       execute: isExecute,
       telegraphed,
       attackerKind: attacker.kind,
+      perfectCancel: perfectHit,
     });
 
     // 玩家命中回能，攒够才能放技能——这条约束是「不无脑平 A」的支点之一
@@ -738,6 +760,7 @@ export class World {
       execute?: boolean;
       telegraphed?: boolean;
       attackerKind?: EnemyKind;
+      perfectCancel?: boolean;
     },
   ): boolean {
     target.hp -= damage;
@@ -789,6 +812,7 @@ export class World {
       guarded: meta.guarded,
       execute: meta.execute,
       telegraphed: meta.telegraphed,
+      perfectCancel: meta.perfectCancel,
     };
     this.events.damage.push(event);
     // 击杀的定格更长一点，让"斩杀"这件事被看见

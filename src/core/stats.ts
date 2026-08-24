@@ -45,6 +45,9 @@ export class RunStats {
   /** 按类型分的击杀，用来看玩家是不是在回避某一种敌人 */
   readonly killsByKind: Partial<Record<EnemyKind, number>> = {};
 
+  /** 完美取消触发次数——用来看玩家有没有在练精确时机，而不是乱按也能过 */
+  perfectCancels = 0;
+
   damageTaken = 0;
   hitsTaken = 0;
   /**
@@ -130,6 +133,7 @@ export class RunStats {
     damageTaken: number;
     unwarnedLethal: number;
     actions: Record<OffensiveAction, number>;
+    perfectCancels: number;
     died: boolean;
   } {
     return {
@@ -141,6 +145,7 @@ export class RunStats {
       damageTaken: Math.round(this.damageTaken),
       unwarnedLethal: this.lethalUnwarned.length,
       actions: { ...this.actions },
+      perfectCancels: this.perfectCancels,
       died: this.died,
     };
   }

@@ -171,12 +171,19 @@ export class Renderer {
         color = '#9db4c8';
         text = `${d.damage} 格挡`;
       }
+      // 完美取消命中：加后缀 + 专属强调色，不覆盖背刺/格挡已有的信息——
+      // 玩家要能同时看出"打在哪"和"时机对不对"。处决不会叠加这个标记
+      // （处决走的是必杀逻辑，不经过完美取消判定），不用担心冲突。
+      if (d.perfectCancel) {
+        color = '#7fe8ff';
+        text = `${text}·完美`;
+      }
       this.floats.push({
         x: d.at.x,
         y: d.at.y,
         text,
         life: 42,
-        crit: d.killed || !!d.execute,
+        crit: d.killed || !!d.execute || !!d.perfectCancel,
         color,
       });
       // 击杀震得更狠一点，把"斩杀"和"打中"区分开

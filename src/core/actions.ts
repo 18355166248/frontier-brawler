@@ -34,6 +34,13 @@ export const DASH_COOLDOWN = 45;
  */
 export const JUMP_COOLDOWN = 40;
 
+/**
+ * 完美取消命中的伤害倍率。+15% 是刻意选的克制数值——这是给"反应快"的
+ * 一次性奖励，不是数值系统的另一条加成线，加太多会和局内三选一的成长
+ * 倍率（锋芒每级 +12%）互相抢戏，让"哪个数字更重要"变得含糊。
+ */
+export const PERFECT_CANCEL_DAMAGE_MULT = 1.15;
+
 export const ACTIONS: Record<ActionState, ActionDef> = {
   idle: {
     id: 'idle',
@@ -78,6 +85,10 @@ export const ACTIONS: Record<ActionState, ActionDef> = {
     // 被杂兵磨掉最后 12 点血也是死，不能因为单下伤害低就免了预告。
     // 前摇本来就是 8 帧的提示，这里只是把它画出来。渲染层只对敌人显示。
     telegraph: { shape: { kind: 'arc', radius: 62, halfAngle: 0.72 }, until: 8 },
+    // 可取消窗口是 12-24 帧（12 帧宽，容错率不低）；完美窗口只取最早的
+    // 4 帧（12-16），奖励的是"收招一开始就接上"，不是"随便什么时候接
+    // 都一样"。
+    perfectCancelWindow: { from: 12, to: 16 },
   },
 
   /** 第二段：横扫。范围更大、击退更强，作为连招收尾。 */
@@ -117,6 +128,9 @@ export const ACTIONS: Record<ActionState, ActionDef> = {
     // canInterrupt 的隐式规则「播到最后一帧才能取消」，26 帧里只有
     // 第 25 帧能接，窗口窄到基本按不出来，cancelInto 名存实亡。
     cancelFrom: 15,
+    // 无敌帧刚结束就接上（15-19 帧）算完美——"贴脸就砍"的节奏，
+    // 比普通取消窗口（15-25，10 帧宽）严格得多。
+    perfectCancelWindow: { from: 15, to: 19 },
   },
 
   hit: {
@@ -429,6 +443,9 @@ export const ACTIONS: Record<ActionState, ActionDef> = {
     // 提前进入收招——不用等到 34 帧全播完，那样这个动作会显得又慢又黏。
     cancelFrom: 16,
     cancelInto: ['airSlash'],
+    // 腾空中段刚开放取消就接上（16-20 帧）算完美——这一刻正好是跳跃
+    // 接近最高点的位置，"读对预警、立刻追打"的反应窗口。
+    perfectCancelWindow: { from: 16, to: 20 },
   },
 
   /**
@@ -465,6 +482,9 @@ export const ACTIONS: Record<ActionState, ActionDef> = {
     // 时特意规避的问题，这里不能重蹈覆辙。
     cancelFrom: 16,
     cancelInto: ['slash'],
+    // 落地那一刻就接上（16-19 帧）算完美——"跳劈刚落地立刻追击"，
+    // 是这套空对地连招里最紧凑的一个衔接点。
+    perfectCancelWindow: { from: 16, to: 19 },
   },
 };
 
@@ -485,6 +505,17 @@ export function canInterrupt(state: ActionState, frame: number): boolean {
   const last = def.hitboxes[def.hitboxes.length - 1];
   if (!last) return frame >= def.frames - 1;
   return frame >= last.activeTo;
+}
+
+/**
+ * 这次取消是不是落在来源动作的完美窗口内。窗口是可取消窗口里最早的
+ * 一段，奖励的是「反应快」而不是「记得住连段表」——普通取消窗口有
+ * 十几帧宽容度，完美窗口窄得多，需要玩家在收招段一开始就接上。
+ */
+export function isPerfectCancel(fromState: ActionState, frame: number): boolean {
+  const win = ACTIONS[fromState].perfectCancelWindow;
+  if (!win) return false;
+  return frame >= win.from && frame < win.to;
 }
 
 /** 该动作在这一帧是否处于自带的无敌区间 */
