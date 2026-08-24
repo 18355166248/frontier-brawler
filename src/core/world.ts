@@ -115,7 +115,7 @@ export function createEntity(team: Team, pos: Vec2, overrides: Partial<Entity> =
     maxEnergy: 100,
     dashCooldown: 0,
     jumpCooldown: 0,
-    dashDir: { x: 1, y: 0 },
+    lockedMoveDir: { x: 1, y: 0 },
     damageMultiplier: 1,
     skillDamageMultiplier: 1,
     skillCostMultiplier: 1,
@@ -259,14 +259,22 @@ export class World {
         this.setAction(e, 'skill');
         this.stats.recordAction('skill');
       } else if (player.attack) {
+        // 只在新一轮攻击起手时响应方向转身，连段中途（e.action 已经是
+        // slash/slash2）不转身——不然连段打到一半角色转向会显得很怪。
+        // 位移量不变，这只是让玩家能"按方向快速转身打另一侧的敌人"，
+        // 不是把普攻也变成一个位移技能。
+        if (e.action !== 'slash' && e.action !== 'slash2' && Math.abs(player.moveX) > 0.2) {
+          e.facing = (player.moveX > 0 ? 1 : -1) as Facing;
+        }
         this.startAttack(e, def.cancelInto?.[0]);
       } else if (player.jump && e.action !== 'jump' && e.action !== 'airSlash' && e.jumpCooldown <= 0) {
         this.setAction(e, 'jump');
+        this.lockMoveDirection(e, player);
         e.jumpCooldown = JUMP_COOLDOWN;
         this.stats.recordAction('jump');
       } else if (player.dash && e.action !== 'dash' && e.dashCooldown <= 0) {
         this.setAction(e, 'dash');
-        this.lockDashDirection(e, player);
+        this.lockMoveDirection(e, player);
         e.dashCooldown = DASH_COOLDOWN;
         this.stats.recordAction('dash');
       }
@@ -286,10 +294,10 @@ export class World {
     const before = { x: e.pos.x, y: e.pos.y };
     if (motion && e.actionFrame < motion.length) {
       const step = motion[e.actionFrame];
-      if (e.action === 'dash') {
-        // 冲刺走锁定方向；纵深照样压 62%，否则斜冲会比直冲快，空间感就塌了
-        e.pos.x += step * e.dashDir.x;
-        e.pos.y += step * e.dashDir.y * 0.62;
+      if (e.action === 'dash' || e.action === 'jump') {
+        // 冲刺和跳跃都走锁定方向；纵深照样压 62%，否则斜着比直着快，空间感就塌了
+        e.pos.x += step * e.lockedMoveDir.x;
+        e.pos.y += step * e.lockedMoveDir.y * 0.62;
       } else {
         e.pos.x += step * e.facing;
       }
@@ -316,20 +324,21 @@ export class World {
   }
 
   /**
-   * 冲刺起手时锁定方向：有方向键就按方向键，没有就沿朝向前冲。
-   * 锁定而不是逐帧跟随输入，是因为闪避一旦开始就该是一段确定的位移——
-   * 中途还能拐弯的话，无敌帧就变成了「随便乱按也能贴脸游走」。
+   * 位移类动作（冲刺、跳跃）起手时锁定方向：有方向键就按方向键，
+   * 没有就沿朝向前冲。锁定而不是逐帧跟随输入，是因为一旦开始就该是
+   * 一段确定的位移——中途还能拐弯的话，冲刺的无敌帧和跳跃的腾空豁免
+   * 就变成了「随便乱按也能贴脸游走」。
    */
-  private lockDashDirection(e: Entity, input: InputState): void {
+  private lockMoveDirection(e: Entity, input: InputState): void {
     const len = Math.hypot(input.moveX, input.moveY);
     if (len > 0.01) {
-      e.dashDir = { x: input.moveX / len, y: input.moveY / len };
+      e.lockedMoveDir = { x: input.moveX / len, y: input.moveY / len };
       if (Math.abs(input.moveX) > 0.2) {
         e.facing = (input.moveX > 0 ? 1 : -1) as Facing;
       }
       return;
     }
-    e.dashDir = { x: e.facing, y: 0 };
+    e.lockedMoveDir = { x: e.facing, y: 0 };
   }
 
   /**
