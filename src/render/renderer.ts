@@ -11,9 +11,20 @@ import { ENEMY_PROFILES } from '../core/enemies';
 import type { StageTheme } from '../core/level';
 import type { Run } from '../core/run';
 import { doorPosition } from '../core/run';
+import type { UpgradeTrackId } from '../core/upgrades';
+import { MAX_UPGRADE_LEVEL, UPGRADE_TRACKS } from '../core/upgrades';
 import type { World } from '../core/world';
 import { Minimap } from './minimap';
 import type { SpriteSheet } from './sprites';
+
+/** 三选一卡片对应的按键，画在卡片上，也是 main.ts 里真实监听的键 */
+const CHOICE_KEYS: Record<UpgradeTrackId, string> = { offense: '1', arcane: '2', guardian: '3' };
+/** 三条路线各自的强调色，卡片和进度条都用它，玩家一眼能把颜色和路线对上 */
+const TRACK_COLOR: Record<UpgradeTrackId, string> = {
+  offense: '#e2705c',
+  arcane: '#6fb6f0',
+  guardian: '#63d0a8',
+};
 
 interface FloatText {
   x: number;
@@ -618,6 +629,11 @@ export class Renderer {
       return;
     }
 
+    if (run.pendingChoice) {
+      this.drawUpgradeChoice(run.pendingChoice, run.profile.upgrades);
+      return;
+    }
+
     // 房间清空后的指路。不提示的话玩家会站在空房间里等下一波怪。
     if (run.phase === 'cleared' && run.openDoors.length) {
       ctx.save();
@@ -649,17 +665,142 @@ export class Renderer {
     ctx.fillStyle = 'rgba(255,255,255,0.85)';
     ctx.fillText(`${Math.ceil(player.hp)} / ${player.maxHp}`, 14 + w + 10, 44);
 
-    // 能量条：攒满会变色并提示按键，否则玩家不知道技能已经可以放了
-    const ready = player.energy >= SKILL_COST;
+    // 能量条：攒满会变色并提示按键，否则玩家不知道技能已经可以放了。
+    // 实际消耗要乘玄术加成——选过技能消耗成长后，条上写的数字得和真实门槛一致。
+    const cost = SKILL_COST * player.skillCostMultiplier;
+    const ready = player.energy >= cost;
     ctx.fillStyle = PALETTE.hpBack;
     ctx.fillRect(13, 49, w + 2, 9);
     ctx.fillStyle = ready ? PALETTE.energyFull : PALETTE.energy;
     ctx.fillRect(14, 50, w * Math.max(0, player.energy / player.maxEnergy), 7);
     ctx.fillStyle = ready ? PALETTE.energyFull : 'rgba(255,255,255,0.55)';
-    ctx.fillText(ready ? '技能就绪 · U' : `${Math.floor(player.energy)} / ${SKILL_COST}`, 14 + w + 10, 58);
+    ctx.fillText(
+      ready ? '技能就绪 · U' : `${Math.floor(player.energy)} / ${Math.round(cost)}`,
+      14 + w + 10,
+      58,
+    );
 
     // 冲刺冷却，唯一的防御手段必须让玩家随时知道它在不在
     ctx.fillStyle = player.dashCooldown > 0 ? 'rgba(255,255,255,0.35)' : '#8fd4c8';
     ctx.fillText(player.dashCooldown > 0 ? `冲刺 ${player.dashCooldown}` : '冲刺就绪', 14, 76);
+  }
+
+  /**
+   * 局内三选一。全屏遮罩 + 三张卡片，故意做成暂停菜单的形态——
+   * GAME_DESIGN 3.6 特意把这一步放进独立的奖励房而不是战斗结束弹窗，
+   * 就是要让玩家静下来读三张卡，而不是在肾上腺素还没退的时候被无脑点掉。
+   */
+  private drawUpgradeChoice(options: UpgradeTrackId[], upgrades: Record<UpgradeTrackId, number>): void {
+    const { ctx, canvas } = this;
+    ctx.save();
+    ctx.fillStyle = 'rgba(8,10,13,0.72)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 20px system-ui, sans-serif';
+    ctx.fillText('选择一条成长路线', canvas.width / 2, 86);
+    ctx.font = '13px system-ui, sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.55)';
+    ctx.fillText('按 1 / 2 / 3 选择', canvas.width / 2, 108);
+
+    const cardW = 200;
+    const cardH = 210;
+    const gap = 22;
+    const totalW = options.length * cardW + (options.length - 1) * gap;
+    const startX = (canvas.width - totalW) / 2;
+    const y = 150;
+
+    options.forEach((id, i) => {
+      const track = UPGRADE_TRACKS[id];
+      const level = upgrades[id];
+      const x = startX + i * (cardW + gap);
+      const color = TRACK_COLOR[id];
+
+      ctx.fillStyle = 'rgba(20,24,30,0.9)';
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      this.roundRect(ctx, x, y, cardW, cardH, 10);
+      ctx.fill();
+      ctx.stroke();
+
+      // 已选级数用小圆点标出来，摆满级前还差几级一眼能看出
+      const dotY = y + 26;
+      for (let d = 0; d < MAX_UPGRADE_LEVEL; d += 1) {
+        const dx = x + cardW / 2 - (MAX_UPGRADE_LEVEL - 1) * 8 + d * 16;
+        ctx.beginPath();
+        ctx.arc(dx, dotY, 4, 0, Math.PI * 2);
+        ctx.fillStyle = d < level ? color : 'rgba(255,255,255,0.18)';
+        ctx.fill();
+      }
+
+      ctx.fillStyle = color;
+      ctx.font = 'bold 24px system-ui, sans-serif';
+      ctx.fillText(track.label, x + cardW / 2, y + 66);
+
+      ctx.fillStyle = 'rgba(255,255,255,0.6)';
+      ctx.font = '12px system-ui, sans-serif';
+      ctx.fillText(track.theme, x + cardW / 2, y + 88);
+
+      ctx.fillStyle = 'rgba(255,255,255,0.85)';
+      ctx.font = '13px system-ui, sans-serif';
+      this.wrapText(track.describe(level + 1), x + cardW / 2, y + 118, cardW - 28, 18);
+
+      // 按键提示放卡片底部，做成一枚圆形按钮的样子
+      ctx.beginPath();
+      ctx.arc(x + cardW / 2, y + cardH - 30, 16, 0, Math.PI * 2);
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 1.5;
+      ctx.stroke();
+      ctx.fillStyle = color;
+      ctx.font = 'bold 15px system-ui, sans-serif';
+      ctx.fillText(CHOICE_KEYS[id], x + cardW / 2, y + cardH - 25);
+    });
+
+    ctx.restore();
+  }
+
+  /** 简单的自动换行，卡片文案够短，不需要更复杂的排版逻辑 */
+  /**
+   * `\n` 是文案里手写的分段点，优先按它换行；每段再做贪心式自动换行兜底
+   * （防止某段仍然超宽）。纯自动换行在窄卡片上会把行尾一个字符单独挤成
+   * 一行，手写分段点能保证换行落在语义边界上，不会切得很难看。
+   */
+  private wrapText(text: string, cx: number, startY: number, maxWidth: number, lineHeight: number): void {
+    const { ctx } = this;
+    let y = startY;
+    for (const segment of text.split('\n')) {
+      const chars = [...segment];
+      let line = '';
+      for (const ch of chars) {
+        const next = line + ch;
+        if (ctx.measureText(next).width > maxWidth && line) {
+          ctx.fillText(line, cx, y);
+          line = ch;
+          y += lineHeight;
+        } else {
+          line = next;
+        }
+      }
+      ctx.fillText(line, cx, y);
+      y += lineHeight;
+    }
+  }
+
+  private roundRect(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    r: number,
+  ): void {
+    ctx.beginPath();
+    ctx.moveTo(x + r, y);
+    ctx.arcTo(x + w, y, x + w, y + h, r);
+    ctx.arcTo(x + w, y + h, x, y + h, r);
+    ctx.arcTo(x, y + h, x, y, r);
+    ctx.arcTo(x, y, x + w, y, r);
+    ctx.closePath();
   }
 }

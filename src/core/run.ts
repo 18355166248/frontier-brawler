@@ -15,6 +15,11 @@ import type { Entity, Vec2, WorldEvents } from './types';
 import type { Arena, InputState } from './world';
 import { World, createEnemy, createEntity } from './world';
 import { RunStats } from './stats';
+import type { UpgradeTrackId } from './upgrades';
+import { availableTracks, computeUpgradeStats } from './upgrades';
+
+/** 血量成长的基准值，不能让 profile.maxHp 自己滚雪球——见 upgrades.ts 顶部说明。 */
+const BASE_MAX_HP = 160;
 
 /** 跨房间保留的玩家状态。实体是一次性的，这份档案不是。 */
 export interface PlayerProfile {
@@ -23,10 +28,19 @@ export interface PlayerProfile {
   energy: number;
   maxEnergy: number;
   speed: number;
+  /** 三条成长路线各选到第几级，见 core/upgrades.ts */
+  upgrades: Record<UpgradeTrackId, number>;
 }
 
 export function createProfile(): PlayerProfile {
-  return { hp: 160, maxHp: 160, energy: 0, maxEnergy: 100, speed: 2.9 };
+  return {
+    hp: BASE_MAX_HP,
+    maxHp: BASE_MAX_HP,
+    energy: 0,
+    maxEnergy: 100,
+    speed: 2.9,
+    upgrades: { offense: 0, arcane: 0, guardian: 0 },
+  };
 }
 
 export type RunPhase =
@@ -34,6 +48,8 @@ export type RunPhase =
   | 'fighting'
   /** 清空了，门已开，等玩家走向出口 */
   | 'cleared'
+  /** 站在奖励房里，等玩家三选一 */
+  | 'choosing'
   /** 正在切换房间 */
   | 'transition'
   /** 整关打完 */
@@ -101,6 +117,12 @@ export class Run {
   private doorLock: Direction | null = null;
   private doorLockFrames = 0;
 
+  /**
+   * 奖励房当前待选的路线；不在奖励房或已经选完时为 null。
+   * 不为 null 时房间不会被自动标记清空——见 step() 里对 reward 房的特殊处理。
+   */
+  pendingChoice: UpgradeTrackId[] | null = null;
+
   /** 整关的累计统计。每间房的 World 各有一份，这里汇总。 */
   stats = new RunStats();
 
@@ -111,8 +133,9 @@ export class Run {
     if (!start) throw new Error(`关卡 ${stage.id} 找不到起始房间 ${stage.startRoom}`);
     this.room = start;
     this.world = this.buildWorld(start, null);
+    this.applyUpgradeStatsToPlayer();
     this.visited.add(start.id);
-    if (start.encounter.length === 0) this.markCleared(start);
+    this.settleEmptyRoom(start);
   }
 
   /** 当前房间已开的门。没清空的房间一扇都不开。 */
@@ -139,6 +162,7 @@ export class Run {
   get phase(): RunPhase {
     if (this.world.stats.died) return 'dead';
     if (this.transition > 0) return 'transition';
+    if (this.pendingChoice) return 'choosing';
     if (this.stageCleared) return 'stageComplete';
     if (this.cleared.has(this.room.id)) return 'cleared';
     return 'fighting';
@@ -164,7 +188,10 @@ export class Run {
       return events;
     }
 
-    if (!this.cleared.has(this.room.id) && this.roomIsClear()) {
+    // 奖励房没有敌人，roomIsClear() 恒为 true——不排除的话它会被这条
+    // 「没有活敌人就算清空」的规则立刻标记清空，三选一环节直接被跳过。
+    // 奖励房只能通过 chooseUpgrade() 清空。
+    if (this.room.kind !== 'reward' && !this.cleared.has(this.room.id) && this.roomIsClear()) {
       this.markCleared(this.room);
       // 斩杀最后一个敌人那一下是有分量的，先让飘字和震屏播完再开门
       this.clearDelay = CLEAR_DELAY;
@@ -223,10 +250,73 @@ export class Run {
     this.doorLock = this.enteredFrom;
     this.doorLockFrames = 0;
     this.world = this.buildWorld(next, this.enteredFrom);
+    this.applyUpgradeStatsToPlayer();
     this.visited.add(next.id);
     this.transition = TRANSITION_FRAMES;
-    // 已经清过的房间不再刷怪；新房间若本就没有编成，直接算清空
-    if (next.encounter.length === 0) this.markCleared(next);
+    this.settleEmptyRoom(next);
+  }
+
+  /**
+   * 没有战斗编成的房间要不要立即算清空，取决于房间类型：
+   * 普通空房间（start 或误配成空编成的房间）直接放行；
+   * 奖励房要停下来等三选一，不能被「反正没有编成」这条捷径绕过去。
+   */
+  private settleEmptyRoom(room: RoomDef): void {
+    // 已经清空过就不再处理——不判重的话，原路走回一间选过的奖励房
+    // 会重新弹出三选一，玩家靠来回横跳就能无限刷加成。
+    if (this.cleared.has(room.id)) return;
+    if (room.kind === 'reward') {
+      this.beginRewardChoice(room);
+      return;
+    }
+    if (room.encounter.length === 0) this.markCleared(room);
+  }
+
+  /** 生成本次奖励房的选项。三条都已满级就没什么可选，直接放行。 */
+  private beginRewardChoice(room: RoomDef): void {
+    const options = availableTracks(this.profile.upgrades);
+    if (options.length === 0) {
+      this.markCleared(room);
+      return;
+    }
+    this.pendingChoice = options.slice(0, 3);
+  }
+
+  /**
+   * 玩家在三选一里选了一条路线。
+   * 立即把加成写回当前 world 里的玩家实体——玩家马上要走出这间房继续打，
+   * 不能等到下一次 buildWorld 才生效。
+   */
+  chooseUpgrade(trackId: UpgradeTrackId): void {
+    if (!this.pendingChoice || !this.pendingChoice.includes(trackId)) return;
+    this.profile.upgrades[trackId] += 1;
+
+    if (trackId === 'guardian') {
+      // 血量上限是相对 BASE_MAX_HP 的倍率，不能滚雪球；
+      // 涨的那部分直接加到当前血量，选级就该立刻感觉到变强。
+      const stats = computeUpgradeStats(this.profile.upgrades);
+      const newMaxHp = BASE_MAX_HP * stats.maxHpMultiplier;
+      const delta = Math.max(0, newMaxHp - this.profile.maxHp);
+      this.profile.maxHp = newMaxHp;
+      this.profile.hp = Math.min(newMaxHp, this.profile.hp + delta);
+    }
+
+    this.applyUpgradeStatsToPlayer();
+    this.pendingChoice = null;
+    this.markCleared(this.room);
+  }
+
+  /** 把 profile.upgrades 换算出的倍率写到当前玩家实体上 */
+  private applyUpgradeStatsToPlayer(): void {
+    const player = this.world.player;
+    if (!player) return;
+    const stats = computeUpgradeStats(this.profile.upgrades);
+    player.damageMultiplier = stats.damageMultiplier;
+    player.skillDamageMultiplier = stats.skillDamageMultiplier;
+    player.skillCostMultiplier = stats.skillCostMultiplier;
+    player.executeHealBonus = stats.executeHealBonus;
+    player.maxHp = this.profile.maxHp;
+    player.hp = this.profile.hp;
   }
 
   /**

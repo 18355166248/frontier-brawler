@@ -46,8 +46,11 @@ export const STAGES: StageDef[] = [
     rooms: [
       room('v0', 0, 0, 'start', 'standard', [], { east: 'v1' }),
       room('v1', 1, 0, 'normal', 'standard', ['grunt', 'grunt'], { west: 'v0', east: 'v2' }),
-      room('v2', 2, 0, 'normal', 'wide', ['grunt', 'grunt', 'grunt'], { west: 'v1', east: 'v3' }),
-      room('v3', 3, 0, 'boss', 'narrow', ['grunt', 'grunt', 'grunt', 'grunt'], { west: 'v2' }),
+      room('v2', 2, 0, 'normal', 'wide', ['grunt', 'grunt', 'grunt'], { west: 'v1', east: 'vr' }),
+      // 奖励房夹在最后一场战斗和首领之间：打完硬仗、进首领前，正是该停下来
+      // 读三张卡的节点——GAME_DESIGN 3.6 要求这一步独立成房，不做弹窗。
+      room('vr', 3, 0, 'reward', 'standard', [], { west: 'v2', east: 'v3' }),
+      room('v3', 4, 0, 'boss', 'narrow', ['grunt', 'grunt', 'grunt', 'grunt'], { west: 'vr' }),
     ],
   },
 
@@ -75,8 +78,9 @@ export const STAGES: StageDef[] = [
       room('b1', 1, 0, 'normal', 'standard', ['shield'], { west: 'b0', east: 'b2', north: 'b1n' }),
       // 支线：纯杂兵，给一条「不想硬啃就先绕开」的路
       room('b1n', 1, -1, 'normal', 'narrow', ['grunt', 'grunt', 'grunt'], { south: 'b1' }),
-      room('b2', 2, 0, 'normal', 'standard', ['shield', 'grunt', 'grunt'], { west: 'b1', east: 'b3' }),
-      room('b3', 3, 0, 'boss', 'deep', ['shield', 'shield', 'grunt', 'grunt'], { west: 'b2' }),
+      room('b2', 2, 0, 'normal', 'standard', ['shield', 'grunt', 'grunt'], { west: 'b1', east: 'br' }),
+      room('br', 3, 0, 'reward', 'standard', [], { west: 'b2', east: 'b3' }),
+      room('b3', 4, 0, 'boss', 'deep', ['shield', 'shield', 'grunt', 'grunt'], { west: 'br' }),
     ],
   },
 
@@ -107,9 +111,10 @@ export const STAGES: StageDef[] = [
         east: 'c3',
       }),
       room('c2n', 2, -1, 'elite', 'standard', ['shield', 'shield'], { south: 'c2' }),
-      room('c3', 3, 0, 'normal', 'narrow', ['ranged', 'shield'], { west: 'c2', east: 'c4' }),
-      room('c4', 4, 0, 'boss', 'deep', ['ranged', 'ranged', 'shield', 'grunt', 'grunt'], {
-        west: 'c3',
+      room('c3', 3, 0, 'normal', 'narrow', ['ranged', 'shield'], { west: 'c2', east: 'cr' }),
+      room('cr', 4, 0, 'reward', 'standard', [], { west: 'c3', east: 'c4' }),
+      room('c4', 5, 0, 'boss', 'deep', ['ranged', 'ranged', 'shield', 'grunt', 'grunt'], {
+        west: 'cr',
       }),
     ],
   },
@@ -143,10 +148,11 @@ export const STAGES: StageDef[] = [
       room('p2s', 2, 1, 'elite', 'narrow', ['shield', 'ranged', 'grunt'], { north: 'p2' }),
       room('p3', 3, 0, 'normal', 'standard', ['charger', 'ranged', 'shield'], {
         west: 'p2',
-        east: 'p4',
+        east: 'pr',
       }),
-      room('p4', 4, 0, 'boss', 'wide', ['charger', 'charger', 'ranged', 'grunt', 'grunt'], {
-        west: 'p3',
+      room('pr', 4, 0, 'reward', 'standard', [], { west: 'p3', east: 'p4' }),
+      room('p4', 5, 0, 'boss', 'wide', ['charger', 'charger', 'ranged', 'grunt', 'grunt'], {
+        west: 'pr',
       }),
     ],
   },
@@ -178,8 +184,9 @@ export const STAGES: StageDef[] = [
         east: 'k3',
       }),
       room('k2n', 2, -1, 'elite', 'wide', ['charger', 'charger', 'ranged'], { south: 'k2' }),
-      room('k3', 3, 0, 'normal', 'narrow', ['elite', 'shield', 'ranged'], { west: 'k2', east: 'k4' }),
-      room('k4', 4, 0, 'boss', 'deep', ['elite', 'elite', 'ranged', 'ranged'], { west: 'k3' }),
+      room('k3', 3, 0, 'normal', 'narrow', ['elite', 'shield', 'ranged'], { west: 'k2', east: 'kr' }),
+      room('kr', 4, 0, 'reward', 'standard', [], { west: 'k3', east: 'k4' }),
+      room('k4', 5, 0, 'boss', 'deep', ['elite', 'elite', 'ranged', 'ranged'], { west: 'kr' }),
     ],
   },
 
@@ -217,10 +224,11 @@ export const STAGES: StageDef[] = [
       room('m2n', 2, -1, 'elite', 'deep', ['elite', 'ranged', 'ranged'], { south: 'm2' }),
       room('m3', 3, 0, 'normal', 'deep', ['elite', 'charger', 'shield', 'grunt'], {
         west: 'm2',
-        east: 'm4',
+        east: 'mr',
       }),
-      room('m4', 4, 0, 'boss', 'wide', ['elite', 'elite', 'charger', 'ranged', 'ranged'], {
-        west: 'm3',
+      room('mr', 4, 0, 'reward', 'standard', [], { west: 'm3', east: 'm4' }),
+      room('m4', 5, 0, 'boss', 'wide', ['elite', 'elite', 'charger', 'ranged', 'ranged'], {
+        west: 'mr',
       }),
     ],
   },

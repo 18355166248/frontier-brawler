@@ -184,6 +184,20 @@ export interface Entity {
   telegraph: Telegraph | null;
 
   /**
+   * 局内三选一成长的加成，全部默认为「不生效」的中性值——
+   * 没选过任何成长的玩家，数值应该和 M1 阶段完全一样。
+   * 只在玩家身上有意义，敌人固定用默认值。见 GAME_DESIGN 3.6。
+   */
+  /** 普攻与处决伤害倍率（锋芒路线），默认 1 */
+  damageMultiplier: number;
+  /** 技能伤害倍率（玄术路线），默认 1 */
+  skillDamageMultiplier: number;
+  /** 技能能量消耗倍率，越低越省（玄术路线），默认 1 */
+  skillCostMultiplier: number;
+  /** 处决额外回复量（守元路线），默认 0 */
+  executeHealBonus: number;
+
+  /**
    * AI 的内部计时。放在实体上而不是 AI 模块的私有表里，
    * 是为了让「重开一局 = 丢掉整个 World」这件事继续成立，不用额外清理。
    */

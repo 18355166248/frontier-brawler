@@ -12,10 +12,18 @@ import { TICK_RATE } from './core/actions';
 import { validateStage } from './core/level';
 import { Run, createProfile } from './core/run';
 import { STAGES } from './core/stages';
+import type { UpgradeTrackId } from './core/upgrades';
 import type { InputState } from './core/world';
 import { Renderer } from './render/renderer';
 import { SpriteSheet } from './render/sprites';
 import type { ActionState } from './core/types';
+
+/** 三选一的按键，和 render/renderer.ts 里卡片上画的键位一一对应 */
+const CHOICE_KEYS: Record<string, UpgradeTrackId> = {
+  Digit1: 'offense',
+  Digit2: 'arcane',
+  Digit3: 'guardian',
+};
 
 const WIDTH = 960;
 const HEIGHT = 540;
@@ -57,6 +65,8 @@ window.addEventListener('keydown', (e) => {
   keys.add(e.code);
   if (e.code === 'KeyR') startStage(stageIndex);
   if (e.code === 'KeyN' && run.phase === 'stageComplete') startStage(stageIndex + 1);
+  const track = CHOICE_KEYS[e.code];
+  if (track && run.phase === 'choosing') run.chooseUpgrade(track);
   // 方向键和空格会滚动页面，游戏里要吃掉
   if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) {
     e.preventDefault();

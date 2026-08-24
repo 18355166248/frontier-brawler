@@ -100,6 +100,10 @@ export function createEntity(team: Team, pos: Vec2, overrides: Partial<Entity> =
     maxEnergy: 100,
     dashCooldown: 0,
     dashDir: { x: 1, y: 0 },
+    damageMultiplier: 1,
+    skillDamageMultiplier: 1,
+    skillCostMultiplier: 1,
+    executeHealBonus: 0,
     telegraph: null,
     ai: { turnCooldown: 0, repositionFrames: 0 },
     dead: false,
@@ -226,8 +230,8 @@ export class World {
       // 处决优先于普攻：残血目标在手边时，玩家按处决键不该被解释成挥空刀
       if (player.execute && this.tryExecute(e)) {
         // 已切入处决动作
-      } else if (player.skill && e.energy >= SKILL_COST) {
-        e.energy -= SKILL_COST;
+      } else if (player.skill && e.energy >= SKILL_COST * e.skillCostMultiplier) {
+        e.energy -= SKILL_COST * e.skillCostMultiplier;
         this.setAction(e, 'skill');
         this.stats.recordAction('skill');
       } else if (player.attack) {
@@ -587,6 +591,14 @@ export class World {
     hitStop: number,
   ): void {
     let dealt = damage;
+
+    // 玩家的成长加成（锋芒/玄术路线）。处决走的是必杀逻辑，不受这两条影响，
+    // 所以放在 isExecute 覆盖之前应用没问题——反正后面会被直接盖掉。
+    if (attacker.team === 'player') {
+      dealt *=
+        attacker.action === 'skill' ? attacker.skillDamageMultiplier : attacker.damageMultiplier;
+    }
+
     let backstab = false;
     let guarded = false;
 
@@ -629,9 +641,10 @@ export class World {
     }
 
     if (isExecute && killed) {
-      attacker.hp = Math.min(attacker.maxHp, attacker.hp + EXECUTE_HEAL);
+      const healed = EXECUTE_HEAL + attacker.executeHealBonus;
+      attacker.hp = Math.min(attacker.maxHp, attacker.hp + healed);
       this.stats.executes += 1;
-      this.events.executes.push({ at: { x: target.pos.x, y: target.pos.y }, healed: EXECUTE_HEAL });
+      this.events.executes.push({ at: { x: target.pos.x, y: target.pos.y }, healed });
     }
   }
 
