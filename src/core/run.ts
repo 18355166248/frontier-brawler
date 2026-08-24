@@ -169,7 +169,13 @@ export class Run {
   }
 
   step(input: InputState): WorldEvents {
-    const empty: WorldEvents = { damage: [], hitStop: 0, executes: [], skillCasts: [] };
+    const empty: WorldEvents = {
+      damage: [],
+      hitStop: 0,
+      executes: [],
+      skillCasts: [],
+      bossPhaseShifts: [],
+    };
 
     if (this.transition > 0) {
       this.transition -= 1;
@@ -375,6 +381,15 @@ export class Run {
     const midY = (arena.minY + arena.maxY) / 2;
     const depth = arena.maxY - arena.minY;
     const n = room.encounter.length;
+
+    // 单个敌人（首领房）不用套多敌人的错位散布公式——那套公式是为了
+    // 避免几个敌人叠成一条线设计的，唯一的敌人没有这个问题，
+    // 直接站纵深正中央，首领登场才够稳重。
+    if (n === 1) {
+      w.spawn(createEnemy(room.encounter[0], { x: arena.maxX - 130, y: midY }));
+      return;
+    }
+
     room.encounter.forEach((kind, i) => {
       const col = Math.floor(i / 3);
       const x = arena.maxX - 110 - col * 96;

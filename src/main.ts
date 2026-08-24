@@ -126,6 +126,7 @@ function stepOnce(): void {
   if (events.damage.length) renderer.onEvents(events.damage);
   if (events.executes.length) renderer.onExecutes(events.executes);
   if (events.skillCasts.length) renderer.onSkillCasts(events.skillCasts);
+  if (events.bossPhaseShifts.length) renderer.onBossPhaseShift(events.bossPhaseShifts);
 }
 
 function frame(now: number): void {

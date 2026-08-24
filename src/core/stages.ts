@@ -8,6 +8,11 @@
  *
  * 难度旋钮按 LEVEL_DESIGN 的优先级用：先动 maxAttackers 和敌人组合，
  * 最后才考虑数值缩放——改血量和伤害是最钝的手段。
+ *
+ * 每关终点房都是一个分阶段首领（EnemyKind 'boss'），血量降到 50% 触发
+ * 阶段二：解锁范围技并召唤两个杂兵。首领不逼玩家学新东西，而是把前面
+ * 学到的绕位、躲预警、拉开、处决收进一场综合考——第六关额外不引入
+ * 新敌人类型，纯粹靠首领和已学过的杂兵组合收尾。
  */
 import type { EnemyKind } from './types';
 import type { Direction, RoomDef, RoomKind, RoomSize, StageDef } from './level';
@@ -50,7 +55,9 @@ export const STAGES: StageDef[] = [
       // 奖励房夹在最后一场战斗和首领之间：打完硬仗、进首领前，正是该停下来
       // 读三张卡的节点——GAME_DESIGN 3.6 要求这一步独立成房，不做弹窗。
       room('vr', 3, 0, 'reward', 'standard', [], { west: 'v2', east: 'v3' }),
-      room('v3', 4, 0, 'boss', 'narrow', ['grunt', 'grunt', 'grunt', 'grunt'], { west: 'vr' }),
+      // 首领房用 deep：突进位移约 258px，窄场地转身都费劲，
+      // 阶段二的范围技覆盖也大，玩家得有地方能真正拉开距离。
+      room('v3', 4, 0, 'boss', 'deep', ['boss'], { west: 'vr' }),
     ],
   },
 
@@ -80,7 +87,7 @@ export const STAGES: StageDef[] = [
       room('b1n', 1, -1, 'normal', 'narrow', ['grunt', 'grunt', 'grunt'], { south: 'b1' }),
       room('b2', 2, 0, 'normal', 'standard', ['shield', 'grunt', 'grunt'], { west: 'b1', east: 'br' }),
       room('br', 3, 0, 'reward', 'standard', [], { west: 'b2', east: 'b3' }),
-      room('b3', 4, 0, 'boss', 'deep', ['shield', 'shield', 'grunt', 'grunt'], { west: 'br' }),
+      room('b3', 4, 0, 'boss', 'deep', ['boss'], { west: 'br' }),
     ],
   },
 
@@ -113,7 +120,7 @@ export const STAGES: StageDef[] = [
       room('c2n', 2, -1, 'elite', 'standard', ['shield', 'shield'], { south: 'c2' }),
       room('c3', 3, 0, 'normal', 'narrow', ['ranged', 'shield'], { west: 'c2', east: 'cr' }),
       room('cr', 4, 0, 'reward', 'standard', [], { west: 'c3', east: 'c4' }),
-      room('c4', 5, 0, 'boss', 'deep', ['ranged', 'ranged', 'shield', 'grunt', 'grunt'], {
+      room('c4', 5, 0, 'boss', 'deep', ['boss'], {
         west: 'cr',
       }),
     ],
@@ -151,7 +158,7 @@ export const STAGES: StageDef[] = [
         east: 'pr',
       }),
       room('pr', 4, 0, 'reward', 'standard', [], { west: 'p3', east: 'p4' }),
-      room('p4', 5, 0, 'boss', 'wide', ['charger', 'charger', 'ranged', 'grunt', 'grunt'], {
+      room('p4', 5, 0, 'boss', 'wide', ['boss'], {
         west: 'pr',
       }),
     ],
@@ -186,16 +193,12 @@ export const STAGES: StageDef[] = [
       room('k2n', 2, -1, 'elite', 'wide', ['charger', 'charger', 'ranged'], { south: 'k2' }),
       room('k3', 3, 0, 'normal', 'narrow', ['elite', 'shield', 'ranged'], { west: 'k2', east: 'kr' }),
       room('kr', 4, 0, 'reward', 'standard', [], { west: 'k3', east: 'k4' }),
-      room('k4', 5, 0, 'boss', 'deep', ['elite', 'elite', 'ranged', 'ranged'], { west: 'kr' }),
+      room('k4', 5, 0, 'boss', 'deep', ['boss'], { west: 'kr' }),
     ],
   },
 
   /**
    * 第六关：综合考。不引入新类型，考的是前五关学的东西能不能一起用。
-   *
-   * 终点房 m5 目前是**精英群占位**，不是真正的首领——
-   * 分阶段首领是 LEVEL_DESIGN 第十节的步骤 6，还没做。
-   * 占位的目的是让六关现在就能完整通一遍，别让最后一关是个断头路。
    */
   {
     id: 'citadel',
@@ -227,7 +230,7 @@ export const STAGES: StageDef[] = [
         east: 'mr',
       }),
       room('mr', 4, 0, 'reward', 'standard', [], { west: 'm3', east: 'm4' }),
-      room('m4', 5, 0, 'boss', 'wide', ['elite', 'elite', 'charger', 'ranged', 'ranged'], {
+      room('m4', 5, 0, 'boss', 'wide', ['boss'], {
         west: 'mr',
       }),
     ],

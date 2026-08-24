@@ -265,6 +265,119 @@ export const ACTIONS: Record<ActionState, ActionDef> = {
     ],
     telegraph: { shape: { kind: 'circle', radius: 74 }, until: 32 },
   },
+
+  /**
+   * 首领招式——LEVEL_DESIGN 第八节：两阶段各换一套招式组，
+   * 每一招都比对应的精英/冲锋版本更强，但**遵守同一条纪律**：
+   * 伤害越高，预警必须越长越明显，不能既强又突然。
+   */
+
+  /**
+   * 首领重击：44 帧前摇（比精英 heavy 长 12 帧），换更大范围和更高伤害。
+   * 两阶段都会用——是首领最基础也是最常见的招式。
+   */
+  bossSlam: {
+    id: 'bossSlam',
+    frames: 62,
+    loop: false,
+    cancelable: false,
+    superArmor: true,
+    hitboxes: [
+      {
+        offset: { x: 30, y: 0 },
+        halfWidth: 72,
+        halfDepth: 50,
+        activeFrom: 44,
+        activeTo: 51,
+        damage: 32,
+        knockback: 9.5,
+        hitStop: 12,
+      },
+    ],
+    telegraph: { shape: { kind: 'circle', radius: 92 }, until: 44 },
+  },
+
+  /**
+   * 首领蓄力：24 帧预警——比冲锋的 28 帧短，逼玩家更快做出反应，
+   * 配合下面 bossRush 更大的突进距离，让首领的突进比冲锋更有压迫感。
+   */
+  bossCharge: {
+    id: 'bossCharge',
+    frames: 24,
+    loop: false,
+    cancelable: false,
+    hitboxes: [],
+    motion: [-0.5, -0.5, -0.4, -0.4, -0.3, -0.3, -0.2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    telegraph: { shape: { kind: 'line', length: 360, width: 56 }, until: 24 },
+  },
+
+  /**
+   * 首领突进：位移合计约 250px，比冲锋的 197px 更远更快，
+   * 同样遵守「必须冲过头」的约束——扑空才有博弈，不是纯粹的追杀。
+   */
+  bossRush: {
+    id: 'bossRush',
+    frames: 32,
+    loop: false,
+    cancelable: false,
+    motion: [
+      26, 26, 25, 24, 23, 22, 20, 18, 16, 14, 12, 10, 8, 6, 4, 2.5, 1.2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+      0, 0, 0, 0, 0,
+    ],
+    hitboxes: [
+      {
+        offset: { x: 24, y: 0 },
+        halfWidth: 32,
+        halfDepth: 26,
+        activeFrom: 0,
+        activeTo: 17,
+        damage: 22,
+        knockback: 8.0,
+        hitStop: 8,
+      },
+    ],
+  },
+
+  /**
+   * 首领范围技：阶段二才解锁的招式，覆盖范围比玩家的 skill 还大。
+   * 30 帧前摇给圆形预警，判定生效时机短而干脆——「蓄力很久，打出来很快」
+   * 是范围技共通的节奏，玩家在预警阶段就该拉开，而不是等判定那一下再躲。
+   */
+  bossNova: {
+    id: 'bossNova',
+    frames: 44,
+    loop: false,
+    cancelable: false,
+    superArmor: true,
+    hitboxes: [
+      {
+        offset: { x: 0, y: 0 },
+        halfWidth: 150,
+        halfDepth: 104,
+        activeFrom: 30,
+        activeTo: 34,
+        damage: 30,
+        knockback: 10.0,
+        hitStop: 12,
+        radial: true,
+      },
+    ],
+    telegraph: { shape: { kind: 'circle', radius: 150 }, until: 30 },
+  },
+
+  /**
+   * 首领召唤：纯表现动作，不带任何判定框——它不直接伤人，
+   * 危险的是召唤出来的两个杂兵。50 帧够长，让玩家看清「这不是在打我」
+   * 而是「阶段要变了」，配合 world.ts 里阶段切换的震屏和飘字一起读。
+   */
+  bossSummon: {
+    id: 'bossSummon',
+    frames: 50,
+    loop: false,
+    cancelable: false,
+    superArmor: true,
+    hitboxes: [],
+  },
 };
 
 /** 一次动作播完需要多少帧 */

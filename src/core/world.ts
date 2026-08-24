@@ -62,10 +62,21 @@ export const EMPTY_INPUT: InputState = {
 const ACTION_CHAIN: Partial<Record<ActionState, ActionState>> = {
   aim: 'shoot',
   charge: 'rush',
+  bossCharge: 'bossRush',
 };
 
 /** 敌人攻击链的收尾动作，播完才交还令牌 */
-const TOKEN_RELEASING: ActionState[] = ['slash', 'slash2', 'shoot', 'rush', 'heavy'];
+const TOKEN_RELEASING: ActionState[] = [
+  'slash',
+  'slash2',
+  'shoot',
+  'rush',
+  'heavy',
+  'bossSlam',
+  'bossRush',
+  'bossNova',
+  'bossSummon',
+];
 
 /** 命中回能。想放技能就得先打进去，这是 GAME_DESIGN 3.4 的第 4 条约束。 */
 const ENERGY_PER_HIT = 7;
@@ -105,7 +116,7 @@ export function createEntity(team: Team, pos: Vec2, overrides: Partial<Entity> =
     skillCostMultiplier: 1,
     executeHealBonus: 0,
     telegraph: null,
-    ai: { turnCooldown: 0, repositionFrames: 0 },
+    ai: { turnCooldown: 0, repositionFrames: 0, bossPhase: 1, bossSummoned: false },
     dead: false,
     deadFrames: 0,
     ...overrides,
@@ -144,7 +155,7 @@ export class World {
   maxAttackers = 2;
   /** 逻辑帧计数，用于让敌人的游走错开相位 */
   tick = 0;
-  events: WorldEvents = { damage: [], hitStop: 0, executes: [], skillCasts: [] };
+  events: WorldEvents = { damage: [], hitStop: 0, executes: [], skillCasts: [], bossPhaseShifts: [] };
   stats = new RunStats();
 
   constructor(arena: Arena) {
@@ -162,7 +173,7 @@ export class World {
 
   /** 推进一个逻辑帧。input 只作用于玩家。 */
   step(input: InputState): WorldEvents {
-    this.events = { damage: [], hitStop: 0, executes: [], skillCasts: [] };
+    this.events = { damage: [], hitStop: 0, executes: [], skillCasts: [], bossPhaseShifts: [] };
 
     // 命中定格：全局冻结几帧，是「打到实处」最廉价也最有效的反馈。
     // 冻结期间不推进任何逻辑，连动画帧也停——这正是它有效的原因。
@@ -222,6 +233,13 @@ export class World {
       this.spawnProjectile(e);
     }
 
+    // 首领召唤帧：动作播到一半才真正生成杂兵，让玩家先看清「它在做什么」
+    // 再面对新出现的威胁，而不是杂兵凭空冒出来
+    if (e.action === 'bossSummon' && e.actionFrame === 25 && !e.ai.bossSummoned) {
+      this.spawnBossMinions(e);
+      e.ai.bossSummoned = true;
+    }
+
     const def = ACTIONS[e.action];
     const interruptible = canInterrupt(e.action, e.actionFrame);
     const player = e.team === 'player' ? (input as InputState) : null;
@@ -243,10 +261,13 @@ export class World {
         this.stats.recordAction('dash');
       }
     } else if (!player && input.attack && interruptible) {
-      // 敌人：起手动作由类型决定（贴脸挥砍 / 瞄准 / 蓄力冲锋 / 重击）
+      // 敌人：起手动作由类型决定（贴脸挥砍 / 瞄准 / 蓄力冲锋 / 重击）。
+      // input.action 是 AI 动态点名的具体招式，只有首领会用到——
+      // 它要在重击/突进/范围技之间切换，一个固定的 attackAction 表达不了。
       const profile = ENEMY_PROFILES[e.kind ?? 'grunt'];
-      if (e.action !== profile.attackAction) {
-        this.setAction(e, profile.attackAction);
+      const wantAction = input.action ?? profile.attackAction;
+      if (e.action !== wantAction) {
+        this.setAction(e, wantAction);
       }
     }
 
@@ -689,6 +710,12 @@ export class World {
       target.dead = true;
       if (target.team === 'enemy') this.stats.recordKill(target.kind);
       if (target.team === 'player') this.stats.died = true;
+    } else if (
+      target.kind === 'boss' &&
+      target.ai.bossPhase === 1 &&
+      target.hp / target.maxHp <= 0.5
+    ) {
+      this.triggerBossPhaseTwo(target);
     }
 
     if (target.team === 'player') {
@@ -715,6 +742,33 @@ export class World {
     // 击杀的定格更长一点，让"斩杀"这件事被看见
     this.events.hitStop = Math.max(this.events.hitStop, killed ? hitStop + 4 : hitStop);
     return killed;
+  }
+
+  /**
+   * 首领血量降到 50% 触发一次阶段切换：强制打断当前招式，切进召唤动作，
+   * 并在事件里记一笔——渲染层靠这个放特写、打出「阶段二」的提示。
+   * 不给明确表现的话，玩家只会觉得「这家伙怎么突然开始放大招了」。
+   */
+  private triggerBossPhaseTwo(boss: Entity): void {
+    boss.ai.bossPhase = 2;
+    this.setAction(boss, 'bossSummon');
+    this.events.bossPhaseShifts.push({ at: { x: boss.pos.x, y: boss.pos.y }, phase: 2 });
+  }
+
+  /**
+   * 阶段二召唤两个杂兵，只在切换那一刻触发一次——bossSummoned 挡住重复触发。
+   * 召唤出的杂兵走的是标准 createEnemy 路径，照样要抢攻击令牌，
+   * 不会因为是「首领召唤的」就获得特权同时围殴玩家，
+   * M1 已经验证过那样的结果是玩家站着被打死。
+   */
+  private spawnBossMinions(boss: Entity): void {
+    const offsets = [
+      { x: -76, y: -42 },
+      { x: -76, y: 42 },
+    ];
+    for (const off of offsets) {
+      this.spawn(createEnemy('grunt', { x: boss.pos.x + off.x, y: boss.pos.y + off.y }));
+    }
   }
 
   /**

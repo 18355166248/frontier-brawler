@@ -122,6 +122,30 @@ export const ENEMY_PROFILES: Record<EnemyKind, EnemyProfile> = {
     tokenCooldown: 78,
     turnDelay: 0,
   },
+
+  /**
+   * 首领：不逼玩家学一件新事，而是把前五关学到的东西全部收进一场考试——
+   * 绕位躲重击、读预警躲突进、阶段二拉开躲范围技、处决收尾。
+   *
+   * tokenCooldown 定在杂兵之上（50 vs 杂兵 42）：首领已经在伤害和判定范围
+   * 两个维度都远超杂兵，**不能再让出手频率也最高**——实测第一版给了 26 帧
+   * （全场最短），结果 bot 在 11 秒内被打死，boss 自己的血还没掉到能触发
+   * 阶段二。伤害、范围、频率三个维度同时拉满，等于把 M1 已经验证过的
+   * 「同时能打你的人数决定能不能玩」的教训，换了个形式在单体身上重演——
+   * 招架不住不是因为技术不够，是节奏上没有给反应的窗口。
+   */
+  boss: {
+    kind: 'boss',
+    label: '首领',
+    hp: 420,
+    speed: 1.1,
+    radius: 26,
+    reach: 96,
+    standoff: 150,
+    attackAction: 'bossSlam',
+    tokenCooldown: 50,
+    turnDelay: 0,
+  },
 };
 
 /**
@@ -163,6 +187,21 @@ export function think(
           return { moveX: 0, moveY: 0, attack: true, dash: false };
         }
         break;
+
+      case 'boss': {
+        // 太远：先靠近，不在这个距离浪费一次突进——那样冲到一半就落空了
+        if (dist > 230) break;
+        // 中距离：突进拉近，逼玩家读预警侧移，和冲锋的道理一样但覆盖范围更大
+        if (dist > 140) {
+          return { moveX: 0, moveY: 0, attack: true, dash: false, action: 'bossCharge' };
+        }
+        // 近距离：阶段二每隔一段固定节奏换一次范围技，制造节奏变化但保持确定性
+        // （不用随机数，是为了自动化验证能重复同一套招式序列）
+        if (e.ai.bossPhase === 2 && Math.floor(tick / 200) % 3 === 2) {
+          return { moveX: 0, moveY: 0, attack: true, dash: false, action: 'bossNova' };
+        }
+        return { moveX: 0, moveY: 0, attack: true, dash: false, action: 'bossSlam' };
+      }
 
       default:
         if (dist <= profile.reach) {

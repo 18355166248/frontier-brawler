@@ -35,7 +35,17 @@ export type ActionState =
   /** 冲锋的突进段，带判定 */
   | 'rush'
   /** 精英重击，前摇极长换高伤害 */
-  | 'heavy';
+  | 'heavy'
+  /** 首领重击：比精英更长的前摇换更大范围和更高伤害，阶段一、二都会用 */
+  | 'bossSlam'
+  /** 首领蓄力，纯预警不带判定，两阶段共用 */
+  | 'bossCharge'
+  /** 首领突进段，带判定 */
+  | 'bossRush'
+  /** 首领范围技，阶段二才解锁，环形判定覆盖全场大半 */
+  | 'bossNova'
+  /** 首领召唤，纯表现动作不带判定——阶段切换那一刻只触发一次 */
+  | 'bossSummon';
 
 export interface Hurtbox {
   /** 相对实体中心的偏移 */
@@ -119,13 +129,22 @@ export interface InputIntent {
   moveY: number;
   attack: boolean;
   dash: boolean;
+  /**
+   * 指定这次进攻具体用哪个动作，覆盖 EnemyProfile.attackAction。
+   * 五种基础敌人都只有一招，用不上这个字段；首领要在多套招式间
+   * 动态切换（重击/突进/阶段二的范围技），才需要 AI 自己点名。
+   */
+  action?: ActionState;
 }
 
 /**
  * 敌人类型。差异必须体现在**要求玩家做不同的事**，光改数值不算差异。
  * 对应 GAME_DESIGN.md 3.5 的五种设计。
+ *
+ * boss 是第六种，单独归在一起：它不是"逼玩家做一件新事"，
+ * 而是把前五关学到的东西——绕位、躲预警、拉开、处决——放进一场综合考。
  */
-export type EnemyKind = 'grunt' | 'shield' | 'ranged' | 'charger' | 'elite';
+export type EnemyKind = 'grunt' | 'shield' | 'ranged' | 'charger' | 'elite' | 'boss';
 
 export interface Entity {
   id: number;
@@ -209,6 +228,14 @@ export interface Entity {
     turnCooldown: number;
     /** 重新选位的剩余帧，用于远程和冲锋拉开距离后的稳定站位 */
     repositionFrames: number;
+    /**
+     * 首领的阶段：1（100%-50%血）只用重击和突进，
+     * 2（50%以下）额外解锁范围技，且切换那一刻触发一次召唤。
+     * 只有 kind==='boss' 的实体会用到，其余类型恒为 1。
+     */
+    bossPhase: 1 | 2;
+    /** 阶段二的召唤只该触发一次——不然每次判定都召唤会没完没了地刷杂兵 */
+    bossSummoned: boolean;
   };
 
   dead: boolean;
@@ -259,4 +286,6 @@ export interface WorldEvents {
   executes: { at: Vec2; healed: number }[];
   /** 本帧释放的技能，表现层画冲击波 */
   skillCasts: { at: Vec2; radius: number }[];
+  /** 本帧发生的首领阶段切换，表现层放特写并打出「阶段二」之类的提示 */
+  bossPhaseShifts: { at: Vec2; phase: 2 }[];
 }

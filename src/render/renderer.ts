@@ -44,6 +44,13 @@ interface Ring {
   color: string;
 }
 
+/** 屏幕中央的横幅提示，只给首领阶段切换这种「整场规则变了」的大事件用。 */
+interface Banner {
+  text: string;
+  life: number;
+  max: number;
+}
+
 /**
  * 同屏飘字与特效环的上限。
  *
@@ -89,12 +96,19 @@ const ENEMY_LOOK: Record<string, { color: string; w: number; h: number }> = {
   ranged: { color: '#8fbf7a', w: 18, h: 56 },
   charger: { color: '#d7b45a', w: 26, h: 46 },
   elite: { color: '#b57ab5', w: 36, h: 66 },
+  // 阶段一深红，阶段二切换成更亮的橙红——颜色本身就是「打法变了」的信号，
+  // 不用去读血条百分比也能一眼分辨现在是哪个阶段
+  boss: { color: '#8f2f3a', w: 52, h: 92 },
 };
+
+/** 首领阶段二的强调色，替换 ENEMY_LOOK.boss 的默认色 */
+const BOSS_PHASE_TWO_COLOR = '#e2543a';
 
 export class Renderer {
   private ctx: CanvasRenderingContext2D;
   private floats: FloatText[] = [];
   private rings: Ring[] = [];
+  private banner: Banner | null = null;
   /** 命中时的屏幕震动剩余帧 */
   private shake = 0;
   /** 渲染帧计数，只用于纯表现层的呼吸动画，不参与任何逻辑 */
@@ -166,6 +180,21 @@ export class Renderer {
     this.trim();
   }
 
+  /**
+   * 首领阶段切换。给的表现比普通命中重得多——大震屏 + 大范围环 + 屏幕中央
+   * 停留近两秒的横幅。玩家必须明确意识到「打法变了」，不然阶段二突然冒出的
+   * 范围技和杂兵会被当成「凭空掉血」「哪来的杂兵」，这正是 M1 验收第 4 条
+   * 一直在防的事——只是这次防的对象从单次伤害扩大到了整个招式池切换。
+   */
+  onBossPhaseShift(list: { at: { x: number; y: number }; phase: 2 }[]): void {
+    for (const s of list) {
+      this.rings.push({ x: s.at.x, y: s.at.y, radius: 160, life: 34, max: 34, color: '#e2705c' });
+      this.shake = Math.max(this.shake, 13);
+      this.banner = { text: `首领进入阶段 ${s.phase}`, life: 100, max: 100 };
+    }
+    this.trim();
+  }
+
   private trim(): void {
     if (this.floats.length > MAX_FLOATS) {
       this.floats.splice(0, this.floats.length - MAX_FLOATS);
@@ -215,7 +244,29 @@ export class Renderer {
     ctx.restore();
 
     this.drawHud(run);
+    this.drawBanner();
     this.minimap.draw(ctx, run, canvas.width);
+  }
+
+  private drawBanner(): void {
+    if (!this.banner) return;
+    const { ctx, canvas } = this;
+    const b = this.banner;
+    const t = 1 - b.life / b.max;
+    // 淡入快、停留久、淡出慢——横幅是用来读的，不是用来一闪而过的
+    const alpha = t < 0.12 ? t / 0.12 : t > 0.8 ? (1 - t) / 0.2 : 1;
+    ctx.save();
+    ctx.globalAlpha = Math.max(0, alpha);
+    ctx.textAlign = 'center';
+    ctx.font = 'bold 28px system-ui, sans-serif';
+    ctx.fillStyle = '#e2705c';
+    ctx.strokeStyle = 'rgba(0,0,0,0.6)';
+    ctx.lineWidth = 5;
+    ctx.strokeText(b.text, canvas.width / 2, 150);
+    ctx.fillText(b.text, canvas.width / 2, 150);
+    ctx.restore();
+    b.life -= 1;
+    if (b.life <= 0) this.banner = null;
   }
 
   private drawGround(world: World, theme: StageTheme): void {
@@ -421,7 +472,13 @@ export class Renderer {
       this.drawEnemy(e, flashing);
     }
 
-    if (!e.dead && e.hp < e.maxHp) this.drawHpBar(e);
+    if (!e.dead && e.hp < e.maxHp) {
+      // 血条偏移按角色实际体型算，不能全员共用一个数：首领体型比杂兵
+      // 高一倍还多，固定偏移会把血条画进身体里而不是画在头顶。
+      const look = e.team === 'enemy' ? ENEMY_LOOK[e.kind ?? 'grunt'] : null;
+      const topOffset = look ? look.h + 14 : 66;
+      this.drawHpBar(e, topOffset);
+    }
     ctx.restore();
   }
 
@@ -470,12 +527,20 @@ export class Renderer {
     const y = e.pos.y;
 
     ctx.save();
-    ctx.fillStyle = flashing ? '#ffffff' : look.color;
+    const bossPhaseTwo = kind === 'boss' && e.ai.bossPhase === 2;
+    ctx.fillStyle = flashing ? '#ffffff' : bossPhaseTwo ? BOSS_PHASE_TWO_COLOR : look.color;
     ctx.strokeStyle = 'rgba(0,0,0,0.45)';
     ctx.lineWidth = 2;
 
     // 出招中的敌人整体上抬一点，让"它正在做事"在剪影上也读得出来
-    const lift = e.action === 'charge' || e.action === 'heavy' ? 3 : 0;
+    const lift =
+      e.action === 'charge' ||
+      e.action === 'heavy' ||
+      e.action === 'bossCharge' ||
+      e.action === 'bossSlam' ||
+      e.action === 'bossNova'
+        ? 4
+        : 0;
     const top = y - look.h - lift;
 
     if (kind === 'shield') {
@@ -522,6 +587,32 @@ export class Renderer {
       ctx.moveTo(x + look.w / 2, top);
       ctx.lineTo(x + look.w / 2 + 8, top - 16);
       ctx.lineTo(x + look.w / 4, top - 4);
+      ctx.closePath();
+      ctx.fill();
+    } else if (kind === 'boss') {
+      // 首领：比精英再大一圈，四支角比精英的两支更长更夸张，
+      // 顶上加一道尖冠——六关里体型最大、剪影最复杂的敌人，一眼就该认出来。
+      ctx.lineWidth = 3;
+      ctx.fillRect(x - look.w / 2, top, look.w, look.h);
+      ctx.strokeRect(x - look.w / 2, top, look.w, look.h);
+
+      const hornColor = flashing ? '#ffffff' : bossPhaseTwo ? '#ffd479' : '#3a1f24';
+      ctx.fillStyle = hornColor;
+      for (const side of [-1, 1] as const) {
+        ctx.beginPath();
+        ctx.moveTo(x + (side * look.w) / 2, top + 6);
+        ctx.lineTo(x + (side * look.w) / 2 + side * 14, top - 24);
+        ctx.lineTo(x + (side * look.w) / 3, top - 2);
+        ctx.closePath();
+        ctx.fill();
+      }
+      // 尖冠：阶段二会发亮，是「打法变了」在剪影上的第二重信号，
+      // 配合 drawBanner 的横幅和 onBossPhaseShift 的震屏一起读
+      ctx.fillStyle = bossPhaseTwo ? '#ffe9b0' : 'rgba(255,255,255,0.5)';
+      ctx.beginPath();
+      ctx.moveTo(x - 10, top);
+      ctx.lineTo(x, top - 18);
+      ctx.lineTo(x + 10, top);
       ctx.closePath();
       ctx.fill();
     } else {
@@ -575,11 +666,13 @@ export class Renderer {
     ctx.restore();
   }
 
-  private drawHpBar(e: Entity): void {
+  private drawHpBar(e: Entity, topOffset: number): void {
     const { ctx } = this;
-    const w = 34;
+    // 首领体型大一圈，血条也跟着宽一点——不然一条和杂兵等宽的细条
+    // 贴在一个大两倍的身体上方，比例上会显得很小气。
+    const w = e.kind === 'boss' ? 58 : 34;
     const x = e.pos.x - w / 2;
-    const y = e.pos.y - 66;
+    const y = e.pos.y - topOffset;
     ctx.fillStyle = PALETTE.hpBack;
     ctx.fillRect(x - 1, y - 1, w + 2, 5);
     ctx.fillStyle = e.team === 'player' ? PALETTE.hpPlayer : PALETTE.hpEnemy;
