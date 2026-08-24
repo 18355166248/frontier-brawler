@@ -7,10 +7,10 @@
  */
 import { TICK_RATE } from './core/actions';
 import type { InputState } from './core/world';
-import { World, createEntity } from './core/world';
+import { World, createEnemy, createEntity } from './core/world';
 import { Renderer } from './render/renderer';
 import { SpriteSheet } from './render/sprites';
-import type { ActionState } from './core/types';
+import type { ActionState, EnemyKind } from './core/types';
 
 const WIDTH = 960;
 const HEIGHT = 540;
@@ -19,16 +19,41 @@ const ARENA = { minX: 40, maxX: WIDTH - 40, minY: 300, maxY: HEIGHT - 40 };
 
 const SHEET_ROWS: ActionState[] = ['idle', 'move', 'slash', 'hit'];
 
+/**
+ * M1 的验证编成——**不是 M3 的波次系统**。
+ *
+ * 这里只需要保证五种敌人都会出现、且不会一开场就九个一起围上来。
+ * 场上少于 4 个时按顺序补，补完为止。真正的波次与关底首领是 M3 的事。
+ */
+const ENCOUNTER: EnemyKind[] = [
+  'grunt',
+  'grunt',
+  'shield',
+  'ranged',
+  'charger',
+  'grunt',
+  'shield',
+  'ranged',
+  'elite',
+];
+
+/** 场上同时存在的敌人数上限。低于这个数就补兵。 */
+const CONCURRENT = 4;
+
 const canvas = document.getElementById('game') as HTMLCanvasElement;
 canvas.width = WIDTH;
 canvas.height = HEIGHT;
 
+// 只加载玩家的动作表。敌人当前是几何占位件（见 renderer 里 drawEnemy 的说明）：
+// 五种敌人共用一张 enemy.png 根本分不出谁是谁，而「能不能一眼认出面前是什么」
+// 正是 M1 要验证的东西。五套动作表按规格产出后，在这里逐个注册回来即可。
 const sheets = new Map<string, SpriteSheet>();
 sheets.set('player', new SpriteSheet({ url: 'art/hero.png', columns: 4, rows: SHEET_ROWS }));
-sheets.set('enemy', new SpriteSheet({ url: 'art/enemy.png', columns: 4, rows: SHEET_ROWS }));
 
 const renderer = new Renderer(canvas, sheets);
 
+/** 待入场的敌人队列。必须先于 buildWorld() 初始化——它会读这个队列补兵。 */
+let pending: EnemyKind[] = [];
 let world = buildWorld();
 
 function buildWorld(): World {
@@ -40,17 +65,24 @@ function buildWorld(): World {
       speed: 2.9,
     }),
   );
-  for (let i = 0; i < 5; i += 1) {
-    w.spawn(
-      createEntity('enemy', { x: 560 + (i % 3) * 90, y: 340 + (i % 4) * 44 }, {
-        hp: 42,
-        maxHp: 42,
-        speed: 1.35,
-        radius: 15,
-      }),
-    );
-  }
+  pending = [...ENCOUNTER];
+  refill(w);
   return w;
+}
+
+/** 补兵。出生点撒在右侧，纵深错开，避免叠在一条线上。 */
+function refill(w: World): void {
+  let alive = w.entities.filter((e) => e.team === 'enemy' && !e.dead).length;
+  let i = 0;
+  while (alive < CONCURRENT && pending.length) {
+    const kind = pending.shift();
+    if (!kind) break;
+    const x = 600 + (i % 3) * 96;
+    const y = ARENA.minY + 40 + ((i + alive) % 4) * 46;
+    w.spawn(createEnemy(kind, { x, y }));
+    alive += 1;
+    i += 1;
+  }
 }
 
 const keys = new Set<string>();
@@ -67,6 +99,8 @@ window.addEventListener('keyup', (e) => keys.delete(e.code));
 /** 攻击和冲刺取「按下那一瞬间」，不是持续按住——否则按住不放会变成无限连招。 */
 let attackLatch = false;
 let dashLatch = false;
+let skillLatch = false;
+let executeLatch = false;
 
 /** 调试注入的输入，和键盘取并集。开发期自动化验证用。 */
 let injected: Partial<InputState> = {};
@@ -79,17 +113,25 @@ function readInput(): InputState {
 
   const attackHeld = keys.has('KeyJ') || keys.has('Space') || !!injected.attack;
   const dashHeld = keys.has('KeyK') || keys.has('ShiftLeft') || !!injected.dash;
+  const skillHeld = keys.has('KeyU') || keys.has('KeyE') || !!injected.skill;
+  const executeHeld = keys.has('KeyI') || keys.has('KeyF') || !!injected.execute;
 
   const attack = attackHeld && !attackLatch;
   const dash = dashHeld && !dashLatch;
+  const skill = skillHeld && !skillLatch;
+  const execute = executeHeld && !executeLatch;
   attackLatch = attackHeld;
   dashLatch = dashHeld;
+  skillLatch = skillHeld;
+  executeLatch = executeHeld;
 
   return {
     moveX: (right ? 1 : 0) - (left ? 1 : 0) + (injected.moveX ?? 0),
     moveY: (down ? 1 : 0) - (up ? 1 : 0) + (injected.moveY ?? 0),
     attack,
     dash,
+    skill,
+    execute,
   };
 }
 
@@ -100,16 +142,22 @@ let rafId = 0;
 let stopped = false;
 let paused = false;
 
+/** 推进一个逻辑帧并把事件转给表现层。自动化验证也复用它，保证跑的是同一条路径。 */
+function stepOnce(): void {
+  const events = world.step(readInput());
+  if (events.damage.length) renderer.onEvents(events.damage);
+  if (events.executes.length) renderer.onExecutes(events.executes);
+  if (events.skillCasts.length) renderer.onSkillCasts(events.skillCasts);
+  refill(world);
+}
+
 function frame(now: number): void {
   if (stopped) return;
   accumulator += Math.min(250, now - last);
   last = now;
 
   while (accumulator >= STEP_MS) {
-    if (!paused) {
-      const events = world.step(readInput());
-      if (events.damage.length) renderer.onEvents(events.damage);
-    }
+    if (!paused) stepOnce();
     accumulator -= STEP_MS;
   }
 
@@ -156,6 +204,21 @@ if (import.meta.env.DEV) {
       setTimeout(() => {
         injected = {};
       }, (frames * 1000) / TICK_RATE);
+    },
+    /** 本局统计摘要，M1 验收标准直接读这个。 */
+    stats(): unknown {
+      return world.stats.summary();
+    },
+    /** 无预警伤害明细，验收第 4 条要逐条 review。 */
+    unwarned(): unknown {
+      return world.stats.unwarned;
+    },
+    /**
+     * 脱离渲染循环快速推进 n 帧，给自动化验证用。
+     * 跑的是和真机同一个 stepOnce，所以统计结果可信。
+     */
+    fastForward(frames: number): void {
+      for (let i = 0; i < frames && !world.stats.died; i += 1) stepOnce();
     },
   };
 }

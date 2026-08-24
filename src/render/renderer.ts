@@ -5,8 +5,9 @@
  * 这是 xianxia-roguelike 的教训反过来用：它的逻辑层零引擎依赖，
  * 所以能搬；耦合全压在编排层。这里从一开始就把那条线画清楚。
  */
-import type { DamageEvent, Entity } from '../core/types';
-import { ACTIONS } from '../core/actions';
+import type { DamageEvent, Entity, Projectile, Telegraph } from '../core/types';
+import { ACTIONS, EXECUTE_THRESHOLD, SKILL_COST } from '../core/actions';
+import { ENEMY_PROFILES } from '../core/enemies';
 import type { World } from '../core/world';
 import type { SpriteSheet } from './sprites';
 
@@ -16,7 +17,31 @@ interface FloatText {
   text: string;
   life: number;
   crit: boolean;
+  color: string;
 }
+
+interface Ring {
+  x: number;
+  y: number;
+  radius: number;
+  life: number;
+  max: number;
+  color: string;
+}
+
+/**
+ * 同屏飘字与特效环的上限。
+ *
+ * 正常游玩时每帧都会 draw 一次，life 递减，数量自然收敛。
+ * 但逻辑推进和渲染是两条线：调试的 fastForward 一口气推几千帧却不画一帧，
+ * 后台标签页里 rAF 停摆时也一样——事件照进，队列只增不减。
+ * 封个顶，超出就丢最老的，免得恢复渲染那一瞬间糊满整个屏幕。
+ */
+/** 地面元素的纵深压扁系数。影子、落点圈、预警共用同一个值才像在同一个平面上。 */
+const GROUND_SQUASH = 0.42;
+
+const MAX_FLOATS = 48;
+const MAX_RINGS = 12;
 
 const PALETTE = {
   skyTop: '#1b2733',
@@ -30,13 +55,36 @@ const PALETTE = {
   hpBack: 'rgba(0,0,0,0.55)',
   hpPlayer: '#63d0a8',
   hpEnemy: '#e2705c',
+  energy: '#6fb6f0',
+  energyFull: '#ffd479',
+  telegraph: '#ff7043',
+};
+
+/**
+ * 五种敌人的占位配色与体型。
+ *
+ * **这不是美术方案**——正式美术按 ROADMAP 末尾的规格另行产出。
+ * 这里只解决一件事：在动作表就位之前，让五种敌人**靠轮廓就能区分**。
+ * 那条规格要求「96px 下靠剪影认出是盾兵还是远程，不能靠颜色区分」，
+ * 所以占位件也按这个标准做：体型、宽高比、头部标记各不相同，
+ * 去掉颜色也还认得出来。
+ */
+const ENEMY_LOOK: Record<string, { color: string; w: number; h: number }> = {
+  grunt: { color: '#d99a7a', w: 24, h: 52 },
+  shield: { color: '#7f9bb5', w: 32, h: 50 },
+  ranged: { color: '#8fbf7a', w: 18, h: 56 },
+  charger: { color: '#d7b45a', w: 26, h: 46 },
+  elite: { color: '#b57ab5', w: 36, h: 66 },
 };
 
 export class Renderer {
   private ctx: CanvasRenderingContext2D;
   private floats: FloatText[] = [];
+  private rings: Ring[] = [];
   /** 命中时的屏幕震动剩余帧 */
   private shake = 0;
+  /** 渲染帧计数，只用于纯表现层的呼吸动画，不参与任何逻辑 */
+  private clock = 0;
 
   constructor(
     private canvas: HTMLCanvasElement,
@@ -50,20 +98,71 @@ export class Renderer {
 
   onEvents(damage: DamageEvent[]): void {
     for (const d of damage) {
+      // 飘字颜色承担信息量：处决、背刺、被格挡各自不同，
+      // 玩家不用看数字就知道这一下打对了没有。
+      let color = '#ffffff';
+      let text = String(d.damage);
+      if (d.execute) {
+        color = '#ff9f68';
+        text = '处决';
+      } else if (d.backstab) {
+        color = '#ffd479';
+        text = `${d.damage} 背刺`;
+      } else if (d.guarded) {
+        color = '#9db4c8';
+        text = `${d.damage} 格挡`;
+      }
       this.floats.push({
         x: d.at.x,
         y: d.at.y,
-        text: String(d.damage),
+        text,
         life: 42,
-        crit: d.killed,
+        crit: d.killed || !!d.execute,
+        color,
       });
       // 击杀震得更狠一点，把"斩杀"和"打中"区分开
       this.shake = Math.max(this.shake, d.killed ? 9 : 5);
+    }
+    if (this.floats.length > MAX_FLOATS) {
+      this.floats.splice(0, this.floats.length - MAX_FLOATS);
+    }
+  }
+
+  onExecutes(list: { at: { x: number; y: number }; healed: number }[]): void {
+    for (const e of list) {
+      this.rings.push({ x: e.at.x, y: e.at.y, radius: 70, life: 24, max: 24, color: '#ff9f68' });
+      this.floats.push({
+        x: e.at.x,
+        y: e.at.y - 18,
+        text: `+${e.healed}`,
+        life: 40,
+        crit: false,
+        color: '#63d0a8',
+      });
+    }
+    this.trim();
+  }
+
+  onSkillCasts(list: { at: { x: number; y: number }; radius: number }[]): void {
+    for (const s of list) {
+      this.rings.push({ x: s.at.x, y: s.at.y, radius: s.radius, life: 20, max: 20, color: '#6fb6f0' });
+      this.shake = Math.max(this.shake, 7);
+    }
+    this.trim();
+  }
+
+  private trim(): void {
+    if (this.floats.length > MAX_FLOATS) {
+      this.floats.splice(0, this.floats.length - MAX_FLOATS);
+    }
+    if (this.rings.length > MAX_RINGS) {
+      this.rings.splice(0, this.rings.length - MAX_RINGS);
     }
   }
 
   draw(world: World): void {
     const { ctx, canvas } = this;
+    this.clock += 1;
     ctx.save();
 
     if (this.shake > 0) {
@@ -74,9 +173,19 @@ export class Renderer {
 
     this.drawGround(world);
 
+    // 预警画在地面上、角色之下：它是"地上的标记"而不是浮在人前面的 UI，
+    // 压在角色下面才不会挡住敌人自己的起手动作。
+    for (const e of world.entities) {
+      if (!e.dead && e.telegraph) this.drawTelegraph(e, e.telegraph);
+    }
+
+    this.drawRings();
+
     // 按纵深排序：y 大的更远，先画，才有正确的前后遮挡
     const drawable = [...world.entities].sort((a, b) => a.pos.y - b.pos.y);
     for (const e of drawable) this.drawEntity(e);
+
+    for (const p of world.projectiles) this.drawProjectile(p);
 
     this.drawFloats();
     ctx.restore();
@@ -112,6 +221,93 @@ export class Renderer {
     }
   }
 
+  /**
+   * 预警绘制。三种形状对应三类威胁，共用一条视觉语言：
+   * **越接近生效，颜色越实、越不透明**。玩家读的是"充满了没有"，
+   * 而不是去记每种敌人的前摇帧数。
+   */
+  private drawTelegraph(e: Entity, tel: Telegraph): void {
+    const { ctx } = this;
+    const progress = Math.min(1, tel.frame / Math.max(1, tel.frames));
+    // 起手瞬间就要看得见，所以基础不透明度不从 0 开始
+    const alpha = 0.18 + progress * 0.42;
+
+    ctx.save();
+    ctx.globalAlpha = alpha;
+    ctx.strokeStyle = PALETTE.telegraph;
+    ctx.fillStyle = PALETTE.telegraph;
+    ctx.lineWidth = 2;
+
+    if (tel.shape.kind === 'line') {
+      const { length, width } = tel.shape;
+      // 预警是画在地上的，厚度要跟着纵深一起压扁。
+      // 不压的话它就是一根悬在半空的横梁，和影子、落点圈完全不在一个平面上。
+      const h = width * GROUND_SQUASH;
+      ctx.save();
+      ctx.translate(e.pos.x, e.pos.y);
+      ctx.scale(e.facing, 1);
+      // 外框始终可见，内部填充随充能推进——填满即将命中
+      ctx.globalAlpha = alpha * 0.3;
+      ctx.fillRect(0, -h / 2, length, h);
+      ctx.globalAlpha = alpha;
+      ctx.strokeRect(0, -h / 2, length, h);
+      ctx.globalAlpha = alpha * 0.8;
+      ctx.fillRect(0, -h / 2, length * progress, h);
+      // 充能前沿加一道亮边，眼睛跟着这条边走就知道还剩多久
+      ctx.globalAlpha = Math.min(1, alpha * 1.6);
+      ctx.fillRect(length * progress - 2, -h / 2 - 2, 3, h + 4);
+      ctx.restore();
+    } else if (tel.shape.kind === 'circle') {
+      const r = tel.shape.radius;
+      ctx.beginPath();
+      ctx.ellipse(e.pos.x, e.pos.y, r, r * 0.42, 0, 0, Math.PI * 2);
+      ctx.globalAlpha = alpha * 0.3;
+      ctx.fill();
+      ctx.globalAlpha = alpha;
+      ctx.stroke();
+      // 内圈随进度收缩到落点，给出"还有多久"的读数
+      ctx.beginPath();
+      ctx.ellipse(e.pos.x, e.pos.y, r * (1 - progress), r * 0.42 * (1 - progress), 0, 0, Math.PI * 2);
+      ctx.stroke();
+    } else {
+      const { radius, halfAngle } = tel.shape;
+      const base = e.facing > 0 ? 0 : Math.PI;
+      ctx.save();
+      ctx.translate(e.pos.x, e.pos.y);
+      ctx.scale(1, GROUND_SQUASH);
+      // 扇形随充能张开到最终范围，起手那一下就有形可看
+      const grow = 0.45 + progress * 0.55;
+      ctx.beginPath();
+      ctx.moveTo(0, 0);
+      ctx.arc(0, 0, radius * grow, base - halfAngle, base + halfAngle);
+      ctx.closePath();
+      ctx.globalAlpha = alpha * 0.42;
+      ctx.fill();
+      ctx.globalAlpha = Math.min(1, alpha * 1.5);
+      ctx.lineWidth = 3;
+      ctx.stroke();
+      ctx.restore();
+    }
+    ctx.restore();
+  }
+
+  private drawRings(): void {
+    const { ctx } = this;
+    for (const r of this.rings) {
+      const t = 1 - r.life / r.max;
+      ctx.save();
+      ctx.globalAlpha = Math.max(0, 1 - t);
+      ctx.strokeStyle = r.color;
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.ellipse(r.x, r.y, r.radius * (0.4 + t * 0.9), r.radius * 0.42 * (0.4 + t * 0.9), 0, 0, Math.PI * 2);
+      ctx.stroke();
+      ctx.restore();
+      r.life -= 1;
+    }
+    this.rings = this.rings.filter((r) => r.life > 0);
+  }
+
   private drawEntity(e: Entity): void {
     const { ctx } = this;
     const alpha = e.dead ? Math.max(0, 1 - e.deadFrames / 30) : 1;
@@ -126,15 +322,32 @@ export class Renderer {
     ctx.ellipse(e.pos.x, e.pos.y, e.radius * 0.9, e.radius * 0.36, 0, 0, Math.PI * 2);
     ctx.fill();
 
-    const sheet = this.sheets.get(e.team);
+    // 受击闪白：最直接的"打到了"反馈
+    const flashing = e.invulnFrames > 0 && e.invulnFrames % 4 >= 2;
+
+    if (e.team === 'player') {
+      this.drawPlayer(e, flashing);
+    } else {
+      this.drawEnemy(e, flashing);
+    }
+
+    if (!e.dead && e.hp < e.maxHp) this.drawHpBar(e);
+    ctx.restore();
+  }
+
+  private drawPlayer(e: Entity, flashing: boolean): void {
+    const { ctx } = this;
+    const sheet = this.sheets.get('player');
     const def = ACTIONS[e.action];
     const progress = def.loop
       ? (e.actionFrame % def.frames) / def.frames
       : e.actionFrame / def.frames;
     const rect = sheet?.frameRect(e.action, progress) ?? null;
 
-    // 受击闪白：最直接的"打到了"反馈
-    const flashing = e.invulnFrames > 0 && e.invulnFrames % 4 >= 2;
+    // 无敌帧（冲刺、处决）画成半透明，让"这下打不到我"这件事看得见
+    const invulnerable =
+      (def.invuln && e.actionFrame >= def.invuln.from && e.actionFrame < def.invuln.to) === true;
+    if (invulnerable) ctx.globalAlpha *= 0.55;
 
     if (rect && sheet) {
       const scale = 1.05;
@@ -148,11 +361,127 @@ export class Renderer {
       ctx.restore();
     } else {
       // 素材没就位时的占位块，保证玩法始终可测
-      ctx.fillStyle = flashing ? '#ffffff' : e.team === 'player' ? PALETTE.playerTint : PALETTE.enemyTint;
+      ctx.fillStyle = flashing ? '#ffffff' : PALETTE.playerTint;
       ctx.fillRect(e.pos.x - 12, e.pos.y - 52, 24, 52);
     }
+  }
 
-    if (!e.dead && e.hp < e.maxHp) this.drawHpBar(e);
+  /**
+   * 敌人占位绘制。**刻意不走 sprite sheet**：
+   * 五种敌人共用一张 enemy.png 的话根本分不出谁是谁，
+   * 而"能不能一眼认出面前是盾兵还是远程"恰恰是 M1 要验证的东西。
+   * 等五套动作表按规格产出后，这里换回 sheet 渲染即可，逻辑层不动。
+   */
+  private drawEnemy(e: Entity, flashing: boolean): void {
+    const { ctx } = this;
+    const kind = e.kind ?? 'grunt';
+    const look = ENEMY_LOOK[kind] ?? ENEMY_LOOK.grunt;
+    const x = e.pos.x;
+    const y = e.pos.y;
+
+    ctx.save();
+    ctx.fillStyle = flashing ? '#ffffff' : look.color;
+    ctx.strokeStyle = 'rgba(0,0,0,0.45)';
+    ctx.lineWidth = 2;
+
+    // 出招中的敌人整体上抬一点，让"它正在做事"在剪影上也读得出来
+    const lift = e.action === 'charge' || e.action === 'heavy' ? 3 : 0;
+    const top = y - look.h - lift;
+
+    if (kind === 'shield') {
+      // 盾兵：主体 + 正面一块厚盾。盾在哪边一眼可见，玩家才知道要绕到哪一边。
+      ctx.fillRect(x - look.w / 2, top, look.w, look.h);
+      ctx.strokeRect(x - look.w / 2, top, look.w, look.h);
+      ctx.fillStyle = flashing ? '#ffffff' : '#cdd9e3';
+      const shieldX = e.facing > 0 ? x + look.w / 2 - 2 : x - look.w / 2 - 8;
+      ctx.fillRect(shieldX, top + 8, 10, look.h - 16);
+      ctx.strokeRect(shieldX, top + 8, 10, look.h - 16);
+    } else if (kind === 'ranged') {
+      // 远程：瘦高 + 尖顶，轮廓最细，远看就知道是站桩输出的那个
+      ctx.fillRect(x - look.w / 2, top, look.w, look.h);
+      ctx.strokeRect(x - look.w / 2, top, look.w, look.h);
+      ctx.beginPath();
+      ctx.moveTo(x - look.w / 2, top);
+      ctx.lineTo(x, top - 14);
+      ctx.lineTo(x + look.w / 2, top);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+    } else if (kind === 'charger') {
+      // 冲锋：前倾梯形，重心压在前脚，静止时也像随时要冲出去
+      const lean = 7 * e.facing;
+      ctx.beginPath();
+      ctx.moveTo(x - look.w / 2 + lean, top);
+      ctx.lineTo(x + look.w / 2 + lean, top);
+      ctx.lineTo(x + look.w / 2, y);
+      ctx.lineTo(x - look.w / 2, y);
+      ctx.closePath();
+      ctx.fill();
+      ctx.stroke();
+    } else if (kind === 'elite') {
+      // 精英：体型明显大一圈 + 双角，是场上最容易被一眼锁定的目标
+      ctx.fillRect(x - look.w / 2, top, look.w, look.h);
+      ctx.strokeRect(x - look.w / 2, top, look.w, look.h);
+      ctx.beginPath();
+      ctx.moveTo(x - look.w / 2, top);
+      ctx.lineTo(x - look.w / 2 - 8, top - 16);
+      ctx.lineTo(x - look.w / 4, top - 4);
+      ctx.closePath();
+      ctx.fill();
+      ctx.beginPath();
+      ctx.moveTo(x + look.w / 2, top);
+      ctx.lineTo(x + look.w / 2 + 8, top - 16);
+      ctx.lineTo(x + look.w / 4, top - 4);
+      ctx.closePath();
+      ctx.fill();
+    } else {
+      ctx.fillRect(x - look.w / 2, top, look.w, look.h);
+      ctx.strokeRect(x - look.w / 2, top, look.w, look.h);
+    }
+
+    // 朝向指示：一道压在身前的短横。盾兵的正反面全靠它读。
+    ctx.fillStyle = 'rgba(0,0,0,0.5)';
+    ctx.fillRect(x + (e.facing > 0 ? look.w / 2 - 6 : -look.w / 2 + 2), top + 10, 4, 4);
+    ctx.restore();
+
+    // 可处决提示。不标出来玩家不会知道这个敌人已经能秒了，
+    // 处决就永远用不满——验收第 3 条要的就是这个行为真的发生。
+    if (!e.dead && e.hp / e.maxHp < EXECUTE_THRESHOLD) {
+      ctx.save();
+      // 呼吸感只在 0.72~1 之间浮动。之前谷底压到 0.1，
+      // 提示会周期性地整个消失——玩家瞥一眼没看见，就当它不能处决了。
+      const pulse = 0.86 + 0.14 * Math.sin(this.clock * 0.13);
+      ctx.globalAlpha = pulse;
+      ctx.fillStyle = '#ff9f68';
+      ctx.font = 'bold 13px system-ui, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.strokeStyle = 'rgba(0,0,0,0.7)';
+      ctx.lineWidth = 3;
+      ctx.strokeText('处决', x, top - 22);
+      ctx.fillText('处决', x, top - 22);
+      ctx.restore();
+    }
+  }
+
+  private drawProjectile(p: Projectile): void {
+    const { ctx } = this;
+    ctx.save();
+    // 拖尾指出来向，玩家能读出它从哪儿来、往哪儿去
+    const tailX = p.pos.x - p.velocity.x * 2.2;
+    const tailY = p.pos.y - p.velocity.y * 2.2;
+    const grad = ctx.createLinearGradient(tailX, tailY, p.pos.x, p.pos.y);
+    grad.addColorStop(0, 'rgba(255,180,120,0)');
+    grad.addColorStop(1, '#ffb478');
+    ctx.strokeStyle = grad;
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(tailX, tailY);
+    ctx.lineTo(p.pos.x, p.pos.y);
+    ctx.stroke();
+    ctx.fillStyle = '#ffd7a8';
+    ctx.beginPath();
+    ctx.arc(p.pos.x, p.pos.y, p.radius * 0.6, 0, Math.PI * 2);
+    ctx.fill();
     ctx.restore();
   }
 
@@ -174,7 +503,7 @@ export class Renderer {
       const t = 1 - f.life / 42;
       ctx.globalAlpha = Math.max(0, 1 - t * t);
       ctx.font = f.crit ? 'bold 20px system-ui, sans-serif' : 'bold 15px system-ui, sans-serif';
-      ctx.fillStyle = f.crit ? '#ffd479' : '#ffffff';
+      ctx.fillStyle = f.color;
       ctx.fillText(f.text, f.x, f.y - 60 - t * 26);
       f.life -= 1;
     }
@@ -189,24 +518,45 @@ export class Renderer {
     ctx.textAlign = 'left';
     ctx.fillStyle = 'rgba(255,255,255,0.75)';
 
-    const alive = world.entities.filter((e) => e.team === 'enemy' && !e.dead).length;
-    ctx.fillText(`敌人 ${alive}`, 14, 24);
+    // 按类型列出剩余敌人，调试时一眼看出场上还剩什么
+    const alive = world.entities.filter((e) => e.team === 'enemy' && !e.dead);
+    const byKind = new Map<string, number>();
+    for (const e of alive) {
+      const k = e.kind ?? 'grunt';
+      byKind.set(k, (byKind.get(k) ?? 0) + 1);
+    }
+    const parts = [...byKind.entries()].map(
+      ([k, n]) => `${ENEMY_PROFILES[k as keyof typeof ENEMY_PROFILES]?.label ?? k}×${n}`,
+    );
+    ctx.fillText(`敌人 ${alive.length}${parts.length ? ' · ' + parts.join(' ') : ''}`, 14, 24);
 
-    if (player) {
-      const w = 168;
-      ctx.fillStyle = PALETTE.hpBack;
-      ctx.fillRect(13, 33, w + 2, 12);
-      ctx.fillStyle = PALETTE.hpPlayer;
-      ctx.fillRect(14, 34, w * Math.max(0, player.hp / player.maxHp), 10);
-      ctx.fillStyle = 'rgba(255,255,255,0.85)';
-      ctx.fillText(`${Math.ceil(player.hp)} / ${player.maxHp}`, 14 + w + 10, 44);
-      ctx.fillStyle = 'rgba(255,255,255,0.5)';
-      ctx.fillText(`动作 ${player.action}`, 14, 62);
-    } else {
+    if (!player) {
       ctx.fillStyle = '#e2705c';
       ctx.font = 'bold 22px system-ui, sans-serif';
       ctx.textAlign = 'center';
       ctx.fillText('倒下了 · 按 R 重来', this.canvas.width / 2, this.canvas.height / 2);
+      return;
     }
+
+    const w = 168;
+    ctx.fillStyle = PALETTE.hpBack;
+    ctx.fillRect(13, 33, w + 2, 12);
+    ctx.fillStyle = PALETTE.hpPlayer;
+    ctx.fillRect(14, 34, w * Math.max(0, player.hp / player.maxHp), 10);
+    ctx.fillStyle = 'rgba(255,255,255,0.85)';
+    ctx.fillText(`${Math.ceil(player.hp)} / ${player.maxHp}`, 14 + w + 10, 44);
+
+    // 能量条：攒满会变色并提示按键，否则玩家不知道技能已经可以放了
+    const ready = player.energy >= SKILL_COST;
+    ctx.fillStyle = PALETTE.hpBack;
+    ctx.fillRect(13, 49, w + 2, 9);
+    ctx.fillStyle = ready ? PALETTE.energyFull : PALETTE.energy;
+    ctx.fillRect(14, 50, w * Math.max(0, player.energy / player.maxEnergy), 7);
+    ctx.fillStyle = ready ? PALETTE.energyFull : 'rgba(255,255,255,0.55)';
+    ctx.fillText(ready ? '技能就绪 · U' : `${Math.floor(player.energy)} / ${SKILL_COST}`, 14 + w + 10, 58);
+
+    // 冲刺冷却，唯一的防御手段必须让玩家随时知道它在不在
+    ctx.fillStyle = player.dashCooldown > 0 ? 'rgba(255,255,255,0.35)' : '#8fd4c8';
+    ctx.fillText(player.dashCooldown > 0 ? `冲刺 ${player.dashCooldown}` : '冲刺就绪', 14, 76);
   }
 }

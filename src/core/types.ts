@@ -21,7 +21,21 @@ export type ActionState =
   | 'slash'
   | 'slash2'
   | 'dash'
-  | 'hit';
+  | 'hit'
+  /** 玩家范围技，吃能量，释放期间带超级护甲 */
+  | 'skill'
+  /** 处决：对残血目标的专属终结动作 */
+  | 'execute'
+  /** 远程的瞄准段，纯预警不带判定 */
+  | 'aim'
+  /** 远程的放箭帧 */
+  | 'shoot'
+  /** 冲锋的蓄力段，纯预警不带判定 */
+  | 'charge'
+  /** 冲锋的突进段，带判定 */
+  | 'rush'
+  /** 精英重击，前摇极长换高伤害 */
+  | 'heavy';
 
 export interface Hurtbox {
   /** 相对实体中心的偏移 */
@@ -45,6 +59,29 @@ export interface Hitbox {
   knockback: number;
   /** 命中后的硬直帧数，攻防双方都会被冻结 */
   hitStop: number;
+  /** 无视朝向的环形判定，用于范围技——不跟着 facing 翻转 */
+  radial?: boolean;
+}
+
+/**
+ * 预警形状。**每一个能打死玩家的招式都必须带预警**，这是 M1 验收第 4 条：
+ * 没有预警的伤害玩家会认为是游戏耍赖，而不是自己菜。
+ * 形状交给渲染层画，逻辑层只负责声明「这一招从第几帧起是看得见的」。
+ */
+export type TelegraphShape =
+  /** 直线：远程射击、冲锋突进 */
+  | { kind: 'line'; length: number; width: number }
+  /** 圆：精英重击的落点范围 */
+  | { kind: 'circle'; radius: number }
+  /** 扇形：贴脸挥砍的覆盖区 */
+  | { kind: 'arc'; radius: number; halfAngle: number };
+
+export interface Telegraph {
+  shape: TelegraphShape;
+  /** 已经预警了多少帧 */
+  frame: number;
+  /** 总预警帧数，渲染层用它算充能进度 */
+  frames: number;
 }
 
 export interface ActionDef {
@@ -60,13 +97,41 @@ export interface ActionDef {
   motion?: number[];
   /** 可以取消进入的后续动作（连招） */
   cancelInto?: ActionState[];
+  /** 无敌帧区间（相对动作起始），左闭右开。冲刺和处决靠它换生存空间。 */
+  invuln?: { from: number; to: number };
+  /**
+   * 超级护甲：受击不进入 hit 状态、不吃硬直，但照常掉血。
+   * 精英和玩家技能靠这个「不被打断」，是拉开二者与杂兵手感差距的关键。
+   */
+  superArmor?: boolean;
+  /** 该动作自带的预警形状，从第 0 帧亮到判定生效为止 */
+  telegraph?: { shape: TelegraphShape; until: number };
 }
 
 export type Team = 'player' | 'enemy';
 
+/**
+ * 一帧的操作意图。玩家来自键盘，敌人来自 AI——
+ * 走同一个结构，是为了让「出手时机」这件事只在 world 里判定一次。
+ */
+export interface InputIntent {
+  moveX: number;
+  moveY: number;
+  attack: boolean;
+  dash: boolean;
+}
+
+/**
+ * 敌人类型。差异必须体现在**要求玩家做不同的事**，光改数值不算差异。
+ * 对应 GAME_DESIGN.md 3.5 的五种设计。
+ */
+export type EnemyKind = 'grunt' | 'shield' | 'ranged' | 'charger' | 'elite';
+
 export interface Entity {
   id: number;
   team: Team;
+  /** 仅敌人有；玩家为 undefined */
+  kind?: EnemyKind;
   pos: Vec2;
   velocity: Vec2;
   facing: Facing;
@@ -91,9 +156,65 @@ export interface Entity {
   /** 出手后的冷却，防止交还令牌后立刻又抢回去 */
   attackCooldown: number;
 
+  /** 技能能量，靠命中积累 */
+  energy: number;
+  maxEnergy: number;
+  /** 冲刺冷却剩余帧 */
+  dashCooldown: number;
+  /**
+   * 冲刺方向，起手那一帧按输入锁定。
+   *
+   * 冲刺如果永远沿着朝向走，它就只能是一个横向位移，
+   * 于是「用冲刺躲开直线攻击」必然把玩家推向左右两侧——
+   * 可远程和冲锋的攻击本来就是水平直线，横着躲是躲不开的。
+   * 锁定方向后，按住上下冲刺就是纵深闪避，
+   * GAME_DESIGN 3.5 说的「用纵深躲，或冲刺切入」这才成立。
+   */
+  dashDir: Vec2;
+
+  /**
+   * 正面减伤系数（盾兵用）。0.25 表示正面只吃 25% 伤害，
+   * 背后不减——这就是「用纵深绕后」这个玩法要求的数据来源。
+   */
+  frontalGuard?: number;
+  /** 背后受击的伤害倍率，配合 frontalGuard 拉开正反面的差距 */
+  backstabMultiplier?: number;
+
+  /** 当前预警，渲染层读它画出可见提示；无预警时为 null */
+  telegraph: Telegraph | null;
+
+  /**
+   * AI 的内部计时。放在实体上而不是 AI 模块的私有表里，
+   * 是为了让「重开一局 = 丢掉整个 World」这件事继续成立，不用额外清理。
+   */
+  ai: {
+    /**
+     * 转身冷却。盾兵靠它慢半拍地转向——这是「绕后」能不能成立的关键：
+     * 转身即时的话玩家永远绕不到背面，正面减伤就变成了纯粹的血量膨胀。
+     */
+    turnCooldown: number;
+    /** 重新选位的剩余帧，用于远程和冲锋拉开距离后的稳定站位 */
+    repositionFrames: number;
+  };
+
   dead: boolean;
   /** 死亡后的淡出计时，给表现层用 */
   deadFrames: number;
+}
+
+/** 远程敌人的弹丸。独立于实体列表，判定和碰撞都比实体简单得多。 */
+export interface Projectile {
+  id: number;
+  team: Team;
+  owner: number;
+  pos: Vec2;
+  velocity: Vec2;
+  radius: number;
+  damage: number;
+  knockback: number;
+  /** 剩余存活帧，防止飞出场外后一直留在内存里 */
+  life: number;
+  dead: boolean;
 }
 
 export interface DamageEvent {
@@ -103,10 +224,25 @@ export interface DamageEvent {
   /** 世界坐标，表现层在这里放特效和飘字 */
   at: Vec2;
   killed: boolean;
+  /** 打在背后（盾兵弱点），表现层用它区分音效和飘字颜色 */
+  backstab?: boolean;
+  /** 被正面格挡削弱，表现层画「铛」的反馈 */
+  guarded?: boolean;
+  /** 这一下是处决 */
+  execute?: boolean;
+  /**
+   * 攻击方在出手时是否给过预警。M1 验收第 4 条靠它统计：
+   * 任何造成玩家死亡的伤害都必须 telegraphed=true。
+   */
+  telegraphed?: boolean;
 }
 
 export interface WorldEvents {
   damage: DamageEvent[];
   /** 本帧需要冻结的帧数，取最大值 */
   hitStop: number;
+  /** 本帧发生的处决，表现层放特写 */
+  executes: { at: Vec2; healed: number }[];
+  /** 本帧释放的技能，表现层画冲击波 */
+  skillCasts: { at: Vec2; radius: number }[];
 }

@@ -5,11 +5,27 @@
  * 挥砍前摇慢、挥出只占 2-3 帧所以显得快、命中后定格几帧让力道落地。
  * 这里的数值和 ai-asset-pipeline 动作库里的 slash/slash2 是同一套节奏，
  * 美术帧和逻辑帧对齐，判定生效的那一帧正好是画面上剑挥到位的那一帧。
+ *
+ * M1 新增的招式沿用同一套原则，另加一条：
+ * **敌人的高伤害招式，前摇越长伤害越高**。前摇就是预警，
+ * 玩家付出「读招」的注意力，换来躲开的机会——这是「不觉得不公平」的实现方式。
  */
 import type { ActionDef, ActionState } from './types';
 
 /** 逻辑帧率。固定步长，不跟随显示帧率，保证手感在任何设备一致。 */
 export const TICK_RATE = 60;
+
+/** 技能消耗的能量。命中积累，攒够才能放，逼玩家先打进去。 */
+export const SKILL_COST = 50;
+
+/** 低于这个血量比例的敌人可被处决。GAME_DESIGN 3.4 定的 25%。 */
+export const EXECUTE_THRESHOLD = 0.25;
+
+/** 处决的有效距离，比普攻 reach 略大，否则会频繁扑空导致玩家放弃用 */
+export const EXECUTE_RANGE = 62;
+
+/** 冲刺冷却帧数。太短会退化成无脑冲，太长会让唯一的防御手段不可靠。 */
+export const DASH_COOLDOWN = 45;
 
 export const ACTIONS: Record<ActionState, ActionDef> = {
   idle: {
@@ -50,6 +66,11 @@ export const ACTIONS: Record<ActionState, ActionDef> = {
     ],
     // 命中窗口之后才允许接第二段，太早接会让第一段看起来没打完
     cancelInto: ['slash2'],
+    // 贴脸普攻的伤害虽然低，预警照样要给。
+    // M1 验收第 4 条要的是「所有致死伤害都有可见预警」——
+    // 被杂兵磨掉最后 12 点血也是死，不能因为单下伤害低就免了预告。
+    // 前摇本来就是 8 帧的提示，这里只是把它画出来。渲染层只对敌人显示。
+    telegraph: { shape: { kind: 'arc', radius: 62, halfAngle: 0.72 }, until: 8 },
   },
 
   /** 第二段：横扫。范围更大、击退更强，作为连招收尾。 */
@@ -80,6 +101,9 @@ export const ACTIONS: Record<ActionState, ActionDef> = {
     cancelable: false,
     motion: [0, 1.5, 4.5, 7.0, 8.0, 7.5, 6.0, 4.5, 3.0, 2.0, 1.2, 0.6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     hitboxes: [],
+    // 无敌帧只覆盖位移段，收招段照常挨打。
+    // 全程无敌会让冲刺变成万能解，那就没有「什么时候冲」的判断了。
+    invuln: { from: 2, to: 15 },
     cancelInto: ['slash'],
   },
 
@@ -89,6 +113,157 @@ export const ACTIONS: Record<ActionState, ActionDef> = {
     loop: false,
     cancelable: false,
     hitboxes: [],
+  },
+
+  /**
+   * 范围技：吃 50 能量，环形判定 + 强击退。
+   *
+   * 定位是**解围**而不是输出：带超级护甲，被围住时能强行清出空间。
+   * 这个定位决定了它会被真正使用——纯加伤害的技能玩家只会在顺风时按，
+   * 而解围技在逆风时是刚需，普攻占比才压得下来（M1 验收第 1 条）。
+   */
+  skill: {
+    id: 'skill',
+    frames: 40,
+    loop: false,
+    cancelable: false,
+    superArmor: true,
+    hitboxes: [
+      {
+        offset: { x: 0, y: 0 },
+        halfWidth: 96,
+        halfDepth: 62,
+        activeFrom: 14,
+        activeTo: 19,
+        damage: 26,
+        knockback: 9.0,
+        hitStop: 10,
+        radial: true,
+      },
+    ],
+  },
+
+  /**
+   * 处决：只对残血目标生效，伤害高到必定终结。
+   *
+   * 全程无敌是刻意的——处决要求玩家主动贴脸，如果贴上去就被围殴打断，
+   * 玩家学两次就再也不用了（那样 M1 验收第 3 条永远不达标）。
+   * 用无敌换主动进攻，正是 GAME_DESIGN 3.4「避免玩家龟缩放风筝」的意图。
+   */
+  execute: {
+    id: 'execute',
+    frames: 30,
+    loop: false,
+    cancelable: false,
+    superArmor: true,
+    invuln: { from: 0, to: 26 },
+    motion: [0, 0, 1.0, 2.0, 1.0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    hitboxes: [
+      {
+        offset: { x: 30, y: 0 },
+        halfWidth: 34,
+        halfDepth: 26,
+        activeFrom: 5,
+        activeTo: 9,
+        // 处决是终结技，伤害只需保证「一定打死残血目标」
+        damage: 999,
+        knockback: 2.0,
+        hitStop: 12,
+      },
+    ],
+  },
+
+  /**
+   * 远程瞄准段：24 帧纯预警，不带任何判定。
+   * 这 24 帧就是玩家「看到激光线 → 侧移一步」的全部时间窗口。
+   */
+  aim: {
+    id: 'aim',
+    frames: 24,
+    loop: false,
+    cancelable: false,
+    hitboxes: [],
+    telegraph: { shape: { kind: 'line', length: 420, width: 18 }, until: 24 },
+  },
+
+  /** 放箭：第 2 帧生成弹丸（在 world 里处理），本身不带判定框。 */
+  shoot: {
+    id: 'shoot',
+    frames: 16,
+    loop: false,
+    cancelable: false,
+    hitboxes: [],
+  },
+
+  /**
+   * 冲锋蓄力：28 帧预警。突进伤害不低，所以预警给得比远程还长。
+   * 预警形状是突进路径本身——玩家看到的就是「它会撞过来的那条线」。
+   */
+  charge: {
+    id: 'charge',
+    frames: 28,
+    loop: false,
+    cancelable: false,
+    hitboxes: [],
+    // 蓄力时微微后撤，是格斗游戏常见的起手提示，让预警在动作剪影上也读得出来
+    motion: [-0.4, -0.4, -0.3, -0.3, -0.2, -0.2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    telegraph: { shape: { kind: 'line', length: 300, width: 44 }, until: 28 },
+  },
+
+  /**
+   * 冲锋突进：判定跟着位移走，撞到就吃伤害。
+   *
+   * 突进距离必须**大于起手距离**，否则这个敌人从头到尾撞不到人——
+   * 第一版就栽在这里：位移合计只有 62px，而它在 190px 外起手，
+   * 蓄力、预警、突进整套演完，人还在两个身位之外。
+   * 现在合计约 197px，加上判定框和玩家体积的富余，够覆盖 215px 的起手线，
+   * 而且会**冲过头**——冲过头才有"侧身让开、看它扑空"的博弈。
+   */
+  rush: {
+    id: 'rush',
+    frames: 30,
+    loop: false,
+    cancelable: false,
+    motion: [22, 22, 21, 20, 19, 18, 16, 14, 12, 10, 8, 6, 4, 2.5, 1.5, 0.8, 0.4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    hitboxes: [
+      {
+        offset: { x: 20, y: 0 },
+        halfWidth: 26,
+        halfDepth: 22,
+        activeFrom: 0,
+        // 判定覆盖整个高速段，减速滑行段不再伤人
+        activeTo: 15,
+        damage: 16,
+        knockback: 7.0,
+        hitStop: 7,
+      },
+    ],
+  },
+
+  /**
+   * 精英重击：32 帧前摇换 24 点伤害和大范围。
+   * 带超级护甲，所以**不能靠打断来解**，只能靠走位躲——
+   * 这正是设计里「拉开打，不能贴脸莽」要求玩家做的事。
+   */
+  heavy: {
+    id: 'heavy',
+    frames: 54,
+    loop: false,
+    cancelable: false,
+    superArmor: true,
+    hitboxes: [
+      {
+        offset: { x: 26, y: 0 },
+        halfWidth: 56,
+        halfDepth: 40,
+        activeFrom: 32,
+        activeTo: 38,
+        damage: 24,
+        knockback: 8.0,
+        hitStop: 10,
+      },
+    ],
+    telegraph: { shape: { kind: 'circle', radius: 74 }, until: 32 },
   },
 };
 
@@ -106,4 +281,11 @@ export function canInterrupt(state: ActionState, frame: number): boolean {
   const last = def.hitboxes[def.hitboxes.length - 1];
   if (!last) return frame >= def.frames - 1;
   return frame >= last.activeTo;
+}
+
+/** 该动作在这一帧是否处于自带的无敌区间 */
+export function isActionInvulnerable(state: ActionState, frame: number): boolean {
+  const inv = ACTIONS[state].invuln;
+  if (!inv) return false;
+  return frame >= inv.from && frame < inv.to;
 }
