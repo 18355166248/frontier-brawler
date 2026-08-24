@@ -168,6 +168,23 @@ export class Run {
     return 'fighting';
   }
 
+  /**
+   * 整局（跨房间）的统计摘要，给结算界面用。
+   *
+   * `this.stats` 只在切房间那一刻（`enterRoom`）被 `absorb` 过之前几间房的数据，
+   * 当前正在打的这间房（包括停在 stageComplete 时的那间房——首领房打完
+   * 不会再触发 `enterRoom`）还只存在 `this.world.stats` 里，没被折进来。
+   * 这里现算一份合并结果，不直接修改 `this.stats`，避免每帧调用都重复叠加。
+   */
+  overallSummary(): ReturnType<RunStats['summary']> {
+    const merged = new RunStats();
+    merged.frames = this.stats.frames;
+    merged.died = this.stats.died;
+    merged.absorb(this.stats);
+    merged.absorb(this.world.stats);
+    return merged.summary();
+  }
+
   step(input: InputState): WorldEvents {
     const empty: WorldEvents = {
       damage: [],
@@ -251,6 +268,10 @@ export class Run {
     const next = findRoom(this.stage, id);
     if (!next) return;
     this.syncProfile();
+    // 这间房的 World 就要被换掉、连同它自己的 RunStats 一起丢弃了——
+    // 先把数据折进整局的累计统计，不然这间房里打出的击杀、完美取消、
+    // 承受伤害等数字会随着旧 World 一起消失，结算界面就只剩最后一间房的数据。
+    this.stats.absorb(this.world.stats);
     this.room = next;
     this.enteredFrom = viaDoor ? OPPOSITE[viaDoor] : null;
     this.doorLock = this.enteredFrom;

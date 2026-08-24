@@ -11,8 +11,9 @@ import { ENEMY_PROFILES } from '../core/enemies';
 import type { StageTheme } from '../core/level';
 import type { Run } from '../core/run';
 import { doorPosition } from '../core/run';
+import { STAGES } from '../core/stages';
 import type { UpgradeTrackId } from '../core/upgrades';
-import { MAX_UPGRADE_LEVEL, UPGRADE_TRACKS } from '../core/upgrades';
+import { MAX_UPGRADE_LEVEL, UPGRADE_TRACK_IDS, UPGRADE_TRACKS } from '../core/upgrades';
 import type { World } from '../core/world';
 import { Minimap } from './minimap';
 import type { SpriteSheet } from './sprites';
@@ -792,15 +793,8 @@ export class Renderer {
     }
 
     if (run.phase === 'stageComplete') {
-      ctx.save();
-      ctx.textAlign = 'center';
-      ctx.fillStyle = '#ffd479';
-      ctx.font = 'bold 26px system-ui, sans-serif';
-      ctx.fillText(`${run.stage.name} 已通关`, this.canvas.width / 2, this.canvas.height / 2 - 12);
-      ctx.font = '14px system-ui, sans-serif';
-      ctx.fillStyle = 'rgba(255,255,255,0.75)';
-      ctx.fillText('按 N 进入下一关 · 按 R 重来本关', this.canvas.width / 2, this.canvas.height / 2 + 16);
-      ctx.restore();
+      this.drawStageSummary(run);
+      return;
     }
 
     const w = 168;
@@ -905,6 +899,122 @@ export class Renderer {
       ctx.font = 'bold 15px system-ui, sans-serif';
       ctx.fillText(CHOICE_KEYS[id], x + cardW / 2, y + cardH - 25);
     });
+
+    ctx.restore();
+  }
+
+  /**
+   * 结算界面：通关后的数据汇总。取代原来只有两行文字的提示——
+   * 通关这一下有分量，值得让玩家停下来看一眼这一路打出的数字，
+   * 而不是一晃而过的提示，也是 M3 清单里补的最后一块。
+   *
+   * 和三选一（`drawUpgradeChoice`）同一种「全屏遮罩 + 居中面板」的形态，
+   * 读的是 `run.overallSummary()`——跨房间累加的整局数据，不是
+   * `world.stats` 那份只反映最后一间房战斗的数字。
+   */
+  private drawStageSummary(run: Run): void {
+    const { ctx, canvas } = this;
+    // 最后一关通关后没有"下一关"可进，提示语和 main.ts 里 KeyN 的
+    // 边界判断要保持一致，不然会出现"画面说按N，按了却没反应"的落差。
+    const isFinalStage = run.stage.index >= STAGES.length;
+    const summary = run.overallSummary();
+
+    ctx.save();
+    ctx.fillStyle = 'rgba(8,10,13,0.78)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    const panelW = 560;
+    const panelH = 400;
+    const panelX = (canvas.width - panelW) / 2;
+    const panelY = (canvas.height - panelH) / 2;
+
+    ctx.fillStyle = 'rgba(20,24,30,0.92)';
+    ctx.strokeStyle = '#ffd479';
+    ctx.lineWidth = 2;
+    this.roundRect(ctx, panelX, panelY, panelW, panelH, 12);
+    ctx.fill();
+    ctx.stroke();
+
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#ffd479';
+    ctx.font = 'bold 26px system-ui, sans-serif';
+    ctx.fillText(
+      isFinalStage ? `全部 ${STAGES.length} 关已通关！` : `${run.stage.name} 已通关`,
+      canvas.width / 2,
+      panelY + 44,
+    );
+    ctx.font = '13px system-ui, sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.6)';
+    ctx.fillText(
+      isFinalStage ? '这是目前的最终关卡 · 按 R 重玩本关' : '按 N 进入下一关 · 按 R 重来本关',
+      canvas.width / 2,
+      panelY + 66,
+    );
+
+    // 数据栏：两列 label/value。无预警致死大于 0 时标红——
+    // 这条本该恒为 0（GAME_DESIGN 3.4），非 0 说明有判定没给够预警，值得显眼。
+    const rows: [string, string, boolean?][] = [
+      ['用时', `${summary.seconds.toFixed(1)}s`],
+      ['普攻占比', `${Math.round(summary.basicAttackRatio * 100)}%`],
+      ['纵深比', summary.depthRatio.toFixed(2)],
+      ['处决次数', `${summary.executes}`],
+      ['完美取消', `${summary.perfectCancels}`],
+      ['击杀数', `${summary.kills}`],
+      ['承受伤害', `${Math.round(summary.damageTaken)}`],
+      ['无预警致死', `${summary.unwarnedLethal}`, summary.unwarnedLethal > 0],
+    ];
+    const gridTop = panelY + 92;
+    const colW = panelW / 2;
+    ctx.font = '13px system-ui, sans-serif';
+    rows.forEach(([label, value, warn], i) => {
+      const col = i % 2;
+      const row = Math.floor(i / 2);
+      const x = panelX + 40 + col * colW;
+      const y = gridTop + row * 30;
+      ctx.textAlign = 'left';
+      ctx.fillStyle = 'rgba(255,255,255,0.55)';
+      ctx.fillText(label, x, y);
+      ctx.textAlign = 'right';
+      ctx.fillStyle = warn ? '#e2705c' : '#ffffff';
+      ctx.fillText(value, x + colW - 80, y);
+    });
+
+    // 成长路线：三条轨迹各自选到第几级，用和三选一同一套颜色和圆点样式，
+    // 一眼能和三选一界面里看到的卡片对上号，不用重新学一套视觉语言
+    const trackY = gridTop + Math.ceil(rows.length / 2) * 30 + 24;
+    ctx.textAlign = 'left';
+    ctx.font = '12px system-ui, sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.5)';
+    ctx.fillText('成长路线', panelX + 40, trackY);
+
+    const trackGap = (panelW - 80) / UPGRADE_TRACK_IDS.length;
+    UPGRADE_TRACK_IDS.forEach((id, i) => {
+      const track = UPGRADE_TRACKS[id];
+      const level = run.profile.upgrades[id];
+      const color = TRACK_COLOR[id];
+      const cx = panelX + 40 + i * trackGap + trackGap / 2;
+      const y = trackY + 26;
+
+      ctx.textAlign = 'center';
+      ctx.fillStyle = color;
+      ctx.font = 'bold 15px system-ui, sans-serif';
+      ctx.fillText(track.label, cx, y);
+
+      for (let d = 0; d < MAX_UPGRADE_LEVEL; d += 1) {
+        const dx = cx - (MAX_UPGRADE_LEVEL - 1) * 8 + d * 16;
+        ctx.beginPath();
+        ctx.arc(dx, y + 16, 4, 0, Math.PI * 2);
+        ctx.fillStyle = d < level ? color : 'rgba(255,255,255,0.18)';
+        ctx.fill();
+      }
+    });
+
+    // 最终血量，收尾一行
+    const hpY = trackY + 62;
+    ctx.textAlign = 'center';
+    ctx.font = '13px system-ui, sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.55)';
+    ctx.fillText(`血量 ${Math.ceil(run.profile.hp)} / ${run.profile.maxHp}`, canvas.width / 2, hpY);
 
     ctx.restore();
   }

@@ -81,6 +81,30 @@ export class RunStats {
     }
   }
 
+  /**
+   * 把另一份统计并入当前——Run 每进一间新房都会建一个新 World，
+   * World 自己的 RunStats 只反映当前房间，跨房间的整局汇总要靠这个方法
+   * 在切房间前把即将丢弃的那份数据折进 Run 自己持有的总账里。
+   * 不碰 frames/died：这两个字段 Run 自己按逻辑帧直接维护，
+   * 这里再加一遍会重复计数。
+   */
+  absorb(other: RunStats): void {
+    for (const key of Object.keys(this.actions) as OffensiveAction[]) {
+      this.actions[key] += other.actions[key];
+    }
+    this.moveX += other.moveX;
+    this.moveY += other.moveY;
+    this.executes += other.executes;
+    this.kills += other.kills;
+    for (const [kind, count] of Object.entries(other.killsByKind) as [EnemyKind, number][]) {
+      this.killsByKind[kind] = (this.killsByKind[kind] ?? 0) + count;
+    }
+    this.perfectCancels += other.perfectCancels;
+    this.damageTaken += other.damageTaken;
+    this.hitsTaken += other.hitsTaken;
+    this.unwarned.push(...other.unwarned);
+  }
+
   /** 主动动作总次数，占比的分母 */
   get totalOffensive(): number {
     return (

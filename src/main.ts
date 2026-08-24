@@ -64,7 +64,12 @@ const keys = new Set<string>();
 window.addEventListener('keydown', (e) => {
   keys.add(e.code);
   if (e.code === 'KeyR') startStage(stageIndex);
-  if (e.code === 'KeyN' && run.phase === 'stageComplete') startStage(stageIndex + 1);
+  // 最后一关通关后没有下一关可进——不加这条边界的话，Math.min 会把
+  // stageIndex+1 钳回原地，按 N 变成"用全新档案重开第 6 关"，
+  // 玩家会以为按键没反应，而不是"这已经是终点"。
+  if (e.code === 'KeyN' && run.phase === 'stageComplete' && stageIndex + 1 < STAGES.length) {
+    startStage(stageIndex + 1);
+  }
   const track = CHOICE_KEYS[e.code];
   if (track && run.phase === 'choosing') run.chooseUpgrade(track);
   // 方向键和空格会滚动页面，游戏里要吃掉
@@ -212,6 +217,10 @@ if (import.meta.env.DEV) {
     /** 本房间统计摘要，M1 四条验收标准直接读这个。 */
     stats(): unknown {
       return run.world.stats.summary();
+    },
+    /** 整关（跨房间）统计摘要，结算界面画的就是这份数据。 */
+    overallStats(): unknown {
+      return run.overallSummary();
     },
     /** 无预警伤害明细，验收第 4 条要逐条 review。 */
     unwarned(): unknown {
