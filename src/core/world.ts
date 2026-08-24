@@ -91,6 +91,16 @@ const ENERGY_PER_EXECUTE = 25;
 /** 处决的回报。给得太少玩家不会主动贴脸，验收第 3 条就永远不达标。 */
 const EXECUTE_HEAL = 14;
 
+/**
+ * 输入缓冲窗口（帧）。玩家按键取的是"按下那一瞬间"，之前完全不缓冲——
+ * 提前几帧按下一段连段的下一击，落在还不可打断的窗口里就被直接吃掉，
+ * 玩家得掐着帧数精确落在收招段才按得出来，这正是"动作不连贯"的来源
+ * 之一：连段深浅玩家操作是对的，游戏却没接住。8 帧（约 133ms）是格斗类
+ * 游戏常见的缓冲宽度，够容错「提前出手」，也不至于长到让明显过时的
+ * 按键还在几帧后突然生效、显得像输入延迟。
+ */
+const INPUT_BUFFER_FRAMES = 8;
+
 let nextId = 1;
 let nextProjectileId = 1;
 
@@ -117,6 +127,11 @@ export function createEntity(team: Team, pos: Vec2, overrides: Partial<Entity> =
     maxEnergy: 100,
     dashCooldown: 0,
     jumpCooldown: 0,
+    attackBuffer: 0,
+    dashBuffer: 0,
+    jumpBuffer: 0,
+    skillBuffer: 0,
+    executeBuffer: 0,
     lockedMoveDir: { x: 1, y: 0 },
     damageMultiplier: 1,
     skillDamageMultiplier: 1,
@@ -253,15 +268,26 @@ export class World {
     const interruptible = canInterrupt(e.action, e.actionFrame);
     const player = e.team === 'player' ? (input as InputState) : null;
 
+    if (player) {
+      // 边缘按下就先记进缓冲区，不管这一帧能不能立刻响应——真正能不能
+      // 出手仍然由下面的 interruptible 判断，缓冲区只负责"记住按过"。
+      if (player.execute) e.executeBuffer = INPUT_BUFFER_FRAMES;
+      if (player.skill) e.skillBuffer = INPUT_BUFFER_FRAMES;
+      if (player.attack) e.attackBuffer = INPUT_BUFFER_FRAMES;
+      if (player.jump) e.jumpBuffer = INPUT_BUFFER_FRAMES;
+      if (player.dash) e.dashBuffer = INPUT_BUFFER_FRAMES;
+    }
+
     if (player && interruptible) {
       // 处决优先于普攻：残血目标在手边时，玩家按处决键不该被解释成挥空刀
-      if (player.execute && this.tryExecute(e)) {
-        // 已切入处决动作
-      } else if (player.skill && e.energy >= SKILL_COST * e.skillCostMultiplier) {
+      if (e.executeBuffer > 0 && this.tryExecute(e)) {
+        e.executeBuffer = 0;
+      } else if (e.skillBuffer > 0 && e.energy >= SKILL_COST * e.skillCostMultiplier) {
         e.energy -= SKILL_COST * e.skillCostMultiplier;
         this.setAction(e, 'skill');
         this.stats.recordAction('skill');
-      } else if (player.attack) {
+        e.skillBuffer = 0;
+      } else if (e.attackBuffer > 0) {
         // 只在新一轮攻击起手时响应方向转身，连段中途（e.action 已经是
         // slash/slash2）不转身——不然连段打到一半角色转向会显得很怪。
         // 位移量不变，这只是让玩家能"按方向快速转身打另一侧的敌人"，
@@ -270,13 +296,15 @@ export class World {
           e.facing = (player.moveX > 0 ? 1 : -1) as Facing;
         }
         this.startAttack(e, def.cancelInto?.[0]);
-      } else if (player.jump && e.action !== 'jump' && e.action !== 'airSlash' && e.jumpCooldown <= 0) {
+        e.attackBuffer = 0;
+      } else if (e.jumpBuffer > 0 && e.action !== 'jump' && e.action !== 'airSlash' && e.jumpCooldown <= 0) {
         this.setAction(e, 'jump');
         this.lockMoveDirection(e, player);
         e.jumpCooldown = JUMP_COOLDOWN;
         this.stats.recordAction('jump');
+        e.jumpBuffer = 0;
       } else if (
-        player.dash &&
+        e.dashBuffer > 0 &&
         e.action !== 'dash' &&
         e.dashCooldown <= 0 &&
         !isActionAirborne(e.action, e.actionFrame)
@@ -290,6 +318,7 @@ export class World {
         this.lockMoveDirection(e, player);
         e.dashCooldown = DASH_COOLDOWN;
         this.stats.recordAction('dash');
+        e.dashBuffer = 0;
       }
     } else if (!player && input.attack && interruptible) {
       // 敌人：起手动作由类型决定（贴脸挥砍 / 瞄准 / 蓄力冲锋 / 重击）。
@@ -302,10 +331,29 @@ export class World {
       }
     }
 
-    // 动作自带的位移（挥砍前冲、冲刺、突进）优先于主动移动
+    // 缓冲区衰减必须放在消费判断**之后**，不能放在这一帧处理的最前面——
+    // 之前试过把它放进 world.step() 的外层循环，在 stepEntity 之前统一递减，
+    // 结果差一帧：缓冲区设为 8 帧后，恰好数到第 8 帧 interruptible 才打开
+    // 的那一刻，本帧的递减已经先把它减到 0，判断时读到的是减过的值，
+    // 消费判断必然落空——等于缓冲区实际只能容忍 7 帧的提前量，比文档
+    // 写的 8 帧少了一帧。放在这里，本帧要么先被上面的分支读到非零值并
+    // 清零消费掉，要么才轮到这行衰减，值和时序都对得上。
+    if (e.attackBuffer > 0) e.attackBuffer -= 1;
+    if (e.dashBuffer > 0) e.dashBuffer -= 1;
+    if (e.jumpBuffer > 0) e.jumpBuffer -= 1;
+    if (e.skillBuffer > 0) e.skillBuffer -= 1;
+    if (e.executeBuffer > 0) e.executeBuffer -= 1;
+
+    // 动作自带的位移（挥砍前冲、冲刺、突进）优先于主动移动，但只在曲线
+    // 这一帧真的有位移量时才接管——普攻/冲刺/跳劈的位移曲线都是「前段几帧
+    // 冲一下，后面一长串收招帧全是 0」，之前不管数值直接按数组长度锁死
+    // 整个动作，导致可取消的收招段虽然能接下一击，却完全走不动、
+    // 连方向键都不响应，人像焊在地上——这正是"动作发死、不连贯"的一处
+    // 具体成因。冲刺/跳跃的位移曲线中途没有 0（跳跃全程都是抛物线的一部分，
+    // 手感上不该半路被走位打断），所以这条改动不影响它们的连贯位移。
     const motion = ACTIONS[e.action].motion;
     const before = { x: e.pos.x, y: e.pos.y };
-    if (motion && e.actionFrame < motion.length) {
+    if (motion && e.actionFrame < motion.length && motion[e.actionFrame] !== 0) {
       const step = motion[e.actionFrame];
       if (e.action === 'dash' || e.action === 'jump') {
         // 冲刺和跳跃都走锁定方向；纵深照样压 62%，否则斜着比直着快，空间感就塌了

@@ -217,6 +217,21 @@ export interface Entity {
   dashCooldown: number;
   /** 跳跃冷却剩余帧，防止无限连跳保持贴地判定免疫 */
   jumpCooldown: number;
+
+  /**
+   * 输入缓冲：五个出手键各自的剩余缓冲帧数，0 表示没有待处理的按键。
+   * 只有玩家会用到——敌人的 AI 每帧都会重新判断要不要出手，不存在
+   * "按一下就错过"的问题，只有人类的单次按键才需要这层容错。
+   *
+   * 按下的那一刻不管当下能不能立刻响应都先记满一份缓冲，真正判定
+   * 能不能出手仍然是 `interruptible`——缓冲区只负责"记住按过"，
+   * 不负责放行。见 world.ts 里 `INPUT_BUFFER_FRAMES` 的说明。
+   */
+  attackBuffer: number;
+  dashBuffer: number;
+  jumpBuffer: number;
+  skillBuffer: number;
+  executeBuffer: number;
   /**
    * 位移类动作（冲刺、跳跃）起手那一帧按输入锁定的方向，两者共用这一个字段——
    * 它们从不同时激活，语义上是安全的。
