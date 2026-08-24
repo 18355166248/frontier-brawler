@@ -8,7 +8,11 @@
 import type { DamageEvent, Entity, Projectile, Telegraph } from '../core/types';
 import { ACTIONS, EXECUTE_THRESHOLD, SKILL_COST } from '../core/actions';
 import { ENEMY_PROFILES } from '../core/enemies';
+import type { StageTheme } from '../core/level';
+import type { Run } from '../core/run';
+import { doorPosition } from '../core/run';
 import type { World } from '../core/world';
+import { Minimap } from './minimap';
 import type { SpriteSheet } from './sprites';
 
 interface FloatText {
@@ -43,12 +47,11 @@ const GROUND_SQUASH = 0.42;
 const MAX_FLOATS = 48;
 const MAX_RINGS = 12;
 
+/**
+ * 与关卡无关的通用色。天空、地面、参考线三组由 StageTheme 提供——
+ * 换一套配色整关观感就变了，这是「每关不一样」里性价比最高的一档。
+ */
 const PALETTE = {
-  skyTop: '#1b2733',
-  skyBottom: '#2b3a45',
-  groundNear: '#3d4a44',
-  groundFar: '#2a3630',
-  lane: 'rgba(255,255,255,0.05)',
   shadow: 'rgba(0,0,0,0.34)',
   playerTint: '#8fd4c8',
   enemyTint: '#d99a7a',
@@ -85,6 +88,7 @@ export class Renderer {
   private shake = 0;
   /** 渲染帧计数，只用于纯表现层的呼吸动画，不参与任何逻辑 */
   private clock = 0;
+  private minimap = new Minimap();
 
   constructor(
     private canvas: HTMLCanvasElement,
@@ -160,8 +164,9 @@ export class Renderer {
     }
   }
 
-  draw(world: World): void {
+  draw(run: Run): void {
     const { ctx, canvas } = this;
+    const world = run.world;
     this.clock += 1;
     ctx.save();
 
@@ -171,7 +176,15 @@ export class Renderer {
       this.shake -= 1;
     }
 
-    this.drawGround(world);
+    // 切房间的推镜：不做黑屏加载，只把新场景推进来一小段
+    if (run.transition > 0) {
+      const t = run.transition / 20;
+      ctx.globalAlpha = 1 - t * 0.8;
+      ctx.translate(t * 46, 0);
+    }
+
+    this.drawGround(world, run.stage.theme);
+    this.drawDoors(run);
 
     // 预警画在地面上、角色之下：它是"地上的标记"而不是浮在人前面的 UI，
     // 压在角色下面才不会挡住敌人自己的起手动作。
@@ -190,34 +203,100 @@ export class Renderer {
     this.drawFloats();
     ctx.restore();
 
-    this.drawHud(world);
-    void canvas;
+    this.drawHud(run);
+    this.minimap.draw(ctx, run, canvas.width);
   }
 
-  private drawGround(world: World): void {
+  private drawGround(world: World, theme: StageTheme): void {
     const { ctx, canvas } = this;
     const { arena } = world;
 
     const sky = ctx.createLinearGradient(0, 0, 0, arena.minY);
-    sky.addColorStop(0, PALETTE.skyTop);
-    sky.addColorStop(1, PALETTE.skyBottom);
+    sky.addColorStop(0, theme.skyTop);
+    sky.addColorStop(1, theme.skyBottom);
     ctx.fillStyle = sky;
     ctx.fillRect(0, 0, canvas.width, arena.minY);
 
     const ground = ctx.createLinearGradient(0, arena.minY, 0, arena.maxY + 60);
-    ground.addColorStop(0, PALETTE.groundFar);
-    ground.addColorStop(1, PALETTE.groundNear);
+    ground.addColorStop(0, theme.groundFar);
+    ground.addColorStop(1, theme.groundNear);
     ctx.fillStyle = ground;
     ctx.fillRect(0, arena.minY, canvas.width, arena.maxY + 60 - arena.minY);
 
     // 几条横向参考线，帮玩家读出纵深——纯色地面会让人判断不了自己站多前
-    ctx.strokeStyle = PALETTE.lane;
+    ctx.strokeStyle = theme.lane;
     ctx.lineWidth = 1;
     for (let y = arena.minY; y <= arena.maxY; y += 26) {
       ctx.beginPath();
       ctx.moveTo(0, y);
       ctx.lineTo(canvas.width, y);
       ctx.stroke();
+    }
+
+    // 场地左右边界：房间尺寸各不相同，不画边界玩家读不出这间房到底多宽
+    ctx.strokeStyle = 'rgba(0,0,0,0.35)';
+    ctx.lineWidth = 3;
+    ctx.beginPath();
+    ctx.moveTo(arena.minX - 8, arena.minY);
+    ctx.lineTo(arena.minX - 8, arena.maxY + 14);
+    ctx.moveTo(arena.maxX + 8, arena.minY);
+    ctx.lineTo(arena.maxX + 8, arena.maxY + 14);
+    ctx.stroke();
+  }
+
+  /**
+   * 门。没清空时是暗色栅栏，清空瞬间点亮。
+   * 「门开了」是房间制里最重要的一次状态转换——玩家要一眼看见往哪走。
+   */
+  private drawDoors(run: Run): void {
+    const { ctx } = this;
+    const arena = run.world.arena;
+    const open = new Set(run.openDoors);
+    const doors = Object.keys(run.room.doors) as (keyof typeof run.room.doors)[];
+
+    for (const dir of doors) {
+      if (!run.room.doors[dir]) continue;
+      const at = doorPosition(arena, dir);
+      const isOpen = open.has(dir);
+      const horizontal = dir === 'east' || dir === 'west';
+      const w = horizontal ? 14 : 84;
+      const h = horizontal ? 74 : 16;
+
+      ctx.save();
+      if (isOpen) {
+        // 开着的门做呼吸辉光，视线扫过去就会被吸住
+        const pulse = 0.6 + 0.4 * Math.sin(this.clock * 0.09);
+        ctx.globalAlpha = 0.35 + pulse * 0.45;
+        ctx.fillStyle = '#ffd479';
+        ctx.fillRect(at.x - w / 2, at.y - h / 2, w, h);
+        ctx.globalAlpha = 1;
+        ctx.strokeStyle = '#ffe9b0';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(at.x - w / 2, at.y - h / 2, w, h);
+      } else {
+        ctx.globalAlpha = 0.55;
+        ctx.fillStyle = 'rgba(20,24,28,0.85)';
+        ctx.fillRect(at.x - w / 2, at.y - h / 2, w, h);
+        ctx.strokeStyle = 'rgba(255,255,255,0.22)';
+        ctx.lineWidth = 1;
+        // 栅栏纹，和开着的门在剪影上就分得开
+        const bars = horizontal ? 4 : 5;
+        for (let i = 1; i < bars; i += 1) {
+          ctx.beginPath();
+          if (horizontal) {
+            const y = at.y - h / 2 + (h / bars) * i;
+            ctx.moveTo(at.x - w / 2, y);
+            ctx.lineTo(at.x + w / 2, y);
+          } else {
+            const x = at.x - w / 2 + (w / bars) * i;
+            ctx.moveTo(x, at.y - h / 2);
+            ctx.lineTo(x, at.y + h / 2);
+          }
+          ctx.stroke();
+        }
+        ctx.strokeRect(at.x - w / 2, at.y - h / 2, w, h);
+      }
+      ctx.restore();
     }
   }
 
@@ -511,8 +590,9 @@ export class Renderer {
     this.floats = this.floats.filter((f) => f.life > 0);
   }
 
-  private drawHud(world: World): void {
+  private drawHud(run: Run): void {
     const { ctx } = this;
+    const world = run.world;
     const player = world.player;
     ctx.font = '13px system-ui, sans-serif';
     ctx.textAlign = 'left';
@@ -536,6 +616,29 @@ export class Renderer {
       ctx.textAlign = 'center';
       ctx.fillText('倒下了 · 按 R 重来', this.canvas.width / 2, this.canvas.height / 2);
       return;
+    }
+
+    // 房间清空后的指路。不提示的话玩家会站在空房间里等下一波怪。
+    if (run.phase === 'cleared' && run.openDoors.length) {
+      ctx.save();
+      ctx.textAlign = 'center';
+      ctx.font = 'bold 15px system-ui, sans-serif';
+      ctx.globalAlpha = 0.65 + 0.35 * Math.sin(this.clock * 0.08);
+      ctx.fillStyle = '#ffd479';
+      ctx.fillText('门已开 · 走向发光处', this.canvas.width / 2, 92);
+      ctx.restore();
+    }
+
+    if (run.phase === 'stageComplete') {
+      ctx.save();
+      ctx.textAlign = 'center';
+      ctx.fillStyle = '#ffd479';
+      ctx.font = 'bold 26px system-ui, sans-serif';
+      ctx.fillText(`${run.stage.name} 已通关`, this.canvas.width / 2, this.canvas.height / 2 - 12);
+      ctx.font = '14px system-ui, sans-serif';
+      ctx.fillStyle = 'rgba(255,255,255,0.75)';
+      ctx.fillText('按 N 进入下一关 · 按 R 重来本关', this.canvas.width / 2, this.canvas.height / 2 + 16);
+      ctx.restore();
     }
 
     const w = 168;

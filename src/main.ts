@@ -1,44 +1,26 @@
 /**
- * 入口：固定步长循环 + 输入 + 一波敌人。
+ * 入口：固定步长循环 + 输入 + 关卡推进。
  *
  * 逻辑用固定 60Hz 步长推进，渲染跟显示帧率。
  * 手感数值（前摇帧数、硬直、击退衰减）全部以逻辑帧为单位，
  * 这样在 144Hz 屏和 60Hz 屏上打起来是一样的。
+ *
+ * 关卡结构见 docs/LEVEL_DESIGN.md：这一层只负责驱动 Run，
+ * 房间怎么切、玩家状态怎么跨房间保留，全在 core/run.ts 里。
  */
 import { TICK_RATE } from './core/actions';
+import { validateStage } from './core/level';
+import { Run, createProfile } from './core/run';
+import { STAGES } from './core/stages';
 import type { InputState } from './core/world';
-import { World, createEnemy, createEntity } from './core/world';
 import { Renderer } from './render/renderer';
 import { SpriteSheet } from './render/sprites';
-import type { ActionState, EnemyKind } from './core/types';
+import type { ActionState } from './core/types';
 
 const WIDTH = 960;
 const HEIGHT = 540;
 
-const ARENA = { minX: 40, maxX: WIDTH - 40, minY: 300, maxY: HEIGHT - 40 };
-
 const SHEET_ROWS: ActionState[] = ['idle', 'move', 'slash', 'hit'];
-
-/**
- * M1 的验证编成——**不是 M3 的波次系统**。
- *
- * 这里只需要保证五种敌人都会出现、且不会一开场就九个一起围上来。
- * 场上少于 4 个时按顺序补，补完为止。真正的波次与关底首领是 M3 的事。
- */
-const ENCOUNTER: EnemyKind[] = [
-  'grunt',
-  'grunt',
-  'shield',
-  'ranged',
-  'charger',
-  'grunt',
-  'shield',
-  'ranged',
-  'elite',
-];
-
-/** 场上同时存在的敌人数上限。低于这个数就补兵。 */
-const CONCURRENT = 4;
 
 const canvas = document.getElementById('game') as HTMLCanvasElement;
 canvas.width = WIDTH;
@@ -52,43 +34,29 @@ sheets.set('player', new SpriteSheet({ url: 'art/hero.png', columns: 4, rows: SH
 
 const renderer = new Renderer(canvas, sheets);
 
-/** 待入场的敌人队列。必须先于 buildWorld() 初始化——它会读这个队列补兵。 */
-let pending: EnemyKind[] = [];
-let world = buildWorld();
-
-function buildWorld(): World {
-  const w = new World(ARENA);
-  w.spawn(
-    createEntity('player', { x: 180, y: 430 }, {
-      hp: 160,
-      maxHp: 160,
-      speed: 2.9,
-    }),
-  );
-  pending = [...ENCOUNTER];
-  refill(w);
-  return w;
+/**
+ * 手写的房间图最容易出两种错：门只连了单向，和网格坐标与门方向对不上。
+ * 两种在游戏里都表现为「玩着玩着卡住」，很难倒推，所以开发期一启动就全量校验。
+ */
+if (import.meta.env.DEV) {
+  const problems = STAGES.flatMap((s) => validateStage(s));
+  if (problems.length) console.error('关卡数据有问题:\n' + problems.join('\n'));
 }
 
-/** 补兵。出生点撒在右侧，纵深错开，避免叠在一条线上。 */
-function refill(w: World): void {
-  let alive = w.entities.filter((e) => e.team === 'enemy' && !e.dead).length;
-  let i = 0;
-  while (alive < CONCURRENT && pending.length) {
-    const kind = pending.shift();
-    if (!kind) break;
-    const x = 600 + (i % 3) * 96;
-    const y = ARENA.minY + 40 + ((i + alive) % 4) * 46;
-    w.spawn(createEnemy(kind, { x, y }));
-    alive += 1;
-    i += 1;
-  }
+let stageIndex = 0;
+let run = new Run(STAGES[stageIndex], createProfile());
+
+function startStage(index: number): void {
+  stageIndex = Math.max(0, Math.min(STAGES.length - 1, index));
+  // 每关重新给一份满血档案。跨关卡的状态继承要等 M5 的经营层，现在不做。
+  run = new Run(STAGES[stageIndex], createProfile());
 }
 
 const keys = new Set<string>();
 window.addEventListener('keydown', (e) => {
   keys.add(e.code);
-  if (e.code === 'KeyR') world = buildWorld();
+  if (e.code === 'KeyR') startStage(stageIndex);
+  if (e.code === 'KeyN' && run.phase === 'stageComplete') startStage(stageIndex + 1);
   // 方向键和空格会滚动页面，游戏里要吃掉
   if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) {
     e.preventDefault();
@@ -144,11 +112,10 @@ let paused = false;
 
 /** 推进一个逻辑帧并把事件转给表现层。自动化验证也复用它，保证跑的是同一条路径。 */
 function stepOnce(): void {
-  const events = world.step(readInput());
+  const events = run.step(readInput());
   if (events.damage.length) renderer.onEvents(events.damage);
   if (events.executes.length) renderer.onExecutes(events.executes);
   if (events.skillCasts.length) renderer.onSkillCasts(events.skillCasts);
-  refill(world);
 }
 
 function frame(now: number): void {
@@ -161,7 +128,7 @@ function frame(now: number): void {
     accumulator -= STEP_MS;
   }
 
-  renderer.draw(world);
+  renderer.draw(run);
   rafId = requestAnimationFrame(frame);
 }
 
@@ -181,11 +148,32 @@ if (import.meta.hot) {
  */
 if (import.meta.env.DEV) {
   (window as unknown as Record<string, unknown>).__game = {
+    get run() {
+      return run;
+    },
+    /** 当前房间的世界。跨房间的事看 __game.run */
     get world() {
-      return world;
+      return run.world;
     },
     restart(): void {
-      world = buildWorld();
+      startStage(stageIndex);
+    },
+    /** 跳到第 n 关（1 起） */
+    stage(n: number): void {
+      startStage(n - 1);
+    },
+    /** 直接传送到本关某个房间，跳过前面的战斗 */
+    goto(roomId: string): void {
+      run.enterRoom(roomId, null);
+    },
+    /** 清空当前房间的敌人，用来快速验证开门与切换 */
+    clearRoom(): void {
+      for (const e of run.world.entities) {
+        if (e.team === 'enemy' && !e.dead) {
+          e.hp = 0;
+          e.dead = true;
+        }
+      }
     },
     /** 持续注入输入，交给正常循环消费；传 {} 清空。 */
     hold(input: Partial<InputState>): void {
@@ -205,20 +193,34 @@ if (import.meta.env.DEV) {
         injected = {};
       }, (frames * 1000) / TICK_RATE);
     },
-    /** 本局统计摘要，M1 验收标准直接读这个。 */
+    /** 本房间统计摘要，M1 四条验收标准直接读这个。 */
     stats(): unknown {
-      return world.stats.summary();
+      return run.world.stats.summary();
     },
     /** 无预警伤害明细，验收第 4 条要逐条 review。 */
     unwarned(): unknown {
-      return world.stats.unwarned;
+      return run.world.stats.unwarned;
+    },
+    /** 本关进度 */
+    progress(): unknown {
+      return {
+        stage: `${run.stage.index} ${run.stage.name}`,
+        room: run.room.id,
+        kind: run.room.kind,
+        phase: run.phase,
+        cleared: [...run.cleared],
+        total: run.stage.rooms.length,
+        openDoors: run.openDoors,
+        hp: Math.round(run.profile.hp),
+        seconds: Number((run.stats.frames / 60).toFixed(1)),
+      };
     },
     /**
      * 脱离渲染循环快速推进 n 帧，给自动化验证用。
      * 跑的是和真机同一个 stepOnce，所以统计结果可信。
      */
     fastForward(frames: number): void {
-      for (let i = 0; i < frames && !world.stats.died; i += 1) stepOnce();
+      for (let i = 0; i < frames && run.phase !== 'dead'; i += 1) stepOnce();
     },
   };
 }
