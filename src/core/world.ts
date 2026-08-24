@@ -279,10 +279,18 @@ export class World {
     }
 
     if (player && interruptible) {
+      // 处决和技能都没有腾空语义（没有 airborne 字段，渲染层的跳跃高度
+      // 偏移也只认 jump/airSlash），腾空时触发的话人会从半空瞬间"贴地"，
+      // 跟冲刺当年在腾空时触发同一个问题——见下面 dash 分支的说明。
+      // 跳跃已经有跳劈这个腾空专属的取消出口，处决/技能都留给落地之后。
       // 处决优先于普攻：残血目标在手边时，玩家按处决键不该被解释成挥空刀
-      if (e.executeBuffer > 0 && this.tryExecute(e)) {
+      if (e.executeBuffer > 0 && !isActionAirborne(e.action, e.actionFrame) && this.tryExecute(e)) {
         e.executeBuffer = 0;
-      } else if (e.skillBuffer > 0 && e.energy >= SKILL_COST * e.skillCostMultiplier) {
+      } else if (
+        e.skillBuffer > 0 &&
+        !isActionAirborne(e.action, e.actionFrame) &&
+        e.energy >= SKILL_COST * e.skillCostMultiplier
+      ) {
         e.energy -= SKILL_COST * e.skillCostMultiplier;
         this.setAction(e, 'skill');
         this.stats.recordAction('skill');
