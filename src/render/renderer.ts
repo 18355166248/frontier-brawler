@@ -6,7 +6,7 @@
  * 所以能搬；耦合全压在编排层。这里从一开始就把那条线画清楚。
  */
 import type { ActionState, DamageEvent, Entity, Projectile, Telegraph } from '../core/types';
-import { ACTIONS, EXECUTE_THRESHOLD, SKILL_COST } from '../core/actions';
+import { ACTIONS, EXECUTE_THRESHOLD, SKILL_COST, isActionAirborne } from '../core/actions';
 import { ENEMY_PROFILES } from '../core/enemies';
 import type { StageTheme } from '../core/level';
 import type { Run } from '../core/run';
@@ -135,6 +135,24 @@ const ENEMY_LOOK: Record<string, { color: string; w: number; h: number }> = {
 /** 首领阶段二的强调色，替换 ENEMY_LOOK.boss 的默认色 */
 const BOSS_PHASE_TWO_COLOR = '#e2543a';
 
+/**
+ * 近战招式的挥砍弧光样式。角色是占位方块，没有真的挥刀动画——这道弧光
+ * 是唯一能让"刀刃扫过"这件事在画面上读得出来的手段，也是让 slash/slash2/
+ * airSlash 三招看起来「不一样」的唯一办法（它们目前共用同一张 idle 占位
+ * 图，动作本身完全无法区分）。角度用 canvas 弧度制，0 指向角色朝向的
+ * 前方，数值越大越往下转（画布 y 轴向下）。
+ * 只覆盖没有专属冲击特效的招式——技能/处决已经各自有 onSkillCasts/
+ * onExecutes 的环形特效，不用再叠一层。
+ */
+const SWING_STYLE: Partial<Record<ActionState, { color: string; baseAngle: number; arcLen: number; width: number }>> = {
+  // 第一段：由上往下的纵劈，弧光从头顶前方扫到胸口前方
+  slash: { color: '#eef2f5', baseAngle: -0.35, arcLen: 1.5, width: 4 },
+  // 第二段：横扫收尾，弧光更宽更亮，读出来比第一段更有分量
+  slash2: { color: '#ffd479', baseAngle: 0.05, arcLen: 2.6, width: 6 },
+  // 跳劈：陡直向下的下砸，弧光整体压低，和"从天而降"的动作意图对上
+  airSlash: { color: '#7fe8ff', baseAngle: 1.0, arcLen: 1.3, width: 5 },
+};
+
 export class Renderer {
   private ctx: CanvasRenderingContext2D;
   private floats: FloatText[] = [];
@@ -145,6 +163,8 @@ export class Renderer {
   /** 渲染帧计数，只用于纯表现层的呼吸动画，不参与任何逻辑 */
   private clock = 0;
   private minimap = new Minimap();
+  /** 上一帧是否处于腾空状态，按实体 id 记——落地那一帧靠它和当前状态一比较才测得出来 */
+  private wasAirborne = new Map<number, boolean>();
 
   constructor(
     private canvas: HTMLCanvasElement,
@@ -515,6 +535,17 @@ export class Renderer {
     ctx.fill();
     ctx.restore();
 
+    // 落地检测：上一帧还腾空、这一帧不腾空了，就是落地那一刻——
+    // 只对比这两个布尔值，不用管具体是从 jump 还是 airSlash 落地的。
+    const airborneNow = isActionAirborne(e.action, e.actionFrame);
+    if (this.wasAirborne.get(e.id) && !airborneNow) {
+      this.rings.push({ x: e.pos.x, y: e.pos.y, radius: 26, life: 14, max: 14, color: 'rgba(255,255,255,0.55)' });
+    }
+    this.wasAirborne.set(e.id, airborneNow);
+
+    // 冲刺残影画在角色身后，卖"高速位移"的速度感
+    this.drawDashTrail(e);
+
     // 受击闪白：最直接的"打到了"反馈
     const flashing = e.invulnFrames > 0 && e.invulnFrames % 4 >= 2;
 
@@ -524,12 +555,81 @@ export class Renderer {
       this.drawEnemy(e, flashing);
     }
 
+    // 挥砍弧光画在角色之上，判定生效那几帧才会出现
+    this.drawSwingArc(e);
+
     if (!e.dead && e.hp < e.maxHp) {
       // 血条偏移按角色实际体型算，不能全员共用一个数：首领体型比杂兵
       // 高一倍还多，固定偏移会把血条画进身体里而不是画在头顶。
       const look = e.team === 'enemy' ? ENEMY_LOOK[e.kind ?? 'grunt'] : null;
       const topOffset = look ? look.h + 14 : 66;
       this.drawHpBar(e, topOffset);
+    }
+    ctx.restore();
+  }
+
+  /**
+   * 冲刺无敌帧内画几道渐隐残影，卖"高速冲刺"的速度感——只在无敌位移段画
+   * （对应 `dash.invuln`），收招段没有残影，视觉上正好和"这段能接攻击了"
+   * 的分界对上：残影消失即是可以接招的时刻。
+   */
+  private drawDashTrail(e: Entity): void {
+    if (e.action !== 'dash') return;
+    const invuln = ACTIONS.dash.invuln;
+    if (!invuln || e.actionFrame >= invuln.to) return;
+    const { ctx } = this;
+    const ghosts = 4;
+    for (let i = 1; i <= ghosts; i += 1) {
+      const dx = -e.lockedMoveDir.x * i * 9;
+      const dy = -e.lockedMoveDir.y * i * 9 * 0.62;
+      ctx.save();
+      ctx.globalAlpha = (1 - i / (ghosts + 1)) * 0.35;
+      ctx.fillStyle = PALETTE.playerTint;
+      ctx.fillRect(e.pos.x + dx - 12, e.pos.y + dy - 52, 24, 52);
+      ctx.restore();
+    }
+  }
+
+  /**
+   * 招式判定生效时画一道挥砍弧光，见 `SWING_STYLE` 顶部的说明。
+   * 纯读当前 action/actionFrame 计算，判定窗口一过就自然消失。
+   *
+   * 只画玩家——杂兵/盾兵的普攻也叫 'slash'（`ENEMY_PROFILES` 里共用同一个
+   * `attackAction`），如果不分队伍，敌人贴脸攻击时会跟玩家自己的挥砍
+   * 弧光撞成一样的白色，分不清这一下是我打出去的还是敌人打过来的。
+   * 敌人的攻击已经有独立的橙红色预警系统负责"读招"，不需要再叠一层。
+   */
+  private drawSwingArc(e: Entity): void {
+    if (e.team !== 'player') return;
+    const style = SWING_STYLE[e.action];
+    if (!style) return;
+    const box = ACTIONS[e.action].hitboxes[0];
+    if (!box || e.actionFrame < box.activeFrom || e.actionFrame >= box.activeTo) return;
+
+    const span = box.activeTo - box.activeFrom;
+    const t = span > 0 ? (e.actionFrame - box.activeFrom) / span : 0;
+    const reach = (box.offset.x + box.halfWidth) * 0.85;
+
+    const { ctx } = this;
+    ctx.save();
+    ctx.translate(e.pos.x, e.pos.y - 30);
+    ctx.scale(e.facing, 1);
+    ctx.lineCap = 'round';
+
+    // 三层递减透明度的短弧线依次落在稍早的扫过位置上，叠起来读作
+    // "刀光划过一道弧"，而不是一条钉死不动的静态弧线。
+    const trails = 3;
+    for (let i = 0; i < trails; i += 1) {
+      const trailT = Math.max(0, Math.min(1, t - i * 0.22));
+      const sweep = style.baseAngle - style.arcLen / 2 + style.arcLen * trailT;
+      const alpha = (1 - i / trails) * (1 - Math.abs(t - 0.5) * 0.5);
+      if (alpha <= 0) continue;
+      ctx.strokeStyle = style.color;
+      ctx.globalAlpha = alpha;
+      ctx.lineWidth = style.width * (1 - i * 0.25);
+      ctx.beginPath();
+      ctx.arc(0, 0, reach, sweep - 0.45, sweep + 0.45);
+      ctx.stroke();
     }
     ctx.restore();
   }
