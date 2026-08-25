@@ -41,6 +41,25 @@ export const WEAPONS: Record<WeaponId, WeaponDef> = {
   },
 };
 
+export const ARMORS: Record<ArmorId, { id: ArmorId; label: string; description: string }> = {
+  'field-armor': {
+    id: 'field-armor',
+    label: '行阵甲',
+    description: '基础护甲样品；实际减伤效果在下一阶段接入。',
+  },
+};
+
+export const ACCESSORIES: Record<
+  AccessoryId,
+  { id: AccessoryId; label: string; description: string }
+> = {
+  'execution-charm': {
+    id: 'execution-charm',
+    label: '收魂佩',
+    description: '处决饰品样品；实际回复效果在下一阶段接入。',
+  },
+};
+
 export interface EquipmentLoadout {
   weapon: WeaponId | null;
   armor: ArmorId | null;
@@ -53,13 +72,9 @@ export interface EquipmentInventory {
   accessories: AccessoryId[];
 }
 
-/** M4 验证阶段直接给三把实验武器，先验证手感差异，不接 M5 解锁门槛。 */
+/** 新档案从空库存开始，装备通过精英/首领房掉落进入库存。 */
 export function createEquipmentInventory(): EquipmentInventory {
-  return {
-    weapons: [...WEAPON_IDS],
-    armors: [...ARMOR_IDS],
-    accessories: [...ACCESSORY_IDS],
-  };
+  return { weapons: [], armors: [], accessories: [] };
 }
 
 export function createEmptyLoadout(): EquipmentLoadout {
@@ -74,4 +89,18 @@ export function equipmentSlotOf(id: EquipmentId): EquipmentSlot {
   if ((WEAPON_IDS as readonly string[]).includes(id)) return 'weapon';
   if ((ARMOR_IDS as readonly string[]).includes(id)) return 'armor';
   return 'accessory';
+}
+
+export function equipmentLabel(id: EquipmentId): string {
+  const slot = equipmentSlotOf(id);
+  if (slot === 'weapon') return WEAPONS[id as WeaponId].label;
+  if (slot === 'armor') return ARMORS[id as ArmorId].label;
+  return ACCESSORIES[id as AccessoryId].label;
+}
+
+export function equipmentDescription(id: EquipmentId): string {
+  const slot = equipmentSlotOf(id);
+  if (slot === 'weapon') return WEAPONS[id as WeaponId].description;
+  if (slot === 'armor') return ARMORS[id as ArmorId].description;
+  return ACCESSORIES[id as AccessoryId].description;
 }

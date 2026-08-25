@@ -14,6 +14,7 @@ import { OPPOSITE, arenaOf, findRoom } from './level';
 import { DEFAULT_PROFESSION } from './types';
 import type { Entity, Profession, Vec2, WorldEvents } from './types';
 import {
+  WEAPONS,
   canEquipWeapon,
   createEmptyLoadout,
   createEquipmentInventory,
@@ -75,6 +76,8 @@ export type RunPhase =
   | 'cleared'
   /** 站在奖励房里，等玩家三选一 */
   | 'choosing'
+  /** 精英或首领清空后，等玩家领取一件战利品 */
+  | 'equipmentChoice'
   /** 正在切换房间 */
   | 'transition'
   /** 整关打完 */
@@ -150,6 +153,9 @@ export class Run {
    */
   pendingChoice: UpgradeTrackId[] | null = null;
 
+  /** 精英/首领房首次清空后的待选装备；选择期间战斗逻辑暂停。 */
+  pendingEquipment: EquipmentId[] | null = null;
+
   /** 整关的累计统计。每间房的 World 各有一份，这里汇总。 */
   stats = new RunStats();
 
@@ -215,6 +221,35 @@ export class Run {
     return true;
   }
 
+  /** 掉落和开发期调试统一走这里，按槽位去重写入库存。 */
+  grantEquipment(id: EquipmentId): void {
+    const slot = equipmentSlotOf(id);
+    if (slot === 'weapon') {
+      const weapon = id as WeaponId;
+      if (!this.profile.inventory.weapons.includes(weapon)) {
+        this.profile.inventory.weapons.push(weapon);
+      }
+      return;
+    }
+    if (slot === 'armor') {
+      const armor = id as ArmorId;
+      if (!this.profile.inventory.armors.includes(armor)) this.profile.inventory.armors.push(armor);
+      return;
+    }
+    const accessory = id as AccessoryId;
+    if (!this.profile.inventory.accessories.includes(accessory)) {
+      this.profile.inventory.accessories.push(accessory);
+    }
+  }
+
+  /** 领取战利品只收入库存；是否装备留给后续装备界面决定。 */
+  chooseEquipment(id: EquipmentId): boolean {
+    if (!this.pendingEquipment?.includes(id)) return false;
+    this.grantEquipment(id);
+    this.pendingEquipment = null;
+    return true;
+  }
+
   /** 整关是否打完：所有房间都清空了 */
   get stageCleared(): boolean {
     return this.stage.rooms.every((r) => this.cleared.has(r.id));
@@ -231,6 +266,7 @@ export class Run {
     if (this.world.stats.died) return 'dead';
     if (this.transition > 0) return 'transition';
     if (this.pendingChoice) return 'choosing';
+    if (this.pendingEquipment) return 'equipmentChoice';
     if (this.stageCleared) return 'stageComplete';
     if (this.cleared.has(this.room.id)) return 'cleared';
     return 'fighting';
@@ -270,7 +306,7 @@ export class Run {
     };
 
     // 选择界面是正式暂停态；不能让遮罩背后的敌人先走位、出手或累计计时。
-    if (!this.professionConfirmed) return empty;
+    if (!this.professionConfirmed || this.pendingEquipment) return empty;
 
     if (this.transition > 0) {
       this.transition -= 1;
@@ -316,6 +352,33 @@ export class Run {
 
   private markCleared(room: RoomDef): void {
     this.cleared.add(room.id);
+    this.offerEquipmentDrop(room);
+  }
+
+  /**
+   * 直接复用房间首次清空钩子：精英/首领各给一次选择，不另建掉落实体状态机。
+   * 职业武器排在第一项，已拥有的装备会被过滤，避免重复奖励没有意义。
+   */
+  private offerEquipmentDrop(room: RoomDef): void {
+    if (room.kind !== 'elite' && room.kind !== 'boss') return;
+    const professionWeapon = Object.values(WEAPONS).find(
+      (weapon) => weapon.profession === this.profile.profession,
+    );
+    const candidates = ([
+      professionWeapon?.id,
+      'field-armor',
+      'execution-charm',
+    ] satisfies (EquipmentId | undefined)[]).filter(
+      (id): id is EquipmentId => id !== undefined && !this.ownsEquipment(id),
+    );
+    if (candidates.length > 0) this.pendingEquipment = candidates.slice(0, 3);
+  }
+
+  private ownsEquipment(id: EquipmentId): boolean {
+    const slot = equipmentSlotOf(id);
+    if (slot === 'weapon') return this.profile.inventory.weapons.includes(id as WeaponId);
+    if (slot === 'armor') return this.profile.inventory.armors.includes(id as ArmorId);
+    return this.profile.inventory.accessories.includes(id as AccessoryId);
   }
 
   /**

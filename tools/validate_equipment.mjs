@@ -9,6 +9,7 @@ const bundled = await build({
       "export * from './src/core/actions.ts';",
       "export * from './src/core/equipment.ts';",
       "export * from './src/core/run.ts';",
+      "export * from './src/core/world.ts';",
     ].join('\n'),
     resolveDir: process.cwd(),
     sourcefile: 'equipment-validator-entry.ts',
@@ -26,7 +27,7 @@ const source = bundled.outputFiles[0]?.text;
 if (!source) throw new Error('无法加载装备模块');
 const game = await import(`data:text/javascript;base64,${Buffer.from(source).toString('base64')}`);
 
-const { Run, WEAPONS, WEAPON_ACTIONS, createProfile, resolveAction } = game;
+const { EMPTY_INPUT, Run, WEAPONS, WEAPON_ACTIONS, createProfile, resolveAction } = game;
 
 function fail(message) {
   throw new Error(`[validate_equipment] ${message}`);
@@ -74,6 +75,8 @@ const stage = {
 
 const run = new Run(stage, createProfile());
 run.setProfession('heavy');
+run.grantEquipment('wind-sabers');
+run.grantEquipment('iron-maul');
 if (run.equip('wind-sabers')) fail('重击不应能装备疾锋武器');
 if (!run.equip('iron-maul')) fail('重击无法装备自己的武器');
 if (run.profile.equipment.weapon !== 'iron-maul' || run.player?.weapon !== 'iron-maul') {
@@ -83,10 +86,36 @@ run.setProfession('arcane');
 if (run.profile.equipment.weapon !== null || run.player?.weapon !== null) {
   fail('切职业后没有卸下不兼容武器');
 }
+run.grantEquipment('spirit-focus');
+run.grantEquipment('field-armor');
+run.grantEquipment('execution-charm');
 if (!run.equip('spirit-focus') || !run.equip('field-armor') || !run.equip('execution-charm')) {
   fail('合法三槽位装备失败');
 }
 if (!run.equip(null, 'weapon') || run.profile.equipment.weapon !== null) fail('卸下武器失败');
+
+const dropStage = {
+  ...stage,
+  id: 'equipment-drop-smoke',
+  rooms: [{ ...stage.rooms[0], kind: 'elite', encounter: ['elite'] }],
+};
+const dropRun = new Run(dropStage, createProfile());
+dropRun.setProfession('heavy');
+for (const entity of dropRun.world.entities) {
+  if (entity.team === 'enemy') {
+    entity.hp = 0;
+    entity.dead = true;
+  }
+}
+dropRun.step(EMPTY_INPUT);
+const expectedDrop = ['iron-maul', 'field-armor', 'execution-charm'];
+if (dropRun.phase !== 'equipmentChoice') fail('精英房清空后没有进入装备选择暂停态');
+if (JSON.stringify(dropRun.pendingEquipment) !== JSON.stringify(expectedDrop)) {
+  fail(`精英房掉落不正确：${JSON.stringify(dropRun.pendingEquipment)}`);
+}
+if (!dropRun.chooseEquipment('iron-maul')) fail('无法领取待选装备');
+if (!dropRun.profile.inventory.weapons.includes('iron-maul')) fail('领取后没有写入库存');
+if (dropRun.pendingEquipment !== null) fail('领取后没有关闭装备选择');
 
 console.table(
   Object.entries(WEAPONS).map(([id, def]) => ({
@@ -95,4 +124,4 @@ console.table(
     action: expectedAction[id],
   })),
 );
-console.log('[validate_equipment] 三槽位、职业限制与武器覆盖链通过');
+console.log('[validate_equipment] 三槽位、职业限制、武器覆盖链与精英掉落通过');

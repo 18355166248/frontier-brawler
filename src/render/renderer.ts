@@ -26,8 +26,13 @@ import type { Run } from '../core/run';
 import { doorPosition } from '../core/run';
 import { STAGES } from '../core/stages';
 import type { UpgradeTrackId } from '../core/upgrades';
-import type { WeaponId } from '../core/equipment';
-import { WEAPONS } from '../core/equipment';
+import type { EquipmentId, EquipmentSlot, WeaponId } from '../core/equipment';
+import {
+  WEAPONS,
+  equipmentDescription,
+  equipmentLabel,
+  equipmentSlotOf,
+} from '../core/equipment';
 import { MAX_UPGRADE_LEVEL, UPGRADE_TRACK_IDS, UPGRADE_TRACKS } from '../core/upgrades';
 import type { World } from '../core/world';
 import { Minimap } from './minimap';
@@ -1127,6 +1132,11 @@ export class Renderer {
       return;
     }
 
+    if (run.pendingEquipment) {
+      this.drawEquipmentChoice(run.pendingEquipment);
+      return;
+    }
+
     // 房间清空后的指路。不提示的话玩家会站在空房间里等下一波怪。
     if (run.phase === 'cleared' && run.openDoors.length) {
       ctx.save();
@@ -1294,6 +1304,67 @@ export class Renderer {
       ctx.fillText(CHOICE_KEYS[id], x + cardW / 2, y + cardH - 25);
     });
 
+    ctx.restore();
+  }
+
+  /** 精英/首领掉落沿用局内三选一的视觉语言，选择后先收入库存。 */
+  private drawEquipmentChoice(options: EquipmentId[]): void {
+    const { ctx, canvas } = this;
+    const slotLabel: Record<EquipmentSlot, string> = {
+      weapon: '武器',
+      armor: '护甲',
+      accessory: '饰品',
+    };
+    const slotColor: Record<EquipmentSlot, string> = {
+      weapon: '#ff9a5c',
+      armor: '#7fe8ff',
+      accessory: '#b79cff',
+    };
+
+    ctx.save();
+    ctx.fillStyle = 'rgba(8,10,13,0.76)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 22px system-ui, sans-serif';
+    ctx.fillText('选择一件战利品', canvas.width / 2, 86);
+    ctx.font = '13px system-ui, sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.58)';
+    ctx.fillText('精英 / 首领房首次清空掉落 · 按 1 / 2 / 3 收入库存', canvas.width / 2, 110);
+
+    const cardW = 210;
+    const cardH = 210;
+    const gap = 22;
+    const totalW = options.length * cardW + (options.length - 1) * gap;
+    const startX = (canvas.width - totalW) / 2;
+    const y = 150;
+    options.forEach((id, index) => {
+      const slot = equipmentSlotOf(id);
+      const color = slotColor[slot];
+      const x = startX + index * (cardW + gap);
+      ctx.fillStyle = 'rgba(20,24,30,0.94)';
+      ctx.strokeStyle = color;
+      ctx.lineWidth = 2;
+      this.roundRect(ctx, x, y, cardW, cardH, 10);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = 'rgba(255,255,255,0.55)';
+      ctx.font = '12px system-ui, sans-serif';
+      ctx.fillText(slotLabel[slot], x + cardW / 2, y + 31);
+      ctx.fillStyle = color;
+      ctx.font = 'bold 23px system-ui, sans-serif';
+      ctx.fillText(equipmentLabel(id), x + cardW / 2, y + 67);
+      ctx.fillStyle = 'rgba(255,255,255,0.84)';
+      ctx.font = '13px system-ui, sans-serif';
+      this.wrapText(equipmentDescription(id), x + cardW / 2, y + 105, cardW - 30, 19);
+      ctx.beginPath();
+      ctx.arc(x + cardW / 2, y + cardH - 30, 16, 0, Math.PI * 2);
+      ctx.strokeStyle = color;
+      ctx.stroke();
+      ctx.fillStyle = color;
+      ctx.font = 'bold 15px system-ui, sans-serif';
+      ctx.fillText(String(index + 1), x + cardW / 2, y + cardH - 25);
+    });
     ctx.restore();
   }
 

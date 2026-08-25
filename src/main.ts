@@ -141,6 +141,10 @@ window.addEventListener('keydown', (e) => {
   const profession = PROFESSION_KEYS[e.code];
   if (profession && run.phase === 'professionSelect') {
     run.setProfession(profession);
+  } else if (run.phase === 'equipmentChoice' && run.pendingEquipment) {
+    const index = Number(e.code.replace('Digit', '')) - 1;
+    const equipment = run.pendingEquipment[index];
+    if (equipment) run.chooseEquipment(equipment);
   } else if (track && run.phase === 'choosing') {
     run.chooseUpgrade(track);
   }
@@ -282,6 +286,10 @@ if (import.meta.env.DEV) {
     equip(id: EquipmentId | null, slot?: EquipmentSlot): boolean {
       return run.equip(id, slot);
     },
+    /** M4 掉落调试：直接收入库存，不自动装备。 */
+    grantEquipment(id: EquipmentId): void {
+      run.grantEquipment(id);
+    },
     /** 清空当前房间的敌人，用来快速验证开门与切换 */
     clearRoom(): void {
       for (const e of run.world.entities) {
@@ -344,6 +352,12 @@ if (import.meta.env.DEV) {
         hp: Math.round(run.profile.hp),
         profession: run.profile.profession,
         equipment: { ...run.profile.equipment },
+        inventory: {
+          weapons: [...run.profile.inventory.weapons],
+          armors: [...run.profile.inventory.armors],
+          accessories: [...run.profile.inventory.accessories],
+        },
+        pendingEquipment: run.pendingEquipment ? [...run.pendingEquipment] : null,
         seconds: Number((run.stats.frames / 60).toFixed(1)),
       };
     },
