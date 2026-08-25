@@ -205,6 +205,8 @@ export interface Entity {
   kind?: EnemyKind;
   /** 仅玩家有；动作解析据此叠加职业覆盖，敌人保持 undefined。 */
   profession?: Profession;
+  /** M4 武器动作覆盖；只有玩家可能携带。 */
+  weapon?: import('./equipment').WeaponId | null;
   pos: Vec2;
   velocity: Vec2;
   facing: Facing;

@@ -259,6 +259,8 @@ __game.fastForward(600)           // 脱离渲染循环快推 600 帧
 __game.stats()                    // 本房间统计，M1 四条验收标准都在里面
 __game.overallStats()             // 整关(跨房间)累计统计，结算界面画的就是这份数据
 __game.profession('swift')        // 开发期切换职业：heavy / swift / arcane
+__game.equip('wind-sabers')       // M4 装备实验武器；职业不匹配会返回 false
+__game.equip(null, 'weapon')      // 卸下武器，回到职业默认动作
 __game.professionReport()         // M2 已记录样本的三职业聚合对比
 __game.professionSamples()        // M2 原始样本；每次通关或死亡自动记录
 __game.clearProfessionSamples()   // 清空本机 M2 验收样本

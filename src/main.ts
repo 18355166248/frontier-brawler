@@ -19,6 +19,7 @@ import { SpriteSheet } from './render/sprites';
 import { PROFESSION_IDS } from './core/types';
 import type { ActionState, Profession } from './core/types';
 import { ProfessionValidationStore } from './dev/profession-validation';
+import type { EquipmentId, EquipmentSlot } from './core/equipment';
 
 /** 三选一的按键，和 render/renderer.ts 里卡片上画的键位一一对应 */
 const CHOICE_KEYS: Record<string, UpgradeTrackId> = {
@@ -277,6 +278,10 @@ if (import.meta.env.DEV) {
       if (!PROFESSION_IDS.includes(profession)) return;
       run.setProfession(profession);
     },
+    /** M4 实验武器/装备验证；传 null 时必须同时指定要卸下的槽位。 */
+    equip(id: EquipmentId | null, slot?: EquipmentSlot): boolean {
+      return run.equip(id, slot);
+    },
     /** 清空当前房间的敌人，用来快速验证开门与切换 */
     clearRoom(): void {
       for (const e of run.world.entities) {
@@ -338,6 +343,7 @@ if (import.meta.env.DEV) {
         openDoors: run.openDoors,
         hp: Math.round(run.profile.hp),
         profession: run.profile.profession,
+        equipment: { ...run.profile.equipment },
         seconds: Number((run.stats.frames / 60).toFixed(1)),
       };
     },

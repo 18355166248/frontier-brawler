@@ -26,6 +26,8 @@ import type { Run } from '../core/run';
 import { doorPosition } from '../core/run';
 import { STAGES } from '../core/stages';
 import type { UpgradeTrackId } from '../core/upgrades';
+import type { WeaponId } from '../core/equipment';
+import { WEAPONS } from '../core/equipment';
 import { MAX_UPGRADE_LEVEL, UPGRADE_TRACK_IDS, UPGRADE_TRACKS } from '../core/upgrades';
 import type { World } from '../core/world';
 import { Minimap } from './minimap';
@@ -75,13 +77,18 @@ const PROFESSION_CARDS: Record<
  * 不是位置曲线），不需要和这两条对齐。
  * airSlash 继承跳跃末段的高度，随下砸动作线性归零。
  */
-function jumpHeight(action: ActionState, frame: number, profession?: Profession): number {
+function jumpHeight(
+  action: ActionState,
+  frame: number,
+  profession?: Profession,
+  weapon?: WeaponId | null,
+): number {
   if (action === 'jump') {
-    const t = Math.min(1, frame / resolveAction('jump', profession).frames);
+    const t = Math.min(1, frame / resolveAction('jump', profession, weapon).frames);
     return JUMP_PEAK_HEIGHT * 4 * t * (1 - t);
   }
   if (action === 'airSlash') {
-    const total = resolveAction('airSlash', profession).airborne?.to ?? 16;
+    const total = resolveAction('airSlash', profession, weapon).airborne?.to ?? 16;
     const t = Math.min(1, frame / total);
     return JUMP_PEAK_HEIGHT * 0.55 * (1 - t);
   }
@@ -100,15 +107,20 @@ function walkBob(
   frame: number,
   amplitude: number,
   profession?: Profession,
+  weapon?: WeaponId | null,
 ): number {
   if (action !== 'move') return 0;
-  const t = frame / resolveAction('move', profession).frames;
+  const t = frame / resolveAction('move', profession, weapon).frames;
   return Math.abs(Math.sin(t * Math.PI * 2)) * amplitude;
 }
 
 /** 走动一圈里两次"脚落地"对应的动作帧，踩灰尘特效的触发点用 */
-function isFootfallFrame(frame: number, profession?: Profession): boolean {
-  const half = resolveAction('move', profession).frames / 2;
+function isFootfallFrame(
+  frame: number,
+  profession?: Profession,
+  weapon?: WeaponId | null,
+): boolean {
+  const half = resolveAction('move', profession, weapon).frames / 2;
   return frame === 0 || Math.abs(frame - half) < 1;
 }
 
@@ -630,7 +642,7 @@ export class Renderer {
 
     // 跳跃期间角色离地，影子却要钉在地面原位——离地越高，影子越小越淡，
     // 这是 2D 游戏读「高度」的标准手法，没有它跳跃看起来只是往前挪了一下。
-    const airH = jumpHeight(e.action, e.actionFrame, e.profession);
+    const airH = jumpHeight(e.action, e.actionFrame, e.profession, e.weapon);
     const shadowShrink = 1 - Math.min(0.55, airH / 90);
     ctx.save();
     ctx.globalAlpha *= shadowShrink;
@@ -650,7 +662,7 @@ export class Renderer {
 
     // 落地检测：上一帧还腾空、这一帧不腾空了，就是落地那一刻——
     // 只对比这两个布尔值，不用管具体是从 jump 还是 airSlash 落地的。
-    const airborneNow = isActionAirborne(e.action, e.actionFrame, e.profession);
+    const airborneNow = isActionAirborne(e.action, e.actionFrame, e.profession, e.weapon);
     if (this.wasAirborne.get(e.id) && !airborneNow) {
       this.rings.push({ x: e.pos.x, y: e.pos.y, radius: 26, life: 14, max: 14, color: 'rgba(255,255,255,0.55)' });
     }
@@ -662,7 +674,7 @@ export class Renderer {
     if (
       e.action === 'move' &&
       e.actionFrame !== lastFrame &&
-      isFootfallFrame(e.actionFrame, e.profession)
+      isFootfallFrame(e.actionFrame, e.profession, e.weapon)
     ) {
       this.rings.push({
         x: e.pos.x + e.facing * e.radius * 0.3,
@@ -729,7 +741,7 @@ export class Renderer {
    */
   private drawDashTrail(e: Entity): void {
     if (e.action !== 'dash') return;
-    const invuln = resolveAction('dash', e.profession).invuln;
+    const invuln = resolveAction('dash', e.profession, e.weapon).invuln;
     if (!invuln || e.actionFrame >= invuln.to) return;
     const { ctx } = this;
     const ghosts = 4;
@@ -757,7 +769,7 @@ export class Renderer {
     if (e.team !== 'player') return;
     const style = SWING_STYLE[e.action];
     if (!style) return;
-    const box = resolveAction(e.action, e.profession).hitboxes[0];
+    const box = resolveAction(e.action, e.profession, e.weapon).hitboxes[0];
     if (!box || e.actionFrame < box.activeFrom || e.actionFrame >= box.activeTo) return;
 
     const span = box.activeTo - box.activeFrom;
@@ -791,7 +803,7 @@ export class Renderer {
   private drawPlayer(e: Entity, flashing: boolean, airH: number): void {
     const { ctx } = this;
     const sheet = this.sheets.get('player');
-    const def = resolveAction(e.action, e.profession);
+    const def = resolveAction(e.action, e.profession, e.weapon);
     const progress = def.loop
       ? (e.actionFrame % def.frames) / def.frames
       : e.actionFrame / def.frames;
@@ -805,7 +817,7 @@ export class Renderer {
     // 走动时叠加的重心起伏——腿部摆动帧本身已经有了，但没有配套的
     // 上下起伏，走起来还是有点"贴地滑"。幅度比敌人小一档（2px vs 3px），
     // 玩家有真的走路帧兜底，起伏只是锦上添花，不是唯一的动作信号。
-    const bob = walkBob(e.action, e.actionFrame, 2, e.profession);
+    const bob = walkBob(e.action, e.actionFrame, 2, e.profession, e.weapon);
 
     if (rect && sheet) {
       // hero-v2 为防止长剑触格统一保留了 4px 安全边距，实际人物轮廓比旧占位件
@@ -861,9 +873,9 @@ export class Renderer {
         : 0;
     // 正式走路帧叠一层很轻的重心起伏，几何兜底也复用它；幅度按敌人体型
     // 稍微放大一点（3px），首领这种大体型才看得出来在动。
-    const bob = walkBob(e.action, e.actionFrame, 3, e.profession);
+    const bob = walkBob(e.action, e.actionFrame, 3, e.profession, e.weapon);
     const sheet = this.sheets.get(kind);
-    const def = resolveAction(e.action, e.profession);
+    const def = resolveAction(e.action, e.profession, e.weapon);
     const progress = def.loop
       ? (e.actionFrame % def.frames) / def.frames
       : e.actionFrame / def.frames;
@@ -1090,8 +1102,9 @@ export class Renderer {
       ([k, n]) => `${ENEMY_PROFILES[k as keyof typeof ENEMY_PROFILES]?.label ?? k}×${n}`,
     );
     const profession = player?.profession ? ` · 职业 ${PROFESSION_LABEL[player.profession]}` : '';
+    const weapon = player?.weapon ? ` · 武器 ${WEAPONS[player.weapon].label}` : '';
     ctx.fillText(
-      `敌人 ${alive.length}${parts.length ? ' · ' + parts.join(' ') : ''}${profession}`,
+      `敌人 ${alive.length}${parts.length ? ' · ' + parts.join(' ') : ''}${profession}${weapon}`,
       14,
       24,
     );

@@ -11,6 +11,7 @@
  * 玩家付出「读招」的注意力，换来躲开的机会——这是「不觉得不公平」的实现方式。
  */
 import type { ActionDef, ActionState, Profession } from './types';
+import type { WeaponId } from './equipment';
 
 /** 逻辑帧率。固定步长，不跟随显示帧率，保证手感在任何设备一致。 */
 export const TICK_RATE = 60;
@@ -691,14 +692,82 @@ export const PROFESSION_ACTIONS: Record<
   },
 };
 
-/** 职业覆盖优先，未覆盖或敌人没有职业时退回共享动作表。 */
-export function resolveAction(state: ActionState, profession?: Profession): ActionDef {
-  return (profession ? PROFESSION_ACTIONS[profession][state] : undefined) ?? ACTIONS[state];
+/**
+ * M4 武器只覆盖职业已经允许的动作形态，不发明跨职业招式。
+ * 三把实验武器默认不装备，先通过调试入口验证差异，再接掉落和正式界面。
+ */
+export const WEAPON_ACTIONS: Record<WeaponId, Partial<Record<ActionState, ActionDef>>> = {
+  'iron-maul': {
+    heavyCharged: {
+      ...(PROFESSION_ACTIONS.heavy.heavyCharged ?? ACTIONS.heavyCharged),
+      frames: 40,
+      hitboxes: [
+        {
+          ...ACTIONS.heavyCharged.hitboxes[0],
+          halfWidth: 50,
+          halfDepth: 38,
+          damage: 40,
+          knockback: 14,
+          activeFrom: 11,
+          activeTo: 16,
+        },
+      ],
+    },
+  },
+  'wind-sabers': {
+    slash3: {
+      ...(PROFESSION_ACTIONS.swift.slash3 ?? ACTIONS.slash3),
+      frames: 20,
+      motion: ACTIONS.slash3.motion?.slice(0, 20),
+      hitboxes: [
+        {
+          ...ACTIONS.slash3.hitboxes[0],
+          activeFrom: 4,
+          activeTo: 9,
+          knockback: 3.5,
+        },
+      ],
+      cancelFrom: 9,
+      perfectCancelWindow: { from: 9, to: 13 },
+    },
+  },
+  'spirit-focus': {
+    arcanePulse: {
+      ...(PROFESSION_ACTIONS.arcane.arcanePulse ?? ACTIONS.arcanePulse),
+      frames: 34,
+      hitboxes: [
+        {
+          ...ACTIONS.arcanePulse.hitboxes[0],
+          offset: { x: 72, y: 0 },
+          halfWidth: 42,
+          halfDepth: 38,
+          activeFrom: 13,
+          activeTo: 18,
+          damage: 15,
+        },
+      ],
+      cancelFrom: 18,
+      perfectCancelWindow: { from: 18, to: 22 },
+    },
+  },
+};
+
+/** 武器覆盖优先，其次职业覆盖；敌人两层都没有，最终退回共享动作表。 */
+export function resolveAction(
+  state: ActionState,
+  profession?: Profession,
+  weapon?: WeaponId | null,
+): ActionDef {
+  return (
+    (weapon ? WEAPON_ACTIONS[weapon][state] : undefined) ??
+    (profession ? PROFESSION_ACTIONS[profession][state] : undefined) ??
+    ACTIONS[state]
+  );
 }
 
 /** 一次动作播完需要多少帧 */
-export function actionLength(state: ActionState, profession?: Profession): number {
-  return resolveAction(state, profession).frames;
+export function actionLength(state: ActionState, profession?: Profession, weapon?: WeaponId | null): number {
+  return resolveAction(state, profession, weapon).frames;
 }
 
 /** 当前帧是否允许被玩家输入打断 */
@@ -706,8 +775,9 @@ export function canInterrupt(
   state: ActionState,
   frame: number,
   profession?: Profession,
+  weapon?: WeaponId | null,
 ): boolean {
-  const def = resolveAction(state, profession);
+  const def = resolveAction(state, profession, weapon);
   if (def.cancelable) return true;
   // 显式声明的取消点优先——纯位移动作（冲刺、跳跃）没有判定框，
   // 不写这个字段的话会落进下面的隐式规则，取消窗口只剩最后 1 帧。
@@ -728,8 +798,9 @@ export function isPerfectCancel(
   fromState: ActionState,
   frame: number,
   profession?: Profession,
+  weapon?: WeaponId | null,
 ): boolean {
-  const win = resolveAction(fromState, profession).perfectCancelWindow;
+  const win = resolveAction(fromState, profession, weapon).perfectCancelWindow;
   if (!win) return false;
   return frame >= win.from && frame < win.to;
 }
@@ -739,8 +810,9 @@ export function isActionInvulnerable(
   state: ActionState,
   frame: number,
   profession?: Profession,
+  weapon?: WeaponId | null,
 ): boolean {
-  const inv = resolveAction(state, profession).invuln;
+  const inv = resolveAction(state, profession, weapon).invuln;
   if (!inv) return false;
   return frame >= inv.from && frame < inv.to;
 }
@@ -753,8 +825,9 @@ export function isActionAirborne(
   state: ActionState,
   frame: number,
   profession?: Profession,
+  weapon?: WeaponId | null,
 ): boolean {
-  const ab = resolveAction(state, profession).airborne;
+  const ab = resolveAction(state, profession, weapon).airborne;
   if (!ab) return false;
   return frame >= ab.from && frame < ab.to;
 }

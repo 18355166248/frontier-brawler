@@ -13,6 +13,21 @@ import type { Direction, RoomDef, StageDef } from './level';
 import { OPPOSITE, arenaOf, findRoom } from './level';
 import { DEFAULT_PROFESSION } from './types';
 import type { Entity, Profession, Vec2, WorldEvents } from './types';
+import {
+  canEquipWeapon,
+  createEmptyLoadout,
+  createEquipmentInventory,
+  equipmentSlotOf,
+} from './equipment';
+import type {
+  EquipmentId,
+  EquipmentInventory,
+  EquipmentLoadout,
+  EquipmentSlot,
+  WeaponId,
+  ArmorId,
+  AccessoryId,
+} from './equipment';
 import type { Arena, InputState } from './world';
 import { World, createEnemy, createEntity } from './world';
 import { RunStats } from './stats';
@@ -26,6 +41,8 @@ const BASE_MAX_HP = 160;
 export interface PlayerProfile {
   /** M2 职业跨房间保留，后续职业选择界面只改这份档案。 */
   profession: Profession;
+  equipment: EquipmentLoadout;
+  inventory: EquipmentInventory;
   hp: number;
   maxHp: number;
   energy: number;
@@ -38,6 +55,8 @@ export interface PlayerProfile {
 export function createProfile(): PlayerProfile {
   return {
     profession: DEFAULT_PROFESSION,
+    equipment: createEmptyLoadout(),
+    inventory: createEquipmentInventory(),
     hp: BASE_MAX_HP,
     maxHp: BASE_MAX_HP,
     energy: 0,
@@ -162,8 +181,38 @@ export class Run {
    */
   setProfession(profession: Profession): void {
     this.profile.profession = profession;
+    const weapon = this.profile.equipment.weapon;
+    if (weapon && !canEquipWeapon(profession, weapon)) this.profile.equipment.weapon = null;
     if (this.player) this.player.profession = profession;
+    if (this.player) this.player.weapon = this.profile.equipment.weapon;
     this.professionConfirmed = true;
+  }
+
+  /**
+   * 装备入口集中校验库存和职业限制；界面、调试挂钩和未来掉落都走这里，
+   * 避免只改 profile 或只改当前实体导致切房后状态反弹。
+   */
+  equip(id: EquipmentId | null, slot?: EquipmentSlot): boolean {
+    const targetSlot = id ? equipmentSlotOf(id) : slot;
+    if (!targetSlot) return false;
+    if (targetSlot === 'weapon') {
+      const weapon = id as WeaponId | null;
+      if (weapon && !this.profile.inventory.weapons.includes(weapon)) return false;
+      if (weapon && !canEquipWeapon(this.profile.profession, weapon)) return false;
+      this.profile.equipment.weapon = weapon;
+      if (this.player) this.player.weapon = weapon;
+      return true;
+    }
+    if (targetSlot === 'armor') {
+      const armor = id as ArmorId | null;
+      if (armor && !this.profile.inventory.armors.includes(armor)) return false;
+      this.profile.equipment.armor = armor;
+      return true;
+    }
+    const accessory = id as AccessoryId | null;
+    if (accessory && !this.profile.inventory.accessories.includes(accessory)) return false;
+    this.profile.equipment.accessory = accessory;
+    return true;
   }
 
   /** 整关是否打完：所有房间都清空了 */
@@ -195,13 +244,20 @@ export class Run {
    * 不会再触发 `enterRoom`）还只存在 `this.world.stats` 里，没被折进来。
    * 这里现算一份合并结果，不直接修改 `this.stats`，避免每帧调用都重复叠加。
    */
-  overallSummary(): ReturnType<RunStats['summary']> & { profession: Profession } {
+  overallSummary(): ReturnType<RunStats['summary']> & {
+    profession: Profession;
+    equipment: EquipmentLoadout;
+  } {
     const merged = new RunStats();
     merged.frames = this.stats.frames;
     merged.died = this.stats.died;
     merged.absorb(this.stats);
     merged.absorb(this.world.stats);
-    return { profession: this.profile.profession, ...merged.summary() };
+    return {
+      profession: this.profile.profession,
+      equipment: { ...this.profile.equipment },
+      ...merged.summary(),
+    };
   }
 
   step(input: InputState): WorldEvents {
@@ -381,6 +437,7 @@ export class Run {
     w.spawn(
       createEntity('player', spawn, {
         profession: this.profile.profession,
+        weapon: this.profile.equipment.weapon,
         hp: this.profile.hp,
         maxHp: this.profile.maxHp,
         energy: this.profile.energy,

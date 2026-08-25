@@ -286,8 +286,8 @@ export class World {
       e.ai.bossSummoned = true;
     }
 
-    const def = resolveAction(e.action, e.profession);
-    const interruptible = canInterrupt(e.action, e.actionFrame, e.profession);
+    const def = resolveAction(e.action, e.profession, e.weapon);
+    const interruptible = canInterrupt(e.action, e.actionFrame, e.profession, e.weapon);
     const player = e.team === 'player' ? (input as InputState) : null;
 
     if (player && e.profession === 'heavy' && e.action === 'heavyCharge') {
@@ -321,13 +321,13 @@ export class World {
       // 处决优先于普攻：残血目标在手边时，玩家按处决键不该被解释成挥空刀
       if (
         e.executeBuffer > 0 &&
-        !isActionAirborne(e.action, e.actionFrame, e.profession) &&
+        !isActionAirborne(e.action, e.actionFrame, e.profession, e.weapon) &&
         this.tryExecute(e)
       ) {
         e.executeBuffer = 0;
       } else if (
         e.skillBuffer > 0 &&
-        !isActionAirborne(e.action, e.actionFrame, e.profession) &&
+        !isActionAirborne(e.action, e.actionFrame, e.profession, e.weapon) &&
         e.energy >= resolveSkillCost(e.profession) * e.skillCostMultiplier
       ) {
         e.energy -= resolveSkillCost(e.profession) * e.skillCostMultiplier;
@@ -350,7 +350,10 @@ export class World {
         if (e.profession === 'heavy') {
           this.setAction(e, 'heavyCharge');
         } else if (e.profession === 'arcane') {
-          if (e.action === 'arcanePulse' && isPerfectCancel(e.action, e.actionFrame, e.profession)) {
+          if (
+            e.action === 'arcanePulse' &&
+            isPerfectCancel(e.action, e.actionFrame, e.profession, e.weapon)
+          ) {
             e.perfectCancelPending = true;
             this.stats.perfectCancels += 1;
           }
@@ -370,7 +373,7 @@ export class World {
         e.dashBuffer > 0 &&
         e.action !== 'dash' &&
         e.dashCooldown <= 0 &&
-        !isActionAirborne(e.action, e.actionFrame, e.profession)
+        !isActionAirborne(e.action, e.actionFrame, e.profession, e.weapon)
       ) {
         // 腾空时不能触发冲刺——冲刺是地面动作，没有腾空语义，
         // 人还在半空中一按冲刺就会瞬间"凭空消失、贴地冲出去"，
@@ -414,7 +417,7 @@ export class World {
     // 连方向键都不响应，人像焊在地上——这正是"动作发死、不连贯"的一处
     // 具体成因。冲刺/跳跃的位移曲线中途没有 0（跳跃全程都是抛物线的一部分，
     // 手感上不该半路被走位打断），所以这条改动不影响它们的连贯位移。
-    const motion = resolveAction(e.action, e.profession).motion;
+    const motion = resolveAction(e.action, e.profession, e.weapon).motion;
     const before = { x: e.pos.x, y: e.pos.y };
     if (motion && e.actionFrame < motion.length && motion[e.actionFrame] !== 0) {
       const step = motion[e.actionFrame];
@@ -425,7 +428,7 @@ export class World {
       } else {
         e.pos.x += step * e.facing;
       }
-    } else if (canInterrupt(e.action, e.actionFrame, e.profession)) {
+    } else if (canInterrupt(e.action, e.actionFrame, e.profession, e.weapon)) {
       const len = Math.hypot(input.moveX, input.moveY);
       if (len > 0.01) {
         const nx = input.moveX / len;
@@ -478,7 +481,10 @@ export class World {
       // 完美取消判定：这一刻 e.action/e.actionFrame 还是"来源动作"，
       // setAction 之后就没法回头看了，必须在切换前读。只有玩家用得上——
       // 敌人不需要这层反馈，perfectCancelPending 恒为 false。
-      if (e.team === 'player' && isPerfectCancel(e.action, e.actionFrame, e.profession)) {
+      if (
+        e.team === 'player' &&
+        isPerfectCancel(e.action, e.actionFrame, e.profession, e.weapon)
+      ) {
         e.perfectCancelPending = true;
         this.stats.perfectCancels += 1;
       }
@@ -564,7 +570,7 @@ export class World {
   }
 
   private advanceAction(e: Entity): void {
-    const def = resolveAction(e.action, e.profession);
+    const def = resolveAction(e.action, e.profession, e.weapon);
     e.actionFrame += 1;
     if (e.actionFrame < def.frames) return;
 
@@ -649,7 +655,10 @@ export class World {
       }
       // 预警段（aim/charge）不释放令牌，它们后面还接着真正的生效段
       const attacking = TOKEN_RELEASING.includes(e.action);
-      if (attacking && e.actionFrame >= resolveAction(e.action, e.profession).frames - 1) {
+      if (
+        attacking &&
+        e.actionFrame >= resolveAction(e.action, e.profession, e.weapon).frames - 1
+      ) {
         this.attackTokens.delete(id);
         e.attackCooldown = ENEMY_PROFILES[e.kind ?? 'grunt'].tokenCooldown;
       }
@@ -666,7 +675,7 @@ export class World {
         e.telegraph = null;
         continue;
       }
-      const tel = resolveAction(e.action, e.profession).telegraph;
+      const tel = resolveAction(e.action, e.profession, e.weapon).telegraph;
       if (!tel || e.actionFrame >= tel.until) {
         e.telegraph = null;
         continue;
@@ -679,7 +688,7 @@ export class World {
   private resolveHits(): void {
     for (const attacker of this.entities) {
       if (attacker.dead) continue;
-      const def = resolveAction(attacker.action, attacker.profession);
+      const def = resolveAction(attacker.action, attacker.profession, attacker.weapon);
       for (const box of def.hitboxes) {
         if (attacker.actionFrame < box.activeFrom || attacker.actionFrame >= box.activeTo) {
           continue;
@@ -722,13 +731,13 @@ export class World {
   private isInvulnerable(e: Entity): boolean {
     return (
       e.invulnFrames > 0 ||
-      isActionInvulnerable(e.action, e.actionFrame, e.profession)
+      isActionInvulnerable(e.action, e.actionFrame, e.profession, e.weapon)
     );
   }
 
   /** 是否处于跳跃的腾空区间——注意这不是无敌，只对非 hitsAir 的判定免疫。 */
   private isAirborne(e: Entity): boolean {
-    return isActionAirborne(e.action, e.actionFrame, e.profession);
+    return isActionAirborne(e.action, e.actionFrame, e.profession, e.weapon);
   }
 
   private spawnProjectile(shooter: Entity): void {
@@ -903,7 +912,7 @@ export class World {
 
     // 超级护甲：照常掉血，但不进硬直、不换动作。
     // 精英因此「打不断」，玩家只能靠走位躲而不是靠输出压制。
-    const armored = resolveAction(target.action, target.profession).superArmor === true;
+    const armored = resolveAction(target.action, target.profession, target.weapon).superArmor === true;
     if (armored) {
       // 仍给几帧无敌，防的是同一帧被多段判定重复结算，不是防连击
       target.invulnFrames = Math.max(target.invulnFrames, 6);
@@ -988,11 +997,11 @@ export class World {
    * 以及它是不是某个预警段接续下来的生效段（rush 接 charge、shoot 接 aim）。
    */
   private wasTelegraphed(attacker: Entity): boolean {
-    if (resolveAction(attacker.action, attacker.profession).telegraph) return true;
+    if (resolveAction(attacker.action, attacker.profession, attacker.weapon).telegraph) return true;
     for (const [pre, post] of Object.entries(ACTION_CHAIN)) {
       if (
         post === attacker.action &&
-        resolveAction(pre as ActionState, attacker.profession).telegraph
+        resolveAction(pre as ActionState, attacker.profession, attacker.weapon).telegraph
       ) {
         return true;
       }
