@@ -49,11 +49,14 @@ export class SpriteSheet {
   } | null {
     if (!this.ready) return null;
     let row = this.rows.indexOf(action);
-    // 职业动作的逻辑先落地，专属美术补齐前让释放段复用 slash2，至少保持挥刀姿态；
-    // 蓄力姿态和其他没有专属行的动作继续退回 idle，总比整个人消失好。
+    // 职业动作的逻辑先落地，专属美术补齐前让释放段复用 slash2，至少保持出手姿态；
+    // 重击蓄力和其他没有专属行的动作继续退回 idle，总比整个人消失好。
     if (
       row < 0 &&
-      (action === 'slash3' || action === 'heavy' || action === 'heavyCharged')
+      (action === 'slash3' ||
+        action === 'heavy' ||
+        action === 'heavyCharged' ||
+        action === 'arcanePulse')
     ) {
       row = this.rows.indexOf('slash2');
     }

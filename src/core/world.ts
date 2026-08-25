@@ -19,18 +19,18 @@ import type {
   WorldEvents,
 } from './types';
 import {
-  EXECUTE_RANGE,
   EXECUTE_THRESHOLD,
   HEAVY_FULL_CHARGE_FRAMES,
   JUMP_COOLDOWN,
   PERFECT_CANCEL_DAMAGE_MULT,
-  SKILL_COST,
   canInterrupt,
   isActionAirborne,
   isActionInvulnerable,
   isPerfectCancel,
   resolveAction,
   resolveDashCooldown,
+  resolveExecuteRange,
+  resolveSkillCost,
 } from './actions';
 import { ENEMY_PROFILES, think } from './enemies';
 import { RunStats } from './stats';
@@ -311,9 +311,9 @@ export class World {
       } else if (
         e.skillBuffer > 0 &&
         !isActionAirborne(e.action, e.actionFrame, e.profession) &&
-        e.energy >= SKILL_COST * e.skillCostMultiplier
+        e.energy >= resolveSkillCost(e.profession) * e.skillCostMultiplier
       ) {
-        e.energy -= SKILL_COST * e.skillCostMultiplier;
+        e.energy -= resolveSkillCost(e.profession) * e.skillCostMultiplier;
         this.setAction(e, 'skill');
         this.stats.recordAction('skill');
         e.skillBuffer = 0;
@@ -332,6 +332,13 @@ export class World {
         }
         if (e.profession === 'heavy') {
           this.setAction(e, 'heavyCharge');
+        } else if (e.profession === 'arcane') {
+          if (e.action === 'arcanePulse' && isPerfectCancel(e.action, e.actionFrame, e.profession)) {
+            e.perfectCancelPending = true;
+            this.stats.perfectCancels += 1;
+          }
+          this.setAction(e, 'arcanePulse');
+          this.recordAttackStat('arcanePulse');
         } else {
           this.startAttack(e, def.cancelInto?.[0]);
         }
@@ -483,6 +490,7 @@ export class World {
       action === 'slash3' ||
       action === 'heavy' ||
       action === 'heavyCharged' ||
+      action === 'arcanePulse' ||
       action === 'airSlash'
     ) {
       this.stats.recordAction(action);
@@ -523,7 +531,7 @@ export class World {
       if (e.dead || e.team === 'player') continue;
       if (e.hp / e.maxHp >= EXECUTE_THRESHOLD) continue;
       const d = Math.hypot(e.pos.x - player.pos.x, e.pos.y - player.pos.y);
-      if (d <= EXECUTE_RANGE && d < bestDist) {
+      if (d <= resolveExecuteRange(player.profession) && d < bestDist) {
         best = e;
         bestDist = d;
       }
@@ -659,12 +667,17 @@ export class World {
         if (attacker.actionFrame < box.activeFrom || attacker.actionFrame >= box.activeTo) {
           continue;
         }
-        // 环形判定不跟朝向翻转，范围技才能真正打到背后的人
-        const cx = attacker.pos.x + (box.radial ? 0 : box.offset.x * attacker.facing);
+        // 圆形判定也允许把圆心放在角色前方；通用解围技 offset=0，
+        // 术法则用正 offset 创造中距离落点，两者走同一条碰撞路径。
+        const cx = attacker.pos.x + box.offset.x * attacker.facing;
         const cy = attacker.pos.y + box.offset.y;
 
         if (box.radial && attacker.team === 'player' && attacker.actionFrame === box.activeFrom) {
-          this.events.skillCasts.push({ at: { x: cx, y: cy }, radius: box.halfWidth });
+          this.events.skillCasts.push({
+            at: { x: cx, y: cy },
+            radius: box.halfWidth,
+            power: attacker.action === 'arcanePulse' ? 'light' : 'heavy',
+          });
         }
 
         for (const target of this.entities) {

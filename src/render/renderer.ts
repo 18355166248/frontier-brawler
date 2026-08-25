@@ -16,9 +16,9 @@ import type {
 import {
   EXECUTE_THRESHOLD,
   HEAVY_FULL_CHARGE_FRAMES,
-  SKILL_COST,
   isActionAirborne,
   resolveAction,
+  resolveSkillCost,
 } from '../core/actions';
 import { ENEMY_PROFILES } from '../core/enemies';
 import type { StageTheme } from '../core/level';
@@ -305,10 +305,21 @@ export class Renderer {
     this.trim();
   }
 
-  onSkillCasts(list: { at: { x: number; y: number }; radius: number }[]): void {
+  onSkillCasts(
+    list: { at: { x: number; y: number }; radius: number; power: 'light' | 'heavy' }[],
+  ): void {
     for (const s of list) {
-      this.rings.push({ x: s.at.x, y: s.at.y, radius: s.radius, life: 20, max: 20, color: '#6fb6f0' });
-      this.shake = Math.max(this.shake, 7);
+      const light = s.power === 'light';
+      const life = light ? 12 : 20;
+      this.rings.push({
+        x: s.at.x,
+        y: s.at.y,
+        radius: s.radius,
+        life,
+        max: life,
+        color: light ? '#92dcff' : '#6fb6f0',
+      });
+      this.shake = Math.max(this.shake, light ? 2 : 7);
     }
     this.trim();
   }
@@ -1097,7 +1108,7 @@ export class Renderer {
 
     // 能量条：攒满会变色并提示按键，否则玩家不知道技能已经可以放了。
     // 实际消耗要乘玄术加成——选过技能消耗成长后，条上写的数字得和真实门槛一致。
-    const cost = SKILL_COST * player.skillCostMultiplier;
+    const cost = resolveSkillCost(player.profession) * player.skillCostMultiplier;
     const ready = player.energy >= cost;
     ctx.fillStyle = PALETTE.hpBack;
     ctx.fillRect(13, 49, w + 2, 9);

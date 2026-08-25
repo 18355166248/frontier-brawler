@@ -35,6 +35,8 @@ export type ActionState =
   /** 重击按住攻击时的蓄力状态，以及松开后的普通/满蓄力释放 */
   | 'heavyCharge'
   | 'heavyCharged'
+  /** 术法在角色前方引爆的小范围基础攻击。 */
+  | 'arcanePulse'
   | 'dash'
   | 'hit'
   /** 玩家范围技，吃能量，释放期间带超级护甲 */
@@ -88,7 +90,7 @@ export interface Hitbox {
   knockback: number;
   /** 命中后的硬直帧数，攻防双方都会被冻结 */
   hitStop: number;
-  /** 无视朝向的环形判定，用于范围技——不跟着 facing 翻转 */
+  /** 圆形范围判定；offset 可把圆心放到角色前方，offset=0 时以自身为中心。 */
   radial?: boolean;
   /**
    * 能不能命中腾空目标。默认 false——大多数攻击是贴地判定，
@@ -362,8 +364,8 @@ export interface WorldEvents {
   hitStop: number;
   /** 本帧发生的处决，表现层放特写 */
   executes: { at: Vec2; healed: number }[];
-  /** 本帧释放的技能，表现层画冲击波 */
-  skillCasts: { at: Vec2; radius: number }[];
+  /** 本帧释放的灵力范围攻击；轻量普攻和正式技能使用不同震屏强度。 */
+  skillCasts: { at: Vec2; radius: number; power: 'light' | 'heavy' }[];
   /** 本帧发生的首领阶段切换，表现层放特写并打出「阶段二」之类的提示 */
   bossPhaseShifts: { at: Vec2; phase: 2 }[];
 }

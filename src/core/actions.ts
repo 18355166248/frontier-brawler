@@ -18,11 +18,21 @@ export const TICK_RATE = 60;
 /** 技能消耗的能量。命中积累，攒够才能放，逼玩家先打进去。 */
 export const SKILL_COST = 50;
 
+/** 术法把技能当主输出手段，基础消耗更低；局内玄术成长继续乘在结果上。 */
+export function resolveSkillCost(profession?: Profession): number {
+  return profession === 'arcane' ? 30 : SKILL_COST;
+}
+
 /** 低于这个血量比例的敌人可被处决。GAME_DESIGN 3.4 定的 25%。 */
 export const EXECUTE_THRESHOLD = 0.25;
 
 /** 处决的有效距离，比普攻 reach 略大，否则会频繁扑空导致玩家放弃用 */
 export const EXECUTE_RANGE = 62;
+
+/** 术法不该为了处决违反中距离定位，触发距离和实际判定会一起扩展。 */
+export function resolveExecuteRange(profession?: Profession): number {
+  return profession === 'arcane' ? 100 : EXECUTE_RANGE;
+}
 
 /** 冲刺冷却帧数。太短会退化成无脑冲，太长会让唯一的防御手段不可靠。 */
 export const DASH_COOLDOWN = 45;
@@ -179,6 +189,29 @@ export const ACTIONS: Record<ActionState, ActionDef> = {
       },
     ],
     superArmor: true,
+  },
+
+  /** 术法普攻：没有贴脸前冲，在角色前方约 64px 处引爆小范围灵力。 */
+  arcanePulse: {
+    id: 'arcanePulse',
+    frames: 30,
+    loop: false,
+    cancelable: false,
+    hitboxes: [
+      {
+        offset: { x: 64, y: 0 },
+        halfWidth: 34,
+        halfDepth: 32,
+        activeFrom: 11,
+        activeTo: 16,
+        damage: 13,
+        knockback: 3.5,
+        hitStop: 5,
+        radial: true,
+      },
+    ],
+    cancelFrom: 16,
+    perfectCancelWindow: { from: 16, to: 20 },
   },
 
   dash: {
@@ -621,7 +654,41 @@ export const PROFESSION_ACTIONS: Record<
       perfectCancelWindow: { from: 12, to: 16 },
     },
   },
-  arcane: {},
+  arcane: {
+    arcanePulse: ACTIONS.arcanePulse,
+    // 主技能从贴身解围改为前方范围爆发：伤害更集中，但失去通用版超级护甲，
+    // 术法必须先用走位创造施法窗口，不能在包围中无脑硬放。
+    skill: {
+      ...ACTIONS.skill,
+      frames: 42,
+      superArmor: false,
+      hitboxes: [
+        {
+          offset: { x: 72, y: 0 },
+          halfWidth: 78,
+          halfDepth: 60,
+          activeFrom: 18,
+          activeTo: 24,
+          damage: 32,
+          knockback: 7,
+          hitStop: 9,
+          radial: true,
+        },
+      ],
+    },
+    // 触发距离扩大后必须同步扩大判定，否则会出现按键成功却在第 5 帧打空。
+    execute: {
+      ...ACTIONS.execute,
+      hitboxes: [
+        {
+          ...ACTIONS.execute.hitboxes[0],
+          offset: { x: 64, y: 0 },
+          halfWidth: 42,
+          halfDepth: 34,
+        },
+      ],
+    },
+  },
 };
 
 /** 职业覆盖优先，未覆盖或敌人没有职业时退回共享动作表。 */

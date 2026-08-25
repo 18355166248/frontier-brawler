@@ -14,6 +14,7 @@ export type OffensiveAction =
   | 'slash3'
   | 'heavy'
   | 'heavyCharged'
+  | 'arcanePulse'
   | 'skill'
   | 'dash'
   | 'execute'
@@ -41,6 +42,7 @@ export class RunStats {
     slash3: 0,
     heavy: 0,
     heavyCharged: 0,
+    arcanePulse: 0,
     skill: 0,
     dash: 0,
     execute: 0,
@@ -126,6 +128,7 @@ export class RunStats {
       this.actions.slash3 +
       this.actions.heavy +
       this.actions.heavyCharged +
+      this.actions.arcanePulse +
       this.actions.skill +
       this.actions.dash +
       this.actions.execute +
@@ -146,7 +149,8 @@ export class RunStats {
       this.actions.slash2 +
       this.actions.slash3 +
       this.actions.heavy +
-      this.actions.heavyCharged
+      this.actions.heavyCharged +
+      this.actions.arcanePulse
     ) / total;
   }
 
