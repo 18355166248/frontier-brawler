@@ -8,13 +8,24 @@
       :root { color-scheme: dark; }
       html, body {
         margin: 0; height: 100%;
+        box-sizing: border-box;
         background: #12161a; color: #cfd6dc;
         font-family: system-ui, sans-serif;
         display: flex; flex-direction: column;
         align-items: center; justify-content: center; gap: 12px;
+        padding: 12px;
       }
-      canvas { border-radius: 6px; box-shadow: 0 12px 40px rgba(0,0,0,.5); }
-      .keys { font-size: 13px; opacity: .65; letter-spacing: .02em; }
+      canvas {
+        display: block;
+        width: auto; height: auto;
+        max-width: calc(100vw - 24px);
+        max-height: calc(100vh - 120px);
+        border-radius: 6px; box-shadow: 0 12px 40px rgba(0,0,0,.5);
+      }
+      .keys {
+        max-width: min(960px, calc(100vw - 24px));
+        font-size: 13px; line-height: 1.8; opacity: .65; letter-spacing: .02em;
+      }
       kbd {
         background: #222b33; border: 1px solid #384450; border-radius: 4px;
         padding: 1px 6px; margin: 0 2px; font-size: 12px;

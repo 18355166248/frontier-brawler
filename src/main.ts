@@ -18,6 +18,7 @@ import { Renderer } from './render/renderer';
 import { SpriteSheet } from './render/sprites';
 import { PROFESSION_IDS } from './core/types';
 import type { ActionState, Profession } from './core/types';
+import { ProfessionValidationStore } from './dev/profession-validation';
 
 /** 三选一的按键，和 render/renderer.ts 里卡片上画的键位一一对应 */
 const CHOICE_KEYS: Record<string, UpgradeTrackId> = {
@@ -77,6 +78,8 @@ if (import.meta.env.DEV) {
 
 let stageIndex = 0;
 let run = new Run(STAGES[stageIndex], createProfile());
+const professionValidation = import.meta.env.DEV ? new ProfessionValidationStore() : null;
+const recordedValidationRuns = new WeakSet<Run>();
 
 function startStage(index: number): void {
   stageIndex = Math.max(0, Math.min(STAGES.length - 1, index));
@@ -103,8 +106,29 @@ if (import.meta.env.DEV) {
 }
 
 const keys = new Set<string>();
+const pendingEdges = {
+  attack: false,
+  dash: false,
+  skill: false,
+  execute: false,
+  jump: false,
+};
+
+/**
+ * 出手键的 keydown 先进入边沿队列，下一逻辑帧再消费。
+ * 否则极短点按可能完整落在两个 60Hz tick 之间，采样 keys 时已经 keyup，输入会凭空丢失。
+ */
+function queueActionEdge(code: string): void {
+  if (code === 'KeyJ' || code === 'Space') pendingEdges.attack = true;
+  if (code === 'KeyK' || code === 'ShiftLeft') pendingEdges.dash = true;
+  if (code === 'KeyU' || code === 'KeyE') pendingEdges.skill = true;
+  if (code === 'KeyI' || code === 'KeyF') pendingEdges.execute = true;
+  if (code === 'KeyL' || code === 'KeyQ') pendingEdges.jump = true;
+}
+
 window.addEventListener('keydown', (e) => {
   keys.add(e.code);
+  if (!e.repeat) queueActionEdge(e.code);
   if (e.code === 'KeyR') startStage(stageIndex);
   // 最后一关通关后没有下一关可进——不加这条边界的话，Math.min 会把
   // stageIndex+1 钳回原地，按 N 变成"用全新档案重开第 6 关"，
@@ -148,11 +172,16 @@ function readInput(): InputState {
   const executeHeld = keys.has('KeyI') || keys.has('KeyF') || !!injected.execute;
   const jumpHeld = keys.has('KeyL') || keys.has('KeyQ') || !!injected.jump;
 
-  const attack = attackHeld && !attackLatch;
-  const dash = dashHeld && !dashLatch;
-  const skill = skillHeld && !skillLatch;
-  const execute = executeHeld && !executeLatch;
-  const jump = jumpHeld && !jumpLatch;
+  const attack = pendingEdges.attack || (attackHeld && !attackLatch);
+  const dash = pendingEdges.dash || (dashHeld && !dashLatch);
+  const skill = pendingEdges.skill || (skillHeld && !skillLatch);
+  const execute = pendingEdges.execute || (executeHeld && !executeLatch);
+  const jump = pendingEdges.jump || (jumpHeld && !jumpLatch);
+  pendingEdges.attack = false;
+  pendingEdges.dash = false;
+  pendingEdges.skill = false;
+  pendingEdges.execute = false;
+  pendingEdges.jump = false;
   attackLatch = attackHeld;
   dashLatch = dashHeld;
   skillLatch = skillHeld;
@@ -185,6 +214,14 @@ function stepOnce(): void {
   if (events.executes.length) renderer.onExecutes(events.executes);
   if (events.skillCasts.length) renderer.onSkillCasts(events.skillCasts);
   if (events.bossPhaseShifts.length) renderer.onBossPhaseShift(events.bossPhaseShifts);
+  if (
+    professionValidation &&
+    !recordedValidationRuns.has(run) &&
+    (run.phase === 'stageComplete' || run.phase === 'dead')
+  ) {
+    professionValidation.record(run.stage.id, run.phase === 'stageComplete', run.overallSummary());
+    recordedValidationRuns.add(run);
+  }
 }
 
 function frame(now: number): void {
@@ -274,6 +311,16 @@ if (import.meta.env.DEV) {
     /** 整关（跨房间）统计摘要，结算界面画的就是这份数据。 */
     overallStats(): unknown {
       return run.overallSummary();
+    },
+    /** M2 真人样本按职业聚合；每次通关或死亡会自动落一条。 */
+    professionReport(): unknown {
+      return professionValidation?.report() ?? [];
+    },
+    professionSamples(): unknown {
+      return professionValidation?.samples() ?? [];
+    },
+    clearProfessionSamples(): void {
+      professionValidation?.clear();
     },
     /** 无预警伤害明细，验收第 4 条要逐条 review。 */
     unwarned(): unknown {

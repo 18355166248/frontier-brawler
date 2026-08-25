@@ -259,6 +259,9 @@ __game.fastForward(600)           // 脱离渲染循环快推 600 帧
 __game.stats()                    // 本房间统计，M1 四条验收标准都在里面
 __game.overallStats()             // 整关(跨房间)累计统计，结算界面画的就是这份数据
 __game.profession('swift')        // 开发期切换职业：heavy / swift / arcane
+__game.professionReport()         // M2 已记录样本的三职业聚合对比
+__game.professionSamples()        // M2 原始样本；每次通关或死亡自动记录
+__game.clearProfessionSamples()   // 清空本机 M2 验收样本
 __game.unwarned()                 // 无预警伤害明细，验收第 4 条逐条 review 用
 __game.run                        // Run 状态：当前房间、已清空集合、门状态
 __game.progress()                 // 关卡进度摘要
