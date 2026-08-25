@@ -78,6 +78,8 @@ export type RunPhase =
   | 'choosing'
   /** 精英或首领清空后，等玩家领取一件战利品 */
   | 'equipmentChoice'
+  /** 玩家主动打开装备面板，战斗暂停 */
+  | 'equipmentMenu'
   /** 正在切换房间 */
   | 'transition'
   /** 整关打完 */
@@ -155,6 +157,7 @@ export class Run {
 
   /** 精英/首领房首次清空后的待选装备；选择期间战斗逻辑暂停。 */
   pendingEquipment: EquipmentId[] | null = null;
+  equipmentMenuOpen = false;
 
   /** 整关的累计统计。每间房的 World 各有一份，这里汇总。 */
   stats = new RunStats();
@@ -250,6 +253,52 @@ export class Run {
     return true;
   }
 
+  /**
+   * 装备面板是主动暂停态，但不能盖住职业、奖励、掉落和死亡/结算界面。
+   * 返回值供输入层判断本次开关是否真的生效。
+   */
+  toggleEquipmentMenu(): boolean {
+    if (this.equipmentMenuOpen) {
+      this.equipmentMenuOpen = false;
+      return true;
+    }
+    if (
+      !this.professionConfirmed ||
+      this.world.stats.died ||
+      this.transition > 0 ||
+      this.pendingChoice ||
+      this.pendingEquipment ||
+      this.stageCleared
+    ) {
+      return false;
+    }
+    this.equipmentMenuOpen = true;
+    return true;
+  }
+
+  /** 槽位卡按键在“空槽 + 已拥有装备”之间循环，武器额外过滤职业限制。 */
+  cycleEquipment(slot: EquipmentSlot): boolean {
+    if (!this.equipmentMenuOpen) return false;
+    if (slot === 'weapon') {
+      const options: (WeaponId | null)[] = [
+        null,
+        ...this.profile.inventory.weapons.filter((id) =>
+          canEquipWeapon(this.profile.profession, id),
+        ),
+      ];
+      const current = options.indexOf(this.profile.equipment.weapon);
+      return this.equip(options[(current + 1) % options.length], 'weapon');
+    }
+    if (slot === 'armor') {
+      const options: (ArmorId | null)[] = [null, ...this.profile.inventory.armors];
+      const current = options.indexOf(this.profile.equipment.armor);
+      return this.equip(options[(current + 1) % options.length], 'armor');
+    }
+    const options: (AccessoryId | null)[] = [null, ...this.profile.inventory.accessories];
+    const current = options.indexOf(this.profile.equipment.accessory);
+    return this.equip(options[(current + 1) % options.length], 'accessory');
+  }
+
   /** 整关是否打完：所有房间都清空了 */
   get stageCleared(): boolean {
     return this.stage.rooms.every((r) => this.cleared.has(r.id));
@@ -267,6 +316,7 @@ export class Run {
     if (this.transition > 0) return 'transition';
     if (this.pendingChoice) return 'choosing';
     if (this.pendingEquipment) return 'equipmentChoice';
+    if (this.equipmentMenuOpen) return 'equipmentMenu';
     if (this.stageCleared) return 'stageComplete';
     if (this.cleared.has(this.room.id)) return 'cleared';
     return 'fighting';
@@ -306,7 +356,7 @@ export class Run {
     };
 
     // 选择界面是正式暂停态；不能让遮罩背后的敌人先走位、出手或累计计时。
-    if (!this.professionConfirmed || this.pendingEquipment) return empty;
+    if (!this.professionConfirmed || this.pendingEquipment || this.equipmentMenuOpen) return empty;
 
     if (this.transition > 0) {
       this.transition -= 1;

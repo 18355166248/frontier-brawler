@@ -93,6 +93,17 @@ if (!run.equip('spirit-focus') || !run.equip('field-armor') || !run.equip('execu
   fail('合法三槽位装备失败');
 }
 if (!run.equip(null, 'weapon') || run.profile.equipment.weapon !== null) fail('卸下武器失败');
+if (!run.toggleEquipmentMenu() || run.phase !== 'equipmentMenu') fail('无法打开装备暂停面板');
+const framesBeforeMenuStep = run.stats.frames;
+run.step(EMPTY_INPUT);
+if (run.stats.frames !== framesBeforeMenuStep) fail('装备面板打开时战斗没有暂停');
+if (!run.cycleEquipment('weapon') || run.profile.equipment.weapon !== 'spirit-focus') {
+  fail('装备面板无法循环装备职业匹配武器');
+}
+if (!run.cycleEquipment('weapon') || run.profile.equipment.weapon !== null) {
+  fail('装备面板无法循环回空武器槽');
+}
+if (!run.toggleEquipmentMenu() || run.phase !== 'fighting') fail('无法关闭装备面板');
 
 const dropStage = {
   ...stage,
@@ -124,4 +135,4 @@ console.table(
     action: expectedAction[id],
   })),
 );
-console.log('[validate_equipment] 三槽位、职业限制、武器覆盖链与精英掉落通过');
+console.log('[validate_equipment] 三槽位、装备面板、武器覆盖链与精英掉落通过');

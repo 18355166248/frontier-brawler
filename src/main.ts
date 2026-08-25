@@ -35,6 +35,12 @@ const PROFESSION_KEYS: Record<string, Profession> = {
   Digit3: 'arcane',
 };
 
+const EQUIPMENT_SLOT_KEYS: Record<string, EquipmentSlot> = {
+  Digit1: 'weapon',
+  Digit2: 'armor',
+  Digit3: 'accessory',
+};
+
 const WIDTH = 960;
 const HEIGHT = 540;
 
@@ -131,6 +137,7 @@ window.addEventListener('keydown', (e) => {
   keys.add(e.code);
   if (!e.repeat) queueActionEdge(e.code);
   if (e.code === 'KeyR') startStage(stageIndex);
+  if (e.code === 'KeyB' && !e.repeat) run.toggleEquipmentMenu();
   // 最后一关通关后没有下一关可进——不加这条边界的话，Math.min 会把
   // stageIndex+1 钳回原地，按 N 变成"用全新档案重开第 6 关"，
   // 玩家会以为按键没反应，而不是"这已经是终点"。
@@ -141,6 +148,9 @@ window.addEventListener('keydown', (e) => {
   const profession = PROFESSION_KEYS[e.code];
   if (profession && run.phase === 'professionSelect') {
     run.setProfession(profession);
+  } else if (run.phase === 'equipmentMenu') {
+    const slot = EQUIPMENT_SLOT_KEYS[e.code];
+    if (slot) run.cycleEquipment(slot);
   } else if (run.phase === 'equipmentChoice' && run.pendingEquipment) {
     const index = Number(e.code.replace('Digit', '')) - 1;
     const equipment = run.pendingEquipment[index];

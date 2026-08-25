@@ -302,7 +302,7 @@ M2 `resolveAction` 查表链再叠一层：`WEAPON_ACTIONS[weapon]?.[action] ?? 
       招式表做局部覆盖，不覆盖的字段退回职业默认值
 - [x] 局内掉落：复用现有战斗结算/房间清空的事件钩子，不需要新的
       掉落系统框架
-- [ ] 装备界面：复用 `drawUpgradeChoice`/`drawStageSummary` 的
+- [x] 装备界面：复用 `drawUpgradeChoice`/`drawStageSummary` 的
       "全屏遮罩 + 卡片"语言，装备槽用职业选择界面同一套卡片组件
 
 ### 验收标准

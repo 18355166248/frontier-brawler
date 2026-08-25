@@ -1127,6 +1127,11 @@ export class Renderer {
       return;
     }
 
+    if (run.phase === 'equipmentMenu') {
+      this.drawEquipmentMenu(run);
+      return;
+    }
+
     if (run.pendingChoice) {
       this.drawUpgradeChoice(run.pendingChoice, run.profile.upgrades);
       return;
@@ -1364,6 +1369,98 @@ export class Renderer {
       ctx.fillStyle = color;
       ctx.font = 'bold 15px system-ui, sans-serif';
       ctx.fillText(String(index + 1), x + cardW / 2, y + cardH - 25);
+    });
+    ctx.restore();
+  }
+
+  /** 装备面板只操作已经收入库存的物品；每张卡用数字键循环该槽位。 */
+  private drawEquipmentMenu(run: Run): void {
+    const { ctx, canvas } = this;
+    const cards: {
+      slot: EquipmentSlot;
+      label: string;
+      key: string;
+      color: string;
+      current: EquipmentId | null;
+      owned: number;
+    }[] = [
+      {
+        slot: 'weapon',
+        label: '武器',
+        key: '1',
+        color: '#ff9a5c',
+        current: run.profile.equipment.weapon,
+        owned: run.profile.inventory.weapons.filter((id) =>
+          WEAPONS[id].profession === run.profile.profession,
+        ).length,
+      },
+      {
+        slot: 'armor',
+        label: '护甲',
+        key: '2',
+        color: '#7fe8ff',
+        current: run.profile.equipment.armor,
+        owned: run.profile.inventory.armors.length,
+      },
+      {
+        slot: 'accessory',
+        label: '饰品',
+        key: '3',
+        color: '#b79cff',
+        current: run.profile.equipment.accessory,
+        owned: run.profile.inventory.accessories.length,
+      },
+    ];
+
+    ctx.save();
+    ctx.fillStyle = 'rgba(8,10,13,0.8)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 24px system-ui, sans-serif';
+    ctx.fillText('装备', canvas.width / 2, 76);
+    ctx.font = '13px system-ui, sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.58)';
+    ctx.fillText('按 1 / 2 / 3 循环对应槽位 · 按 B 返回战斗', canvas.width / 2, 101);
+
+    const cardW = 220;
+    const cardH = 230;
+    const gap = 22;
+    const startX = (canvas.width - cards.length * cardW - (cards.length - 1) * gap) / 2;
+    const y = 142;
+    cards.forEach((card, index) => {
+      const x = startX + index * (cardW + gap);
+      ctx.fillStyle = 'rgba(20,24,30,0.94)';
+      ctx.strokeStyle = card.color;
+      ctx.lineWidth = 2;
+      this.roundRect(ctx, x, y, cardW, cardH, 11);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = card.color;
+      ctx.font = 'bold 18px system-ui, sans-serif';
+      ctx.fillText(card.label, x + cardW / 2, y + 39);
+      ctx.fillStyle = 'rgba(255,255,255,0.52)';
+      ctx.font = '12px system-ui, sans-serif';
+      ctx.fillText(`库存 ${card.owned}`, x + cardW / 2, y + 61);
+      ctx.fillStyle = '#ffffff';
+      ctx.font = 'bold 22px system-ui, sans-serif';
+      ctx.fillText(card.current ? equipmentLabel(card.current) : '未装备', x + cardW / 2, y + 103);
+      ctx.fillStyle = 'rgba(255,255,255,0.76)';
+      ctx.font = '13px system-ui, sans-serif';
+      this.wrapText(
+        card.current ? equipmentDescription(card.current) : '清空精英或首领房获得装备。',
+        x + cardW / 2,
+        y + 135,
+        cardW - 30,
+        19,
+      );
+      ctx.beginPath();
+      ctx.arc(x + cardW / 2, y + cardH - 29, 16, 0, Math.PI * 2);
+      ctx.strokeStyle = card.color;
+      ctx.stroke();
+      ctx.fillStyle = card.color;
+      ctx.font = 'bold 15px system-ui, sans-serif';
+      ctx.fillText(card.key, x + cardW / 2, y + cardH - 24);
     });
     ctx.restore();
   }
