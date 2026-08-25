@@ -1,0 +1,264 @@
+{
+  "sheet": "enemy-ranged-v2.png",
+  "columns": 4,
+  "rows": 5,
+  "rowOrder": [
+    "idle",
+    "move",
+    "aim",
+    "shoot",
+    "hit"
+  ],
+  "cellWidth": 96,
+  "cellHeight": 96,
+  "sourceCell": 627,
+  "innerCell": 88,
+  "scale": 0.14035087719298245,
+  "baseline": 90,
+  "alphaCutoff": 128,
+  "chromaTolerance": 45,
+  "sourceKind": "chroma-grids",
+  "mirrored": true,
+  "frames": [
+    {
+      "action": "idle",
+      "frame": 1,
+      "bbox": [
+        29,
+        20,
+        64,
+        90
+      ],
+      "height": 71,
+      "yOffset": 6
+    },
+    {
+      "action": "idle",
+      "frame": 2,
+      "bbox": [
+        37,
+        19,
+        73,
+        90
+      ],
+      "height": 72,
+      "yOffset": 5
+    },
+    {
+      "action": "idle",
+      "frame": 3,
+      "bbox": [
+        29,
+        19,
+        63,
+        90
+      ],
+      "height": 72,
+      "yOffset": 12
+    },
+    {
+      "action": "idle",
+      "frame": 4,
+      "bbox": [
+        38,
+        19,
+        74,
+        90
+      ],
+      "height": 72,
+      "yOffset": 12
+    },
+    {
+      "action": "move",
+      "frame": 1,
+      "bbox": [
+        24,
+        31,
+        56,
+        90
+      ],
+      "height": 60,
+      "yOffset": 14
+    },
+    {
+      "action": "move",
+      "frame": 2,
+      "bbox": [
+        31,
+        31,
+        65,
+        90
+      ],
+      "height": 60,
+      "yOffset": 13
+    },
+    {
+      "action": "move",
+      "frame": 3,
+      "bbox": [
+        31,
+        30,
+        61,
+        90
+      ],
+      "height": 61,
+      "yOffset": 19
+    },
+    {
+      "action": "move",
+      "frame": 4,
+      "bbox": [
+        37,
+        31,
+        69,
+        90
+      ],
+      "height": 60,
+      "yOffset": 19
+    },
+    {
+      "action": "aim",
+      "frame": 1,
+      "bbox": [
+        25,
+        15,
+        58,
+        90
+      ],
+      "height": 76,
+      "yOffset": 6
+    },
+    {
+      "action": "aim",
+      "frame": 2,
+      "bbox": [
+        37,
+        14,
+        86,
+        90
+      ],
+      "height": 77,
+      "yOffset": 6
+    },
+    {
+      "action": "aim",
+      "frame": 3,
+      "bbox": [
+        21,
+        13,
+        71,
+        90
+      ],
+      "height": 78,
+      "yOffset": 9
+    },
+    {
+      "action": "aim",
+      "frame": 4,
+      "bbox": [
+        34,
+        13,
+        86,
+        90
+      ],
+      "height": 78,
+      "yOffset": 9
+    },
+    {
+      "action": "shoot",
+      "frame": 1,
+      "bbox": [
+        25,
+        23,
+        67,
+        90
+      ],
+      "height": 68,
+      "yOffset": 14
+    },
+    {
+      "action": "shoot",
+      "frame": 2,
+      "bbox": [
+        23,
+        23,
+        64,
+        90
+      ],
+      "height": 68,
+      "yOffset": 14
+    },
+    {
+      "action": "shoot",
+      "frame": 3,
+      "bbox": [
+        28,
+        24,
+        62,
+        90
+      ],
+      "height": 67,
+      "yOffset": 20
+    },
+    {
+      "action": "shoot",
+      "frame": 4,
+      "bbox": [
+        32,
+        30,
+        62,
+        90
+      ],
+      "height": 61,
+      "yOffset": 18
+    },
+    {
+      "action": "hit",
+      "frame": 1,
+      "bbox": [
+        30,
+        27,
+        63,
+        90
+      ],
+      "height": 64,
+      "yOffset": 6
+    },
+    {
+      "action": "hit",
+      "frame": 2,
+      "bbox": [
+        33,
+        26,
+        66,
+        90
+      ],
+      "height": 65,
+      "yOffset": 6
+    },
+    {
+      "action": "hit",
+      "frame": 3,
+      "bbox": [
+        29,
+        38,
+        67,
+        90
+      ],
+      "height": 53,
+      "yOffset": 16
+    },
+    {
+      "action": "hit",
+      "frame": 4,
+      "bbox": [
+        39,
+        25,
+        70,
+        90
+      ],
+      "height": 66,
+      "yOffset": 16
+    }
+  ]
+}

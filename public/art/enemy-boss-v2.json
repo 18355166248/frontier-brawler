@@ -1,0 +1,265 @@
+{
+  "sheet": "enemy-boss-v2.png",
+  "columns": 4,
+  "rows": 5,
+  "rowOrder": [
+    "bossSlam",
+    "bossCharge",
+    "bossRush",
+    "bossNova",
+    "bossSummon"
+  ],
+  "cellWidth": 96,
+  "cellHeight": 96,
+  "sourceCell": 627,
+  "innerCell": 88,
+  "scale": 0.14035087719298245,
+  "baseline": 90,
+  "alphaCutoff": 128,
+  "chromaTolerance": 45,
+  "removeComponentsUnder": 4,
+  "sourceKind": "chroma-grids",
+  "mirrored": false,
+  "frames": [
+    {
+      "action": "bossSlam",
+      "frame": 1,
+      "bbox": [
+        9,
+        35,
+        87,
+        90
+      ],
+      "height": 56,
+      "yOffset": 10
+    },
+    {
+      "action": "bossSlam",
+      "frame": 2,
+      "bbox": [
+        11,
+        16,
+        62,
+        90
+      ],
+      "height": 75,
+      "yOffset": 10
+    },
+    {
+      "action": "bossSlam",
+      "frame": 3,
+      "bbox": [
+        9,
+        40,
+        91,
+        90
+      ],
+      "height": 51,
+      "yOffset": 18
+    },
+    {
+      "action": "bossSlam",
+      "frame": 4,
+      "bbox": [
+        10,
+        39,
+        85,
+        90
+      ],
+      "height": 52,
+      "yOffset": 21
+    },
+    {
+      "action": "bossCharge",
+      "frame": 1,
+      "bbox": [
+        10,
+        19,
+        91,
+        90
+      ],
+      "height": 72,
+      "yOffset": 6
+    },
+    {
+      "action": "bossCharge",
+      "frame": 2,
+      "bbox": [
+        9,
+        28,
+        79,
+        90
+      ],
+      "height": 63,
+      "yOffset": 6
+    },
+    {
+      "action": "bossCharge",
+      "frame": 3,
+      "bbox": [
+        13,
+        32,
+        77,
+        90
+      ],
+      "height": 59,
+      "yOffset": 16
+    },
+    {
+      "action": "bossCharge",
+      "frame": 4,
+      "bbox": [
+        6,
+        35,
+        81,
+        90
+      ],
+      "height": 56,
+      "yOffset": 16
+    },
+    {
+      "action": "bossRush",
+      "frame": 1,
+      "bbox": [
+        7,
+        50,
+        89,
+        90
+      ],
+      "height": 41,
+      "yOffset": 24
+    },
+    {
+      "action": "bossRush",
+      "frame": 2,
+      "bbox": [
+        6,
+        30,
+        87,
+        90
+      ],
+      "height": 61,
+      "yOffset": 14
+    },
+    {
+      "action": "bossRush",
+      "frame": 3,
+      "bbox": [
+        8,
+        43,
+        91,
+        90
+      ],
+      "height": 48,
+      "yOffset": 27
+    },
+    {
+      "action": "bossRush",
+      "frame": 4,
+      "bbox": [
+        7,
+        36,
+        84,
+        90
+      ],
+      "height": 55,
+      "yOffset": 23
+    },
+    {
+      "action": "bossNova",
+      "frame": 1,
+      "bbox": [
+        16,
+        23,
+        72,
+        90
+      ],
+      "height": 68,
+      "yOffset": 7
+    },
+    {
+      "action": "bossNova",
+      "frame": 2,
+      "bbox": [
+        15,
+        25,
+        70,
+        90
+      ],
+      "height": 66,
+      "yOffset": 7
+    },
+    {
+      "action": "bossNova",
+      "frame": 3,
+      "bbox": [
+        15,
+        22,
+        85,
+        90
+      ],
+      "height": 69,
+      "yOffset": 17
+    },
+    {
+      "action": "bossNova",
+      "frame": 4,
+      "bbox": [
+        13,
+        24,
+        68,
+        90
+      ],
+      "height": 67,
+      "yOffset": 17
+    },
+    {
+      "action": "bossSummon",
+      "frame": 1,
+      "bbox": [
+        12,
+        21,
+        78,
+        90
+      ],
+      "height": 70,
+      "yOffset": 10
+    },
+    {
+      "action": "bossSummon",
+      "frame": 2,
+      "bbox": [
+        11,
+        21,
+        78,
+        90
+      ],
+      "height": 70,
+      "yOffset": 10
+    },
+    {
+      "action": "bossSummon",
+      "frame": 3,
+      "bbox": [
+        13,
+        21,
+        84,
+        90
+      ],
+      "height": 70,
+      "yOffset": 15
+    },
+    {
+      "action": "bossSummon",
+      "frame": 4,
+      "bbox": [
+        11,
+        20,
+        78,
+        90
+      ],
+      "height": 71,
+      "yOffset": 15
+    }
+  ]
+}

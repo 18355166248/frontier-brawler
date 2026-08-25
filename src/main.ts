@@ -28,17 +28,33 @@ const CHOICE_KEYS: Record<string, UpgradeTrackId> = {
 const WIDTH = 960;
 const HEIGHT = 540;
 
-const SHEET_ROWS: ActionState[] = ['idle', 'move', 'slash', 'hit'];
+// 正式动作表按 ROADMAP 约定固定为六行；行序一旦和图片错位，冲刺时就会
+// 播成受击，因此在入口集中声明，不在渲染器里散落魔法下标。
+const SHEET_ROWS: ActionState[] = ['idle', 'move', 'slash', 'slash2', 'dash', 'hit'];
+
+/**
+ * 六类敌人的行序必须和各自 JSON 报告一致。不同兵种只注册状态机真正会
+ * 进入的动作；SpriteSheet 对未覆盖状态仍会回退 idle，保证素材损坏时游戏可测。
+ */
+const ENEMY_SHEET_ROWS: Record<string, ActionState[]> = {
+  grunt: ['idle', 'move', 'slash', 'hit'],
+  shield: ['idle', 'move', 'slash', 'hit'],
+  ranged: ['idle', 'move', 'aim', 'shoot', 'hit'],
+  charger: ['idle', 'move', 'charge', 'rush', 'hit'],
+  elite: ['idle', 'move', 'heavy', 'hit'],
+  boss: ['bossSlam', 'bossCharge', 'bossRush', 'bossNova', 'bossSummon'],
+};
 
 const canvas = document.getElementById('game') as HTMLCanvasElement;
 canvas.width = WIDTH;
 canvas.height = HEIGHT;
 
-// 只加载玩家的动作表。敌人当前是几何占位件（见 renderer 里 drawEnemy 的说明）：
-// 五种敌人共用一张 enemy.png 根本分不出谁是谁，而「能不能一眼认出面前是什么」
-// 正是 M1 要验证的东西。五套动作表按规格产出后，在这里逐个注册回来即可。
 const sheets = new Map<string, SpriteSheet>();
-sheets.set('player', new SpriteSheet({ url: 'art/hero.png', columns: 4, rows: SHEET_ROWS }));
+sheets.set('player', new SpriteSheet({ url: 'art/hero-v2.png', columns: 4, rows: SHEET_ROWS }));
+// 每个兵种独立一张表，身份、体型和动作不会因为共用图集而互相串行。
+for (const [kind, rows] of Object.entries(ENEMY_SHEET_ROWS)) {
+  sheets.set(kind, new SpriteSheet({ url: `art/enemy-${kind}-v2.png`, columns: 4, rows }));
+}
 
 const renderer = new Renderer(canvas, sheets);
 
@@ -58,6 +74,20 @@ function startStage(index: number): void {
   stageIndex = Math.max(0, Math.min(STAGES.length - 1, index));
   // 每关重新给一份满血档案。跨关卡的状态继承要等 M5 的经营层，现在不做。
   run = new Run(STAGES[stageIndex], createProfile());
+}
+
+if (import.meta.env.DEV) {
+  // Canvas 场景没有可点的 DOM 节点，视觉回归若每次都从出生点走过去既慢又
+  // 不稳定。开发地址允许 `?stage=3&room=c1` 直达指定房间，生产构建会整段移除。
+  const params = new URLSearchParams(window.location.search);
+  const requestedStage = Number(params.get('stage'));
+  const requestedRoom = params.get('room');
+  if (Number.isInteger(requestedStage) && requestedStage >= 1 && requestedStage <= STAGES.length) {
+    startStage(requestedStage - 1);
+  }
+  if (requestedRoom && run.stage.rooms.some((room) => room.id === requestedRoom)) {
+    run.enterRoom(requestedRoom, null);
+  }
 }
 
 const keys = new Set<string>();

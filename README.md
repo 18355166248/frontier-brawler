@@ -181,9 +181,8 @@ idle/move/slash/hit 四行，`slash2`/`dash`/`jump`/`airSlash`/`skill`/
 的信息（判定窗口、腾空转换、无敌区间）本来就是 `core/actions.ts` 已经
 声明过的数据，只是之前没有画出来。
 
-**走动也补了两个程序化效果，敌人这块之前是彻底的零动画**：玩家有真的
-走路帧但没有配套的重心起伏；敌人是纯几何占位块，`drawEnemy` 完全没有
-任何和"走动"挂钩的画法，贴地平移和静止在画面上毫无区别。现在 `move`
+**走动也补了两个程序化效果**：玩家和五类正式敌人都有走路帧，但只播腿部
+姿态仍缺少落脚重量。现在 `move`
 状态下身体按 `|sin|` 曲线一圈起伏两次（对应两步各踩一次，玩家 2px、
 敌人 3px），配合脚落地帧补一个比落地冲击环小得多的灰尘点。灰尘的触发
 判断用"帧号变化到落地点"而不是"当前帧号等于落地点"——后者在显示刷新率
@@ -212,13 +211,27 @@ idle/move/slash/hit 四行，`slash2`/`dash`/`jump`/`airSlash`/`skill`/
 
 ## 美术
 
-**美术设计不在本仓库的自动化范围内。**
-`docs/ROADMAP.md` 末尾列了角色动作表、敌人、建筑的**规格要求**，
-产出交给专业工具或人。管线只负责把合规的几何烘成合规的动作表，
-不解决"好不好看"。
+`docs/ROADMAP.md` 末尾列了角色动作表、敌人、建筑的**规格要求**。本轮角色
+美术由内置 imagegen 生成身份参考和动作源网格，再由仓库内确定性工具完成
+抠图、统一缩放、脚底注册与验收；建筑仍待后续制作。
 
-当前 `public/art/` 是占位盒子人，由 [`ai-asset-pipeline`](../ai-asset-pipeline) 的枢轴动画管线生成：
-Blender 里按动作库搭骨架 → K 关键帧 → 正交相机渲成透明序列帧 → 打包成一行一动作的表。
+玩家当前使用 `public/art/hero-v2.png`：低多边形卡通 3D，按
+`idle / move / slash / slash2 / dash / hit` 六行、每行四帧排布。它由同一角色
+参考生成 2×2 纯洋红动作网格，再经确定性切格、chroma 抠图、统一缩放、脚底
+注册和 alpha 清理得到；24 格共用同一个缩放倍率和 `y=90` 脚底线，且没有格子
+触边。完整实验和提示词见 `docs/experiments/ai-sprite-consistency-2026-08-25/`。
+
+六类敌人当前分别使用 `enemy-grunt-v2` / `enemy-shield-v2` /
+`enemy-ranged-v2` / `enemy-charger-v2` / `enemy-elite-v2` / `enemy-boss-v2`，
+共 27 行、108 帧。
+每类独立注册，动作行与各自状态机对齐；全部共用 96×96 单格和 `y=90`
+脚底线。源网格、行序和复核方式见
+`docs/experiments/enemy-actions-2026-08-25/README.md`。boss 五个专属动作已接入，
+阶段二在同一动作表上切换为亮橙红强调，避免换表造成动作相位跳变。
+
+后续需要骨骼级强一致性或制作首领时，仍可复用
+[`ai-asset-pipeline`](../ai-asset-pipeline) 的 Blender 管线：搭骨架 → K 关键帧 →
+正交相机渲成透明序列帧 → 打包成一行一动作的表。
 
 ```bash
 cd ../ai-asset-pipeline
@@ -230,8 +243,7 @@ python src/pack_action_sheet.py --rows \
     -o ../frontier-brawler/public/art/hero.png --cols 4 --cell 96
 ```
 
-`enemy.png` 直接复制自 `hero.png`，敌我暂时分不开。
-美术方向定的是低多边形卡通 3D，正式角色几何待产出。
+旧 `enemy.png` 不再参与渲染，仅作为历史占位文件保留。
 
 ## 开发期调试挂钩
 
@@ -253,6 +265,10 @@ __game.stage(3)                   // 跳到第 3 关
 __game.goto('c2n')                // 跳到本关某个房间 id（见 core/stages.ts）
 __game.clearRoom()                // 清空当前房间敌人，验证开门与切换用
 ```
+
+Canvas 视觉回归也可用开发地址直达教学房，例如
+`http://127.0.0.1:4317/?stage=3&room=c1`；`stage` 从 1 起，`room` 必须属于该关。
+这条入口只在开发模式存在，生产构建会移除。
 
 注入输入有个坑：攻击/冲刺/技能/处决都取"按下那一瞬间"，
 连续两帧都按住只会触发一次。脚本里要模拟连按，中间得插一帧松开：
@@ -280,13 +296,10 @@ __game.stats()
 ## 已知问题
 
 - `R` 重来在浏览器里按键有时不生效，用 `__game.restart()` 可靠。焦点处理待修。
-- **敌人是几何占位件，没有动作表**。五种敌人当前靠体型和轮廓区分
-  （盾兵带盾、远程尖顶瘦高、冲锋前倾、精英带角），
-  刻意不走 `enemy.png`——五种共用一张图根本分不出谁是谁，
-  而"能不能一眼认出面前是什么"正是 M1 要验证的东西。
-  五套动作表按规格产出后，换回 sheet 渲染即可，逻辑层不用动。
-- 玩家动作表只有 idle/move/slash/hit 四行，
-  新增的 skill/execute/dash/jump/airSlash 等动作没有对应美术帧，会退回 idle
+- boss 已有 `bossSlam/bossCharge/bossRush/bossNova/bossSummon` 五行正式美术；
+  几何轮廓只在动作表加载失败时作为容错兜底。
+- 玩家动作表已有 idle/move/slash/slash2/dash/hit 六行，
+  新增的 skill/execute/jump/airSlash 等动作没有对应美术帧，会退回 idle
   的图——跳跃的高度变化靠渲染层的 Y 轴偏移体现，不依赖专属美术帧，
   所以视觉上能看出「在跳」，只是角色本身的姿态还是 idle 那张。
 - 经营层、装备、职业、升级全都还没有。

@@ -50,8 +50,8 @@ function jumpHeight(action: ActionState, frame: number): number {
 
 /**
  * 走动时身体的上下起伏。玩家有真的走路帧（腿部摆动），但没有配套的
- * 重心起伏，敌人更是纯几何占位块——完全没有任何动作，贴地平移过来，
- * 像在冰面上滑而不是在走路。`move` 一圈循环里起伏两次（每一步落地各
+ * 重心起伏；敌人的正式走路帧也需要同一层落脚反馈。`move` 一圈循环里
+ * 起伏两次（每一步落地各
  * 一次），用 `|sin|` 而不是 `sin` 是因为要的是"落地–抬起–落地"的
  * 弹跳节奏，纯 sin 会在半圈时经过负值，变成"陷进地里"。
  */
@@ -150,6 +150,27 @@ const ENEMY_LOOK: Record<string, { color: string; w: number; h: number }> = {
   // 不用去读血条百分比也能一眼分辨现在是哪个阶段
   boss: { color: '#8f2f3a', w: 52, h: 92 },
 };
+
+/**
+ * 正式动作表的显示倍率与头顶占位。源表统一按 96px / baseline=90 打包，
+ * 这里仅按兵种整体缩放一次来恢复设计中的体型层级，绝不逐帧改倍率。
+ */
+const ENEMY_SPRITE_METRICS: Record<string, { scale: number; topOffset: number }> = {
+  grunt: { scale: 0.85, topOffset: 74 },
+  shield: { scale: 0.85, topOffset: 78 },
+  ranged: { scale: 0.9, topOffset: 82 },
+  charger: { scale: 1, topOffset: 67 },
+  elite: { scale: 1.15, topOffset: 102 },
+  boss: { scale: 1.35, topOffset: 126 },
+};
+
+/**
+ * 打包器把玩家和敌人的脚底都注册在单格 y=90，渲染时也以这一点贴地。
+ * 玩家和敌人共用同一个常量：两张表是同一个 build_ai_action_sheet.py
+ * 用同一组 `--cell 96 --baseline 90` 参数打出来的，各自再写一份数字
+ * 只会在其中一边改参数时悄悄错位。
+ */
+const SPRITE_BASELINE = 90;
 
 /** 首领阶段二的强调色，替换 ENEMY_LOOK.boss 的默认色 */
 const BOSS_PHASE_TWO_COLOR = '#e2543a';
@@ -601,8 +622,10 @@ export class Renderer {
     if (!e.dead && e.hp < e.maxHp) {
       // 血条偏移按角色实际体型算，不能全员共用一个数：首领体型比杂兵
       // 高一倍还多，固定偏移会把血条画进身体里而不是画在头顶。
-      const look = e.team === 'enemy' ? ENEMY_LOOK[e.kind ?? 'grunt'] : null;
-      const topOffset = look ? look.h + 14 : 66;
+      const kind = e.kind ?? 'grunt';
+      const look = e.team === 'enemy' ? ENEMY_LOOK[kind] : null;
+      const spriteMetrics = e.team === 'enemy' ? ENEMY_SPRITE_METRICS[kind] : null;
+      const topOffset = spriteMetrics?.topOffset ?? (look ? look.h + 14 : 66);
       this.drawHpBar(e, topOffset);
     }
     ctx.restore();
@@ -694,7 +717,9 @@ export class Renderer {
     const bob = walkBob(e.action, e.actionFrame, 2);
 
     if (rect && sheet) {
-      const scale = 1.05;
+      // hero-v2 为防止长剑触格统一保留了 4px 安全边距，实际人物轮廓比旧占位件
+      // 小约 9%。这里补回显示倍率，让细节在 960×540 战场里仍然读得清。
+      const scale = 1.15;
       const w = rect.sw * scale;
       const h = rect.sh * scale;
       ctx.save();
@@ -703,7 +728,21 @@ export class Renderer {
       ctx.translate(e.pos.x, e.pos.y - airH - bob);
       ctx.scale(e.facing, 1);
       if (flashing) ctx.filter = 'brightness(2.4) saturate(0.3)';
-      ctx.drawImage(sheet.image, rect.sx, rect.sy, rect.sw, rect.sh, -w / 2, -h + 12, w, h);
+      // 和敌人走同一条贴地规则：源表脚底在 y=90，缩放后正好落在 pos.y。
+      // 旧的 `-h + 12` 是 hero-v2 之前那张表留下的经验偏移，配 scale=1.15
+      // 会把人物整体压到地面下约 5px——影子画在 pos.y，脚却在影子外面，
+      // 和同一条线上的敌人也对不齐。
+      ctx.drawImage(
+        sheet.image,
+        rect.sx,
+        rect.sy,
+        rect.sw,
+        rect.sh,
+        -w / 2,
+        -SPRITE_BASELINE * scale,
+        w,
+        h,
+      );
       ctx.restore();
     } else {
       // 素材没就位时的占位块，保证玩法始终可测
@@ -712,24 +751,13 @@ export class Renderer {
     }
   }
 
-  /**
-   * 敌人占位绘制。**刻意不走 sprite sheet**：
-   * 五种敌人共用一张 enemy.png 的话根本分不出谁是谁，
-   * 而"能不能一眼认出面前是盾兵还是远程"恰恰是 M1 要验证的东西。
-   * 等五套动作表按规格产出后，这里换回 sheet 渲染即可，逻辑层不动。
-   */
+  /** 六类敌人优先走正式动作表；素材加载失败时保留几何兜底。 */
   private drawEnemy(e: Entity, flashing: boolean): void {
     const { ctx } = this;
     const kind = e.kind ?? 'grunt';
     const look = ENEMY_LOOK[kind] ?? ENEMY_LOOK.grunt;
     const x = e.pos.x;
     const y = e.pos.y;
-
-    ctx.save();
-    const bossPhaseTwo = kind === 'boss' && e.ai.bossPhase === 2;
-    ctx.fillStyle = flashing ? '#ffffff' : bossPhaseTwo ? BOSS_PHASE_TWO_COLOR : look.color;
-    ctx.strokeStyle = 'rgba(0,0,0,0.45)';
-    ctx.lineWidth = 2;
 
     // 出招中的敌人整体上抬一点，让"它正在做事"在剪影上也读得出来
     const lift =
@@ -740,93 +768,148 @@ export class Renderer {
       e.action === 'bossNova'
         ? 4
         : 0;
-    // 敌人是纯几何占位块，走动时完全没有任何动作——不加这个的话，
-    // 五种敌人贴地平移过来像是在冰面上滑，而不是在走路。幅度按体型
+    // 正式走路帧叠一层很轻的重心起伏，几何兜底也复用它；幅度按敌人体型
     // 稍微放大一点（3px），首领这种大体型才看得出来在动。
     const bob = walkBob(e.action, e.actionFrame, 3);
-    const top = y - look.h - lift - bob;
+    const sheet = this.sheets.get(kind);
+    const def = ACTIONS[e.action];
+    const progress = def.loop
+      ? (e.actionFrame % def.frames) / def.frames
+      : e.actionFrame / def.frames;
+    const rect = sheet?.frameRect(e.action, progress) ?? null;
+    const metrics = ENEMY_SPRITE_METRICS[kind];
+    let top: number;
 
-    if (kind === 'shield') {
-      // 盾兵：主体 + 正面一块厚盾。盾在哪边一眼可见，玩家才知道要绕到哪一边。
-      ctx.fillRect(x - look.w / 2, top, look.w, look.h);
-      ctx.strokeRect(x - look.w / 2, top, look.w, look.h);
-      ctx.fillStyle = flashing ? '#ffffff' : '#cdd9e3';
-      const shieldX = e.facing > 0 ? x + look.w / 2 - 2 : x - look.w / 2 - 8;
-      ctx.fillRect(shieldX, top + 8, 10, look.h - 16);
-      ctx.strokeRect(shieldX, top + 8, 10, look.h - 16);
-    } else if (kind === 'ranged') {
-      // 远程：瘦高 + 尖顶，轮廓最细，远看就知道是站桩输出的那个
-      ctx.fillRect(x - look.w / 2, top, look.w, look.h);
-      ctx.strokeRect(x - look.w / 2, top, look.w, look.h);
-      ctx.beginPath();
-      ctx.moveTo(x - look.w / 2, top);
-      ctx.lineTo(x, top - 14);
-      ctx.lineTo(x + look.w / 2, top);
-      ctx.closePath();
-      ctx.fill();
-      ctx.stroke();
-    } else if (kind === 'charger') {
-      // 冲锋：前倾梯形，重心压在前脚，静止时也像随时要冲出去
-      const lean = 7 * e.facing;
-      ctx.beginPath();
-      ctx.moveTo(x - look.w / 2 + lean, top);
-      ctx.lineTo(x + look.w / 2 + lean, top);
-      ctx.lineTo(x + look.w / 2, y);
-      ctx.lineTo(x - look.w / 2, y);
-      ctx.closePath();
-      ctx.fill();
-      ctx.stroke();
-    } else if (kind === 'elite') {
-      // 精英：体型明显大一圈 + 双角，是场上最容易被一眼锁定的目标
-      ctx.fillRect(x - look.w / 2, top, look.w, look.h);
-      ctx.strokeRect(x - look.w / 2, top, look.w, look.h);
-      ctx.beginPath();
-      ctx.moveTo(x - look.w / 2, top);
-      ctx.lineTo(x - look.w / 2 - 8, top - 16);
-      ctx.lineTo(x - look.w / 4, top - 4);
-      ctx.closePath();
-      ctx.fill();
-      ctx.beginPath();
-      ctx.moveTo(x + look.w / 2, top);
-      ctx.lineTo(x + look.w / 2 + 8, top - 16);
-      ctx.lineTo(x + look.w / 4, top - 4);
-      ctx.closePath();
-      ctx.fill();
-    } else if (kind === 'boss') {
-      // 首领：比精英再大一圈，四支角比精英的两支更长更夸张，
-      // 顶上加一道尖冠——六关里体型最大、剪影最复杂的敌人，一眼就该认出来。
-      ctx.lineWidth = 3;
-      ctx.fillRect(x - look.w / 2, top, look.w, look.h);
-      ctx.strokeRect(x - look.w / 2, top, look.w, look.h);
-
-      const hornColor = flashing ? '#ffffff' : bossPhaseTwo ? '#ffd479' : '#3a1f24';
-      ctx.fillStyle = hornColor;
-      for (const side of [-1, 1] as const) {
+    if (rect && sheet && metrics) {
+      const w = rect.sw * metrics.scale;
+      const h = rect.sh * metrics.scale;
+      top = y - lift - bob - metrics.topOffset;
+      ctx.save();
+      ctx.translate(x, y - lift - bob);
+      ctx.scale(e.facing, 1);
+      const bossPhaseTwo = kind === 'boss' && e.ai.bossPhase === 2;
+      if (bossPhaseTwo) {
+        // 二阶段仍复用同一套骨架与动作，只把大片深红符文推向亮橙红，并在
+        // 脚下补一圈精确主题色；这样不会因换图造成动作相位或脚底线跳变。
+        ctx.save();
+        ctx.fillStyle = BOSS_PHASE_TWO_COLOR;
+        ctx.globalAlpha = 0.28;
         ctx.beginPath();
-        ctx.moveTo(x + (side * look.w) / 2, top + 6);
-        ctx.lineTo(x + (side * look.w) / 2 + side * 14, top - 24);
-        ctx.lineTo(x + (side * look.w) / 3, top - 2);
+        ctx.ellipse(0, -2, 40, 10, 0, 0, Math.PI * 2);
+        ctx.fill();
+        ctx.restore();
+      }
+      if (flashing) {
+        ctx.filter = 'brightness(2.4) saturate(0.3)';
+      } else if (bossPhaseTwo) {
+        ctx.filter = 'brightness(1.3) saturate(1.55) hue-rotate(14deg)';
+      }
+      // 源图统一面向屏幕右侧；只在这里按 facing 镜像，脚底则严格贴到
+      // 打包报告约定的 y=90，动作切换不会产生上下跳动。
+      ctx.drawImage(
+        sheet.image,
+        rect.sx,
+        rect.sy,
+        rect.sw,
+        rect.sh,
+        -w / 2,
+        -SPRITE_BASELINE * metrics.scale,
+        w,
+        h,
+      );
+      ctx.restore();
+    } else {
+      // 任一正式图加载失败都走几何兜底，避免一张坏图阻断启动。几何轮廓仍
+      // 保留兵种差异，boss 的阶段色也继续生效，玩法和回归测试始终可继续。
+      ctx.save();
+      const bossPhaseTwo = kind === 'boss' && e.ai.bossPhase === 2;
+      ctx.fillStyle = flashing ? '#ffffff' : bossPhaseTwo ? BOSS_PHASE_TWO_COLOR : look.color;
+      ctx.strokeStyle = 'rgba(0,0,0,0.45)';
+      ctx.lineWidth = 2;
+      top = y - look.h - lift - bob;
+
+      if (kind === 'shield') {
+        // 盾兵：主体 + 正面一块厚盾。盾在哪边一眼可见，玩家才知道要绕到哪一边。
+        ctx.fillRect(x - look.w / 2, top, look.w, look.h);
+        ctx.strokeRect(x - look.w / 2, top, look.w, look.h);
+        ctx.fillStyle = flashing ? '#ffffff' : '#cdd9e3';
+        const shieldX = e.facing > 0 ? x + look.w / 2 - 2 : x - look.w / 2 - 8;
+        ctx.fillRect(shieldX, top + 8, 10, look.h - 16);
+        ctx.strokeRect(shieldX, top + 8, 10, look.h - 16);
+      } else if (kind === 'ranged') {
+        // 远程：瘦高 + 尖顶，轮廓最细，远看就知道是站桩输出的那个
+        ctx.fillRect(x - look.w / 2, top, look.w, look.h);
+        ctx.strokeRect(x - look.w / 2, top, look.w, look.h);
+        ctx.beginPath();
+        ctx.moveTo(x - look.w / 2, top);
+        ctx.lineTo(x, top - 14);
+        ctx.lineTo(x + look.w / 2, top);
         ctx.closePath();
         ctx.fill();
-      }
-      // 尖冠：阶段二会发亮，是「打法变了」在剪影上的第二重信号，
-      // 配合 drawBanner 的横幅和 onBossPhaseShift 的震屏一起读
-      ctx.fillStyle = bossPhaseTwo ? '#ffe9b0' : 'rgba(255,255,255,0.5)';
-      ctx.beginPath();
-      ctx.moveTo(x - 10, top);
-      ctx.lineTo(x, top - 18);
-      ctx.lineTo(x + 10, top);
-      ctx.closePath();
-      ctx.fill();
-    } else {
-      ctx.fillRect(x - look.w / 2, top, look.w, look.h);
-      ctx.strokeRect(x - look.w / 2, top, look.w, look.h);
-    }
+        ctx.stroke();
+      } else if (kind === 'charger') {
+        // 冲锋：前倾梯形，重心压在前脚，静止时也像随时要冲出去
+        const lean = 7 * e.facing;
+        ctx.beginPath();
+        ctx.moveTo(x - look.w / 2 + lean, top);
+        ctx.lineTo(x + look.w / 2 + lean, top);
+        ctx.lineTo(x + look.w / 2, y);
+        ctx.lineTo(x - look.w / 2, y);
+        ctx.closePath();
+        ctx.fill();
+        ctx.stroke();
+      } else if (kind === 'elite') {
+        // 精英：体型明显大一圈 + 双角，是场上最容易被一眼锁定的目标
+        ctx.fillRect(x - look.w / 2, top, look.w, look.h);
+        ctx.strokeRect(x - look.w / 2, top, look.w, look.h);
+        ctx.beginPath();
+        ctx.moveTo(x - look.w / 2, top);
+        ctx.lineTo(x - look.w / 2 - 8, top - 16);
+        ctx.lineTo(x - look.w / 4, top - 4);
+        ctx.closePath();
+        ctx.fill();
+        ctx.beginPath();
+        ctx.moveTo(x + look.w / 2, top);
+        ctx.lineTo(x + look.w / 2 + 8, top - 16);
+        ctx.lineTo(x + look.w / 4, top - 4);
+        ctx.closePath();
+        ctx.fill();
+      } else if (kind === 'boss') {
+        // 首领：比精英再大一圈，四支角比精英的两支更长更夸张，
+        // 顶上加一道尖冠——六关里体型最大、剪影最复杂的敌人，一眼就该认出来。
+        ctx.lineWidth = 3;
+        ctx.fillRect(x - look.w / 2, top, look.w, look.h);
+        ctx.strokeRect(x - look.w / 2, top, look.w, look.h);
 
-    // 朝向指示：一道压在身前的短横。盾兵的正反面全靠它读。
-    ctx.fillStyle = 'rgba(0,0,0,0.5)';
-    ctx.fillRect(x + (e.facing > 0 ? look.w / 2 - 6 : -look.w / 2 + 2), top + 10, 4, 4);
-    ctx.restore();
+        const hornColor = flashing ? '#ffffff' : bossPhaseTwo ? '#ffd479' : '#3a1f24';
+        ctx.fillStyle = hornColor;
+        for (const side of [-1, 1] as const) {
+          ctx.beginPath();
+          ctx.moveTo(x + (side * look.w) / 2, top + 6);
+          ctx.lineTo(x + (side * look.w) / 2 + side * 14, top - 24);
+          ctx.lineTo(x + (side * look.w) / 3, top - 2);
+          ctx.closePath();
+          ctx.fill();
+        }
+        // 尖冠：阶段二会发亮，是「打法变了」在剪影上的第二重信号，
+        // 配合 drawBanner 的横幅和 onBossPhaseShift 的震屏一起读
+        ctx.fillStyle = bossPhaseTwo ? '#ffe9b0' : 'rgba(255,255,255,0.5)';
+        ctx.beginPath();
+        ctx.moveTo(x - 10, top);
+        ctx.lineTo(x, top - 18);
+        ctx.lineTo(x + 10, top);
+        ctx.closePath();
+        ctx.fill();
+      } else {
+        ctx.fillRect(x - look.w / 2, top, look.w, look.h);
+        ctx.strokeRect(x - look.w / 2, top, look.w, look.h);
+      }
+
+      // 几何兜底的朝向指示；正式动作表直接由角色面向表达，不再叠黑块。
+      ctx.fillStyle = 'rgba(0,0,0,0.5)';
+      ctx.fillRect(x + (e.facing > 0 ? look.w / 2 - 6 : -look.w / 2 + 2), top + 10, 4, 4);
+      ctx.restore();
+    }
 
     // 可处决提示。不标出来玩家不会知道这个敌人已经能秒了，
     // 处决就永远用不满——验收第 3 条要的就是这个行为真的发生。

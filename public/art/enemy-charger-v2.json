@@ -1,0 +1,264 @@
+{
+  "sheet": "enemy-charger-v2.png",
+  "columns": 4,
+  "rows": 5,
+  "rowOrder": [
+    "idle",
+    "move",
+    "charge",
+    "rush",
+    "hit"
+  ],
+  "cellWidth": 96,
+  "cellHeight": 96,
+  "sourceCell": 627,
+  "innerCell": 88,
+  "scale": 0.14035087719298245,
+  "baseline": 90,
+  "alphaCutoff": 128,
+  "chromaTolerance": 45,
+  "sourceKind": "chroma-grids",
+  "mirrored": false,
+  "frames": [
+    {
+      "action": "idle",
+      "frame": 1,
+      "bbox": [
+        28,
+        42,
+        70,
+        90
+      ],
+      "height": 49,
+      "yOffset": 11
+    },
+    {
+      "action": "idle",
+      "frame": 2,
+      "bbox": [
+        22,
+        41,
+        64,
+        90
+      ],
+      "height": 50,
+      "yOffset": 10
+    },
+    {
+      "action": "idle",
+      "frame": 3,
+      "bbox": [
+        28,
+        41,
+        69,
+        90
+      ],
+      "height": 50,
+      "yOffset": 21
+    },
+    {
+      "action": "idle",
+      "frame": 4,
+      "bbox": [
+        22,
+        41,
+        63,
+        90
+      ],
+      "height": 50,
+      "yOffset": 21
+    },
+    {
+      "action": "move",
+      "frame": 1,
+      "bbox": [
+        25,
+        34,
+        72,
+        90
+      ],
+      "height": 57,
+      "yOffset": 14
+    },
+    {
+      "action": "move",
+      "frame": 2,
+      "bbox": [
+        17,
+        34,
+        67,
+        90
+      ],
+      "height": 57,
+      "yOffset": 13
+    },
+    {
+      "action": "move",
+      "frame": 3,
+      "bbox": [
+        24,
+        33,
+        72,
+        90
+      ],
+      "height": 58,
+      "yOffset": 22
+    },
+    {
+      "action": "move",
+      "frame": 4,
+      "bbox": [
+        19,
+        33,
+        65,
+        90
+      ],
+      "height": 58,
+      "yOffset": 21
+    },
+    {
+      "action": "charge",
+      "frame": 1,
+      "bbox": [
+        28,
+        41,
+        68,
+        90
+      ],
+      "height": 50,
+      "yOffset": 14
+    },
+    {
+      "action": "charge",
+      "frame": 2,
+      "bbox": [
+        15,
+        46,
+        61,
+        90
+      ],
+      "height": 45,
+      "yOffset": 14
+    },
+    {
+      "action": "charge",
+      "frame": 3,
+      "bbox": [
+        32,
+        51,
+        77,
+        90
+      ],
+      "height": 40,
+      "yOffset": 28
+    },
+    {
+      "action": "charge",
+      "frame": 4,
+      "bbox": [
+        18,
+        59,
+        61,
+        90
+      ],
+      "height": 32,
+      "yOffset": 28
+    },
+    {
+      "action": "rush",
+      "frame": 1,
+      "bbox": [
+        20,
+        43,
+        68,
+        90
+      ],
+      "height": 48,
+      "yOffset": 8
+    },
+    {
+      "action": "rush",
+      "frame": 2,
+      "bbox": [
+        15,
+        50,
+        71,
+        90
+      ],
+      "height": 41,
+      "yOffset": 8
+    },
+    {
+      "action": "rush",
+      "frame": 3,
+      "bbox": [
+        19,
+        62,
+        82,
+        90
+      ],
+      "height": 29,
+      "yOffset": 31
+    },
+    {
+      "action": "rush",
+      "frame": 4,
+      "bbox": [
+        23,
+        56,
+        73,
+        90
+      ],
+      "height": 35,
+      "yOffset": 29
+    },
+    {
+      "action": "hit",
+      "frame": 1,
+      "bbox": [
+        26,
+        41,
+        74,
+        90
+      ],
+      "height": 50,
+      "yOffset": 13
+    },
+    {
+      "action": "hit",
+      "frame": 2,
+      "bbox": [
+        20,
+        35,
+        70,
+        90
+      ],
+      "height": 56,
+      "yOffset": 13
+    },
+    {
+      "action": "hit",
+      "frame": 3,
+      "bbox": [
+        25,
+        51,
+        72,
+        90
+      ],
+      "height": 40,
+      "yOffset": 25
+    },
+    {
+      "action": "hit",
+      "frame": 4,
+      "bbox": [
+        22,
+        44,
+        67,
+        90
+      ],
+      "height": 47,
+      "yOffset": 24
+    }
+  ]
+}
