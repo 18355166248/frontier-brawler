@@ -49,7 +49,14 @@ export class SpriteSheet {
   } | null {
     if (!this.ready) return null;
     let row = this.rows.indexOf(action);
-    // 没有专属美术的动作退回 idle，总比不画好
+    // 职业动作的逻辑先落地，专属美术补齐前让释放段复用 slash2，至少保持挥刀姿态；
+    // 蓄力姿态和其他没有专属行的动作继续退回 idle，总比整个人消失好。
+    if (
+      row < 0 &&
+      (action === 'slash3' || action === 'heavy' || action === 'heavyCharged')
+    ) {
+      row = this.rows.indexOf('slash2');
+    }
     if (row < 0) row = 0;
     const clamped = Math.min(0.999999, Math.max(0, progress));
     const col = Math.floor(clamped * this.columns);

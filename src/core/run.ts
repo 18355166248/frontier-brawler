@@ -11,7 +11,8 @@
  */
 import type { Direction, RoomDef, StageDef } from './level';
 import { OPPOSITE, arenaOf, findRoom } from './level';
-import type { Entity, Vec2, WorldEvents } from './types';
+import { DEFAULT_PROFESSION } from './types';
+import type { Entity, Profession, Vec2, WorldEvents } from './types';
 import type { Arena, InputState } from './world';
 import { World, createEnemy, createEntity } from './world';
 import { RunStats } from './stats';
@@ -23,6 +24,8 @@ const BASE_MAX_HP = 160;
 
 /** 跨房间保留的玩家状态。实体是一次性的，这份档案不是。 */
 export interface PlayerProfile {
+  /** M2 职业跨房间保留，后续职业选择界面只改这份档案。 */
+  profession: Profession;
   hp: number;
   maxHp: number;
   energy: number;
@@ -34,6 +37,7 @@ export interface PlayerProfile {
 
 export function createProfile(): PlayerProfile {
   return {
+    profession: DEFAULT_PROFESSION,
     hp: BASE_MAX_HP,
     maxHp: BASE_MAX_HP,
     energy: 0,
@@ -148,6 +152,15 @@ export class Run {
     return this.world.player;
   }
 
+  /**
+   * 职业先写档案再同步当前实体：档案保证切房后不丢，实体保证当前房间立刻生效。
+   * 后续职业选择界面和开发期调试入口都必须走这里，不能各自只改一边。
+   */
+  setProfession(profession: Profession): void {
+    this.profile.profession = profession;
+    if (this.player) this.player.profession = profession;
+  }
+
   /** 整关是否打完：所有房间都清空了 */
   get stageCleared(): boolean {
     return this.stage.rooms.every((r) => this.cleared.has(r.id));
@@ -176,13 +189,13 @@ export class Run {
    * 不会再触发 `enterRoom`）还只存在 `this.world.stats` 里，没被折进来。
    * 这里现算一份合并结果，不直接修改 `this.stats`，避免每帧调用都重复叠加。
    */
-  overallSummary(): ReturnType<RunStats['summary']> {
+  overallSummary(): ReturnType<RunStats['summary']> & { profession: Profession } {
     const merged = new RunStats();
     merged.frames = this.stats.frames;
     merged.died = this.stats.died;
     merged.absorb(this.stats);
     merged.absorb(this.world.stats);
-    return merged.summary();
+    return { profession: this.profile.profession, ...merged.summary() };
   }
 
   step(input: InputState): WorldEvents {
@@ -358,6 +371,7 @@ export class Run {
     const spawn = this.playerSpawn(arena, from);
     w.spawn(
       createEntity('player', spawn, {
+        profession: this.profile.profession,
         hp: this.profile.hp,
         maxHp: this.profile.maxHp,
         energy: this.profile.energy,

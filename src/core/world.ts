@@ -19,10 +19,9 @@ import type {
   WorldEvents,
 } from './types';
 import {
-  ACTIONS,
-  DASH_COOLDOWN,
   EXECUTE_RANGE,
   EXECUTE_THRESHOLD,
+  HEAVY_FULL_CHARGE_FRAMES,
   JUMP_COOLDOWN,
   PERFECT_CANCEL_DAMAGE_MULT,
   SKILL_COST,
@@ -30,6 +29,8 @@ import {
   isActionAirborne,
   isActionInvulnerable,
   isPerfectCancel,
+  resolveAction,
+  resolveDashCooldown,
 } from './actions';
 import { ENEMY_PROFILES, think } from './enemies';
 import { RunStats } from './stats';
@@ -42,8 +43,10 @@ export interface Arena {
   maxY: number;
 }
 
-/** 玩家输入比 AI 意图多两个键：技能和处决。 */
+/** 玩家输入比 AI 意图多技能、处决、跳跃，以及重击蓄力需要的攻击键持续状态。 */
 export interface InputState extends InputIntent {
+  /** 攻击键是否仍按住；重击用它区分短按释放和满蓄力，attack 仍只表示按下沿。 */
+  attackHeld: boolean;
   skill: boolean;
   execute: boolean;
   jump: boolean;
@@ -53,6 +56,7 @@ export const EMPTY_INPUT: InputState = {
   moveX: 0,
   moveY: 0,
   attack: false,
+  attackHeld: false,
   dash: false,
   skill: false,
   execute: false,
@@ -75,6 +79,7 @@ const ACTION_CHAIN: Partial<Record<ActionState, ActionState>> = {
 const TOKEN_RELEASING: ActionState[] = [
   'slash',
   'slash2',
+  'slash3',
   'shoot',
   'rush',
   'heavy',
@@ -264,9 +269,22 @@ export class World {
       e.ai.bossSummoned = true;
     }
 
-    const def = ACTIONS[e.action];
-    const interruptible = canInterrupt(e.action, e.actionFrame);
+    const def = resolveAction(e.action, e.profession);
+    const interruptible = canInterrupt(e.action, e.actionFrame, e.profession);
     const player = e.team === 'player' ? (input as InputState) : null;
+
+    if (player && e.profession === 'heavy' && e.action === 'heavyCharge') {
+      if (!player.attackHeld) {
+        // 松键才决定释放档位；蓄满与否落成两个动作定义，命中层无需认识职业倍率。
+        const release = e.actionFrame >= HEAVY_FULL_CHARGE_FRAMES ? 'heavyCharged' : 'heavy';
+        this.setAction(e, release);
+        this.recordAttackStat(release);
+      } else if (e.actionFrame >= HEAVY_FULL_CHARGE_FRAMES) {
+        // 满蓄力后停在最后一帧等待松键，不能让非循环动作自然播完回 idle。
+        // advanceAction 在本函数末尾仍会 +1，因此这里先退一帧保持稳定。
+        e.actionFrame = HEAVY_FULL_CHARGE_FRAMES - 1;
+      }
+    }
 
     if (player) {
       // 边缘按下就先记进缓冲区，不管这一帧能不能立刻响应——真正能不能
@@ -284,11 +302,15 @@ export class World {
       // 跟冲刺当年在腾空时触发同一个问题——见下面 dash 分支的说明。
       // 跳跃已经有跳劈这个腾空专属的取消出口，处决/技能都留给落地之后。
       // 处决优先于普攻：残血目标在手边时，玩家按处决键不该被解释成挥空刀
-      if (e.executeBuffer > 0 && !isActionAirborne(e.action, e.actionFrame) && this.tryExecute(e)) {
+      if (
+        e.executeBuffer > 0 &&
+        !isActionAirborne(e.action, e.actionFrame, e.profession) &&
+        this.tryExecute(e)
+      ) {
         e.executeBuffer = 0;
       } else if (
         e.skillBuffer > 0 &&
-        !isActionAirborne(e.action, e.actionFrame) &&
+        !isActionAirborne(e.action, e.actionFrame, e.profession) &&
         e.energy >= SKILL_COST * e.skillCostMultiplier
       ) {
         e.energy -= SKILL_COST * e.skillCostMultiplier;
@@ -297,13 +319,22 @@ export class World {
         e.skillBuffer = 0;
       } else if (e.attackBuffer > 0) {
         // 只在新一轮攻击起手时响应方向转身，连段中途（e.action 已经是
-        // slash/slash2）不转身——不然连段打到一半角色转向会显得很怪。
+        // slash/slash2/slash3）不转身——不然连段打到一半角色转向会显得很怪。
         // 位移量不变，这只是让玩家能"按方向快速转身打另一侧的敌人"，
         // 不是把普攻也变成一个位移技能。
-        if (e.action !== 'slash' && e.action !== 'slash2' && Math.abs(player.moveX) > 0.2) {
+        if (
+          e.action !== 'slash' &&
+          e.action !== 'slash2' &&
+          e.action !== 'slash3' &&
+          Math.abs(player.moveX) > 0.2
+        ) {
           e.facing = (player.moveX > 0 ? 1 : -1) as Facing;
         }
-        this.startAttack(e, def.cancelInto?.[0]);
+        if (e.profession === 'heavy') {
+          this.setAction(e, 'heavyCharge');
+        } else {
+          this.startAttack(e, def.cancelInto?.[0]);
+        }
         e.attackBuffer = 0;
       } else if (e.jumpBuffer > 0 && e.action !== 'jump' && e.action !== 'airSlash' && e.jumpCooldown <= 0) {
         this.setAction(e, 'jump');
@@ -315,7 +346,7 @@ export class World {
         e.dashBuffer > 0 &&
         e.action !== 'dash' &&
         e.dashCooldown <= 0 &&
-        !isActionAirborne(e.action, e.actionFrame)
+        !isActionAirborne(e.action, e.actionFrame, e.profession)
       ) {
         // 腾空时不能触发冲刺——冲刺是地面动作，没有腾空语义，
         // 人还在半空中一按冲刺就会瞬间"凭空消失、贴地冲出去"，
@@ -324,7 +355,7 @@ export class World {
         // 完全自然（贴地滑行后一跃而起），所以只挡这一个方向。
         this.setAction(e, 'dash');
         this.lockMoveDirection(e, player);
-        e.dashCooldown = DASH_COOLDOWN;
+        e.dashCooldown = resolveDashCooldown(e.profession);
         this.stats.recordAction('dash');
         e.dashBuffer = 0;
       }
@@ -359,7 +390,7 @@ export class World {
     // 连方向键都不响应，人像焊在地上——这正是"动作发死、不连贯"的一处
     // 具体成因。冲刺/跳跃的位移曲线中途没有 0（跳跃全程都是抛物线的一部分，
     // 手感上不该半路被走位打断），所以这条改动不影响它们的连贯位移。
-    const motion = ACTIONS[e.action].motion;
+    const motion = resolveAction(e.action, e.profession).motion;
     const before = { x: e.pos.x, y: e.pos.y };
     if (motion && e.actionFrame < motion.length && motion[e.actionFrame] !== 0) {
       const step = motion[e.actionFrame];
@@ -370,7 +401,7 @@ export class World {
       } else {
         e.pos.x += step * e.facing;
       }
-    } else if (canInterrupt(e.action, e.actionFrame)) {
+    } else if (canInterrupt(e.action, e.actionFrame, e.profession)) {
       const len = Math.hypot(input.moveX, input.moveY);
       if (len > 0.01) {
         const nx = input.moveX / len;
@@ -423,7 +454,7 @@ export class World {
       // 完美取消判定：这一刻 e.action/e.actionFrame 还是"来源动作"，
       // setAction 之后就没法回头看了，必须在切换前读。只有玩家用得上——
       // 敌人不需要这层反馈，perfectCancelPending 恒为 false。
-      if (e.team === 'player' && isPerfectCancel(e.action, e.actionFrame)) {
+      if (e.team === 'player' && isPerfectCancel(e.action, e.actionFrame, e.profession)) {
         e.perfectCancelPending = true;
         this.stats.perfectCancels += 1;
       }
@@ -434,8 +465,8 @@ export class World {
     // 走到这里说明 chained 是空的——slash/airSlash 都声明了 cancelInto，
     // 只要 e.action 真的是它们俩，chained 必然非空，早在上面的分支里
     // return 掉了，根本到不了这一行，所以这两条排除其实是死代码，留着
-    // 只是防御性占位。真正会落到这里的是 slash2（唯一没有 cancelInto 的
-    // 普攻段）——第一版把它也排除在外，导致二段收招时再按攻击键完全没
+    // 只是防御性占位。共享动作表里真正会落到这里的是 slash2（唯一没有
+    // cancelInto 的普攻段）——第一版把它也排除在外，导致二段收招时再按攻击键完全没
     // 反应，连段打完之后有一小段"按键黑洞"，这正是连段显得断掉的一处
     // 具体成因。这里应该和 idle/move/dash 收招段一样，重新起一次挥砍，
     // 让二段收招段也能立刻循环回第一段，而不是必须等它播完才能再出手。
@@ -446,7 +477,14 @@ export class World {
   }
 
   private recordAttackStat(action: ActionState): void {
-    if (action === 'slash' || action === 'slash2' || action === 'airSlash') {
+    if (
+      action === 'slash' ||
+      action === 'slash2' ||
+      action === 'slash3' ||
+      action === 'heavy' ||
+      action === 'heavyCharged' ||
+      action === 'airSlash'
+    ) {
       this.stats.recordAction(action);
     }
   }
@@ -501,7 +539,7 @@ export class World {
   }
 
   private advanceAction(e: Entity): void {
-    const def = ACTIONS[e.action];
+    const def = resolveAction(e.action, e.profession);
     e.actionFrame += 1;
     if (e.actionFrame < def.frames) return;
 
@@ -586,7 +624,7 @@ export class World {
       }
       // 预警段（aim/charge）不释放令牌，它们后面还接着真正的生效段
       const attacking = TOKEN_RELEASING.includes(e.action);
-      if (attacking && e.actionFrame >= ACTIONS[e.action].frames - 1) {
+      if (attacking && e.actionFrame >= resolveAction(e.action, e.profession).frames - 1) {
         this.attackTokens.delete(id);
         e.attackCooldown = ENEMY_PROFILES[e.kind ?? 'grunt'].tokenCooldown;
       }
@@ -603,7 +641,7 @@ export class World {
         e.telegraph = null;
         continue;
       }
-      const tel = ACTIONS[e.action].telegraph;
+      const tel = resolveAction(e.action, e.profession).telegraph;
       if (!tel || e.actionFrame >= tel.until) {
         e.telegraph = null;
         continue;
@@ -616,7 +654,7 @@ export class World {
   private resolveHits(): void {
     for (const attacker of this.entities) {
       if (attacker.dead) continue;
-      const def = ACTIONS[attacker.action];
+      const def = resolveAction(attacker.action, attacker.profession);
       for (const box of def.hitboxes) {
         if (attacker.actionFrame < box.activeFrom || attacker.actionFrame >= box.activeTo) {
           continue;
@@ -652,12 +690,15 @@ export class World {
 
   /** 无敌判定合并了两个来源：受击后的保护帧，和动作自带的无敌区间（冲刺、处决）。 */
   private isInvulnerable(e: Entity): boolean {
-    return e.invulnFrames > 0 || isActionInvulnerable(e.action, e.actionFrame);
+    return (
+      e.invulnFrames > 0 ||
+      isActionInvulnerable(e.action, e.actionFrame, e.profession)
+    );
   }
 
   /** 是否处于跳跃的腾空区间——注意这不是无敌，只对非 hitsAir 的判定免疫。 */
   private isAirborne(e: Entity): boolean {
-    return isActionAirborne(e.action, e.actionFrame);
+    return isActionAirborne(e.action, e.actionFrame, e.profession);
   }
 
   private spawnProjectile(shooter: Entity): void {
@@ -832,7 +873,7 @@ export class World {
 
     // 超级护甲：照常掉血，但不进硬直、不换动作。
     // 精英因此「打不断」，玩家只能靠走位躲而不是靠输出压制。
-    const armored = ACTIONS[target.action].superArmor === true;
+    const armored = resolveAction(target.action, target.profession).superArmor === true;
     if (armored) {
       // 仍给几帧无敌，防的是同一帧被多段判定重复结算，不是防连击
       target.invulnFrames = Math.max(target.invulnFrames, 6);
@@ -917,9 +958,14 @@ export class World {
    * 以及它是不是某个预警段接续下来的生效段（rush 接 charge、shoot 接 aim）。
    */
   private wasTelegraphed(attacker: Entity): boolean {
-    if (ACTIONS[attacker.action].telegraph) return true;
+    if (resolveAction(attacker.action, attacker.profession).telegraph) return true;
     for (const [pre, post] of Object.entries(ACTION_CHAIN)) {
-      if (post === attacker.action && ACTIONS[pre as ActionState].telegraph) return true;
+      if (
+        post === attacker.action &&
+        resolveAction(pre as ActionState, attacker.profession).telegraph
+      ) {
+        return true;
+      }
     }
     return false;
   }

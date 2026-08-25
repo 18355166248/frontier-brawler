@@ -5,8 +5,21 @@
  * 这是 xianxia-roguelike 的教训反过来用：它的逻辑层零引擎依赖，
  * 所以能搬；耦合全压在编排层。这里从一开始就把那条线画清楚。
  */
-import type { ActionState, DamageEvent, Entity, Projectile, Telegraph } from '../core/types';
-import { ACTIONS, EXECUTE_THRESHOLD, SKILL_COST, isActionAirborne } from '../core/actions';
+import type {
+  ActionState,
+  DamageEvent,
+  Entity,
+  Profession,
+  Projectile,
+  Telegraph,
+} from '../core/types';
+import {
+  EXECUTE_THRESHOLD,
+  HEAVY_FULL_CHARGE_FRAMES,
+  SKILL_COST,
+  isActionAirborne,
+  resolveAction,
+} from '../core/actions';
 import { ENEMY_PROFILES } from '../core/enemies';
 import type { StageTheme } from '../core/level';
 import type { Run } from '../core/run';
@@ -35,13 +48,13 @@ const JUMP_PEAK_HEIGHT = 44;
  * 不是位置曲线），不需要和这两条对齐。
  * airSlash 继承跳跃末段的高度，随下砸动作线性归零。
  */
-function jumpHeight(action: ActionState, frame: number): number {
+function jumpHeight(action: ActionState, frame: number, profession?: Profession): number {
   if (action === 'jump') {
-    const t = Math.min(1, frame / ACTIONS.jump.frames);
+    const t = Math.min(1, frame / resolveAction('jump', profession).frames);
     return JUMP_PEAK_HEIGHT * 4 * t * (1 - t);
   }
   if (action === 'airSlash') {
-    const total = ACTIONS.airSlash.airborne?.to ?? 16;
+    const total = resolveAction('airSlash', profession).airborne?.to ?? 16;
     const t = Math.min(1, frame / total);
     return JUMP_PEAK_HEIGHT * 0.55 * (1 - t);
   }
@@ -55,15 +68,20 @@ function jumpHeight(action: ActionState, frame: number): number {
  * 一次），用 `|sin|` 而不是 `sin` 是因为要的是"落地–抬起–落地"的
  * 弹跳节奏，纯 sin 会在半圈时经过负值，变成"陷进地里"。
  */
-function walkBob(action: ActionState, frame: number, amplitude: number): number {
+function walkBob(
+  action: ActionState,
+  frame: number,
+  amplitude: number,
+  profession?: Profession,
+): number {
   if (action !== 'move') return 0;
-  const t = frame / ACTIONS.move.frames;
+  const t = frame / resolveAction('move', profession).frames;
   return Math.abs(Math.sin(t * Math.PI * 2)) * amplitude;
 }
 
 /** 走动一圈里两次"脚落地"对应的动作帧，踩灰尘特效的触发点用 */
-function isFootfallFrame(frame: number): boolean {
-  const half = ACTIONS.move.frames / 2;
+function isFootfallFrame(frame: number, profession?: Profession): boolean {
+  const half = resolveAction('move', profession).frames / 2;
   return frame === 0 || Math.abs(frame - half) < 1;
 }
 
@@ -74,6 +92,12 @@ const TRACK_COLOR: Record<UpgradeTrackId, string> = {
   offense: '#e2705c',
   arcane: '#6fb6f0',
   guardian: '#63d0a8',
+};
+
+const PROFESSION_LABEL: Record<Profession, string> = {
+  heavy: '重击',
+  swift: '疾锋',
+  arcane: '术法',
 };
 
 interface FloatText {
@@ -189,6 +213,11 @@ const SWING_STYLE: Partial<Record<ActionState, { color: string; baseAngle: numbe
   slash: { color: '#eef2f5', baseAngle: -0.35, arcLen: 1.5, width: 4 },
   // 第二段：横扫收尾，弧光更宽更亮，读出来比第一段更有分量
   slash2: { color: '#ffd479', baseAngle: 0.05, arcLen: 2.6, width: 6 },
+  // 疾锋第三段用冷色反向收束，哪怕暂时复用 slash2 帧也能从弧光读出第三击。
+  slash3: { color: '#7fe8ff', baseAngle: -0.1, arcLen: 2.2, width: 5 },
+  // 重击释放复用现有挥砍帧，但用更粗、更暖的弧光体现重量；满蓄力再放大一级。
+  heavy: { color: '#ffb45e', baseAngle: -0.55, arcLen: 2.1, width: 8 },
+  heavyCharged: { color: '#ff6b45', baseAngle: -0.7, arcLen: 2.5, width: 12 },
   // 跳劈：陡直向下的下砸，弧光整体压低，和"从天而降"的动作意图对上
   airSlash: { color: '#7fe8ff', baseAngle: 1.0, arcLen: 1.3, width: 5 },
 };
@@ -563,7 +592,7 @@ export class Renderer {
 
     // 跳跃期间角色离地，影子却要钉在地面原位——离地越高，影子越小越淡，
     // 这是 2D 游戏读「高度」的标准手法，没有它跳跃看起来只是往前挪了一下。
-    const airH = jumpHeight(e.action, e.actionFrame);
+    const airH = jumpHeight(e.action, e.actionFrame, e.profession);
     const shadowShrink = 1 - Math.min(0.55, airH / 90);
     ctx.save();
     ctx.globalAlpha *= shadowShrink;
@@ -583,7 +612,7 @@ export class Renderer {
 
     // 落地检测：上一帧还腾空、这一帧不腾空了，就是落地那一刻——
     // 只对比这两个布尔值，不用管具体是从 jump 还是 airSlash 落地的。
-    const airborneNow = isActionAirborne(e.action, e.actionFrame);
+    const airborneNow = isActionAirborne(e.action, e.actionFrame, e.profession);
     if (this.wasAirborne.get(e.id) && !airborneNow) {
       this.rings.push({ x: e.pos.x, y: e.pos.y, radius: 26, life: 14, max: 14, color: 'rgba(255,255,255,0.55)' });
     }
@@ -592,7 +621,11 @@ export class Renderer {
     // 踩点灰尘：走动一圈里两次"落地"对应的帧号发生变化时才补一次，
     // 不是"当前帧号等于落地点"就补——见 lastMoveFrame 字段的说明。
     const lastFrame = this.lastMoveFrame.get(e.id);
-    if (e.action === 'move' && e.actionFrame !== lastFrame && isFootfallFrame(e.actionFrame)) {
+    if (
+      e.action === 'move' &&
+      e.actionFrame !== lastFrame &&
+      isFootfallFrame(e.actionFrame, e.profession)
+    ) {
       this.rings.push({
         x: e.pos.x + e.facing * e.radius * 0.3,
         y: e.pos.y,
@@ -612,6 +645,7 @@ export class Renderer {
 
     if (e.team === 'player') {
       this.drawPlayer(e, flashing, airH);
+      this.drawHeavyCharge(e);
     } else {
       this.drawEnemy(e, flashing);
     }
@@ -632,13 +666,32 @@ export class Renderer {
   }
 
   /**
+   * 重击蓄力必须有连续反馈，否则玩家无法判断短按和满蓄力的分界。
+   * 环形进度满后改为亮橙色并保持，不靠新增美术帧也能明确读出“现在松键”。
+   */
+  private drawHeavyCharge(e: Entity): void {
+    if (e.action !== 'heavyCharge') return;
+    const { ctx } = this;
+    const progress = Math.min(1, e.actionFrame / HEAVY_FULL_CHARGE_FRAMES);
+    ctx.save();
+    ctx.translate(e.pos.x, e.pos.y - 34);
+    ctx.strokeStyle = progress >= 1 ? '#ff6b45' : '#ffb45e';
+    ctx.lineWidth = progress >= 1 ? 5 : 3;
+    ctx.globalAlpha = 0.55 + progress * 0.4;
+    ctx.beginPath();
+    ctx.arc(0, 0, 30 + progress * 5, -Math.PI / 2, -Math.PI / 2 + Math.PI * 2 * progress);
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  /**
    * 冲刺无敌帧内画几道渐隐残影，卖"高速冲刺"的速度感——只在无敌位移段画
    * （对应 `dash.invuln`），收招段没有残影，视觉上正好和"这段能接攻击了"
    * 的分界对上：残影消失即是可以接招的时刻。
    */
   private drawDashTrail(e: Entity): void {
     if (e.action !== 'dash') return;
-    const invuln = ACTIONS.dash.invuln;
+    const invuln = resolveAction('dash', e.profession).invuln;
     if (!invuln || e.actionFrame >= invuln.to) return;
     const { ctx } = this;
     const ghosts = 4;
@@ -666,7 +719,7 @@ export class Renderer {
     if (e.team !== 'player') return;
     const style = SWING_STYLE[e.action];
     if (!style) return;
-    const box = ACTIONS[e.action].hitboxes[0];
+    const box = resolveAction(e.action, e.profession).hitboxes[0];
     if (!box || e.actionFrame < box.activeFrom || e.actionFrame >= box.activeTo) return;
 
     const span = box.activeTo - box.activeFrom;
@@ -700,7 +753,7 @@ export class Renderer {
   private drawPlayer(e: Entity, flashing: boolean, airH: number): void {
     const { ctx } = this;
     const sheet = this.sheets.get('player');
-    const def = ACTIONS[e.action];
+    const def = resolveAction(e.action, e.profession);
     const progress = def.loop
       ? (e.actionFrame % def.frames) / def.frames
       : e.actionFrame / def.frames;
@@ -714,7 +767,7 @@ export class Renderer {
     // 走动时叠加的重心起伏——腿部摆动帧本身已经有了，但没有配套的
     // 上下起伏，走起来还是有点"贴地滑"。幅度比敌人小一档（2px vs 3px），
     // 玩家有真的走路帧兜底，起伏只是锦上添花，不是唯一的动作信号。
-    const bob = walkBob(e.action, e.actionFrame, 2);
+    const bob = walkBob(e.action, e.actionFrame, 2, e.profession);
 
     if (rect && sheet) {
       // hero-v2 为防止长剑触格统一保留了 4px 安全边距，实际人物轮廓比旧占位件
@@ -770,9 +823,9 @@ export class Renderer {
         : 0;
     // 正式走路帧叠一层很轻的重心起伏，几何兜底也复用它；幅度按敌人体型
     // 稍微放大一点（3px），首领这种大体型才看得出来在动。
-    const bob = walkBob(e.action, e.actionFrame, 3);
+    const bob = walkBob(e.action, e.actionFrame, 3, e.profession);
     const sheet = this.sheets.get(kind);
-    const def = ACTIONS[e.action];
+    const def = resolveAction(e.action, e.profession);
     const progress = def.loop
       ? (e.actionFrame % def.frames) / def.frames
       : e.actionFrame / def.frames;
@@ -998,7 +1051,12 @@ export class Renderer {
     const parts = [...byKind.entries()].map(
       ([k, n]) => `${ENEMY_PROFILES[k as keyof typeof ENEMY_PROFILES]?.label ?? k}×${n}`,
     );
-    ctx.fillText(`敌人 ${alive.length}${parts.length ? ' · ' + parts.join(' ') : ''}`, 14, 24);
+    const profession = player?.profession ? ` · 职业 ${PROFESSION_LABEL[player.profession]}` : '';
+    ctx.fillText(
+      `敌人 ${alive.length}${parts.length ? ' · ' + parts.join(' ') : ''}${profession}`,
+      14,
+      24,
+    );
 
     if (!player) {
       ctx.fillStyle = '#e2705c';

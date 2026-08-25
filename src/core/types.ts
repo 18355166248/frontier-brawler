@@ -14,12 +14,27 @@ export interface Vec2 {
 
 export type Facing = 1 | -1;
 
+/**
+ * M2 的三个职业。职业只属于玩家；敌人继续走共享 ACTIONS，不认识这层概念。
+ * 英文 id 会进入存档与统计，确定后不要随意改名。
+ */
+export const PROFESSION_IDS = ['heavy', 'swift', 'arcane'] as const;
+export type Profession = (typeof PROFESSION_IDS)[number];
+
+/** 疾锋最接近 M1 已验收的现有招式，架构迁移阶段用它保证玩法不变。 */
+export const DEFAULT_PROFESSION: Profession = 'swift';
+
 /** 动作状态机的状态。和动作库的 clip id 一一对应。 */
 export type ActionState =
   | 'idle'
   | 'move'
   | 'slash'
   | 'slash2'
+  /** 疾锋第三段连击；其他职业不会自然进入这个状态 */
+  | 'slash3'
+  /** 重击按住攻击时的蓄力状态，以及松开后的普通/满蓄力释放 */
+  | 'heavyCharge'
+  | 'heavyCharged'
   | 'dash'
   | 'hit'
   /** 玩家范围技，吃能量，释放期间带超级护甲 */
@@ -186,6 +201,8 @@ export interface Entity {
   team: Team;
   /** 仅敌人有；玩家为 undefined */
   kind?: EnemyKind;
+  /** 仅玩家有；动作解析据此叠加职业覆盖，敌人保持 undefined。 */
+  profession?: Profession;
   pos: Vec2;
   velocity: Vec2;
   facing: Facing;

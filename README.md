@@ -258,6 +258,7 @@ __game.world                      // 读世界状态
 __game.fastForward(600)           // 脱离渲染循环快推 600 帧
 __game.stats()                    // 本房间统计，M1 四条验收标准都在里面
 __game.overallStats()             // 整关(跨房间)累计统计，结算界面画的就是这份数据
+__game.profession('swift')        // 开发期切换职业：heavy / swift / arcane
 __game.unwarned()                 // 无预警伤害明细，验收第 4 条逐条 review 用
 __game.run                        // Run 状态：当前房间、已清空集合、门状态
 __game.progress()                 // 关卡进度摘要
@@ -267,7 +268,8 @@ __game.clearRoom()                // 清空当前房间敌人，验证开门与�
 ```
 
 Canvas 视觉回归也可用开发地址直达教学房，例如
-`http://127.0.0.1:4317/?stage=3&room=c1`；`stage` 从 1 起，`room` 必须属于该关。
+`http://127.0.0.1:4317/?stage=3&room=c1&profession=swift`；`stage` 从 1 起，`room` 必须属于该关，
+`profession` 可选 `heavy`、`swift`、`arcane`。
 这条入口只在开发模式存在，生产构建会移除。
 
 注入输入有个坑：攻击/冲刺/技能/处决都取"按下那一瞬间"，
@@ -284,7 +286,7 @@ const press = (i) => { __game.hold(i); __game.fastForward(1); __game.hold({}); _
 玩三局，然后读数：
 
 ```js
-__game.stats()
+__game.overallStats()
 // { basicAttackRatio: 普攻占比, depthRatio: 纵深比, executes: 处决次数,
 //   unwarnedLethal: 无预警致死次数, ... }
 ```
@@ -299,21 +301,20 @@ __game.stats()
 - boss 已有 `bossSlam/bossCharge/bossRush/bossNova/bossSummon` 五行正式美术；
   几何轮廓只在动作表加载失败时作为容错兜底。
 - 玩家动作表已有 idle/move/slash/slash2/dash/hit 六行，
-  新增的 skill/execute/jump/airSlash 等动作没有对应美术帧，会退回 idle
-  的图——跳跃的高度变化靠渲染层的 Y 轴偏移体现，不依赖专属美术帧，
+  新增的 skill/execute/jump/airSlash 等动作没有对应美术帧，会退回 idle；
+  疾锋 `slash3` 和重击释放在专属美术补齐前复用 slash2 行，重击蓄力复用
+  idle。跳跃的高度变化靠渲染层
+  的 Y 轴偏移体现，不依赖专属美术帧，
   所以视觉上能看出「在跳」，只是角色本身的姿态还是 idle 那张。
-- 经营层、装备、职业、升级全都还没有。
+- 职业选择界面、术法、装备和经营层尚未实现。
 - 没有音效。
-- **首领的可打性没有真人数据**。机制（阶段切换、召唤、招式池、预警覆盖）
-  脚本已验证无误，出手频率也调过一次明显失衡的数值，但脚本 bot 走位
-  不够聪明，验证不了"真人在合理打法下能否稳定打赢"——这条必须真人验收。
 
 ## 下一步
 
 见 [路线图](docs/ROADMAP.md)（含现状速览）。M1（战斗深度）和 M3（关卡与
-推进）的机制都已实现，这一轮又根据真人的定性反馈迭代了一批连段/手感
-细节和视觉效果，但**量化验收数据还没收集**：M1 打三局读
-`__game.overallStats()` 对照四条标准，M3 打通六关看结算界面上的用时和
-通关情况。两个都是高风险里程碑，验收不过就该改机制而不是继续堆功能，
-过了才轮到 M2 职业系统——M2 的任务拆解和一处需要提前决策的依赖冲突
-（职业解锁 vs 尚不存在的经营层建筑）已经写进路线图，届时可以直接照做。
+推进）已由项目负责人真机复核并确认可以继续，当前正式进入 M2 职业系统。
+第一阶段的 `Profession`、`PlayerProfile.profession` 与
+`resolveAction`/`PROFESSION_ACTIONS` 覆盖链已经完成；疾锋已作为第一套职业
+实装三段普攻、短冷却/短无敌窗冲刺；重击已实装按住蓄力、短按/满蓄力
+分档释放、超级护甲与更长冲刺冷却。下一步单独实现术法，再做三职业对比
+与六关回归。

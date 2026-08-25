@@ -16,7 +16,8 @@ import type { UpgradeTrackId } from './core/upgrades';
 import type { InputState } from './core/world';
 import { Renderer } from './render/renderer';
 import { SpriteSheet } from './render/sprites';
-import type { ActionState } from './core/types';
+import { PROFESSION_IDS } from './core/types';
+import type { ActionState, Profession } from './core/types';
 
 /** 三选一的按键，和 render/renderer.ts 里卡片上画的键位一一对应 */
 const CHOICE_KEYS: Record<string, UpgradeTrackId> = {
@@ -82,11 +83,15 @@ if (import.meta.env.DEV) {
   const params = new URLSearchParams(window.location.search);
   const requestedStage = Number(params.get('stage'));
   const requestedRoom = params.get('room');
+  const requestedProfession = params.get('profession') as Profession | null;
   if (Number.isInteger(requestedStage) && requestedStage >= 1 && requestedStage <= STAGES.length) {
     startStage(requestedStage - 1);
   }
   if (requestedRoom && run.stage.rooms.some((room) => room.id === requestedRoom)) {
     run.enterRoom(requestedRoom, null);
+  }
+  if (requestedProfession && PROFESSION_IDS.includes(requestedProfession)) {
+    run.setProfession(requestedProfession);
   }
 }
 
@@ -146,6 +151,7 @@ function readInput(): InputState {
     moveX: (right ? 1 : 0) - (left ? 1 : 0) + (injected.moveX ?? 0),
     moveY: (down ? 1 : 0) - (up ? 1 : 0) + (injected.moveY ?? 0),
     attack,
+    attackHeld,
     dash,
     skill,
     execute,
@@ -217,6 +223,11 @@ if (import.meta.env.DEV) {
     goto(roomId: string): void {
       run.enterRoom(roomId, null);
     },
+    /** 切职业用于 M2 对照测试；正式选择界面也会复用 Run.setProfession。 */
+    profession(profession: Profession): void {
+      if (!PROFESSION_IDS.includes(profession)) return;
+      run.setProfession(profession);
+    },
     /** 清空当前房间的敌人，用来快速验证开门与切换 */
     clearRoom(): void {
       for (const e of run.world.entities) {
@@ -246,7 +257,7 @@ if (import.meta.env.DEV) {
     },
     /** 本房间统计摘要，M1 四条验收标准直接读这个。 */
     stats(): unknown {
-      return run.world.stats.summary();
+      return { profession: run.profile.profession, ...run.world.stats.summary() };
     },
     /** 整关（跨房间）统计摘要，结算界面画的就是这份数据。 */
     overallStats(): unknown {
@@ -267,6 +278,7 @@ if (import.meta.env.DEV) {
         total: run.stage.rooms.length,
         openDoors: run.openDoors,
         hp: Math.round(run.profile.hp),
+        profession: run.profile.profession,
         seconds: Number((run.stats.frames / 60).toFixed(1)),
       };
     },

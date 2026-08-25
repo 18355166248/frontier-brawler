@@ -8,7 +8,17 @@
 import type { EnemyKind } from './types';
 
 /** 玩家主动出手的分类。占比统计只看这几种，走位和受击不计入。 */
-export type OffensiveAction = 'slash' | 'slash2' | 'skill' | 'dash' | 'execute' | 'jump' | 'airSlash';
+export type OffensiveAction =
+  | 'slash'
+  | 'slash2'
+  | 'slash3'
+  | 'heavy'
+  | 'heavyCharged'
+  | 'skill'
+  | 'dash'
+  | 'execute'
+  | 'jump'
+  | 'airSlash';
 
 export interface UnwarnedHit {
   /** 第几逻辑帧挨的这一下 */
@@ -28,6 +38,9 @@ export class RunStats {
   readonly actions: Record<OffensiveAction, number> = {
     slash: 0,
     slash2: 0,
+    slash3: 0,
+    heavy: 0,
+    heavyCharged: 0,
     skill: 0,
     dash: 0,
     execute: 0,
@@ -110,6 +123,9 @@ export class RunStats {
     return (
       this.actions.slash +
       this.actions.slash2 +
+      this.actions.slash3 +
+      this.actions.heavy +
+      this.actions.heavyCharged +
       this.actions.skill +
       this.actions.dash +
       this.actions.execute +
@@ -125,7 +141,13 @@ export class RunStats {
   get basicAttackRatio(): number {
     const total = this.totalOffensive;
     if (total === 0) return 0;
-    return (this.actions.slash + this.actions.slash2) / total;
+    return (
+      this.actions.slash +
+      this.actions.slash2 +
+      this.actions.slash3 +
+      this.actions.heavy +
+      this.actions.heavyCharged
+    ) / total;
   }
 
   /**

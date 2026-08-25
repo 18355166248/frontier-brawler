@@ -10,7 +10,7 @@
  * **敌人的高伤害招式，前摇越长伤害越高**。前摇就是预警，
  * 玩家付出「读招」的注意力，换来躲开的机会——这是「不觉得不公平」的实现方式。
  */
-import type { ActionDef, ActionState } from './types';
+import type { ActionDef, ActionState, Profession } from './types';
 
 /** 逻辑帧率。固定步长，不跟随显示帧率，保证手感在任何设备一致。 */
 export const TICK_RATE = 60;
@@ -26,6 +26,16 @@ export const EXECUTE_RANGE = 62;
 
 /** 冲刺冷却帧数。太短会退化成无脑冲，太长会让唯一的防御手段不可靠。 */
 export const DASH_COOLDOWN = 45;
+
+/** 职业的防御代价在这里统一解析：疾锋更频繁，重击更依赖站桩抗压。 */
+export function resolveDashCooldown(profession?: Profession): number {
+  if (profession === 'swift') return 30;
+  if (profession === 'heavy') return 70;
+  return DASH_COOLDOWN;
+}
+
+/** 重击蓄满所需帧数；约半秒，足够让站桩预判成为真实代价。 */
+export const HEAVY_FULL_CHARGE_FRAMES = 30;
 
 /**
  * 跳跃冷却帧数。跳跃只免疫贴地判定（不是全无敌），所以定得比冲刺短一点，
@@ -110,6 +120,65 @@ export const ACTIONS: Record<ActionState, ActionDef> = {
         hitStop: 8,
       },
     ],
+  },
+
+  /**
+   * 疾锋第三段：总伤害不直接膨胀成最优解，而是用更短前摇和强击退做连段收尾。
+   * 24+26+24 帧打 12+18+14，整套理论 DPS 与原两段接近，主要变化是操作频率。
+   */
+  slash3: {
+    id: 'slash3',
+    frames: 24,
+    loop: false,
+    cancelable: false,
+    motion: [0, 0, 0, 0, 1.4, 2.8, 3.6, 2.4, 1.0, 0.4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    hitboxes: [
+      {
+        offset: { x: 36, y: 0 },
+        halfWidth: 38,
+        halfDepth: 26,
+        activeFrom: 5,
+        activeTo: 10,
+        damage: 14,
+        knockback: 7.0,
+        hitStop: 7,
+      },
+    ],
+    cancelFrom: 10,
+    cancelInto: ['slash'],
+    perfectCancelWindow: { from: 10, to: 14 },
+  },
+
+  /** 重击蓄力本身没有判定，松键后由 world 切到普通或满蓄力释放。 */
+  heavyCharge: {
+    id: 'heavyCharge',
+    frames: HEAVY_FULL_CHARGE_FRAMES + 1,
+    loop: false,
+    cancelable: false,
+    hitboxes: [],
+    superArmor: true,
+  },
+
+  /** 满蓄力释放单独占一个状态，避免把倍率塞进世界命中逻辑形成职业特判。 */
+  heavyCharged: {
+    id: 'heavyCharged',
+    frames: 38,
+    loop: false,
+    cancelable: false,
+    motion: [0, 0, 0, 0, 0, 0, 0, 0, 1.2, 2.8, 4.2, 3.0, 1.4, 0.4, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    hitboxes: [
+      {
+        offset: { x: 40, y: 0 },
+        halfWidth: 44,
+        halfDepth: 34,
+        activeFrom: 10,
+        activeTo: 15,
+        damage: 36,
+        knockback: 12,
+        hitStop: 11,
+      },
+    ],
+    superArmor: true,
   },
 
   dash: {
@@ -499,14 +568,79 @@ export const ACTIONS: Record<ActionState, ActionDef> = {
   },
 };
 
+/**
+ * 职业只覆盖真正有差异的玩家招式，共享移动/受击和全部敌人动作继续回退 ACTIONS。
+ * 疾锋是第一套正式覆盖；后续每落一个职业只往对应分支加 ActionDef，
+ * 不再修改世界逻辑的查表方式，避免职业越多分支越散。
+ */
+export const PROFESSION_ACTIONS: Record<
+  Profession,
+  Partial<Record<ActionState, ActionDef>>
+> = {
+  heavy: {
+    // 重击没有多段链：短按也会经历一次蓄力姿态，松键后释放慢而重的单段攻击。
+    heavy: {
+      ...ACTIONS.heavy,
+      frames: 34,
+      motion: [0, 0, 0, 0, 0, 0, 1.0, 2.2, 3.2, 2.0, 0.8, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+      hitboxes: [
+        {
+          offset: { x: 36, y: 0 },
+          halfWidth: 38,
+          halfDepth: 30,
+          activeFrom: 9,
+          activeTo: 14,
+          damage: 18,
+          knockback: 6,
+          hitStop: 8,
+        },
+      ],
+      telegraph: undefined,
+      superArmor: true,
+    },
+    heavyCharge: ACTIONS.heavyCharge,
+    heavyCharged: ACTIONS.heavyCharged,
+  },
+  swift: {
+    // 第二段不再收尾，而是把输入送进疾锋专属第三段。
+    slash2: {
+      ...ACTIONS.slash2,
+      cancelFrom: 11,
+      cancelInto: ['slash3'],
+      perfectCancelWindow: { from: 11, to: 15 },
+    },
+    slash3: ACTIONS.slash3,
+    // 冷却更短，但单次无敌窗由 13 帧压到 10 帧；疾锋能频繁位移，
+    // 每次却更要求时机，不能把“快”做成无脑常驻无敌。
+    dash: {
+      ...ACTIONS.dash,
+      frames: 22,
+      motion: ACTIONS.dash.motion?.slice(0, 22),
+      invuln: { from: 2, to: 12 },
+      cancelFrom: 12,
+      perfectCancelWindow: { from: 12, to: 16 },
+    },
+  },
+  arcane: {},
+};
+
+/** 职业覆盖优先，未覆盖或敌人没有职业时退回共享动作表。 */
+export function resolveAction(state: ActionState, profession?: Profession): ActionDef {
+  return (profession ? PROFESSION_ACTIONS[profession][state] : undefined) ?? ACTIONS[state];
+}
+
 /** 一次动作播完需要多少帧 */
-export function actionLength(state: ActionState): number {
-  return ACTIONS[state].frames;
+export function actionLength(state: ActionState, profession?: Profession): number {
+  return resolveAction(state, profession).frames;
 }
 
 /** 当前帧是否允许被玩家输入打断 */
-export function canInterrupt(state: ActionState, frame: number): boolean {
-  const def = ACTIONS[state];
+export function canInterrupt(
+  state: ActionState,
+  frame: number,
+  profession?: Profession,
+): boolean {
+  const def = resolveAction(state, profession);
   if (def.cancelable) return true;
   // 显式声明的取消点优先——纯位移动作（冲刺、跳跃）没有判定框，
   // 不写这个字段的话会落进下面的隐式规则，取消窗口只剩最后 1 帧。
@@ -523,15 +657,23 @@ export function canInterrupt(state: ActionState, frame: number): boolean {
  * 一段，奖励的是「反应快」而不是「记得住连段表」——普通取消窗口有
  * 十几帧宽容度，完美窗口窄得多，需要玩家在收招段一开始就接上。
  */
-export function isPerfectCancel(fromState: ActionState, frame: number): boolean {
-  const win = ACTIONS[fromState].perfectCancelWindow;
+export function isPerfectCancel(
+  fromState: ActionState,
+  frame: number,
+  profession?: Profession,
+): boolean {
+  const win = resolveAction(fromState, profession).perfectCancelWindow;
   if (!win) return false;
   return frame >= win.from && frame < win.to;
 }
 
 /** 该动作在这一帧是否处于自带的无敌区间 */
-export function isActionInvulnerable(state: ActionState, frame: number): boolean {
-  const inv = ACTIONS[state].invuln;
+export function isActionInvulnerable(
+  state: ActionState,
+  frame: number,
+  profession?: Profession,
+): boolean {
+  const inv = resolveAction(state, profession).invuln;
   if (!inv) return false;
   return frame >= inv.from && frame < inv.to;
 }
@@ -540,8 +682,12 @@ export function isActionInvulnerable(state: ActionState, frame: number): boolean
  * 该动作在这一帧是否处于腾空区间——跳跃靠这个字段实现「躲开贴地攻击」，
  * 判定命中时要检查目标腾不腾空，见 world.ts 的 resolveHits。
  */
-export function isActionAirborne(state: ActionState, frame: number): boolean {
-  const ab = ACTIONS[state].airborne;
+export function isActionAirborne(
+  state: ActionState,
+  frame: number,
+  profession?: Profession,
+): boolean {
+  const ab = resolveAction(state, profession).airborne;
   if (!ab) return false;
   return frame >= ab.from && frame < ab.to;
 }
