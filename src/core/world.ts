@@ -226,6 +226,8 @@ export class World {
       this.stepEntity(e, control);
     }
 
+    this.recordEngagementDistance();
+
     this.releaseFinishedTokens();
 
     this.resolveHits();
@@ -238,6 +240,21 @@ export class World {
       this.freezeFrames = this.events.hitStop;
     }
     return this.events;
+  }
+
+  /**
+   * 每个有效战斗帧只记一次“玩家到最近活敌人”的距离。
+   * 用最近敌人而不是全体均值，避免远处尚未参战的远程兵把职业站位数据抬高。
+   */
+  private recordEngagementDistance(): void {
+    const player = this.player;
+    if (!player || player.dead) return;
+    let nearest = Infinity;
+    for (const enemy of this.entities) {
+      if (enemy.team !== 'enemy' || enemy.dead) continue;
+      nearest = Math.min(nearest, Math.hypot(enemy.pos.x - player.pos.x, enemy.pos.y - player.pos.y));
+    }
+    if (Number.isFinite(nearest)) this.stats.recordEngagementDistance(nearest);
   }
 
   private stepEntity(e: Entity, input: InputState | InputIntent): void {

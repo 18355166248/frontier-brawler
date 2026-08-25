@@ -34,6 +34,33 @@ import type { SpriteSheet } from './sprites';
 /** 跳跃的视觉离地高度峰值（像素）。纯渲染表现，逻辑层不知道"高度"这个概念。 */
 const JUMP_PEAK_HEIGHT = 44;
 
+const PROFESSION_CARDS: Record<
+  Profession,
+  { label: string; theme: string; detail: string; color: string; key: string }
+> = {
+  heavy: {
+    label: '重击',
+    theme: '蓄力 · 抗压',
+    detail: '按住攻击蓄力；满蓄力伤害与击退更高，全程超级护甲。',
+    color: '#ff9a5c',
+    key: '1',
+  },
+  swift: {
+    label: '疾锋',
+    theme: '连段 · 位移',
+    detail: '三段普攻；冲刺更频繁，但每次无敌窗口更短。',
+    color: '#7fe8ff',
+    key: '2',
+  },
+  arcane: {
+    label: '术法',
+    theme: '范围 · 站位',
+    detail: '中距离范围普攻；技能消耗更低，处决距离更远。',
+    color: '#b79cff',
+    key: '3',
+  },
+};
+
 /**
  * 跳跃/跳劈期间角色离地多高，供 drawEntity 抬高角色、缩小影子用。
  *
@@ -1077,6 +1104,11 @@ export class Renderer {
       return;
     }
 
+    if (run.phase === 'professionSelect') {
+      this.drawProfessionChoice();
+      return;
+    }
+
     if (run.pendingChoice) {
       this.drawUpgradeChoice(run.pendingChoice, run.profile.upgrades);
       return;
@@ -1127,6 +1159,54 @@ export class Renderer {
     ctx.fillText(player.dashCooldown > 0 ? `冲刺 ${player.dashCooldown}` : '冲刺就绪', 14, 76);
     ctx.fillStyle = player.jumpCooldown > 0 ? 'rgba(255,255,255,0.35)' : '#8fd4c8';
     ctx.fillText(player.jumpCooldown > 0 ? `跳跃 ${player.jumpCooldown}` : '跳跃就绪', 100, 76);
+  }
+
+  /** 出击前职业选择沿用三选一的遮罩和卡片语言，避免再造一套菜单视觉。 */
+  private drawProfessionChoice(): void {
+    const { ctx, canvas } = this;
+    ctx.save();
+    ctx.fillStyle = 'rgba(8,10,13,0.78)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 24px system-ui, sans-serif';
+    ctx.fillText('选择本次出击职业', canvas.width / 2, 86);
+    ctx.font = '13px system-ui, sans-serif';
+    ctx.fillStyle = 'rgba(255,255,255,0.58)';
+    ctx.fillText('M2 验证阶段全部开放 · 按 1 / 2 / 3 选择', canvas.width / 2, 110);
+
+    const ids: Profession[] = ['heavy', 'swift', 'arcane'];
+    const cardW = 220;
+    const cardH = 218;
+    const gap = 22;
+    const startX = (canvas.width - ids.length * cardW - (ids.length - 1) * gap) / 2;
+    const y = 154;
+    ids.forEach((id, index) => {
+      const card = PROFESSION_CARDS[id];
+      const x = startX + index * (cardW + gap);
+      ctx.fillStyle = 'rgba(20,24,30,0.94)';
+      ctx.strokeStyle = card.color;
+      ctx.lineWidth = 2;
+      this.roundRect(ctx, x, y, cardW, cardH, 12);
+      ctx.fill();
+      ctx.stroke();
+      ctx.fillStyle = card.color;
+      ctx.font = 'bold 26px system-ui, sans-serif';
+      ctx.fillText(card.label, x + cardW / 2, y + 52);
+      ctx.font = '13px system-ui, sans-serif';
+      ctx.fillText(card.theme, x + cardW / 2, y + 79);
+      ctx.fillStyle = 'rgba(255,255,255,0.82)';
+      ctx.font = '13px system-ui, sans-serif';
+      this.wrapText(card.detail, x + cardW / 2, y + 112, cardW - 32, 20);
+      ctx.beginPath();
+      ctx.arc(x + cardW / 2, y + cardH - 30, 17, 0, Math.PI * 2);
+      ctx.strokeStyle = card.color;
+      ctx.stroke();
+      ctx.fillStyle = card.color;
+      ctx.font = 'bold 16px system-ui, sans-serif';
+      ctx.fillText(card.key, x + cardW / 2, y + cardH - 24);
+    });
+    ctx.restore();
   }
 
   /**
@@ -1255,9 +1335,12 @@ export class Renderer {
     // 数据栏：两列 label/value。无预警致死大于 0 时标红——
     // 这条本该恒为 0（GAME_DESIGN 3.4），非 0 说明有判定没给够预警，值得显眼。
     const rows: [string, string, boolean?][] = [
+      ['职业', PROFESSION_LABEL[summary.profession]],
       ['用时', `${summary.seconds.toFixed(1)}s`],
       ['普攻占比', `${Math.round(summary.basicAttackRatio * 100)}%`],
       ['纵深比', summary.depthRatio.toFixed(2)],
+      ['移动距离', `${summary.totalMoveDistance}px`],
+      ['平均交战距离', `${summary.averageEngagementDistance}px`],
       ['处决次数', `${summary.executes}`],
       ['完美取消', `${summary.perfectCancels}`],
       ['击杀数', `${summary.kills}`],

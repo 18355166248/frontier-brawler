@@ -26,6 +26,13 @@ const CHOICE_KEYS: Record<string, UpgradeTrackId> = {
   Digit3: 'guardian',
 };
 
+/** M2 验证阶段三个职业全部开放，键位顺序与选择卡片一致。 */
+const PROFESSION_KEYS: Record<string, Profession> = {
+  Digit1: 'heavy',
+  Digit2: 'swift',
+  Digit3: 'arcane',
+};
+
 const WIDTH = 960;
 const HEIGHT = 540;
 
@@ -106,7 +113,12 @@ window.addEventListener('keydown', (e) => {
     startStage(stageIndex + 1);
   }
   const track = CHOICE_KEYS[e.code];
-  if (track && run.phase === 'choosing') run.chooseUpgrade(track);
+  const profession = PROFESSION_KEYS[e.code];
+  if (profession && run.phase === 'professionSelect') {
+    run.setProfession(profession);
+  } else if (track && run.phase === 'choosing') {
+    run.chooseUpgrade(track);
+  }
   // 方向键和空格会滚动页面，游戏里要吃掉
   if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) {
     e.preventDefault();

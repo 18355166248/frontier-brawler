@@ -54,6 +54,9 @@ export class RunStats {
   moveX = 0;
   /** 玩家纵深移动的累计距离 */
   moveY = 0;
+  /** 每个有效战斗帧到最近敌人的距离，用于 M2 判断职业是否真的改变站位。 */
+  engagementDistanceTotal = 0;
+  engagementDistanceSamples = 0;
 
   executes = 0;
   kills = 0;
@@ -83,6 +86,11 @@ export class RunStats {
     this.moveY += Math.abs(dy);
   }
 
+  recordEngagementDistance(distance: number): void {
+    this.engagementDistanceTotal += distance;
+    this.engagementDistanceSamples += 1;
+  }
+
   recordKill(kind: EnemyKind | undefined): void {
     this.kills += 1;
     if (kind) this.killsByKind[kind] = (this.killsByKind[kind] ?? 0) + 1;
@@ -109,6 +117,8 @@ export class RunStats {
     }
     this.moveX += other.moveX;
     this.moveY += other.moveY;
+    this.engagementDistanceTotal += other.engagementDistanceTotal;
+    this.engagementDistanceSamples += other.engagementDistanceSamples;
     this.executes += other.executes;
     this.kills += other.kills;
     for (const [kind, count] of Object.entries(other.killsByKind) as [EnemyKind, number][]) {
@@ -163,6 +173,15 @@ export class RunStats {
     return this.moveY / this.moveX;
   }
 
+  get totalMoveDistance(): number {
+    return this.moveX + this.moveY;
+  }
+
+  get averageEngagementDistance(): number {
+    if (this.engagementDistanceSamples === 0) return 0;
+    return this.engagementDistanceTotal / this.engagementDistanceSamples;
+  }
+
   /** 致死的无预警伤害。这个必须是空的，否则第 4 条直接不通过。 */
   get lethalUnwarned(): UnwarnedHit[] {
     return this.unwarned.filter((u) => u.lethal);
@@ -178,6 +197,8 @@ export class RunStats {
     seconds: number;
     basicAttackRatio: number;
     depthRatio: number;
+    totalMoveDistance: number;
+    averageEngagementDistance: number;
     executes: number;
     kills: number;
     damageTaken: number;
@@ -190,6 +211,8 @@ export class RunStats {
       seconds: Number(this.seconds.toFixed(1)),
       basicAttackRatio: Number(this.basicAttackRatio.toFixed(3)),
       depthRatio: Number(this.depthRatio.toFixed(3)),
+      totalMoveDistance: Math.round(this.totalMoveDistance),
+      averageEngagementDistance: Number(this.averageEngagementDistance.toFixed(1)),
       executes: this.executes,
       kills: this.kills,
       damageTaken: Math.round(this.damageTaken),

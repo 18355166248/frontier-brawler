@@ -48,6 +48,8 @@ export function createProfile(): PlayerProfile {
 }
 
 export type RunPhase =
+  /** 出击前选择职业，M2 验证阶段三个职业全部开放 */
+  | 'professionSelect'
   /** 房间里还有活敌人 */
   | 'fighting'
   /** 清空了，门已开，等玩家走向出口 */
@@ -105,6 +107,8 @@ export class Run {
   room: RoomDef;
   world: World;
   profile: PlayerProfile;
+  /** 默认职业只是光标初值；玩家确认前逻辑帧保持暂停。 */
+  professionConfirmed = false;
 
   /** 已清空的房间。清空后不再刷怪，玩家可以自由回走。 */
   cleared = new Set<string>();
@@ -159,6 +163,7 @@ export class Run {
   setProfession(profession: Profession): void {
     this.profile.profession = profession;
     if (this.player) this.player.profession = profession;
+    this.professionConfirmed = true;
   }
 
   /** 整关是否打完：所有房间都清空了 */
@@ -173,6 +178,7 @@ export class Run {
    * 只要留着可写字段就会反复长出来，推导一次就断根了。
    */
   get phase(): RunPhase {
+    if (!this.professionConfirmed) return 'professionSelect';
     if (this.world.stats.died) return 'dead';
     if (this.transition > 0) return 'transition';
     if (this.pendingChoice) return 'choosing';
@@ -206,6 +212,9 @@ export class Run {
       skillCasts: [],
       bossPhaseShifts: [],
     };
+
+    // 选择界面是正式暂停态；不能让遮罩背后的敌人先走位、出手或累计计时。
+    if (!this.professionConfirmed) return empty;
 
     if (this.transition > 0) {
       this.transition -= 1;
