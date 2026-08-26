@@ -19,6 +19,7 @@
 import type { Profession } from '../core/types';
 import type {
   EquipmentReport,
+  ProfessionCoverageRow,
   ProfessionReportRow,
   ProfessionValidationStore,
 } from './profession-validation';
@@ -49,6 +50,8 @@ export interface PanelProfessionCard {
   label: string;
   color: string;
   samples: number;
+  coverageText: string;
+  coverageComplete: boolean;
   /** 无样本时为 true；此时 stats/actions 里是占位符而不是会被误读成"0%"的真数字 */
   empty: boolean;
   stats: PanelStatRow[];
@@ -110,6 +113,7 @@ export function buildValidationPanelModel(
   professionRows: ProfessionReportRow[],
   equipment: EquipmentReport,
   labelOf: (id: string) => string = (id) => id,
+  coverageRows: ProfessionCoverageRow[] = [],
 ): ValidationPanelModel {
   const professions = professionRows.map((row) => {
     const empty = row.samples === 0;
@@ -127,11 +131,16 @@ export function buildValidationPanelModel(
           .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]))
           .slice(0, MAX_ACTION_ROWS)
           .map(([action, value]) => ({ label: action, value: value.toFixed(1) }));
+    const coverage = coverageRows.find((item) => item.profession === row.profession);
     return {
       profession: row.profession,
       label: PROFESSION_VIEW[row.profession].label,
       color: PROFESSION_VIEW[row.profession].color,
       samples: row.samples,
+      coverageText: coverage
+        ? `关卡覆盖 ${coverage.readyStages}/${coverage.requiredStages} · 最低 ${coverage.minimumSamples}/${coverage.minimumSamplesPerStage} 局`
+        : '关卡覆盖 —',
+      coverageComplete: coverage?.complete ?? false,
       empty,
       stats,
       actions,
@@ -185,9 +194,10 @@ export class ValidationPanel {
   constructor(
     private readonly store: Pick<
       ProfessionValidationStore,
-      'report' | 'equipmentReport' | 'samples' | 'clear'
+      'report' | 'equipmentReport' | 'coverage' | 'samples' | 'clear'
     >,
     private readonly labelOf: (id: string) => string = (id) => id,
+    private readonly stageIds: readonly string[] = [],
   ) {}
 
   get open(): boolean {
@@ -195,7 +205,12 @@ export class ValidationPanel {
   }
 
   model(): ValidationPanelModel {
-    return buildValidationPanelModel(this.store.report(), this.store.equipmentReport(), this.labelOf);
+    return buildValidationPanelModel(
+      this.store.report(),
+      this.store.equipmentReport(),
+      this.labelOf,
+      this.store.coverage(this.stageIds),
+    );
   }
 
   /**
@@ -307,7 +322,7 @@ export class ValidationPanel {
     const gap = 14;
     const count = model.professions.length;
     const cardW = (width - margin * 2 - gap * (count - 1)) / count;
-    const cardH = 210;
+    const cardH = 236;
     const top = 84;
 
     model.professions.forEach((card, index) => {
@@ -325,10 +340,13 @@ export class ValidationPanel {
       ctx.fillText(card.label, x + cardW / 2, top + 30);
       ctx.fillStyle = MUTED;
       ctx.font = '12px system-ui, sans-serif';
-      ctx.fillText(`样本 ${card.samples}`, x + cardW / 2, top + 50);
+      ctx.fillText(`关卡终局样本 ${card.samples}`, x + cardW / 2, top + 49);
+      ctx.fillStyle = card.coverageComplete ? PASS_COLOR : MUTED;
+      ctx.font = '11px system-ui, sans-serif';
+      ctx.fillText(card.coverageText, x + cardW / 2, top + 66);
 
       card.stats.forEach((row, i) => {
-        const y = top + 76 + i * 20;
+        const y = top + 88 + i * 20;
         ctx.textAlign = 'left';
         ctx.fillStyle = MUTED;
         ctx.font = '12px system-ui, sans-serif';
@@ -342,12 +360,12 @@ export class ValidationPanel {
       ctx.textAlign = 'left';
       ctx.fillStyle = MUTED;
       ctx.font = '12px system-ui, sans-serif';
-      ctx.fillText('动作分布', x + 16, top + 172);
+      ctx.fillText('动作分布', x + 16, top + 174);
 
       if (card.empty) {
         ctx.fillStyle = MUTED;
         ctx.font = '12px system-ui, sans-serif';
-        ctx.fillText('暂无样本', x + 16, top + 192);
+        ctx.fillText('暂无样本', x + 16, top + 194);
         return;
       }
 
@@ -358,7 +376,7 @@ export class ValidationPanel {
         const col = i % 2;
         const line = Math.floor(i / 2);
         const cx = x + 16 + col * colW;
-        const y = top + 192 + line * 16;
+        const y = top + 194 + line * 16;
         ctx.textAlign = 'left';
         ctx.fillStyle = 'rgba(255,255,255,0.68)';
         ctx.font = '11px system-ui, sans-serif';
@@ -376,7 +394,7 @@ export class ValidationPanel {
     width: number,
   ): void {
     const margin = 24;
-    const top = 306;
+    const top = 330;
     const panelW = width - margin * 2;
     const panelH = 190;
     const section = model.equipment;

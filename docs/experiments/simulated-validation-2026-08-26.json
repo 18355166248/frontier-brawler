@@ -1,0 +1,5667 @@
+{
+  "schemaVersion": 1,
+  "sampleType": "simulation-not-human",
+  "generatedAt": "2026-08-26T10:11:01.710Z",
+  "config": {
+    "professions": [
+      "heavy",
+      "swift",
+      "arcane"
+    ],
+    "stages": [
+      "village",
+      "bridge",
+      "canyon",
+      "camp",
+      "pass",
+      "citadel"
+    ],
+    "runsPerStage": 3,
+    "maxFramesPerStage": 18000,
+    "equipment": "elite and boss drops auto-equipped; campaign inventory carries between stages"
+  },
+  "professionReport": [
+    {
+      "profession": "heavy",
+      "samples": 18,
+      "successRate": 0.78,
+      "averageSeconds": 69.45,
+      "averageMoveDistance": 7004.56,
+      "averageEngagementDistance": 127.35,
+      "averageActions": {
+        "slash": 0,
+        "slash2": 0,
+        "slash3": 0,
+        "heavy": 42,
+        "heavyCharged": 0,
+        "arcanePulse": 0,
+        "skill": 5.11,
+        "dash": 25.22,
+        "execute": 3.72,
+        "jump": 26.22,
+        "airSlash": 0
+      }
+    },
+    {
+      "profession": "swift",
+      "samples": 18,
+      "successRate": 0.78,
+      "averageSeconds": 92.49,
+      "averageMoveDistance": 11020.61,
+      "averageEngagementDistance": 116.8,
+      "averageActions": {
+        "slash": 25.17,
+        "slash2": 19.06,
+        "slash3": 12.06,
+        "heavy": 0,
+        "heavyCharged": 0,
+        "arcanePulse": 0,
+        "skill": 5.56,
+        "dash": 44.28,
+        "execute": 5.11,
+        "jump": 42.17,
+        "airSlash": 2.11
+      }
+    },
+    {
+      "profession": "arcane",
+      "samples": 18,
+      "successRate": 1,
+      "averageSeconds": 60.99,
+      "averageMoveDistance": 4824.39,
+      "averageEngagementDistance": 156.82,
+      "averageActions": {
+        "slash": 0,
+        "slash2": 0,
+        "slash3": 0,
+        "heavy": 0,
+        "heavyCharged": 0,
+        "arcanePulse": 46.94,
+        "skill": 18.17,
+        "dash": 10.11,
+        "execute": 5.89,
+        "jump": 14.44,
+        "airSlash": 0
+      }
+    }
+  ],
+  "equipmentReport": {
+    "totalSamples": 54,
+    "topLoadoutShare": 0.09,
+    "passesDiversityTarget": true,
+    "loadouts": [
+      {
+        "loadout": "hook-blades / scout-coat / focus-bead",
+        "samples": 5,
+        "share": 0.09,
+        "successRate": 0.6
+      },
+      {
+        "loadout": "breaker-maul / scout-coat / focus-bead",
+        "samples": 4,
+        "share": 0.07,
+        "successRate": 0.5
+      },
+      {
+        "loadout": "ember-focus / scout-coat / focus-bead",
+        "samples": 4,
+        "share": 0.07,
+        "successRate": 1
+      },
+      {
+        "loadout": "none / field-armor / none",
+        "samples": 3,
+        "share": 0.06,
+        "successRate": 1
+      },
+      {
+        "loadout": "none / none / execution-charm",
+        "samples": 3,
+        "share": 0.06,
+        "successRate": 1
+      },
+      {
+        "loadout": "none / none / war-sigil",
+        "samples": 3,
+        "share": 0.06,
+        "successRate": 1
+      },
+      {
+        "loadout": "none / ritual-robe / none",
+        "samples": 3,
+        "share": 0.06,
+        "successRate": 1
+      },
+      {
+        "loadout": "none / scout-coat / execution-charm",
+        "samples": 3,
+        "share": 0.06,
+        "successRate": 1
+      },
+      {
+        "loadout": "none / scout-coat / focus-bead",
+        "samples": 3,
+        "share": 0.06,
+        "successRate": 1
+      },
+      {
+        "loadout": "breaker-maul / scout-coat / execution-charm",
+        "samples": 2,
+        "share": 0.04,
+        "successRate": 1
+      },
+      {
+        "loadout": "ember-focus / ritual-robe / focus-bead",
+        "samples": 2,
+        "share": 0.04,
+        "successRate": 1
+      },
+      {
+        "loadout": "ember-focus / scout-coat / execution-charm",
+        "samples": 2,
+        "share": 0.04,
+        "successRate": 1
+      },
+      {
+        "loadout": "hook-blades / scout-coat / execution-charm",
+        "samples": 2,
+        "share": 0.04,
+        "successRate": 0.5
+      },
+      {
+        "loadout": "breaker-maul / field-armor / focus-bead",
+        "samples": 1,
+        "share": 0.02,
+        "successRate": 0
+      },
+      {
+        "loadout": "breaker-maul / field-armor / none",
+        "samples": 1,
+        "share": 0.02,
+        "successRate": 1
+      },
+      {
+        "loadout": "breaker-maul / none / focus-bead",
+        "samples": 1,
+        "share": 0.02,
+        "successRate": 0
+      },
+      {
+        "loadout": "breaker-maul / none / none",
+        "samples": 1,
+        "share": 0.02,
+        "successRate": 1
+      },
+      {
+        "loadout": "ember-focus / field-armor / none",
+        "samples": 1,
+        "share": 0.02,
+        "successRate": 1
+      },
+      {
+        "loadout": "ember-focus / none / none",
+        "samples": 1,
+        "share": 0.02,
+        "successRate": 1
+      },
+      {
+        "loadout": "hook-blades / field-armor / none",
+        "samples": 1,
+        "share": 0.02,
+        "successRate": 1
+      },
+      {
+        "loadout": "hook-blades / none / focus-bead",
+        "samples": 1,
+        "share": 0.02,
+        "successRate": 0
+      },
+      {
+        "loadout": "hook-blades / none / none",
+        "samples": 1,
+        "share": 0.02,
+        "successRate": 1
+      },
+      {
+        "loadout": "iron-maul / none / focus-bead",
+        "samples": 1,
+        "share": 0.02,
+        "successRate": 1
+      },
+      {
+        "loadout": "iron-maul / none / none",
+        "samples": 1,
+        "share": 0.02,
+        "successRate": 1
+      },
+      {
+        "loadout": "spirit-focus / none / focus-bead",
+        "samples": 1,
+        "share": 0.02,
+        "successRate": 1
+      },
+      {
+        "loadout": "spirit-focus / none / none",
+        "samples": 1,
+        "share": 0.02,
+        "successRate": 1
+      },
+      {
+        "loadout": "wind-sabers / none / focus-bead",
+        "samples": 1,
+        "share": 0.02,
+        "successRate": 1
+      },
+      {
+        "loadout": "wind-sabers / none / none",
+        "samples": 1,
+        "share": 0.02,
+        "successRate": 1
+      }
+    ]
+  },
+  "coverage": [
+    {
+      "profession": "heavy",
+      "readyStages": 6,
+      "requiredStages": 6,
+      "minimumSamples": 3,
+      "minimumSamplesPerStage": 3,
+      "complete": true,
+      "stageSamples": {
+        "village": 3,
+        "bridge": 3,
+        "canyon": 3,
+        "camp": 3,
+        "pass": 3,
+        "citadel": 3
+      }
+    },
+    {
+      "profession": "swift",
+      "readyStages": 6,
+      "requiredStages": 6,
+      "minimumSamples": 3,
+      "minimumSamplesPerStage": 3,
+      "complete": true,
+      "stageSamples": {
+        "village": 3,
+        "bridge": 3,
+        "canyon": 3,
+        "camp": 3,
+        "pass": 3,
+        "citadel": 3
+      }
+    },
+    {
+      "profession": "arcane",
+      "readyStages": 6,
+      "requiredStages": 6,
+      "minimumSamples": 3,
+      "minimumSamplesPerStage": 3,
+      "complete": true,
+      "stageSamples": {
+        "village": 3,
+        "bridge": 3,
+        "canyon": 3,
+        "camp": 3,
+        "pass": 3,
+        "citadel": 3
+      }
+    }
+  ],
+  "perStage": [
+    {
+      "profession": "heavy",
+      "stage": "village",
+      "attempts": 3,
+      "clears": 3,
+      "successRate": 1,
+      "averageSeconds": 30.27,
+      "averageDamageTaken": 49.33
+    },
+    {
+      "profession": "heavy",
+      "stage": "bridge",
+      "attempts": 3,
+      "clears": 3,
+      "successRate": 1,
+      "averageSeconds": 51.1,
+      "averageDamageTaken": 103.33
+    },
+    {
+      "profession": "heavy",
+      "stage": "canyon",
+      "attempts": 3,
+      "clears": 3,
+      "successRate": 1,
+      "averageSeconds": 83.87,
+      "averageDamageTaken": 131.33
+    },
+    {
+      "profession": "heavy",
+      "stage": "camp",
+      "attempts": 3,
+      "clears": 3,
+      "successRate": 1,
+      "averageSeconds": 75.97,
+      "averageDamageTaken": 184.33
+    },
+    {
+      "profession": "heavy",
+      "stage": "pass",
+      "attempts": 3,
+      "clears": 2,
+      "successRate": 0.67,
+      "averageSeconds": 82.1,
+      "averageDamageTaken": 217.33
+    },
+    {
+      "profession": "heavy",
+      "stage": "citadel",
+      "attempts": 3,
+      "clears": 0,
+      "successRate": 0,
+      "averageSeconds": 93.4,
+      "averageDamageTaken": 193
+    },
+    {
+      "profession": "swift",
+      "stage": "village",
+      "attempts": 3,
+      "clears": 3,
+      "successRate": 1,
+      "averageSeconds": 40.5,
+      "averageDamageTaken": 22
+    },
+    {
+      "profession": "swift",
+      "stage": "bridge",
+      "attempts": 3,
+      "clears": 3,
+      "successRate": 1,
+      "averageSeconds": 46.63,
+      "averageDamageTaken": 34
+    },
+    {
+      "profession": "swift",
+      "stage": "canyon",
+      "attempts": 3,
+      "clears": 3,
+      "successRate": 1,
+      "averageSeconds": 209.3,
+      "averageDamageTaken": 167.33
+    },
+    {
+      "profession": "swift",
+      "stage": "camp",
+      "attempts": 3,
+      "clears": 2,
+      "successRate": 0.67,
+      "averageSeconds": 103.17,
+      "averageDamageTaken": 190.33
+    },
+    {
+      "profession": "swift",
+      "stage": "pass",
+      "attempts": 3,
+      "clears": 3,
+      "successRate": 1,
+      "averageSeconds": 99.77,
+      "averageDamageTaken": 143.33
+    },
+    {
+      "profession": "swift",
+      "stage": "citadel",
+      "attempts": 3,
+      "clears": 0,
+      "successRate": 0,
+      "averageSeconds": 55.6,
+      "averageDamageTaken": 201
+    },
+    {
+      "profession": "arcane",
+      "stage": "village",
+      "attempts": 3,
+      "clears": 3,
+      "successRate": 1,
+      "averageSeconds": 25.1,
+      "averageDamageTaken": 0
+    },
+    {
+      "profession": "arcane",
+      "stage": "bridge",
+      "attempts": 3,
+      "clears": 3,
+      "successRate": 1,
+      "averageSeconds": 47,
+      "averageDamageTaken": 32
+    },
+    {
+      "profession": "arcane",
+      "stage": "canyon",
+      "attempts": 3,
+      "clears": 3,
+      "successRate": 1,
+      "averageSeconds": 66.1,
+      "averageDamageTaken": 111
+    },
+    {
+      "profession": "arcane",
+      "stage": "camp",
+      "attempts": 3,
+      "clears": 3,
+      "successRate": 1,
+      "averageSeconds": 71.37,
+      "averageDamageTaken": 153.33
+    },
+    {
+      "profession": "arcane",
+      "stage": "pass",
+      "attempts": 3,
+      "clears": 3,
+      "successRate": 1,
+      "averageSeconds": 67.27,
+      "averageDamageTaken": 92.33
+    },
+    {
+      "profession": "arcane",
+      "stage": "citadel",
+      "attempts": 3,
+      "clears": 3,
+      "successRate": 1,
+      "averageSeconds": 89.1,
+      "averageDamageTaken": 210.67
+    }
+  ],
+  "stageSuccessRateSpreads": [
+    {
+      "stage": "village",
+      "spread": 0
+    },
+    {
+      "stage": "bridge",
+      "spread": 0
+    },
+    {
+      "stage": "canyon",
+      "spread": 0
+    },
+    {
+      "stage": "camp",
+      "spread": 0.33
+    },
+    {
+      "stage": "pass",
+      "spread": 0.33
+    },
+    {
+      "stage": "citadel",
+      "spread": 1
+    }
+  ],
+  "equipmentCampaign": {
+    "description": "six-stage progression with inventory and loadout carried between stages",
+    "report": {
+      "totalSamples": 54,
+      "topLoadoutShare": 0.09,
+      "passesDiversityTarget": true,
+      "loadouts": [
+        {
+          "loadout": "hook-blades / scout-coat / focus-bead",
+          "samples": 5,
+          "share": 0.09,
+          "successRate": 0.6
+        },
+        {
+          "loadout": "breaker-maul / scout-coat / focus-bead",
+          "samples": 4,
+          "share": 0.07,
+          "successRate": 0.5
+        },
+        {
+          "loadout": "ember-focus / scout-coat / focus-bead",
+          "samples": 4,
+          "share": 0.07,
+          "successRate": 1
+        },
+        {
+          "loadout": "none / field-armor / none",
+          "samples": 3,
+          "share": 0.06,
+          "successRate": 1
+        },
+        {
+          "loadout": "none / none / execution-charm",
+          "samples": 3,
+          "share": 0.06,
+          "successRate": 1
+        },
+        {
+          "loadout": "none / none / war-sigil",
+          "samples": 3,
+          "share": 0.06,
+          "successRate": 1
+        },
+        {
+          "loadout": "none / ritual-robe / none",
+          "samples": 3,
+          "share": 0.06,
+          "successRate": 1
+        },
+        {
+          "loadout": "none / scout-coat / execution-charm",
+          "samples": 3,
+          "share": 0.06,
+          "successRate": 1
+        },
+        {
+          "loadout": "none / scout-coat / focus-bead",
+          "samples": 3,
+          "share": 0.06,
+          "successRate": 1
+        },
+        {
+          "loadout": "breaker-maul / scout-coat / execution-charm",
+          "samples": 2,
+          "share": 0.04,
+          "successRate": 1
+        },
+        {
+          "loadout": "ember-focus / ritual-robe / focus-bead",
+          "samples": 2,
+          "share": 0.04,
+          "successRate": 1
+        },
+        {
+          "loadout": "ember-focus / scout-coat / execution-charm",
+          "samples": 2,
+          "share": 0.04,
+          "successRate": 1
+        },
+        {
+          "loadout": "hook-blades / scout-coat / execution-charm",
+          "samples": 2,
+          "share": 0.04,
+          "successRate": 0.5
+        },
+        {
+          "loadout": "breaker-maul / field-armor / focus-bead",
+          "samples": 1,
+          "share": 0.02,
+          "successRate": 0
+        },
+        {
+          "loadout": "breaker-maul / field-armor / none",
+          "samples": 1,
+          "share": 0.02,
+          "successRate": 1
+        },
+        {
+          "loadout": "breaker-maul / none / focus-bead",
+          "samples": 1,
+          "share": 0.02,
+          "successRate": 0
+        },
+        {
+          "loadout": "breaker-maul / none / none",
+          "samples": 1,
+          "share": 0.02,
+          "successRate": 1
+        },
+        {
+          "loadout": "ember-focus / field-armor / none",
+          "samples": 1,
+          "share": 0.02,
+          "successRate": 1
+        },
+        {
+          "loadout": "ember-focus / none / none",
+          "samples": 1,
+          "share": 0.02,
+          "successRate": 1
+        },
+        {
+          "loadout": "hook-blades / field-armor / none",
+          "samples": 1,
+          "share": 0.02,
+          "successRate": 1
+        },
+        {
+          "loadout": "hook-blades / none / focus-bead",
+          "samples": 1,
+          "share": 0.02,
+          "successRate": 0
+        },
+        {
+          "loadout": "hook-blades / none / none",
+          "samples": 1,
+          "share": 0.02,
+          "successRate": 1
+        },
+        {
+          "loadout": "iron-maul / none / focus-bead",
+          "samples": 1,
+          "share": 0.02,
+          "successRate": 1
+        },
+        {
+          "loadout": "iron-maul / none / none",
+          "samples": 1,
+          "share": 0.02,
+          "successRate": 1
+        },
+        {
+          "loadout": "spirit-focus / none / focus-bead",
+          "samples": 1,
+          "share": 0.02,
+          "successRate": 1
+        },
+        {
+          "loadout": "spirit-focus / none / none",
+          "samples": 1,
+          "share": 0.02,
+          "successRate": 1
+        },
+        {
+          "loadout": "wind-sabers / none / focus-bead",
+          "samples": 1,
+          "share": 0.02,
+          "successRate": 1
+        },
+        {
+          "loadout": "wind-sabers / none / none",
+          "samples": 1,
+          "share": 0.02,
+          "successRate": 1
+        }
+      ]
+    },
+    "samples": [
+      {
+        "mode": "campaign",
+        "profession": "heavy",
+        "stageId": "village",
+        "variant": 0,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "v3",
+        "remainingEnemies": [],
+        "framesSimulated": 2013,
+        "summary": {
+          "profession": "heavy",
+          "equipment": {
+            "weapon": "iron-maul",
+            "armor": null,
+            "accessory": null
+          },
+          "seconds": 32.5,
+          "basicAttackRatio": 0.5,
+          "depthRatio": 0.376,
+          "totalMoveDistance": 3988,
+          "averageEngagementDistance": 141.1,
+          "executes": 3,
+          "kills": 8,
+          "damageTaken": 56,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 0,
+            "slash2": 0,
+            "slash3": 0,
+            "heavy": 25,
+            "heavyCharged": 0,
+            "arcanePulse": 0,
+            "skill": 3,
+            "dash": 16,
+            "execute": 3,
+            "jump": 3,
+            "airSlash": 0
+          },
+          "perfectCancels": 0,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "heavy",
+        "stageId": "bridge",
+        "variant": 0,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "b1n",
+        "remainingEnemies": [],
+        "framesSimulated": 3518,
+        "summary": {
+          "profession": "heavy",
+          "equipment": {
+            "weapon": "breaker-maul",
+            "armor": null,
+            "accessory": null
+          },
+          "seconds": 57.3,
+          "basicAttackRatio": 0.596,
+          "depthRatio": 0.421,
+          "totalMoveDistance": 6338,
+          "averageEngagementDistance": 121.9,
+          "executes": 3,
+          "kills": 10,
+          "damageTaken": 128,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 0,
+            "slash2": 0,
+            "slash3": 0,
+            "heavy": 59,
+            "heavyCharged": 0,
+            "arcanePulse": 0,
+            "skill": 5,
+            "dash": 25,
+            "execute": 5,
+            "jump": 5,
+            "airSlash": 0
+          },
+          "perfectCancels": 0,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "heavy",
+        "stageId": "canyon",
+        "variant": 0,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "c4",
+        "remainingEnemies": [],
+        "framesSimulated": 4673,
+        "summary": {
+          "profession": "heavy",
+          "equipment": {
+            "weapon": "breaker-maul",
+            "armor": "field-armor",
+            "accessory": null
+          },
+          "seconds": 76.2,
+          "basicAttackRatio": 0.453,
+          "depthRatio": 0.564,
+          "totalMoveDistance": 6454,
+          "averageEngagementDistance": 138.7,
+          "executes": 4,
+          "kills": 12,
+          "damageTaken": 76,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 0,
+            "slash2": 0,
+            "slash3": 0,
+            "heavy": 63,
+            "heavyCharged": 0,
+            "arcanePulse": 0,
+            "skill": 7,
+            "dash": 25,
+            "execute": 6,
+            "jump": 38,
+            "airSlash": 0
+          },
+          "perfectCancels": 0,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "heavy",
+        "stageId": "camp",
+        "variant": 0,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "p4",
+        "remainingEnemies": [],
+        "framesSimulated": 4025,
+        "summary": {
+          "profession": "heavy",
+          "equipment": {
+            "weapon": "breaker-maul",
+            "armor": "scout-coat",
+            "accessory": "focus-bead"
+          },
+          "seconds": 65.4,
+          "basicAttackRatio": 0.557,
+          "depthRatio": 0.47,
+          "totalMoveDistance": 6107,
+          "averageEngagementDistance": 129.8,
+          "executes": 5,
+          "kills": 13,
+          "damageTaken": 114,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 0,
+            "slash2": 0,
+            "slash3": 0,
+            "heavy": 68,
+            "heavyCharged": 0,
+            "arcanePulse": 0,
+            "skill": 4,
+            "dash": 21,
+            "execute": 9,
+            "jump": 20,
+            "airSlash": 0
+          },
+          "perfectCancels": 0,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "heavy",
+        "stageId": "pass",
+        "variant": 0,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "k4",
+        "remainingEnemies": [],
+        "framesSimulated": 5637,
+        "summary": {
+          "profession": "heavy",
+          "equipment": {
+            "weapon": "breaker-maul",
+            "armor": "scout-coat",
+            "accessory": "execution-charm"
+          },
+          "seconds": 92.3,
+          "basicAttackRatio": 0.377,
+          "depthRatio": 0.554,
+          "totalMoveDistance": 10206,
+          "averageEngagementDistance": 117.3,
+          "executes": 2,
+          "kills": 13,
+          "damageTaken": 202,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 0,
+            "slash2": 0,
+            "slash3": 0,
+            "heavy": 55,
+            "heavyCharged": 0,
+            "arcanePulse": 0,
+            "skill": 6,
+            "dash": 43,
+            "execute": 3,
+            "jump": 39,
+            "airSlash": 0
+          },
+          "perfectCancels": 0,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "heavy",
+        "stageId": "citadel",
+        "variant": 0,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "m4",
+        "remainingEnemies": [],
+        "framesSimulated": 5145,
+        "summary": {
+          "profession": "heavy",
+          "equipment": {
+            "weapon": "breaker-maul",
+            "armor": "scout-coat",
+            "accessory": "execution-charm"
+          },
+          "seconds": 84.1,
+          "basicAttackRatio": 0.493,
+          "depthRatio": 0.485,
+          "totalMoveDistance": 8002,
+          "averageEngagementDistance": 111.4,
+          "executes": 7,
+          "kills": 17,
+          "damageTaken": 196,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 0,
+            "slash2": 0,
+            "slash3": 0,
+            "heavy": 75,
+            "heavyCharged": 0,
+            "arcanePulse": 0,
+            "skill": 11,
+            "dash": 32,
+            "execute": 9,
+            "jump": 25,
+            "airSlash": 0
+          },
+          "perfectCancels": 0,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "heavy",
+        "stageId": "village",
+        "variant": 1,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "v3",
+        "remainingEnemies": [],
+        "framesSimulated": 1813,
+        "summary": {
+          "profession": "heavy",
+          "equipment": {
+            "weapon": null,
+            "armor": "field-armor",
+            "accessory": null
+          },
+          "seconds": 29.2,
+          "basicAttackRatio": 0.55,
+          "depthRatio": 0.32,
+          "totalMoveDistance": 3571,
+          "averageEngagementDistance": 146.4,
+          "executes": 1,
+          "kills": 8,
+          "damageTaken": 46,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 0,
+            "slash2": 0,
+            "slash3": 0,
+            "heavy": 22,
+            "heavyCharged": 0,
+            "arcanePulse": 0,
+            "skill": 2,
+            "dash": 14,
+            "execute": 1,
+            "jump": 1,
+            "airSlash": 0
+          },
+          "perfectCancels": 0,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "heavy",
+        "stageId": "bridge",
+        "variant": 1,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "b1n",
+        "remainingEnemies": [],
+        "framesSimulated": 2872,
+        "summary": {
+          "profession": "heavy",
+          "equipment": {
+            "weapon": null,
+            "armor": "ritual-robe",
+            "accessory": null
+          },
+          "seconds": 46.5,
+          "basicAttackRatio": 0.627,
+          "depthRatio": 0.313,
+          "totalMoveDistance": 4935,
+          "averageEngagementDistance": 124.8,
+          "executes": 1,
+          "kills": 10,
+          "damageTaken": 16,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 0,
+            "slash2": 0,
+            "slash3": 0,
+            "heavy": 42,
+            "heavyCharged": 0,
+            "arcanePulse": 0,
+            "skill": 5,
+            "dash": 18,
+            "execute": 1,
+            "jump": 1,
+            "airSlash": 0
+          },
+          "perfectCancels": 0,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "heavy",
+        "stageId": "canyon",
+        "variant": 1,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "c4",
+        "remainingEnemies": [],
+        "framesSimulated": 4661,
+        "summary": {
+          "profession": "heavy",
+          "equipment": {
+            "weapon": null,
+            "armor": "scout-coat",
+            "accessory": "execution-charm"
+          },
+          "seconds": 76,
+          "basicAttackRatio": 0.455,
+          "depthRatio": 0.498,
+          "totalMoveDistance": 7368,
+          "averageEngagementDistance": 142.7,
+          "executes": 2,
+          "kills": 12,
+          "damageTaken": 163,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 0,
+            "slash2": 0,
+            "slash3": 0,
+            "heavy": 56,
+            "heavyCharged": 0,
+            "arcanePulse": 0,
+            "skill": 6,
+            "dash": 32,
+            "execute": 2,
+            "jump": 27,
+            "airSlash": 0
+          },
+          "perfectCancels": 0,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "heavy",
+        "stageId": "camp",
+        "variant": 1,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "p4",
+        "remainingEnemies": [],
+        "framesSimulated": 3735,
+        "summary": {
+          "profession": "heavy",
+          "equipment": {
+            "weapon": null,
+            "armor": "scout-coat",
+            "accessory": "focus-bead"
+          },
+          "seconds": 60.6,
+          "basicAttackRatio": 0.553,
+          "depthRatio": 0.457,
+          "totalMoveDistance": 5474,
+          "averageEngagementDistance": 135.4,
+          "executes": 3,
+          "kills": 13,
+          "damageTaken": 105,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 0,
+            "slash2": 0,
+            "slash3": 0,
+            "heavy": 57,
+            "heavyCharged": 0,
+            "arcanePulse": 0,
+            "skill": 4,
+            "dash": 18,
+            "execute": 6,
+            "jump": 18,
+            "airSlash": 0
+          },
+          "perfectCancels": 0,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "heavy",
+        "stageId": "pass",
+        "variant": 1,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "k4",
+        "remainingEnemies": [],
+        "framesSimulated": 4046,
+        "summary": {
+          "profession": "heavy",
+          "equipment": {
+            "weapon": "breaker-maul",
+            "armor": "scout-coat",
+            "accessory": "focus-bead"
+          },
+          "seconds": 65.8,
+          "basicAttackRatio": 0.449,
+          "depthRatio": 0.42,
+          "totalMoveDistance": 7019,
+          "averageEngagementDistance": 136.2,
+          "executes": 2,
+          "kills": 13,
+          "damageTaken": 167,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 0,
+            "slash2": 0,
+            "slash3": 0,
+            "heavy": 44,
+            "heavyCharged": 0,
+            "arcanePulse": 0,
+            "skill": 7,
+            "dash": 30,
+            "execute": 2,
+            "jump": 15,
+            "airSlash": 0
+          },
+          "perfectCancels": 0,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "heavy",
+        "stageId": "citadel",
+        "variant": 1,
+        "terminal": true,
+        "cleared": false,
+        "finalPhase": "dead",
+        "finalRoom": "m4",
+        "remainingEnemies": [
+          {
+            "kind": "boss",
+            "hp": 109.76,
+            "x": 145.2,
+            "y": 486
+          },
+          {
+            "kind": "grunt",
+            "hp": 12.88,
+            "x": 131.37,
+            "y": 462.06
+          }
+        ],
+        "framesSimulated": 5496,
+        "summary": {
+          "profession": "heavy",
+          "equipment": {
+            "weapon": "breaker-maul",
+            "armor": "scout-coat",
+            "accessory": "focus-bead"
+          },
+          "seconds": 89.9,
+          "basicAttackRatio": 0.448,
+          "depthRatio": 0.501,
+          "totalMoveDistance": 8764,
+          "averageEngagementDistance": 114.2,
+          "executes": 3,
+          "kills": 15,
+          "damageTaken": 242,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 0,
+            "slash2": 0,
+            "slash3": 0,
+            "heavy": 64,
+            "heavyCharged": 0,
+            "arcanePulse": 0,
+            "skill": 9,
+            "dash": 36,
+            "execute": 5,
+            "jump": 29,
+            "airSlash": 0
+          },
+          "perfectCancels": 0,
+          "died": true
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "heavy",
+        "stageId": "village",
+        "variant": 2,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "v3",
+        "remainingEnemies": [],
+        "framesSimulated": 1804,
+        "summary": {
+          "profession": "heavy",
+          "equipment": {
+            "weapon": null,
+            "armor": null,
+            "accessory": "war-sigil"
+          },
+          "seconds": 29.1,
+          "basicAttackRatio": 0.5,
+          "depthRatio": 0.316,
+          "totalMoveDistance": 3434,
+          "averageEngagementDistance": 146.4,
+          "executes": 1,
+          "kills": 8,
+          "damageTaken": 46,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 0,
+            "slash2": 0,
+            "slash3": 0,
+            "heavy": 19,
+            "heavyCharged": 0,
+            "arcanePulse": 0,
+            "skill": 3,
+            "dash": 14,
+            "execute": 1,
+            "jump": 1,
+            "airSlash": 0
+          },
+          "perfectCancels": 0,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "heavy",
+        "stageId": "bridge",
+        "variant": 2,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "b1n",
+        "remainingEnemies": [],
+        "framesSimulated": 2747,
+        "summary": {
+          "profession": "heavy",
+          "equipment": {
+            "weapon": null,
+            "armor": null,
+            "accessory": "execution-charm"
+          },
+          "seconds": 44.5,
+          "basicAttackRatio": 0.639,
+          "depthRatio": 0.324,
+          "totalMoveDistance": 4377,
+          "averageEngagementDistance": 118.1,
+          "executes": 1,
+          "kills": 10,
+          "damageTaken": 133,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 0,
+            "slash2": 0,
+            "slash3": 0,
+            "heavy": 39,
+            "heavyCharged": 0,
+            "arcanePulse": 0,
+            "skill": 4,
+            "dash": 16,
+            "execute": 1,
+            "jump": 1,
+            "airSlash": 0
+          },
+          "perfectCancels": 0,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "heavy",
+        "stageId": "canyon",
+        "variant": 2,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "c4",
+        "remainingEnemies": [],
+        "framesSimulated": 4803,
+        "summary": {
+          "profession": "heavy",
+          "equipment": {
+            "weapon": "iron-maul",
+            "armor": null,
+            "accessory": "focus-bead"
+          },
+          "seconds": 78.4,
+          "basicAttackRatio": 0.427,
+          "depthRatio": 0.528,
+          "totalMoveDistance": 7363,
+          "averageEngagementDistance": 145.8,
+          "executes": 2,
+          "kills": 12,
+          "damageTaken": 173,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 0,
+            "slash2": 0,
+            "slash3": 0,
+            "heavy": 50,
+            "heavyCharged": 0,
+            "arcanePulse": 0,
+            "skill": 7,
+            "dash": 31,
+            "execute": 3,
+            "jump": 26,
+            "airSlash": 0
+          },
+          "perfectCancels": 0,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "heavy",
+        "stageId": "camp",
+        "variant": 2,
+        "terminal": true,
+        "cleared": false,
+        "finalPhase": "dead",
+        "finalRoom": "p4",
+        "remainingEnemies": [
+          {
+            "kind": "boss",
+            "hp": 109.76,
+            "x": 32.6,
+            "y": 437.01
+          }
+        ],
+        "framesSimulated": 4267,
+        "summary": {
+          "profession": "heavy",
+          "equipment": {
+            "weapon": "breaker-maul",
+            "armor": null,
+            "accessory": "focus-bead"
+          },
+          "seconds": 69.5,
+          "basicAttackRatio": 0.427,
+          "depthRatio": 0.566,
+          "totalMoveDistance": 6288,
+          "averageEngagementDistance": 125.9,
+          "executes": 2,
+          "kills": 12,
+          "damageTaken": 226,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 0,
+            "slash2": 0,
+            "slash3": 0,
+            "heavy": 41,
+            "heavyCharged": 0,
+            "arcanePulse": 0,
+            "skill": 6,
+            "dash": 20,
+            "execute": 3,
+            "jump": 26,
+            "airSlash": 0
+          },
+          "perfectCancels": 0,
+          "died": true
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "heavy",
+        "stageId": "pass",
+        "variant": 2,
+        "terminal": true,
+        "cleared": false,
+        "finalPhase": "dead",
+        "finalRoom": "k4",
+        "remainingEnemies": [
+          {
+            "kind": "boss",
+            "hp": 276,
+            "x": 539.7,
+            "y": 516
+          }
+        ],
+        "framesSimulated": 4500,
+        "summary": {
+          "profession": "heavy",
+          "equipment": {
+            "weapon": "breaker-maul",
+            "armor": "field-armor",
+            "accessory": "focus-bead"
+          },
+          "seconds": 73.3,
+          "basicAttackRatio": 0.374,
+          "depthRatio": 0.487,
+          "totalMoveDistance": 8034,
+          "averageEngagementDistance": 135.5,
+          "executes": 2,
+          "kills": 10,
+          "damageTaken": 257,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 0,
+            "slash2": 0,
+            "slash3": 0,
+            "heavy": 37,
+            "heavyCharged": 0,
+            "arcanePulse": 0,
+            "skill": 5,
+            "dash": 36,
+            "execute": 3,
+            "jump": 18,
+            "airSlash": 0
+          },
+          "perfectCancels": 0,
+          "died": true
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "heavy",
+        "stageId": "citadel",
+        "variant": 2,
+        "terminal": true,
+        "cleared": false,
+        "finalPhase": "dead",
+        "finalRoom": "m4",
+        "remainingEnemies": [
+          {
+            "kind": "boss",
+            "hp": 204,
+            "x": 898.29,
+            "y": 470.77
+          },
+          {
+            "kind": "grunt",
+            "hp": 42,
+            "x": 821.94,
+            "y": 427.96
+          },
+          {
+            "kind": "grunt",
+            "hp": 42,
+            "x": 822.19,
+            "y": 486
+          }
+        ],
+        "framesSimulated": 8462,
+        "summary": {
+          "profession": "heavy",
+          "equipment": {
+            "weapon": "breaker-maul",
+            "armor": "scout-coat",
+            "accessory": "focus-bead"
+          },
+          "seconds": 139.4,
+          "basicAttackRatio": 0.335,
+          "depthRatio": 0.639,
+          "totalMoveDistance": 14898,
+          "averageEngagementDistance": 108.6,
+          "executes": 5,
+          "kills": 14,
+          "damageTaken": 232,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 0,
+            "slash2": 0,
+            "slash3": 0,
+            "heavy": 60,
+            "heavyCharged": 0,
+            "arcanePulse": 0,
+            "skill": 9,
+            "dash": 51,
+            "execute": 7,
+            "jump": 52,
+            "airSlash": 0
+          },
+          "perfectCancels": 0,
+          "died": true
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "swift",
+        "stageId": "village",
+        "variant": 0,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "v3",
+        "remainingEnemies": [],
+        "framesSimulated": 2490,
+        "summary": {
+          "profession": "swift",
+          "equipment": {
+            "weapon": "wind-sabers",
+            "armor": null,
+            "accessory": null
+          },
+          "seconds": 40.5,
+          "basicAttackRatio": 0.443,
+          "depthRatio": 0.42,
+          "totalMoveDistance": 6147,
+          "averageEngagementDistance": 134.3,
+          "executes": 3,
+          "kills": 8,
+          "damageTaken": 22,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 12,
+            "slash2": 10,
+            "slash3": 5,
+            "heavy": 0,
+            "heavyCharged": 0,
+            "arcanePulse": 0,
+            "skill": 4,
+            "dash": 26,
+            "execute": 3,
+            "jump": 1,
+            "airSlash": 0
+          },
+          "perfectCancels": 11,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "swift",
+        "stageId": "bridge",
+        "variant": 0,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "b1n",
+        "remainingEnemies": [],
+        "framesSimulated": 2709,
+        "summary": {
+          "profession": "swift",
+          "equipment": {
+            "weapon": "hook-blades",
+            "armor": null,
+            "accessory": null
+          },
+          "seconds": 43.8,
+          "basicAttackRatio": 0.631,
+          "depthRatio": 0.351,
+          "totalMoveDistance": 5169,
+          "averageEngagementDistance": 124.9,
+          "executes": 4,
+          "kills": 10,
+          "damageTaken": 34,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 26,
+            "slash2": 23,
+            "slash3": 16,
+            "heavy": 0,
+            "heavyCharged": 0,
+            "arcanePulse": 0,
+            "skill": 6,
+            "dash": 25,
+            "execute": 6,
+            "jump": 1,
+            "airSlash": 0
+          },
+          "perfectCancels": 50,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "swift",
+        "stageId": "canyon",
+        "variant": 0,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "c4",
+        "remainingEnemies": [],
+        "framesSimulated": 11600,
+        "summary": {
+          "profession": "swift",
+          "equipment": {
+            "weapon": "hook-blades",
+            "armor": "field-armor",
+            "accessory": null
+          },
+          "seconds": 191.7,
+          "basicAttackRatio": 0.308,
+          "depthRatio": 0.58,
+          "totalMoveDistance": 33619,
+          "averageEngagementDistance": 126.5,
+          "executes": 4,
+          "kills": 12,
+          "damageTaken": 33,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 36,
+            "slash2": 28,
+            "slash3": 14,
+            "heavy": 0,
+            "heavyCharged": 0,
+            "arcanePulse": 0,
+            "skill": 6,
+            "dash": 141,
+            "execute": 4,
+            "jump": 19,
+            "airSlash": 5
+          },
+          "perfectCancels": 53,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "swift",
+        "stageId": "camp",
+        "variant": 0,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "p4",
+        "remainingEnemies": [],
+        "framesSimulated": 3669,
+        "summary": {
+          "profession": "swift",
+          "equipment": {
+            "weapon": "hook-blades",
+            "armor": "scout-coat",
+            "accessory": "focus-bead"
+          },
+          "seconds": 59.5,
+          "basicAttackRatio": 0.582,
+          "depthRatio": 0.361,
+          "totalMoveDistance": 5601,
+          "averageEngagementDistance": 131.8,
+          "executes": 3,
+          "kills": 13,
+          "damageTaken": 132,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 40,
+            "slash2": 27,
+            "slash3": 18,
+            "heavy": 0,
+            "heavyCharged": 0,
+            "arcanePulse": 0,
+            "skill": 4,
+            "dash": 28,
+            "execute": 5,
+            "jump": 16,
+            "airSlash": 8
+          },
+          "perfectCancels": 59,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "swift",
+        "stageId": "pass",
+        "variant": 0,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "k4",
+        "remainingEnemies": [],
+        "framesSimulated": 4174,
+        "summary": {
+          "profession": "swift",
+          "equipment": {
+            "weapon": "hook-blades",
+            "armor": "scout-coat",
+            "accessory": "execution-charm"
+          },
+          "seconds": 67.9,
+          "basicAttackRatio": 0.504,
+          "depthRatio": 0.433,
+          "totalMoveDistance": 8725,
+          "averageEngagementDistance": 129,
+          "executes": 5,
+          "kills": 13,
+          "damageTaken": 82,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 29,
+            "slash2": 23,
+            "slash3": 14,
+            "heavy": 0,
+            "heavyCharged": 0,
+            "arcanePulse": 0,
+            "skill": 8,
+            "dash": 40,
+            "execute": 2,
+            "jump": 13,
+            "airSlash": 2
+          },
+          "perfectCancels": 31,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "swift",
+        "stageId": "citadel",
+        "variant": 0,
+        "terminal": true,
+        "cleared": false,
+        "finalPhase": "dead",
+        "finalRoom": "m2n",
+        "remainingEnemies": [
+          {
+            "kind": "elite",
+            "hp": 130,
+            "x": 748.67,
+            "y": 380.96
+          },
+          {
+            "kind": "ranged",
+            "hp": 28,
+            "x": 900,
+            "y": 449.09
+          }
+        ],
+        "framesSimulated": 4798,
+        "summary": {
+          "profession": "swift",
+          "equipment": {
+            "weapon": "hook-blades",
+            "armor": "scout-coat",
+            "accessory": "execution-charm"
+          },
+          "seconds": 79,
+          "basicAttackRatio": 0.261,
+          "depthRatio": 0.712,
+          "totalMoveDistance": 9873,
+          "averageEngagementDistance": 112.5,
+          "executes": 4,
+          "kills": 8,
+          "damageTaken": 212,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 15,
+            "slash2": 10,
+            "slash3": 6,
+            "heavy": 0,
+            "heavyCharged": 0,
+            "arcanePulse": 0,
+            "skill": 4,
+            "dash": 42,
+            "execute": 3,
+            "jump": 38,
+            "airSlash": 1
+          },
+          "perfectCancels": 21,
+          "died": true
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "swift",
+        "stageId": "village",
+        "variant": 1,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "v3",
+        "remainingEnemies": [],
+        "framesSimulated": 2490,
+        "summary": {
+          "profession": "swift",
+          "equipment": {
+            "weapon": null,
+            "armor": "field-armor",
+            "accessory": null
+          },
+          "seconds": 40.5,
+          "basicAttackRatio": 0.443,
+          "depthRatio": 0.42,
+          "totalMoveDistance": 6147,
+          "averageEngagementDistance": 134.3,
+          "executes": 3,
+          "kills": 8,
+          "damageTaken": 22,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 12,
+            "slash2": 10,
+            "slash3": 5,
+            "heavy": 0,
+            "heavyCharged": 0,
+            "arcanePulse": 0,
+            "skill": 4,
+            "dash": 26,
+            "execute": 3,
+            "jump": 1,
+            "airSlash": 0
+          },
+          "perfectCancels": 11,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "swift",
+        "stageId": "bridge",
+        "variant": 1,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "b1n",
+        "remainingEnemies": [],
+        "framesSimulated": 14807,
+        "summary": {
+          "profession": "swift",
+          "equipment": {
+            "weapon": null,
+            "armor": "ritual-robe",
+            "accessory": null
+          },
+          "seconds": 245.4,
+          "basicAttackRatio": 0.249,
+          "depthRatio": 0.827,
+          "totalMoveDistance": 26547,
+          "averageEngagementDistance": 71.6,
+          "executes": 5,
+          "kills": 10,
+          "damageTaken": 162,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 33,
+            "slash2": 28,
+            "slash3": 22,
+            "heavy": 0,
+            "heavyCharged": 0,
+            "arcanePulse": 0,
+            "skill": 6,
+            "dash": 59,
+            "execute": 6,
+            "jump": 180,
+            "airSlash": 0
+          },
+          "perfectCancels": 66,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "swift",
+        "stageId": "canyon",
+        "variant": 1,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "c4",
+        "remainingEnemies": [],
+        "framesSimulated": 4197,
+        "summary": {
+          "profession": "swift",
+          "equipment": {
+            "weapon": null,
+            "armor": "scout-coat",
+            "accessory": "execution-charm"
+          },
+          "seconds": 68.3,
+          "basicAttackRatio": 0.451,
+          "depthRatio": 0.526,
+          "totalMoveDistance": 7788,
+          "averageEngagementDistance": 116.8,
+          "executes": 4,
+          "kills": 12,
+          "damageTaken": 65,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 29,
+            "slash2": 19,
+            "slash3": 16,
+            "heavy": 0,
+            "heavyCharged": 0,
+            "arcanePulse": 0,
+            "skill": 5,
+            "dash": 35,
+            "execute": 6,
+            "jump": 27,
+            "airSlash": 5
+          },
+          "perfectCancels": 45,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "swift",
+        "stageId": "camp",
+        "variant": 1,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "p4",
+        "remainingEnemies": [],
+        "framesSimulated": 3776,
+        "summary": {
+          "profession": "swift",
+          "equipment": {
+            "weapon": null,
+            "armor": "scout-coat",
+            "accessory": "focus-bead"
+          },
+          "seconds": 61.3,
+          "basicAttackRatio": 0.582,
+          "depthRatio": 0.399,
+          "totalMoveDistance": 6244,
+          "averageEngagementDistance": 137.3,
+          "executes": 1,
+          "kills": 13,
+          "damageTaken": 141,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 37,
+            "slash2": 28,
+            "slash3": 17,
+            "heavy": 0,
+            "heavyCharged": 0,
+            "arcanePulse": 0,
+            "skill": 4,
+            "dash": 29,
+            "execute": 1,
+            "jump": 18,
+            "airSlash": 7
+          },
+          "perfectCancels": 52,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "swift",
+        "stageId": "pass",
+        "variant": 1,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "k4",
+        "remainingEnemies": [],
+        "framesSimulated": 4137,
+        "summary": {
+          "profession": "swift",
+          "equipment": {
+            "weapon": "hook-blades",
+            "armor": "scout-coat",
+            "accessory": "focus-bead"
+          },
+          "seconds": 67.3,
+          "basicAttackRatio": 0.496,
+          "depthRatio": 0.428,
+          "totalMoveDistance": 8857,
+          "averageEngagementDistance": 129.8,
+          "executes": 5,
+          "kills": 13,
+          "damageTaken": 80,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 30,
+            "slash2": 21,
+            "slash3": 14,
+            "heavy": 0,
+            "heavyCharged": 0,
+            "arcanePulse": 0,
+            "skill": 8,
+            "dash": 41,
+            "execute": 4,
+            "jump": 12,
+            "airSlash": 1
+          },
+          "perfectCancels": 26,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "swift",
+        "stageId": "citadel",
+        "variant": 1,
+        "terminal": true,
+        "cleared": false,
+        "finalPhase": "dead",
+        "finalRoom": "m2n",
+        "remainingEnemies": [
+          {
+            "kind": "elite",
+            "hp": 130,
+            "x": 749.29,
+            "y": 402.96
+          },
+          {
+            "kind": "ranged",
+            "hp": 28,
+            "x": 900,
+            "y": 465.35
+          }
+        ],
+        "framesSimulated": 4484,
+        "summary": {
+          "profession": "swift",
+          "equipment": {
+            "weapon": "hook-blades",
+            "armor": "scout-coat",
+            "accessory": "focus-bead"
+          },
+          "seconds": 73.7,
+          "basicAttackRatio": 0.272,
+          "depthRatio": 0.701,
+          "totalMoveDistance": 9121,
+          "averageEngagementDistance": 113.1,
+          "executes": 4,
+          "kills": 8,
+          "damageTaken": 202,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 15,
+            "slash2": 10,
+            "slash3": 6,
+            "heavy": 0,
+            "heavyCharged": 0,
+            "arcanePulse": 0,
+            "skill": 4,
+            "dash": 40,
+            "execute": 3,
+            "jump": 35,
+            "airSlash": 1
+          },
+          "perfectCancels": 21,
+          "died": true
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "swift",
+        "stageId": "village",
+        "variant": 2,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "v3",
+        "remainingEnemies": [],
+        "framesSimulated": 2490,
+        "summary": {
+          "profession": "swift",
+          "equipment": {
+            "weapon": null,
+            "armor": null,
+            "accessory": "war-sigil"
+          },
+          "seconds": 40.5,
+          "basicAttackRatio": 0.443,
+          "depthRatio": 0.42,
+          "totalMoveDistance": 6147,
+          "averageEngagementDistance": 134.3,
+          "executes": 3,
+          "kills": 8,
+          "damageTaken": 22,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 12,
+            "slash2": 10,
+            "slash3": 5,
+            "heavy": 0,
+            "heavyCharged": 0,
+            "arcanePulse": 0,
+            "skill": 4,
+            "dash": 26,
+            "execute": 3,
+            "jump": 1,
+            "airSlash": 0
+          },
+          "perfectCancels": 11,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "swift",
+        "stageId": "bridge",
+        "variant": 2,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "b1n",
+        "remainingEnemies": [],
+        "framesSimulated": 2897,
+        "summary": {
+          "profession": "swift",
+          "equipment": {
+            "weapon": null,
+            "armor": null,
+            "accessory": "execution-charm"
+          },
+          "seconds": 47,
+          "basicAttackRatio": 0.664,
+          "depthRatio": 0.356,
+          "totalMoveDistance": 5518,
+          "averageEngagementDistance": 123.9,
+          "executes": 2,
+          "kills": 10,
+          "damageTaken": 36,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 29,
+            "slash2": 25,
+            "slash3": 19,
+            "heavy": 0,
+            "heavyCharged": 0,
+            "arcanePulse": 0,
+            "skill": 6,
+            "dash": 26,
+            "execute": 2,
+            "jump": 2,
+            "airSlash": 1
+          },
+          "perfectCancels": 59,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "swift",
+        "stageId": "canyon",
+        "variant": 2,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "c4",
+        "remainingEnemies": [],
+        "framesSimulated": 14645,
+        "summary": {
+          "profession": "swift",
+          "equipment": {
+            "weapon": "wind-sabers",
+            "armor": null,
+            "accessory": "focus-bead"
+          },
+          "seconds": 242.4,
+          "basicAttackRatio": 0.207,
+          "depthRatio": 0.804,
+          "totalMoveDistance": 27835,
+          "averageEngagementDistance": 78.5,
+          "executes": 5,
+          "kills": 12,
+          "damageTaken": 181,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 30,
+            "slash2": 25,
+            "slash3": 16,
+            "heavy": 0,
+            "heavyCharged": 0,
+            "arcanePulse": 0,
+            "skill": 6,
+            "dash": 79,
+            "execute": 5,
+            "jump": 179,
+            "airSlash": 3
+          },
+          "perfectCancels": 49,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "swift",
+        "stageId": "camp",
+        "variant": 2,
+        "terminal": true,
+        "cleared": false,
+        "finalPhase": "dead",
+        "finalRoom": "p4",
+        "remainingEnemies": [
+          {
+            "kind": "boss",
+            "hp": 218.1,
+            "x": 703.16,
+            "y": 486
+          }
+        ],
+        "framesSimulated": 11054,
+        "summary": {
+          "profession": "swift",
+          "equipment": {
+            "weapon": "hook-blades",
+            "armor": null,
+            "accessory": "focus-bead"
+          },
+          "seconds": 182.6,
+          "basicAttackRatio": 0.266,
+          "depthRatio": 0.592,
+          "totalMoveDistance": 28500,
+          "averageEngagementDistance": 128.2,
+          "executes": 4,
+          "kills": 10,
+          "damageTaken": 266,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 35,
+            "slash2": 21,
+            "slash3": 15,
+            "heavy": 0,
+            "heavyCharged": 0,
+            "arcanePulse": 0,
+            "skill": 3,
+            "dash": 130,
+            "execute": 7,
+            "jump": 49,
+            "airSlash": 7
+          },
+          "perfectCancels": 46,
+          "died": true
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "swift",
+        "stageId": "pass",
+        "variant": 2,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "k4",
+        "remainingEnemies": [],
+        "framesSimulated": 5176,
+        "summary": {
+          "profession": "swift",
+          "equipment": {
+            "weapon": "hook-blades",
+            "armor": "scout-coat",
+            "accessory": "focus-bead"
+          },
+          "seconds": 84.6,
+          "basicAttackRatio": 0.446,
+          "depthRatio": 0.498,
+          "totalMoveDistance": 10228,
+          "averageEngagementDistance": 120.4,
+          "executes": 4,
+          "kills": 13,
+          "damageTaken": 111,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 31,
+            "slash2": 24,
+            "slash3": 11,
+            "heavy": 0,
+            "heavyCharged": 0,
+            "arcanePulse": 0,
+            "skill": 8,
+            "dash": 46,
+            "execute": 3,
+            "jump": 21,
+            "airSlash": 4
+          },
+          "perfectCancels": 35,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "swift",
+        "stageId": "citadel",
+        "variant": 2,
+        "terminal": true,
+        "cleared": false,
+        "finalPhase": "dead",
+        "finalRoom": "m2n",
+        "remainingEnemies": [
+          {
+            "kind": "elite",
+            "hp": 130,
+            "x": 749.29,
+            "y": 402.96
+          },
+          {
+            "kind": "ranged",
+            "hp": 28,
+            "x": 900,
+            "y": 465.35
+          }
+        ],
+        "framesSimulated": 4484,
+        "summary": {
+          "profession": "swift",
+          "equipment": {
+            "weapon": "hook-blades",
+            "armor": "scout-coat",
+            "accessory": "focus-bead"
+          },
+          "seconds": 73.7,
+          "basicAttackRatio": 0.272,
+          "depthRatio": 0.701,
+          "totalMoveDistance": 9121,
+          "averageEngagementDistance": 113.1,
+          "executes": 4,
+          "kills": 8,
+          "damageTaken": 202,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 15,
+            "slash2": 10,
+            "slash3": 6,
+            "heavy": 0,
+            "heavyCharged": 0,
+            "arcanePulse": 0,
+            "skill": 4,
+            "dash": 40,
+            "execute": 3,
+            "jump": 35,
+            "airSlash": 1
+          },
+          "perfectCancels": 21,
+          "died": true
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "arcane",
+        "stageId": "village",
+        "variant": 0,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "v3",
+        "remainingEnemies": [],
+        "framesSimulated": 1563,
+        "summary": {
+          "profession": "arcane",
+          "equipment": {
+            "weapon": "spirit-focus",
+            "armor": null,
+            "accessory": null
+          },
+          "seconds": 25.1,
+          "basicAttackRatio": 0.561,
+          "depthRatio": 0.358,
+          "totalMoveDistance": 1918,
+          "averageEngagementDistance": 190.6,
+          "executes": 1,
+          "kills": 8,
+          "damageTaken": 0,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 0,
+            "slash2": 0,
+            "slash3": 0,
+            "heavy": 0,
+            "heavyCharged": 0,
+            "arcanePulse": 23,
+            "skill": 10,
+            "dash": 5,
+            "execute": 2,
+            "jump": 1,
+            "airSlash": 0
+          },
+          "perfectCancels": 10,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "arcane",
+        "stageId": "bridge",
+        "variant": 0,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "b1n",
+        "remainingEnemies": [],
+        "framesSimulated": 2252,
+        "summary": {
+          "profession": "arcane",
+          "equipment": {
+            "weapon": "ember-focus",
+            "armor": null,
+            "accessory": null
+          },
+          "seconds": 36.2,
+          "basicAttackRatio": 0.533,
+          "depthRatio": 0.328,
+          "totalMoveDistance": 2455,
+          "averageEngagementDistance": 160.1,
+          "executes": 4,
+          "kills": 10,
+          "damageTaken": 76,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 0,
+            "slash2": 0,
+            "slash3": 0,
+            "heavy": 0,
+            "heavyCharged": 0,
+            "arcanePulse": 32,
+            "skill": 14,
+            "dash": 5,
+            "execute": 5,
+            "jump": 4,
+            "airSlash": 0
+          },
+          "perfectCancels": 13,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "arcane",
+        "stageId": "canyon",
+        "variant": 0,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "c4",
+        "remainingEnemies": [],
+        "framesSimulated": 4654,
+        "summary": {
+          "profession": "arcane",
+          "equipment": {
+            "weapon": "ember-focus",
+            "armor": "field-armor",
+            "accessory": null
+          },
+          "seconds": 75.9,
+          "basicAttackRatio": 0.558,
+          "depthRatio": 0.603,
+          "totalMoveDistance": 6162,
+          "averageEngagementDistance": 147.5,
+          "executes": 5,
+          "kills": 12,
+          "damageTaken": 128,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 0,
+            "slash2": 0,
+            "slash3": 0,
+            "heavy": 0,
+            "heavyCharged": 0,
+            "arcanePulse": 72,
+            "skill": 21,
+            "dash": 14,
+            "execute": 7,
+            "jump": 15,
+            "airSlash": 0
+          },
+          "perfectCancels": 33,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "arcane",
+        "stageId": "camp",
+        "variant": 0,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "p4",
+        "remainingEnemies": [],
+        "framesSimulated": 4419,
+        "summary": {
+          "profession": "arcane",
+          "equipment": {
+            "weapon": "ember-focus",
+            "armor": "scout-coat",
+            "accessory": "focus-bead"
+          },
+          "seconds": 72,
+          "basicAttackRatio": 0.567,
+          "depthRatio": 0.559,
+          "totalMoveDistance": 4792,
+          "averageEngagementDistance": 158.5,
+          "executes": 5,
+          "kills": 13,
+          "damageTaken": 133,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 0,
+            "slash2": 0,
+            "slash3": 0,
+            "heavy": 0,
+            "heavyCharged": 0,
+            "arcanePulse": 76,
+            "skill": 18,
+            "dash": 4,
+            "execute": 9,
+            "jump": 27,
+            "airSlash": 0
+          },
+          "perfectCancels": 24,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "arcane",
+        "stageId": "pass",
+        "variant": 0,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "k4",
+        "remainingEnemies": [],
+        "framesSimulated": 4142,
+        "summary": {
+          "profession": "arcane",
+          "equipment": {
+            "weapon": "ember-focus",
+            "armor": "scout-coat",
+            "accessory": "execution-charm"
+          },
+          "seconds": 67.4,
+          "basicAttackRatio": 0.477,
+          "depthRatio": 0.631,
+          "totalMoveDistance": 5359,
+          "averageEngagementDistance": 150.5,
+          "executes": 6,
+          "kills": 13,
+          "damageTaken": 100,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 0,
+            "slash2": 0,
+            "slash3": 0,
+            "heavy": 0,
+            "heavyCharged": 0,
+            "arcanePulse": 51,
+            "skill": 19,
+            "dash": 6,
+            "execute": 8,
+            "jump": 23,
+            "airSlash": 0
+          },
+          "perfectCancels": 25,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "arcane",
+        "stageId": "citadel",
+        "variant": 0,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "m4",
+        "remainingEnemies": [],
+        "framesSimulated": 4293,
+        "summary": {
+          "profession": "arcane",
+          "equipment": {
+            "weapon": "ember-focus",
+            "armor": "scout-coat",
+            "accessory": "execution-charm"
+          },
+          "seconds": 69.9,
+          "basicAttackRatio": 0.561,
+          "depthRatio": 0.559,
+          "totalMoveDistance": 4881,
+          "averageEngagementDistance": 153.9,
+          "executes": 8,
+          "kills": 17,
+          "damageTaken": 183,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 0,
+            "slash2": 0,
+            "slash3": 0,
+            "heavy": 0,
+            "heavyCharged": 0,
+            "arcanePulse": 69,
+            "skill": 21,
+            "dash": 4,
+            "execute": 8,
+            "jump": 21,
+            "airSlash": 0
+          },
+          "perfectCancels": 23,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "arcane",
+        "stageId": "village",
+        "variant": 1,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "v3",
+        "remainingEnemies": [],
+        "framesSimulated": 1563,
+        "summary": {
+          "profession": "arcane",
+          "equipment": {
+            "weapon": null,
+            "armor": "field-armor",
+            "accessory": null
+          },
+          "seconds": 25.1,
+          "basicAttackRatio": 0.561,
+          "depthRatio": 0.358,
+          "totalMoveDistance": 1918,
+          "averageEngagementDistance": 190.6,
+          "executes": 1,
+          "kills": 8,
+          "damageTaken": 0,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 0,
+            "slash2": 0,
+            "slash3": 0,
+            "heavy": 0,
+            "heavyCharged": 0,
+            "arcanePulse": 23,
+            "skill": 10,
+            "dash": 5,
+            "execute": 2,
+            "jump": 1,
+            "airSlash": 0
+          },
+          "perfectCancels": 10,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "arcane",
+        "stageId": "bridge",
+        "variant": 1,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "b1n",
+        "remainingEnemies": [],
+        "framesSimulated": 2654,
+        "summary": {
+          "profession": "arcane",
+          "equipment": {
+            "weapon": null,
+            "armor": "ritual-robe",
+            "accessory": null
+          },
+          "seconds": 42.9,
+          "basicAttackRatio": 0.571,
+          "depthRatio": 0.439,
+          "totalMoveDistance": 3262,
+          "averageEngagementDistance": 161.6,
+          "executes": 3,
+          "kills": 10,
+          "damageTaken": 74,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 0,
+            "slash2": 0,
+            "slash3": 0,
+            "heavy": 0,
+            "heavyCharged": 0,
+            "arcanePulse": 40,
+            "skill": 14,
+            "dash": 8,
+            "execute": 3,
+            "jump": 5,
+            "airSlash": 0
+          },
+          "perfectCancels": 18,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "arcane",
+        "stageId": "canyon",
+        "variant": 1,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "c4",
+        "remainingEnemies": [],
+        "framesSimulated": 4177,
+        "summary": {
+          "profession": "arcane",
+          "equipment": {
+            "weapon": null,
+            "armor": "scout-coat",
+            "accessory": "execution-charm"
+          },
+          "seconds": 68,
+          "basicAttackRatio": 0.51,
+          "depthRatio": 0.617,
+          "totalMoveDistance": 5900,
+          "averageEngagementDistance": 153.1,
+          "executes": 5,
+          "kills": 12,
+          "damageTaken": 84,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 0,
+            "slash2": 0,
+            "slash3": 0,
+            "heavy": 0,
+            "heavyCharged": 0,
+            "arcanePulse": 52,
+            "skill": 20,
+            "dash": 12,
+            "execute": 4,
+            "jump": 14,
+            "airSlash": 0
+          },
+          "perfectCancels": 22,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "arcane",
+        "stageId": "camp",
+        "variant": 1,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "p4",
+        "remainingEnemies": [],
+        "framesSimulated": 6015,
+        "summary": {
+          "profession": "arcane",
+          "equipment": {
+            "weapon": null,
+            "armor": "scout-coat",
+            "accessory": "focus-bead"
+          },
+          "seconds": 98.6,
+          "basicAttackRatio": 0.415,
+          "depthRatio": 0.863,
+          "totalMoveDistance": 8947,
+          "averageEngagementDistance": 122.2,
+          "executes": 2,
+          "kills": 13,
+          "damageTaken": 174,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 0,
+            "slash2": 0,
+            "slash3": 0,
+            "heavy": 0,
+            "heavyCharged": 0,
+            "arcanePulse": 61,
+            "skill": 18,
+            "dash": 20,
+            "execute": 6,
+            "jump": 42,
+            "airSlash": 0
+          },
+          "perfectCancels": 23,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "arcane",
+        "stageId": "pass",
+        "variant": 1,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "k4",
+        "remainingEnemies": [],
+        "framesSimulated": 4452,
+        "summary": {
+          "profession": "arcane",
+          "equipment": {
+            "weapon": "ember-focus",
+            "armor": "scout-coat",
+            "accessory": "focus-bead"
+          },
+          "seconds": 72.5,
+          "basicAttackRatio": 0.486,
+          "depthRatio": 0.66,
+          "totalMoveDistance": 6168,
+          "averageEngagementDistance": 148.9,
+          "executes": 2,
+          "kills": 13,
+          "damageTaken": 156,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 0,
+            "slash2": 0,
+            "slash3": 0,
+            "heavy": 0,
+            "heavyCharged": 0,
+            "arcanePulse": 51,
+            "skill": 17,
+            "dash": 12,
+            "execute": 2,
+            "jump": 23,
+            "airSlash": 0
+          },
+          "perfectCancels": 19,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "arcane",
+        "stageId": "citadel",
+        "variant": 1,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "m4",
+        "remainingEnemies": [],
+        "framesSimulated": 5759,
+        "summary": {
+          "profession": "arcane",
+          "equipment": {
+            "weapon": "ember-focus",
+            "armor": "scout-coat",
+            "accessory": "focus-bead"
+          },
+          "seconds": 94.3,
+          "basicAttackRatio": 0.559,
+          "depthRatio": 0.603,
+          "totalMoveDistance": 7078,
+          "averageEngagementDistance": 142.3,
+          "executes": 9,
+          "kills": 17,
+          "damageTaken": 288,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 0,
+            "slash2": 0,
+            "slash3": 0,
+            "heavy": 0,
+            "heavyCharged": 0,
+            "arcanePulse": 90,
+            "skill": 25,
+            "dash": 10,
+            "execute": 8,
+            "jump": 28,
+            "airSlash": 0
+          },
+          "perfectCancels": 22,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "arcane",
+        "stageId": "village",
+        "variant": 2,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "v3",
+        "remainingEnemies": [],
+        "framesSimulated": 1563,
+        "summary": {
+          "profession": "arcane",
+          "equipment": {
+            "weapon": null,
+            "armor": null,
+            "accessory": "war-sigil"
+          },
+          "seconds": 25.1,
+          "basicAttackRatio": 0.561,
+          "depthRatio": 0.358,
+          "totalMoveDistance": 1918,
+          "averageEngagementDistance": 190.6,
+          "executes": 1,
+          "kills": 8,
+          "damageTaken": 0,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 0,
+            "slash2": 0,
+            "slash3": 0,
+            "heavy": 0,
+            "heavyCharged": 0,
+            "arcanePulse": 23,
+            "skill": 10,
+            "dash": 5,
+            "execute": 2,
+            "jump": 1,
+            "airSlash": 0
+          },
+          "perfectCancels": 10,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "arcane",
+        "stageId": "bridge",
+        "variant": 2,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "b1n",
+        "remainingEnemies": [],
+        "framesSimulated": 2197,
+        "summary": {
+          "profession": "arcane",
+          "equipment": {
+            "weapon": null,
+            "armor": null,
+            "accessory": "execution-charm"
+          },
+          "seconds": 35.3,
+          "basicAttackRatio": 0.635,
+          "depthRatio": 0.358,
+          "totalMoveDistance": 2389,
+          "averageEngagementDistance": 160.5,
+          "executes": 2,
+          "kills": 10,
+          "damageTaken": 0,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 0,
+            "slash2": 0,
+            "slash3": 0,
+            "heavy": 0,
+            "heavyCharged": 0,
+            "arcanePulse": 40,
+            "skill": 14,
+            "dash": 6,
+            "execute": 2,
+            "jump": 1,
+            "airSlash": 0
+          },
+          "perfectCancels": 15,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "arcane",
+        "stageId": "canyon",
+        "variant": 2,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "c4",
+        "remainingEnemies": [],
+        "framesSimulated": 3669,
+        "summary": {
+          "profession": "arcane",
+          "equipment": {
+            "weapon": "spirit-focus",
+            "armor": null,
+            "accessory": "focus-bead"
+          },
+          "seconds": 59.5,
+          "basicAttackRatio": 0.511,
+          "depthRatio": 0.541,
+          "totalMoveDistance": 4589,
+          "averageEngagementDistance": 166.6,
+          "executes": 6,
+          "kills": 12,
+          "damageTaken": 55,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 0,
+            "slash2": 0,
+            "slash3": 0,
+            "heavy": 0,
+            "heavyCharged": 0,
+            "arcanePulse": 47,
+            "skill": 20,
+            "dash": 6,
+            "execute": 5,
+            "jump": 14,
+            "airSlash": 0
+          },
+          "perfectCancels": 18,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "arcane",
+        "stageId": "camp",
+        "variant": 2,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "p4",
+        "remainingEnemies": [],
+        "framesSimulated": 5275,
+        "summary": {
+          "profession": "arcane",
+          "equipment": {
+            "weapon": "ember-focus",
+            "armor": "scout-coat",
+            "accessory": "focus-bead"
+          },
+          "seconds": 86.3,
+          "basicAttackRatio": 0.488,
+          "depthRatio": 0.771,
+          "totalMoveDistance": 6922,
+          "averageEngagementDistance": 149.5,
+          "executes": 2,
+          "kills": 13,
+          "damageTaken": 203,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 0,
+            "slash2": 0,
+            "slash3": 0,
+            "heavy": 0,
+            "heavyCharged": 0,
+            "arcanePulse": 62,
+            "skill": 18,
+            "dash": 12,
+            "execute": 3,
+            "jump": 32,
+            "airSlash": 0
+          },
+          "perfectCancels": 27,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "arcane",
+        "stageId": "pass",
+        "variant": 2,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "k4",
+        "remainingEnemies": [],
+        "framesSimulated": 4717,
+        "summary": {
+          "profession": "arcane",
+          "equipment": {
+            "weapon": "ember-focus",
+            "armor": "ritual-robe",
+            "accessory": "focus-bead"
+          },
+          "seconds": 77,
+          "basicAttackRatio": 0.47,
+          "depthRatio": 0.694,
+          "totalMoveDistance": 6541,
+          "averageEngagementDistance": 145.6,
+          "executes": 6,
+          "kills": 13,
+          "damageTaken": 126,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 0,
+            "slash2": 0,
+            "slash3": 0,
+            "heavy": 0,
+            "heavyCharged": 0,
+            "arcanePulse": 54,
+            "skill": 19,
+            "dash": 11,
+            "execute": 7,
+            "jump": 24,
+            "airSlash": 0
+          },
+          "perfectCancels": 26,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "arcane",
+        "stageId": "citadel",
+        "variant": 2,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "m4",
+        "remainingEnemies": [],
+        "framesSimulated": 5872,
+        "summary": {
+          "profession": "arcane",
+          "equipment": {
+            "weapon": "ember-focus",
+            "armor": "ritual-robe",
+            "accessory": "focus-bead"
+          },
+          "seconds": 96.2,
+          "basicAttackRatio": 0.465,
+          "depthRatio": 0.712,
+          "totalMoveDistance": 7506,
+          "averageEngagementDistance": 156.2,
+          "executes": 10,
+          "kills": 17,
+          "damageTaken": 264,
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 0,
+            "slash2": 0,
+            "slash3": 0,
+            "heavy": 0,
+            "heavyCharged": 0,
+            "arcanePulse": 72,
+            "skill": 25,
+            "dash": 11,
+            "execute": 11,
+            "jump": 36,
+            "airSlash": 0
+          },
+          "perfectCancels": 29,
+          "died": false
+        }
+      }
+    ]
+  },
+  "acceptanceSignals": {
+    "allStageRunsCompleted": true,
+    "allCoverageComplete": true,
+    "overallSuccessRateSpread": 0.22,
+    "overallSuccessRateSpreadBelow20Percent": false,
+    "maximumStageSuccessRateSpread": 1,
+    "sameStageSuccessRateSpreadBelow20Percent": false,
+    "equipmentTopLoadoutShare": 0.09,
+    "equipmentTopLoadoutShareBelow40Percent": true
+  },
+  "samples": [
+    {
+      "mode": "isolated",
+      "profession": "heavy",
+      "stageId": "village",
+      "variant": 0,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "v3",
+      "remainingEnemies": [],
+      "framesSimulated": 2013,
+      "summary": {
+        "profession": "heavy",
+        "equipment": {
+          "weapon": "iron-maul",
+          "armor": null,
+          "accessory": null
+        },
+        "seconds": 32.5,
+        "basicAttackRatio": 0.5,
+        "depthRatio": 0.376,
+        "totalMoveDistance": 3988,
+        "averageEngagementDistance": 141.1,
+        "executes": 3,
+        "kills": 8,
+        "damageTaken": 56,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 0,
+          "slash2": 0,
+          "slash3": 0,
+          "heavy": 25,
+          "heavyCharged": 0,
+          "arcanePulse": 0,
+          "skill": 3,
+          "dash": 16,
+          "execute": 3,
+          "jump": 3,
+          "airSlash": 0
+        },
+        "perfectCancels": 0,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "heavy",
+      "stageId": "village",
+      "variant": 1,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "v3",
+      "remainingEnemies": [],
+      "framesSimulated": 1813,
+      "summary": {
+        "profession": "heavy",
+        "equipment": {
+          "weapon": null,
+          "armor": "field-armor",
+          "accessory": null
+        },
+        "seconds": 29.2,
+        "basicAttackRatio": 0.55,
+        "depthRatio": 0.32,
+        "totalMoveDistance": 3571,
+        "averageEngagementDistance": 146.4,
+        "executes": 1,
+        "kills": 8,
+        "damageTaken": 46,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 0,
+          "slash2": 0,
+          "slash3": 0,
+          "heavy": 22,
+          "heavyCharged": 0,
+          "arcanePulse": 0,
+          "skill": 2,
+          "dash": 14,
+          "execute": 1,
+          "jump": 1,
+          "airSlash": 0
+        },
+        "perfectCancels": 0,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "heavy",
+      "stageId": "village",
+      "variant": 2,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "v3",
+      "remainingEnemies": [],
+      "framesSimulated": 1804,
+      "summary": {
+        "profession": "heavy",
+        "equipment": {
+          "weapon": null,
+          "armor": null,
+          "accessory": "war-sigil"
+        },
+        "seconds": 29.1,
+        "basicAttackRatio": 0.5,
+        "depthRatio": 0.316,
+        "totalMoveDistance": 3434,
+        "averageEngagementDistance": 146.4,
+        "executes": 1,
+        "kills": 8,
+        "damageTaken": 46,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 0,
+          "slash2": 0,
+          "slash3": 0,
+          "heavy": 19,
+          "heavyCharged": 0,
+          "arcanePulse": 0,
+          "skill": 3,
+          "dash": 14,
+          "execute": 1,
+          "jump": 1,
+          "airSlash": 0
+        },
+        "perfectCancels": 0,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "heavy",
+      "stageId": "bridge",
+      "variant": 0,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "b1n",
+      "remainingEnemies": [],
+      "framesSimulated": 3518,
+      "summary": {
+        "profession": "heavy",
+        "equipment": {
+          "weapon": "breaker-maul",
+          "armor": null,
+          "accessory": null
+        },
+        "seconds": 57.3,
+        "basicAttackRatio": 0.596,
+        "depthRatio": 0.421,
+        "totalMoveDistance": 6338,
+        "averageEngagementDistance": 121.9,
+        "executes": 3,
+        "kills": 10,
+        "damageTaken": 128,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 0,
+          "slash2": 0,
+          "slash3": 0,
+          "heavy": 59,
+          "heavyCharged": 0,
+          "arcanePulse": 0,
+          "skill": 5,
+          "dash": 25,
+          "execute": 5,
+          "jump": 5,
+          "airSlash": 0
+        },
+        "perfectCancels": 0,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "heavy",
+      "stageId": "bridge",
+      "variant": 1,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "b1n",
+      "remainingEnemies": [],
+      "framesSimulated": 3036,
+      "summary": {
+        "profession": "heavy",
+        "equipment": {
+          "weapon": null,
+          "armor": "ritual-robe",
+          "accessory": null
+        },
+        "seconds": 49.3,
+        "basicAttackRatio": 0.592,
+        "depthRatio": 0.346,
+        "totalMoveDistance": 5408,
+        "averageEngagementDistance": 124.4,
+        "executes": 1,
+        "kills": 10,
+        "damageTaken": 56,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 0,
+          "slash2": 0,
+          "slash3": 0,
+          "heavy": 42,
+          "heavyCharged": 0,
+          "arcanePulse": 0,
+          "skill": 5,
+          "dash": 19,
+          "execute": 1,
+          "jump": 4,
+          "airSlash": 0
+        },
+        "perfectCancels": 0,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "heavy",
+      "stageId": "bridge",
+      "variant": 2,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "b1n",
+      "remainingEnemies": [],
+      "framesSimulated": 2882,
+      "summary": {
+        "profession": "heavy",
+        "equipment": {
+          "weapon": null,
+          "armor": null,
+          "accessory": "execution-charm"
+        },
+        "seconds": 46.7,
+        "basicAttackRatio": 0.646,
+        "depthRatio": 0.322,
+        "totalMoveDistance": 4425,
+        "averageEngagementDistance": 116,
+        "executes": 1,
+        "kills": 10,
+        "damageTaken": 126,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 0,
+          "slash2": 0,
+          "slash3": 0,
+          "heavy": 42,
+          "heavyCharged": 0,
+          "arcanePulse": 0,
+          "skill": 5,
+          "dash": 16,
+          "execute": 1,
+          "jump": 1,
+          "airSlash": 0
+        },
+        "perfectCancels": 0,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "heavy",
+      "stageId": "canyon",
+      "variant": 0,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "c4",
+      "remainingEnemies": [],
+      "framesSimulated": 4756,
+      "summary": {
+        "profession": "heavy",
+        "equipment": {
+          "weapon": "breaker-maul",
+          "armor": null,
+          "accessory": null
+        },
+        "seconds": 77.6,
+        "basicAttackRatio": 0.462,
+        "depthRatio": 0.561,
+        "totalMoveDistance": 6584,
+        "averageEngagementDistance": 137.4,
+        "executes": 4,
+        "kills": 12,
+        "damageTaken": 76,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 0,
+          "slash2": 0,
+          "slash3": 0,
+          "heavy": 66,
+          "heavyCharged": 0,
+          "arcanePulse": 0,
+          "skill": 7,
+          "dash": 26,
+          "execute": 6,
+          "jump": 38,
+          "airSlash": 0
+        },
+        "perfectCancels": 0,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "heavy",
+      "stageId": "canyon",
+      "variant": 1,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "c4",
+      "remainingEnemies": [],
+      "framesSimulated": 5838,
+      "summary": {
+        "profession": "heavy",
+        "equipment": {
+          "weapon": null,
+          "armor": "field-armor",
+          "accessory": null
+        },
+        "seconds": 95.6,
+        "basicAttackRatio": 0.395,
+        "depthRatio": 0.65,
+        "totalMoveDistance": 8404,
+        "averageEngagementDistance": 122.3,
+        "executes": 3,
+        "kills": 12,
+        "damageTaken": 145,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 0,
+          "slash2": 0,
+          "slash3": 0,
+          "heavy": 60,
+          "heavyCharged": 0,
+          "arcanePulse": 0,
+          "skill": 7,
+          "dash": 30,
+          "execute": 5,
+          "jump": 50,
+          "airSlash": 0
+        },
+        "perfectCancels": 0,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "heavy",
+      "stageId": "canyon",
+      "variant": 2,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "c4",
+      "remainingEnemies": [],
+      "framesSimulated": 4803,
+      "summary": {
+        "profession": "heavy",
+        "equipment": {
+          "weapon": null,
+          "armor": null,
+          "accessory": "war-sigil"
+        },
+        "seconds": 78.4,
+        "basicAttackRatio": 0.427,
+        "depthRatio": 0.528,
+        "totalMoveDistance": 7363,
+        "averageEngagementDistance": 145.8,
+        "executes": 2,
+        "kills": 12,
+        "damageTaken": 173,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 0,
+          "slash2": 0,
+          "slash3": 0,
+          "heavy": 50,
+          "heavyCharged": 0,
+          "arcanePulse": 0,
+          "skill": 7,
+          "dash": 31,
+          "execute": 3,
+          "jump": 26,
+          "airSlash": 0
+        },
+        "perfectCancels": 0,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "heavy",
+      "stageId": "camp",
+      "variant": 0,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "p4",
+      "remainingEnemies": [],
+      "framesSimulated": 5440,
+      "summary": {
+        "profession": "heavy",
+        "equipment": {
+          "weapon": "iron-maul",
+          "armor": null,
+          "accessory": null
+        },
+        "seconds": 89,
+        "basicAttackRatio": 0.414,
+        "depthRatio": 0.615,
+        "totalMoveDistance": 8010,
+        "averageEngagementDistance": 111.3,
+        "executes": 5,
+        "kills": 13,
+        "damageTaken": 240,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 0,
+          "slash2": 0,
+          "slash3": 0,
+          "heavy": 60,
+          "heavyCharged": 0,
+          "arcanePulse": 0,
+          "skill": 5,
+          "dash": 23,
+          "execute": 10,
+          "jump": 47,
+          "airSlash": 0
+        },
+        "perfectCancels": 0,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "heavy",
+      "stageId": "camp",
+      "variant": 1,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "p4",
+      "remainingEnemies": [],
+      "framesSimulated": 4441,
+      "summary": {
+        "profession": "heavy",
+        "equipment": {
+          "weapon": null,
+          "armor": "scout-coat",
+          "accessory": null
+        },
+        "seconds": 72.3,
+        "basicAttackRatio": 0.45,
+        "depthRatio": 0.578,
+        "totalMoveDistance": 6182,
+        "averageEngagementDistance": 135.1,
+        "executes": 4,
+        "kills": 13,
+        "damageTaken": 167,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 0,
+          "slash2": 0,
+          "slash3": 0,
+          "heavy": 49,
+          "heavyCharged": 0,
+          "arcanePulse": 0,
+          "skill": 6,
+          "dash": 19,
+          "execute": 9,
+          "jump": 26,
+          "airSlash": 0
+        },
+        "perfectCancels": 0,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "heavy",
+      "stageId": "camp",
+      "variant": 2,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "p4",
+      "remainingEnemies": [],
+      "framesSimulated": 4094,
+      "summary": {
+        "profession": "heavy",
+        "equipment": {
+          "weapon": null,
+          "armor": null,
+          "accessory": "focus-bead"
+        },
+        "seconds": 66.6,
+        "basicAttackRatio": 0.433,
+        "depthRatio": 0.55,
+        "totalMoveDistance": 5741,
+        "averageEngagementDistance": 126.1,
+        "executes": 4,
+        "kills": 13,
+        "damageTaken": 146,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 0,
+          "slash2": 0,
+          "slash3": 0,
+          "heavy": 42,
+          "heavyCharged": 0,
+          "arcanePulse": 0,
+          "skill": 6,
+          "dash": 18,
+          "execute": 6,
+          "jump": 25,
+          "airSlash": 0
+        },
+        "perfectCancels": 0,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "heavy",
+      "stageId": "pass",
+      "variant": 0,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "k4",
+      "remainingEnemies": [],
+      "framesSimulated": 5953,
+      "summary": {
+        "profession": "heavy",
+        "equipment": {
+          "weapon": "breaker-maul",
+          "armor": null,
+          "accessory": null
+        },
+        "seconds": 97.5,
+        "basicAttackRatio": 0.362,
+        "depthRatio": 0.596,
+        "totalMoveDistance": 10260,
+        "averageEngagementDistance": 111.9,
+        "executes": 4,
+        "kills": 13,
+        "damageTaken": 162,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 0,
+          "slash2": 0,
+          "slash3": 0,
+          "heavy": 54,
+          "heavyCharged": 0,
+          "arcanePulse": 0,
+          "skill": 7,
+          "dash": 38,
+          "execute": 4,
+          "jump": 46,
+          "airSlash": 0
+        },
+        "perfectCancels": 0,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "heavy",
+      "stageId": "pass",
+      "variant": 1,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "k4",
+      "remainingEnemies": [],
+      "framesSimulated": 5078,
+      "summary": {
+        "profession": "heavy",
+        "equipment": {
+          "weapon": null,
+          "armor": "scout-coat",
+          "accessory": null
+        },
+        "seconds": 83,
+        "basicAttackRatio": 0.408,
+        "depthRatio": 0.493,
+        "totalMoveDistance": 8405,
+        "averageEngagementDistance": 133.3,
+        "executes": 2,
+        "kills": 13,
+        "damageTaken": 199,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 0,
+          "slash2": 0,
+          "slash3": 0,
+          "heavy": 49,
+          "heavyCharged": 0,
+          "arcanePulse": 0,
+          "skill": 8,
+          "dash": 35,
+          "execute": 2,
+          "jump": 26,
+          "airSlash": 0
+        },
+        "perfectCancels": 0,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "heavy",
+      "stageId": "pass",
+      "variant": 2,
+      "terminal": true,
+      "cleared": false,
+      "finalPhase": "dead",
+      "finalRoom": "k4",
+      "remainingEnemies": [
+        {
+          "kind": "boss",
+          "hp": 283.92,
+          "x": 405.01,
+          "y": 516
+        }
+      ],
+      "framesSimulated": 4051,
+      "summary": {
+        "profession": "heavy",
+        "equipment": {
+          "weapon": null,
+          "armor": null,
+          "accessory": "war-sigil"
+        },
+        "seconds": 65.8,
+        "basicAttackRatio": 0.352,
+        "depthRatio": 0.474,
+        "totalMoveDistance": 6827,
+        "averageEngagementDistance": 131.7,
+        "executes": 3,
+        "kills": 10,
+        "damageTaken": 291,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 0,
+          "slash2": 0,
+          "slash3": 0,
+          "heavy": 32,
+          "heavyCharged": 0,
+          "arcanePulse": 0,
+          "skill": 5,
+          "dash": 30,
+          "execute": 3,
+          "jump": 21,
+          "airSlash": 0
+        },
+        "perfectCancels": 0,
+        "died": true
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "heavy",
+      "stageId": "citadel",
+      "variant": 0,
+      "terminal": true,
+      "cleared": false,
+      "finalPhase": "dead",
+      "finalRoom": "m2n",
+      "remainingEnemies": [
+        {
+          "kind": "elite",
+          "hp": 40,
+          "x": 606.91,
+          "y": 408.82
+        },
+        {
+          "kind": "ranged",
+          "hp": 28,
+          "x": 843.22,
+          "y": 385.7
+        },
+        {
+          "kind": "ranged",
+          "hp": 28,
+          "x": 768.29,
+          "y": 498.89
+        }
+      ],
+      "framesSimulated": 3298,
+      "summary": {
+        "profession": "heavy",
+        "equipment": {
+          "weapon": null,
+          "armor": null,
+          "accessory": null
+        },
+        "seconds": 54,
+        "basicAttackRatio": 0.412,
+        "depthRatio": 0.61,
+        "totalMoveDistance": 5099,
+        "averageEngagementDistance": 123.8,
+        "executes": 1,
+        "kills": 7,
+        "damageTaken": 180,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 0,
+          "slash2": 0,
+          "slash3": 0,
+          "heavy": 35,
+          "heavyCharged": 0,
+          "arcanePulse": 0,
+          "skill": 4,
+          "dash": 19,
+          "execute": 1,
+          "jump": 26,
+          "airSlash": 0
+        },
+        "perfectCancels": 0,
+        "died": true
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "heavy",
+      "stageId": "citadel",
+      "variant": 1,
+      "terminal": true,
+      "cleared": false,
+      "finalPhase": "dead",
+      "finalRoom": "m2n",
+      "remainingEnemies": [
+        {
+          "kind": "elite",
+          "hp": 58,
+          "x": 775.41,
+          "y": 430.07
+        },
+        {
+          "kind": "ranged",
+          "hp": 28,
+          "x": 900,
+          "y": 499.79
+        },
+        {
+          "kind": "ranged",
+          "hp": 28,
+          "x": 900,
+          "y": 516
+        }
+      ],
+      "framesSimulated": 6826,
+      "summary": {
+        "profession": "heavy",
+        "equipment": {
+          "weapon": null,
+          "armor": null,
+          "accessory": null
+        },
+        "seconds": 112.8,
+        "basicAttackRatio": 0.195,
+        "depthRatio": 0.794,
+        "totalMoveDistance": 13095,
+        "averageEngagementDistance": 107.2,
+        "executes": 1,
+        "kills": 7,
+        "damageTaken": 195,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 0,
+          "slash2": 0,
+          "slash3": 0,
+          "heavy": 26,
+          "heavyCharged": 0,
+          "arcanePulse": 0,
+          "skill": 3,
+          "dash": 39,
+          "execute": 2,
+          "jump": 63,
+          "airSlash": 0
+        },
+        "perfectCancels": 0,
+        "died": true
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "heavy",
+      "stageId": "citadel",
+      "variant": 2,
+      "terminal": true,
+      "cleared": false,
+      "finalPhase": "dead",
+      "finalRoom": "m2n",
+      "remainingEnemies": [
+        {
+          "kind": "elite",
+          "hp": 58,
+          "x": 731.09,
+          "y": 434.27
+        },
+        {
+          "kind": "ranged",
+          "hp": 28,
+          "x": 900,
+          "y": 499.92
+        },
+        {
+          "kind": "ranged",
+          "hp": 28,
+          "x": 900,
+          "y": 516
+        }
+      ],
+      "framesSimulated": 6864,
+      "summary": {
+        "profession": "heavy",
+        "equipment": {
+          "weapon": null,
+          "armor": null,
+          "accessory": null
+        },
+        "seconds": 113.4,
+        "basicAttackRatio": 0.175,
+        "depthRatio": 0.808,
+        "totalMoveDistance": 12948,
+        "averageEngagementDistance": 110.2,
+        "executes": 2,
+        "kills": 7,
+        "damageTaken": 204,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 0,
+          "slash2": 0,
+          "slash3": 0,
+          "heavy": 24,
+          "heavyCharged": 0,
+          "arcanePulse": 0,
+          "skill": 4,
+          "dash": 42,
+          "execute": 4,
+          "jump": 63,
+          "airSlash": 0
+        },
+        "perfectCancels": 0,
+        "died": true
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "swift",
+      "stageId": "village",
+      "variant": 0,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "v3",
+      "remainingEnemies": [],
+      "framesSimulated": 2490,
+      "summary": {
+        "profession": "swift",
+        "equipment": {
+          "weapon": "wind-sabers",
+          "armor": null,
+          "accessory": null
+        },
+        "seconds": 40.5,
+        "basicAttackRatio": 0.443,
+        "depthRatio": 0.42,
+        "totalMoveDistance": 6147,
+        "averageEngagementDistance": 134.3,
+        "executes": 3,
+        "kills": 8,
+        "damageTaken": 22,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 12,
+          "slash2": 10,
+          "slash3": 5,
+          "heavy": 0,
+          "heavyCharged": 0,
+          "arcanePulse": 0,
+          "skill": 4,
+          "dash": 26,
+          "execute": 3,
+          "jump": 1,
+          "airSlash": 0
+        },
+        "perfectCancels": 11,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "swift",
+      "stageId": "village",
+      "variant": 1,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "v3",
+      "remainingEnemies": [],
+      "framesSimulated": 2490,
+      "summary": {
+        "profession": "swift",
+        "equipment": {
+          "weapon": null,
+          "armor": "field-armor",
+          "accessory": null
+        },
+        "seconds": 40.5,
+        "basicAttackRatio": 0.443,
+        "depthRatio": 0.42,
+        "totalMoveDistance": 6147,
+        "averageEngagementDistance": 134.3,
+        "executes": 3,
+        "kills": 8,
+        "damageTaken": 22,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 12,
+          "slash2": 10,
+          "slash3": 5,
+          "heavy": 0,
+          "heavyCharged": 0,
+          "arcanePulse": 0,
+          "skill": 4,
+          "dash": 26,
+          "execute": 3,
+          "jump": 1,
+          "airSlash": 0
+        },
+        "perfectCancels": 11,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "swift",
+      "stageId": "village",
+      "variant": 2,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "v3",
+      "remainingEnemies": [],
+      "framesSimulated": 2490,
+      "summary": {
+        "profession": "swift",
+        "equipment": {
+          "weapon": null,
+          "armor": null,
+          "accessory": "war-sigil"
+        },
+        "seconds": 40.5,
+        "basicAttackRatio": 0.443,
+        "depthRatio": 0.42,
+        "totalMoveDistance": 6147,
+        "averageEngagementDistance": 134.3,
+        "executes": 3,
+        "kills": 8,
+        "damageTaken": 22,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 12,
+          "slash2": 10,
+          "slash3": 5,
+          "heavy": 0,
+          "heavyCharged": 0,
+          "arcanePulse": 0,
+          "skill": 4,
+          "dash": 26,
+          "execute": 3,
+          "jump": 1,
+          "airSlash": 0
+        },
+        "perfectCancels": 11,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "swift",
+      "stageId": "bridge",
+      "variant": 0,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "b1n",
+      "remainingEnemies": [],
+      "framesSimulated": 2880,
+      "summary": {
+        "profession": "swift",
+        "equipment": {
+          "weapon": "hook-blades",
+          "armor": null,
+          "accessory": null
+        },
+        "seconds": 46.7,
+        "basicAttackRatio": 0.699,
+        "depthRatio": 0.341,
+        "totalMoveDistance": 5295,
+        "averageEngagementDistance": 124.6,
+        "executes": 2,
+        "kills": 10,
+        "damageTaken": 34,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 31,
+          "slash2": 27,
+          "slash3": 21,
+          "heavy": 0,
+          "heavyCharged": 0,
+          "arcanePulse": 0,
+          "skill": 6,
+          "dash": 25,
+          "execute": 2,
+          "jump": 1,
+          "airSlash": 0
+        },
+        "perfectCancels": 64,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "swift",
+      "stageId": "bridge",
+      "variant": 1,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "b1n",
+      "remainingEnemies": [],
+      "framesSimulated": 2878,
+      "summary": {
+        "profession": "swift",
+        "equipment": {
+          "weapon": null,
+          "armor": "ritual-robe",
+          "accessory": null
+        },
+        "seconds": 46.6,
+        "basicAttackRatio": 0.699,
+        "depthRatio": 0.341,
+        "totalMoveDistance": 5295,
+        "averageEngagementDistance": 124.6,
+        "executes": 2,
+        "kills": 10,
+        "damageTaken": 34,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 31,
+          "slash2": 27,
+          "slash3": 21,
+          "heavy": 0,
+          "heavyCharged": 0,
+          "arcanePulse": 0,
+          "skill": 6,
+          "dash": 25,
+          "execute": 2,
+          "jump": 1,
+          "airSlash": 0
+        },
+        "perfectCancels": 64,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "swift",
+      "stageId": "bridge",
+      "variant": 2,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "b1n",
+      "remainingEnemies": [],
+      "framesSimulated": 2878,
+      "summary": {
+        "profession": "swift",
+        "equipment": {
+          "weapon": null,
+          "armor": null,
+          "accessory": "execution-charm"
+        },
+        "seconds": 46.6,
+        "basicAttackRatio": 0.699,
+        "depthRatio": 0.341,
+        "totalMoveDistance": 5295,
+        "averageEngagementDistance": 124.6,
+        "executes": 2,
+        "kills": 10,
+        "damageTaken": 34,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 31,
+          "slash2": 27,
+          "slash3": 21,
+          "heavy": 0,
+          "heavyCharged": 0,
+          "arcanePulse": 0,
+          "skill": 6,
+          "dash": 25,
+          "execute": 2,
+          "jump": 1,
+          "airSlash": 0
+        },
+        "perfectCancels": 64,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "swift",
+      "stageId": "canyon",
+      "variant": 0,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "c4",
+      "remainingEnemies": [],
+      "framesSimulated": 8713,
+      "summary": {
+        "profession": "swift",
+        "equipment": {
+          "weapon": "hook-blades",
+          "armor": null,
+          "accessory": null
+        },
+        "seconds": 143.6,
+        "basicAttackRatio": 0.303,
+        "depthRatio": 0.64,
+        "totalMoveDistance": 18385,
+        "averageEngagementDistance": 94.2,
+        "executes": 5,
+        "kills": 12,
+        "damageTaken": 194,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 31,
+          "slash2": 25,
+          "slash3": 16,
+          "heavy": 0,
+          "heavyCharged": 0,
+          "arcanePulse": 0,
+          "skill": 6,
+          "dash": 80,
+          "execute": 7,
+          "jump": 69,
+          "airSlash": 4
+        },
+        "perfectCancels": 49,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "swift",
+      "stageId": "canyon",
+      "variant": 1,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "c4",
+      "remainingEnemies": [],
+      "framesSimulated": 14617,
+      "summary": {
+        "profession": "swift",
+        "equipment": {
+          "weapon": null,
+          "armor": "field-armor",
+          "accessory": null
+        },
+        "seconds": 241.9,
+        "basicAttackRatio": 0.208,
+        "depthRatio": 0.883,
+        "totalMoveDistance": 25216,
+        "averageEngagementDistance": 76.3,
+        "executes": 5,
+        "kills": 12,
+        "damageTaken": 127,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 31,
+          "slash2": 24,
+          "slash3": 16,
+          "heavy": 0,
+          "heavyCharged": 0,
+          "arcanePulse": 0,
+          "skill": 6,
+          "dash": 54,
+          "execute": 5,
+          "jump": 202,
+          "airSlash": 3
+        },
+        "perfectCancels": 48,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "swift",
+      "stageId": "canyon",
+      "variant": 2,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "c4",
+      "remainingEnemies": [],
+      "framesSimulated": 14645,
+      "summary": {
+        "profession": "swift",
+        "equipment": {
+          "weapon": null,
+          "armor": null,
+          "accessory": "war-sigil"
+        },
+        "seconds": 242.4,
+        "basicAttackRatio": 0.207,
+        "depthRatio": 0.804,
+        "totalMoveDistance": 27835,
+        "averageEngagementDistance": 78.5,
+        "executes": 5,
+        "kills": 12,
+        "damageTaken": 181,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 30,
+          "slash2": 25,
+          "slash3": 16,
+          "heavy": 0,
+          "heavyCharged": 0,
+          "arcanePulse": 0,
+          "skill": 6,
+          "dash": 79,
+          "execute": 5,
+          "jump": 179,
+          "airSlash": 3
+        },
+        "perfectCancels": 49,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "swift",
+      "stageId": "camp",
+      "variant": 0,
+      "terminal": true,
+      "cleared": false,
+      "finalPhase": "dead",
+      "finalRoom": "p4",
+      "remainingEnemies": [
+        {
+          "kind": "boss",
+          "hp": 218.1,
+          "x": 703.16,
+          "y": 486
+        }
+      ],
+      "framesSimulated": 10042,
+      "summary": {
+        "profession": "swift",
+        "equipment": {
+          "weapon": "hook-blades",
+          "armor": null,
+          "accessory": null
+        },
+        "seconds": 165.7,
+        "basicAttackRatio": 0.296,
+        "depthRatio": 0.565,
+        "totalMoveDistance": 27140,
+        "averageEngagementDistance": 135.2,
+        "executes": 4,
+        "kills": 10,
+        "damageTaken": 245,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 36,
+          "slash2": 21,
+          "slash3": 16,
+          "heavy": 0,
+          "heavyCharged": 0,
+          "arcanePulse": 0,
+          "skill": 3,
+          "dash": 129,
+          "execute": 7,
+          "jump": 29,
+          "airSlash": 6
+        },
+        "perfectCancels": 46,
+        "died": true
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "swift",
+      "stageId": "camp",
+      "variant": 1,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "p4",
+      "remainingEnemies": [],
+      "framesSimulated": 4724,
+      "summary": {
+        "profession": "swift",
+        "equipment": {
+          "weapon": null,
+          "armor": "scout-coat",
+          "accessory": null
+        },
+        "seconds": 77.1,
+        "basicAttackRatio": 0.426,
+        "depthRatio": 0.538,
+        "totalMoveDistance": 7668,
+        "averageEngagementDistance": 126.5,
+        "executes": 4,
+        "kills": 13,
+        "damageTaken": 160,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 31,
+          "slash2": 22,
+          "slash3": 10,
+          "heavy": 0,
+          "heavyCharged": 0,
+          "arcanePulse": 0,
+          "skill": 5,
+          "dash": 35,
+          "execute": 7,
+          "jump": 34,
+          "airSlash": 4
+        },
+        "perfectCancels": 29,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "swift",
+      "stageId": "camp",
+      "variant": 2,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "p4",
+      "remainingEnemies": [],
+      "framesSimulated": 4099,
+      "summary": {
+        "profession": "swift",
+        "equipment": {
+          "weapon": null,
+          "armor": null,
+          "accessory": "focus-bead"
+        },
+        "seconds": 66.7,
+        "basicAttackRatio": 0.471,
+        "depthRatio": 0.483,
+        "totalMoveDistance": 6521,
+        "averageEngagementDistance": 128.7,
+        "executes": 7,
+        "kills": 13,
+        "damageTaken": 166,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 38,
+          "slash2": 20,
+          "slash3": 15,
+          "heavy": 0,
+          "heavyCharged": 0,
+          "arcanePulse": 0,
+          "skill": 5,
+          "dash": 34,
+          "execute": 11,
+          "jump": 24,
+          "airSlash": 8
+        },
+        "perfectCancels": 48,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "swift",
+      "stageId": "pass",
+      "variant": 0,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "k4",
+      "remainingEnemies": [],
+      "framesSimulated": 6391,
+      "summary": {
+        "profession": "swift",
+        "equipment": {
+          "weapon": "hook-blades",
+          "armor": null,
+          "accessory": null
+        },
+        "seconds": 104.8,
+        "basicAttackRatio": 0.342,
+        "depthRatio": 0.606,
+        "totalMoveDistance": 11910,
+        "averageEngagementDistance": 104.9,
+        "executes": 6,
+        "kills": 13,
+        "damageTaken": 148,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 28,
+          "slash2": 23,
+          "slash3": 12,
+          "heavy": 0,
+          "heavyCharged": 0,
+          "arcanePulse": 0,
+          "skill": 8,
+          "dash": 53,
+          "execute": 8,
+          "jump": 50,
+          "airSlash": 2
+        },
+        "perfectCancels": 29,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "swift",
+      "stageId": "pass",
+      "variant": 1,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "k4",
+      "remainingEnemies": [],
+      "framesSimulated": 6989,
+      "summary": {
+        "profession": "swift",
+        "equipment": {
+          "weapon": null,
+          "armor": "scout-coat",
+          "accessory": null
+        },
+        "seconds": 114.8,
+        "basicAttackRatio": 0.335,
+        "depthRatio": 0.642,
+        "totalMoveDistance": 12796,
+        "averageEngagementDistance": 101.8,
+        "executes": 5,
+        "kills": 13,
+        "damageTaken": 141,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 31,
+          "slash2": 23,
+          "slash3": 9,
+          "heavy": 0,
+          "heavyCharged": 0,
+          "arcanePulse": 0,
+          "skill": 8,
+          "dash": 52,
+          "execute": 6,
+          "jump": 56,
+          "airSlash": 3
+        },
+        "perfectCancels": 24,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "swift",
+      "stageId": "pass",
+      "variant": 2,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "k4",
+      "remainingEnemies": [],
+      "framesSimulated": 4883,
+      "summary": {
+        "profession": "swift",
+        "equipment": {
+          "weapon": null,
+          "armor": null,
+          "accessory": "focus-bead"
+        },
+        "seconds": 79.7,
+        "basicAttackRatio": 0.407,
+        "depthRatio": 0.5,
+        "totalMoveDistance": 9432,
+        "averageEngagementDistance": 119,
+        "executes": 5,
+        "kills": 13,
+        "damageTaken": 141,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 26,
+          "slash2": 22,
+          "slash3": 11,
+          "heavy": 0,
+          "heavyCharged": 0,
+          "arcanePulse": 0,
+          "skill": 8,
+          "dash": 44,
+          "execute": 6,
+          "jump": 26,
+          "airSlash": 2
+        },
+        "perfectCancels": 26,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "swift",
+      "stageId": "citadel",
+      "variant": 0,
+      "terminal": true,
+      "cleared": false,
+      "finalPhase": "dead",
+      "finalRoom": "m2n",
+      "remainingEnemies": [
+        {
+          "kind": "elite",
+          "hp": 118,
+          "x": 648.02,
+          "y": 357.94
+        },
+        {
+          "kind": "ranged",
+          "hp": 28,
+          "x": 898.85,
+          "y": 311.71
+        },
+        {
+          "kind": "ranged",
+          "hp": 28,
+          "x": 783.52,
+          "y": 493.18
+        }
+      ],
+      "framesSimulated": 3395,
+      "summary": {
+        "profession": "swift",
+        "equipment": {
+          "weapon": null,
+          "armor": null,
+          "accessory": null
+        },
+        "seconds": 55.6,
+        "basicAttackRatio": 0.302,
+        "depthRatio": 0.681,
+        "totalMoveDistance": 5714,
+        "averageEngagementDistance": 120.2,
+        "executes": 4,
+        "kills": 7,
+        "damageTaken": 201,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 14,
+          "slash2": 9,
+          "slash3": 6,
+          "heavy": 0,
+          "heavyCharged": 0,
+          "arcanePulse": 0,
+          "skill": 5,
+          "dash": 28,
+          "execute": 5,
+          "jump": 28,
+          "airSlash": 1
+        },
+        "perfectCancels": 20,
+        "died": true
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "swift",
+      "stageId": "citadel",
+      "variant": 1,
+      "terminal": true,
+      "cleared": false,
+      "finalPhase": "dead",
+      "finalRoom": "m2n",
+      "remainingEnemies": [
+        {
+          "kind": "elite",
+          "hp": 118,
+          "x": 648.02,
+          "y": 357.94
+        },
+        {
+          "kind": "ranged",
+          "hp": 28,
+          "x": 898.85,
+          "y": 311.71
+        },
+        {
+          "kind": "ranged",
+          "hp": 28,
+          "x": 783.52,
+          "y": 493.18
+        }
+      ],
+      "framesSimulated": 3395,
+      "summary": {
+        "profession": "swift",
+        "equipment": {
+          "weapon": null,
+          "armor": null,
+          "accessory": null
+        },
+        "seconds": 55.6,
+        "basicAttackRatio": 0.302,
+        "depthRatio": 0.681,
+        "totalMoveDistance": 5714,
+        "averageEngagementDistance": 120.2,
+        "executes": 4,
+        "kills": 7,
+        "damageTaken": 201,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 14,
+          "slash2": 9,
+          "slash3": 6,
+          "heavy": 0,
+          "heavyCharged": 0,
+          "arcanePulse": 0,
+          "skill": 5,
+          "dash": 28,
+          "execute": 5,
+          "jump": 28,
+          "airSlash": 1
+        },
+        "perfectCancels": 20,
+        "died": true
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "swift",
+      "stageId": "citadel",
+      "variant": 2,
+      "terminal": true,
+      "cleared": false,
+      "finalPhase": "dead",
+      "finalRoom": "m2n",
+      "remainingEnemies": [
+        {
+          "kind": "elite",
+          "hp": 118,
+          "x": 648.02,
+          "y": 357.94
+        },
+        {
+          "kind": "ranged",
+          "hp": 28,
+          "x": 898.85,
+          "y": 311.71
+        },
+        {
+          "kind": "ranged",
+          "hp": 28,
+          "x": 783.52,
+          "y": 493.18
+        }
+      ],
+      "framesSimulated": 3395,
+      "summary": {
+        "profession": "swift",
+        "equipment": {
+          "weapon": null,
+          "armor": null,
+          "accessory": null
+        },
+        "seconds": 55.6,
+        "basicAttackRatio": 0.302,
+        "depthRatio": 0.681,
+        "totalMoveDistance": 5714,
+        "averageEngagementDistance": 120.2,
+        "executes": 4,
+        "kills": 7,
+        "damageTaken": 201,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 14,
+          "slash2": 9,
+          "slash3": 6,
+          "heavy": 0,
+          "heavyCharged": 0,
+          "arcanePulse": 0,
+          "skill": 5,
+          "dash": 28,
+          "execute": 5,
+          "jump": 28,
+          "airSlash": 1
+        },
+        "perfectCancels": 20,
+        "died": true
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "arcane",
+      "stageId": "village",
+      "variant": 0,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "v3",
+      "remainingEnemies": [],
+      "framesSimulated": 1563,
+      "summary": {
+        "profession": "arcane",
+        "equipment": {
+          "weapon": "spirit-focus",
+          "armor": null,
+          "accessory": null
+        },
+        "seconds": 25.1,
+        "basicAttackRatio": 0.561,
+        "depthRatio": 0.358,
+        "totalMoveDistance": 1918,
+        "averageEngagementDistance": 190.6,
+        "executes": 1,
+        "kills": 8,
+        "damageTaken": 0,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 0,
+          "slash2": 0,
+          "slash3": 0,
+          "heavy": 0,
+          "heavyCharged": 0,
+          "arcanePulse": 23,
+          "skill": 10,
+          "dash": 5,
+          "execute": 2,
+          "jump": 1,
+          "airSlash": 0
+        },
+        "perfectCancels": 10,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "arcane",
+      "stageId": "village",
+      "variant": 1,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "v3",
+      "remainingEnemies": [],
+      "framesSimulated": 1563,
+      "summary": {
+        "profession": "arcane",
+        "equipment": {
+          "weapon": null,
+          "armor": "field-armor",
+          "accessory": null
+        },
+        "seconds": 25.1,
+        "basicAttackRatio": 0.561,
+        "depthRatio": 0.358,
+        "totalMoveDistance": 1918,
+        "averageEngagementDistance": 190.6,
+        "executes": 1,
+        "kills": 8,
+        "damageTaken": 0,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 0,
+          "slash2": 0,
+          "slash3": 0,
+          "heavy": 0,
+          "heavyCharged": 0,
+          "arcanePulse": 23,
+          "skill": 10,
+          "dash": 5,
+          "execute": 2,
+          "jump": 1,
+          "airSlash": 0
+        },
+        "perfectCancels": 10,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "arcane",
+      "stageId": "village",
+      "variant": 2,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "v3",
+      "remainingEnemies": [],
+      "framesSimulated": 1563,
+      "summary": {
+        "profession": "arcane",
+        "equipment": {
+          "weapon": null,
+          "armor": null,
+          "accessory": "war-sigil"
+        },
+        "seconds": 25.1,
+        "basicAttackRatio": 0.561,
+        "depthRatio": 0.358,
+        "totalMoveDistance": 1918,
+        "averageEngagementDistance": 190.6,
+        "executes": 1,
+        "kills": 8,
+        "damageTaken": 0,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 0,
+          "slash2": 0,
+          "slash3": 0,
+          "heavy": 0,
+          "heavyCharged": 0,
+          "arcanePulse": 23,
+          "skill": 10,
+          "dash": 5,
+          "execute": 2,
+          "jump": 1,
+          "airSlash": 0
+        },
+        "perfectCancels": 10,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "arcane",
+      "stageId": "bridge",
+      "variant": 0,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "b1n",
+      "remainingEnemies": [],
+      "framesSimulated": 2900,
+      "summary": {
+        "profession": "arcane",
+        "equipment": {
+          "weapon": "ember-focus",
+          "armor": null,
+          "accessory": null
+        },
+        "seconds": 47,
+        "basicAttackRatio": 0.577,
+        "depthRatio": 0.519,
+        "totalMoveDistance": 4118,
+        "averageEngagementDistance": 146.7,
+        "executes": 2,
+        "kills": 10,
+        "damageTaken": 32,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 0,
+          "slash2": 0,
+          "slash3": 0,
+          "heavy": 0,
+          "heavyCharged": 0,
+          "arcanePulse": 45,
+          "skill": 15,
+          "dash": 14,
+          "execute": 3,
+          "jump": 1,
+          "airSlash": 0
+        },
+        "perfectCancels": 18,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "arcane",
+      "stageId": "bridge",
+      "variant": 1,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "b1n",
+      "remainingEnemies": [],
+      "framesSimulated": 2901,
+      "summary": {
+        "profession": "arcane",
+        "equipment": {
+          "weapon": null,
+          "armor": "ritual-robe",
+          "accessory": null
+        },
+        "seconds": 47,
+        "basicAttackRatio": 0.571,
+        "depthRatio": 0.519,
+        "totalMoveDistance": 4118,
+        "averageEngagementDistance": 147.1,
+        "executes": 2,
+        "kills": 10,
+        "damageTaken": 32,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 0,
+          "slash2": 0,
+          "slash3": 0,
+          "heavy": 0,
+          "heavyCharged": 0,
+          "arcanePulse": 44,
+          "skill": 15,
+          "dash": 14,
+          "execute": 3,
+          "jump": 1,
+          "airSlash": 0
+        },
+        "perfectCancels": 17,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "arcane",
+      "stageId": "bridge",
+      "variant": 2,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "b1n",
+      "remainingEnemies": [],
+      "framesSimulated": 2901,
+      "summary": {
+        "profession": "arcane",
+        "equipment": {
+          "weapon": null,
+          "armor": null,
+          "accessory": "execution-charm"
+        },
+        "seconds": 47,
+        "basicAttackRatio": 0.571,
+        "depthRatio": 0.519,
+        "totalMoveDistance": 4118,
+        "averageEngagementDistance": 147.1,
+        "executes": 2,
+        "kills": 10,
+        "damageTaken": 32,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 0,
+          "slash2": 0,
+          "slash3": 0,
+          "heavy": 0,
+          "heavyCharged": 0,
+          "arcanePulse": 44,
+          "skill": 15,
+          "dash": 14,
+          "execute": 3,
+          "jump": 1,
+          "airSlash": 0
+        },
+        "perfectCancels": 17,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "arcane",
+      "stageId": "canyon",
+      "variant": 0,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "c4",
+      "remainingEnemies": [],
+      "framesSimulated": 4860,
+      "summary": {
+        "profession": "arcane",
+        "equipment": {
+          "weapon": "ember-focus",
+          "armor": null,
+          "accessory": null
+        },
+        "seconds": 79.3,
+        "basicAttackRatio": 0.435,
+        "depthRatio": 0.665,
+        "totalMoveDistance": 7506,
+        "averageEngagementDistance": 147.4,
+        "executes": 6,
+        "kills": 12,
+        "damageTaken": 223,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 0,
+          "slash2": 0,
+          "slash3": 0,
+          "heavy": 0,
+          "heavyCharged": 0,
+          "arcanePulse": 47,
+          "skill": 19,
+          "dash": 20,
+          "execute": 6,
+          "jump": 16,
+          "airSlash": 0
+        },
+        "perfectCancels": 18,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "arcane",
+      "stageId": "canyon",
+      "variant": 1,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "c4",
+      "remainingEnemies": [],
+      "framesSimulated": 3669,
+      "summary": {
+        "profession": "arcane",
+        "equipment": {
+          "weapon": null,
+          "armor": "field-armor",
+          "accessory": null
+        },
+        "seconds": 59.5,
+        "basicAttackRatio": 0.511,
+        "depthRatio": 0.541,
+        "totalMoveDistance": 4589,
+        "averageEngagementDistance": 166.6,
+        "executes": 6,
+        "kills": 12,
+        "damageTaken": 55,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 0,
+          "slash2": 0,
+          "slash3": 0,
+          "heavy": 0,
+          "heavyCharged": 0,
+          "arcanePulse": 47,
+          "skill": 20,
+          "dash": 6,
+          "execute": 5,
+          "jump": 14,
+          "airSlash": 0
+        },
+        "perfectCancels": 18,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "arcane",
+      "stageId": "canyon",
+      "variant": 2,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "c4",
+      "remainingEnemies": [],
+      "framesSimulated": 3669,
+      "summary": {
+        "profession": "arcane",
+        "equipment": {
+          "weapon": null,
+          "armor": null,
+          "accessory": "war-sigil"
+        },
+        "seconds": 59.5,
+        "basicAttackRatio": 0.511,
+        "depthRatio": 0.541,
+        "totalMoveDistance": 4589,
+        "averageEngagementDistance": 166.6,
+        "executes": 6,
+        "kills": 12,
+        "damageTaken": 55,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 0,
+          "slash2": 0,
+          "slash3": 0,
+          "heavy": 0,
+          "heavyCharged": 0,
+          "arcanePulse": 47,
+          "skill": 20,
+          "dash": 6,
+          "execute": 5,
+          "jump": 14,
+          "airSlash": 0
+        },
+        "perfectCancels": 18,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "arcane",
+      "stageId": "camp",
+      "variant": 0,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "p4",
+      "remainingEnemies": [],
+      "framesSimulated": 4963,
+      "summary": {
+        "profession": "arcane",
+        "equipment": {
+          "weapon": "spirit-focus",
+          "armor": null,
+          "accessory": null
+        },
+        "seconds": 81,
+        "basicAttackRatio": 0.485,
+        "depthRatio": 0.724,
+        "totalMoveDistance": 6069,
+        "averageEngagementDistance": 137.7,
+        "executes": 5,
+        "kills": 13,
+        "damageTaken": 209,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 0,
+          "slash2": 0,
+          "slash3": 0,
+          "heavy": 0,
+          "heavyCharged": 0,
+          "arcanePulse": 66,
+          "skill": 20,
+          "dash": 13,
+          "execute": 11,
+          "jump": 26,
+          "airSlash": 0
+        },
+        "perfectCancels": 26,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "arcane",
+      "stageId": "camp",
+      "variant": 1,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "p4",
+      "remainingEnemies": [],
+      "framesSimulated": 4760,
+      "summary": {
+        "profession": "arcane",
+        "equipment": {
+          "weapon": null,
+          "armor": "scout-coat",
+          "accessory": null
+        },
+        "seconds": 77.7,
+        "basicAttackRatio": 0.458,
+        "depthRatio": 0.684,
+        "totalMoveDistance": 5936,
+        "averageEngagementDistance": 151.7,
+        "executes": 5,
+        "kills": 13,
+        "damageTaken": 160,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 0,
+          "slash2": 0,
+          "slash3": 0,
+          "heavy": 0,
+          "heavyCharged": 0,
+          "arcanePulse": 55,
+          "skill": 20,
+          "dash": 12,
+          "execute": 10,
+          "jump": 23,
+          "airSlash": 0
+        },
+        "perfectCancels": 22,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "arcane",
+      "stageId": "camp",
+      "variant": 2,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "p4",
+      "remainingEnemies": [],
+      "framesSimulated": 3423,
+      "summary": {
+        "profession": "arcane",
+        "equipment": {
+          "weapon": null,
+          "armor": null,
+          "accessory": "focus-bead"
+        },
+        "seconds": 55.4,
+        "basicAttackRatio": 0.484,
+        "depthRatio": 0.592,
+        "totalMoveDistance": 3824,
+        "averageEngagementDistance": 160.5,
+        "executes": 6,
+        "kills": 13,
+        "damageTaken": 91,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 0,
+          "slash2": 0,
+          "slash3": 0,
+          "heavy": 0,
+          "heavyCharged": 0,
+          "arcanePulse": 45,
+          "skill": 15,
+          "dash": 4,
+          "execute": 11,
+          "jump": 18,
+          "airSlash": 0
+        },
+        "perfectCancels": 19,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "arcane",
+      "stageId": "pass",
+      "variant": 0,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "k4",
+      "remainingEnemies": [],
+      "framesSimulated": 4094,
+      "summary": {
+        "profession": "arcane",
+        "equipment": {
+          "weapon": "ember-focus",
+          "armor": null,
+          "accessory": null
+        },
+        "seconds": 66.6,
+        "basicAttackRatio": 0.459,
+        "depthRatio": 0.615,
+        "totalMoveDistance": 5380,
+        "averageEngagementDistance": 147,
+        "executes": 5,
+        "kills": 13,
+        "damageTaken": 123,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 0,
+          "slash2": 0,
+          "slash3": 0,
+          "heavy": 0,
+          "heavyCharged": 0,
+          "arcanePulse": 45,
+          "skill": 19,
+          "dash": 11,
+          "execute": 6,
+          "jump": 17,
+          "airSlash": 0
+        },
+        "perfectCancels": 17,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "arcane",
+      "stageId": "pass",
+      "variant": 1,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "k4",
+      "remainingEnemies": [],
+      "framesSimulated": 4527,
+      "summary": {
+        "profession": "arcane",
+        "equipment": {
+          "weapon": null,
+          "armor": "scout-coat",
+          "accessory": null
+        },
+        "seconds": 73.8,
+        "basicAttackRatio": 0.473,
+        "depthRatio": 0.641,
+        "totalMoveDistance": 5699,
+        "averageEngagementDistance": 147.6,
+        "executes": 3,
+        "kills": 13,
+        "damageTaken": 105,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 0,
+          "slash2": 0,
+          "slash3": 0,
+          "heavy": 0,
+          "heavyCharged": 0,
+          "arcanePulse": 53,
+          "skill": 19,
+          "dash": 10,
+          "execute": 6,
+          "jump": 24,
+          "airSlash": 0
+        },
+        "perfectCancels": 24,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "arcane",
+      "stageId": "pass",
+      "variant": 2,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "k4",
+      "remainingEnemies": [],
+      "framesSimulated": 3784,
+      "summary": {
+        "profession": "arcane",
+        "equipment": {
+          "weapon": null,
+          "armor": null,
+          "accessory": "focus-bead"
+        },
+        "seconds": 61.4,
+        "basicAttackRatio": 0.5,
+        "depthRatio": 0.577,
+        "totalMoveDistance": 4391,
+        "averageEngagementDistance": 152.6,
+        "executes": 3,
+        "kills": 13,
+        "damageTaken": 49,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 0,
+          "slash2": 0,
+          "slash3": 0,
+          "heavy": 0,
+          "heavyCharged": 0,
+          "arcanePulse": 48,
+          "skill": 19,
+          "dash": 6,
+          "execute": 4,
+          "jump": 19,
+          "airSlash": 0
+        },
+        "perfectCancels": 17,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "arcane",
+      "stageId": "citadel",
+      "variant": 0,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "m4",
+      "remainingEnemies": [],
+      "framesSimulated": 5374,
+      "summary": {
+        "profession": "arcane",
+        "equipment": {
+          "weapon": "spirit-focus",
+          "armor": null,
+          "accessory": null
+        },
+        "seconds": 87.9,
+        "basicAttackRatio": 0.472,
+        "depthRatio": 0.69,
+        "totalMoveDistance": 6657,
+        "averageEngagementDistance": 143,
+        "executes": 7,
+        "kills": 17,
+        "damageTaken": 225,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 0,
+          "slash2": 0,
+          "slash3": 0,
+          "heavy": 0,
+          "heavyCharged": 0,
+          "arcanePulse": 67,
+          "skill": 27,
+          "dash": 12,
+          "execute": 9,
+          "jump": 27,
+          "airSlash": 0
+        },
+        "perfectCancels": 26,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "arcane",
+      "stageId": "citadel",
+      "variant": 1,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "m4",
+      "remainingEnemies": [],
+      "framesSimulated": 5753,
+      "summary": {
+        "profession": "arcane",
+        "equipment": {
+          "weapon": null,
+          "armor": "scout-coat",
+          "accessory": null
+        },
+        "seconds": 94.2,
+        "basicAttackRatio": 0.423,
+        "depthRatio": 0.69,
+        "totalMoveDistance": 7560,
+        "averageEngagementDistance": 147.3,
+        "executes": 9,
+        "kills": 17,
+        "damageTaken": 208,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 0,
+          "slash2": 0,
+          "slash3": 0,
+          "heavy": 0,
+          "heavyCharged": 0,
+          "arcanePulse": 60,
+          "skill": 28,
+          "dash": 14,
+          "execute": 10,
+          "jump": 30,
+          "airSlash": 0
+        },
+        "perfectCancels": 17,
+        "died": false
+      }
+    },
+    {
+      "mode": "isolated",
+      "profession": "arcane",
+      "stageId": "citadel",
+      "variant": 2,
+      "terminal": true,
+      "cleared": true,
+      "finalPhase": "stageComplete",
+      "finalRoom": "m4",
+      "remainingEnemies": [],
+      "framesSimulated": 5213,
+      "summary": {
+        "profession": "arcane",
+        "equipment": {
+          "weapon": null,
+          "armor": null,
+          "accessory": "focus-bead"
+        },
+        "seconds": 85.2,
+        "basicAttackRatio": 0.47,
+        "depthRatio": 0.672,
+        "totalMoveDistance": 6531,
+        "averageEngagementDistance": 142.1,
+        "executes": 7,
+        "kills": 17,
+        "damageTaken": 199,
+        "unwarnedLethal": 0,
+        "actions": {
+          "slash": 0,
+          "slash2": 0,
+          "slash3": 0,
+          "heavy": 0,
+          "heavyCharged": 0,
+          "arcanePulse": 63,
+          "skill": 26,
+          "dash": 11,
+          "execute": 8,
+          "jump": 26,
+          "airSlash": 0
+        },
+        "perfectCancels": 22,
+        "died": false
+      }
+    }
+  ]
+}

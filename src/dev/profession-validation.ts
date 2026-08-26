@@ -36,6 +36,16 @@ export interface EquipmentReport {
   loadouts: EquipmentReportRow[];
 }
 
+export interface ProfessionCoverageRow {
+  profession: Profession;
+  readyStages: number;
+  requiredStages: number;
+  minimumSamples: number;
+  minimumSamplesPerStage: number;
+  complete: boolean;
+  stageSamples: Record<string, number>;
+}
+
 const STORAGE_KEY = 'frontier-brawler:m2-profession-samples:v1';
 
 /**
@@ -90,6 +100,36 @@ export class ProfessionValidationStore {
           samples.map((sample) => sample.summary.averageEngagementDistance),
         ),
         averageActions,
+      };
+    });
+  }
+
+  /**
+   * M2 要求每个职业在六关都有足量真人样本，不能用同一关反复刷出的总数冒充。
+   * 这里按关卡分别计数，面板只在每一关都达到门槛时显示覆盖完成。
+   */
+  coverage(stageIds: readonly string[], minimumSamplesPerStage = 3): ProfessionCoverageRow[] {
+    const professions: Profession[] = ['heavy', 'swift', 'arcane'];
+    return professions.map((profession) => {
+      const stageSamples = Object.fromEntries(
+        stageIds.map((stageId) => [
+          stageId,
+          this.memory.filter(
+            (sample) => sample.stageId === stageId && sample.summary.profession === profession,
+          ).length,
+        ]),
+      );
+      const counts = Object.values(stageSamples);
+      const readyStages = counts.filter((count) => count >= minimumSamplesPerStage).length;
+      const minimumSamples = counts.length ? Math.min(...counts) : 0;
+      return {
+        profession,
+        readyStages,
+        requiredStages: stageIds.length,
+        minimumSamples,
+        minimumSamplesPerStage,
+        complete: stageIds.length > 0 && readyStages === stageIds.length,
+        stageSamples,
       };
     });
   }

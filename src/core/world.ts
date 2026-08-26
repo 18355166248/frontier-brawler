@@ -29,6 +29,7 @@ import {
   isPerfectCancel,
   resolveAction,
   resolveDashCooldown,
+  resolveExecuteHeal,
   resolveExecuteRange,
   resolveSkillCost,
 } from './actions';
@@ -93,9 +94,6 @@ const TOKEN_RELEASING: ActionState[] = [
 const ENERGY_PER_HIT = 7;
 const ENERGY_PER_EXECUTE = 25;
 
-/** 处决的回报。给得太少玩家不会主动贴脸，验收第 3 条就永远不达标。 */
-const EXECUTE_HEAL = 14;
-
 /**
  * 输入缓冲窗口（帧）。玩家按键取的是"按下那一瞬间"，之前完全不缓冲——
  * 提前几帧按下一段连段的下一击，落在还不可打断的窗口里就被直接吃掉，
@@ -108,6 +106,12 @@ const INPUT_BUFFER_FRAMES = 8;
 
 let nextId = 1;
 let nextProjectileId = 1;
+
+/** 仅供无渲染逻辑回归隔离样本；正式游戏不调用，生产构建会 tree-shake。 */
+export function resetWorldIdsForTesting(): void {
+  nextId = 1;
+  nextProjectileId = 1;
+}
 
 export function createEntity(team: Team, pos: Vec2, overrides: Partial<Entity> = {}): Entity {
   return {
@@ -881,7 +885,7 @@ export class World {
     }
 
     if (isExecute && killed) {
-      const healed = EXECUTE_HEAL + attacker.executeHealBonus;
+      const healed = resolveExecuteHeal(attacker.profession) + attacker.executeHealBonus;
       attacker.hp = Math.min(attacker.maxHp, attacker.hp + healed);
       this.stats.executes += 1;
       this.events.executes.push({ at: { x: target.pos.x, y: target.pos.y }, healed });

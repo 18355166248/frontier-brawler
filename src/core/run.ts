@@ -35,6 +35,7 @@ import type {
 } from './equipment';
 import type { Arena, InputState } from './world';
 import { World, createEnemy, createEntity } from './world';
+import { resolveProfessionDamageTakenMultiplier } from './actions';
 import { RunStats } from './stats';
 import type { UpgradeTrackId } from './upgrades';
 import { availableTracks, computeUpgradeStats } from './upgrades';
@@ -215,6 +216,8 @@ export class Run {
     if (weapon && !canEquipWeapon(profession, weapon)) this.profile.equipment.weapon = null;
     if (this.player) this.player.profession = profession;
     if (this.player) this.player.weapon = this.profile.equipment.weapon;
+    // 职业防御修正必须在选择当帧同步，不能等下一次进房重建实体才生效。
+    this.applyUpgradeStatsToPlayer();
     this.professionConfirmed = true;
   }
 
@@ -560,7 +563,8 @@ export class Run {
     player.skillDamageMultiplier = stats.skillDamageMultiplier * equipment.skillDamageMultiplier;
     player.skillCostMultiplier = stats.skillCostMultiplier;
     player.executeHealBonus = stats.executeHealBonus + equipment.executeHealBonus;
-    player.damageTakenMultiplier = equipment.damageTakenMultiplier;
+    player.damageTakenMultiplier =
+      equipment.damageTakenMultiplier * resolveProfessionDamageTakenMultiplier(player.profession);
     player.speed = this.profile.speed * equipment.speedMultiplier;
     player.maxHp = this.profile.maxHp;
     player.hp = this.profile.hp;

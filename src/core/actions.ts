@@ -35,6 +35,13 @@ export function resolveExecuteRange(profession?: Profession): number {
   return profession === 'arcane' ? 100 : EXECUTE_RANGE;
 }
 
+/** 重装靠承伤换输出窗口，处决提供更高回复，闭合“扛住后反打”的职业循环。 */
+export const EXECUTE_HEAL = 14;
+
+export function resolveExecuteHeal(profession?: Profession): number {
+  return profession === 'heavy' ? 28 : EXECUTE_HEAL;
+}
+
 /** 冲刺冷却帧数。太短会退化成无脑冲，太长会让唯一的防御手段不可靠。 */
 export const DASH_COOLDOWN = 45;
 
@@ -43,6 +50,11 @@ export function resolveDashCooldown(profession?: Profession): number {
   if (profession === 'swift') return 30;
   if (profession === 'heavy') return 70;
   return DASH_COOLDOWN;
+}
+
+/** 超级护甲只防硬直不防伤害；少量基础减伤让重装的“抗压”定位真实成立。 */
+export function resolveProfessionDamageTakenMultiplier(profession?: Profession): number {
+  return profession === 'heavy' ? 0.85 : 1;
 }
 
 /** 重击蓄满所需帧数；约半秒，足够让站桩预判成为真实代价。 */
@@ -634,6 +646,13 @@ export const PROFESSION_ACTIONS: Record<
     },
     heavyCharge: ACTIONS.heavyCharge,
     heavyCharged: ACTIONS.heavyCharged,
+    // 重装处决收招更慢，但回复翻倍；回复值由 resolveExecuteHeal 统一解析。
+    execute: {
+      ...ACTIONS.execute,
+      frames: 36,
+      cancelFrom: 16,
+      invuln: { from: 0, to: 32 },
+    },
   },
   swift: {
     // 第二段不再收尾，而是把输入送进疾锋专属第三段。

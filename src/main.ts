@@ -96,7 +96,11 @@ const recordedValidationRuns = new WeakSet<Run>();
  */
 const validationPanel =
   import.meta.env.DEV && professionValidation
-    ? new ValidationPanel(professionValidation, (id) => equipmentLabel(id as EquipmentId))
+    ? new ValidationPanel(
+        professionValidation,
+        (id) => equipmentLabel(id as EquipmentId),
+        STAGES.map((stage) => stage.id),
+      )
     : null;
 
 function startStage(index: number, carryFrom?: Run['profile']): void {
@@ -375,6 +379,10 @@ if (import.meta.env.DEV) {
         passesDiversityTarget: false,
         loadouts: [],
       };
+    },
+    /** 每职业逐关统计是否达到至少 3 份终局样本，防止总数掩盖关卡缺口。 */
+    professionCoverage(): unknown {
+      return professionValidation?.coverage(STAGES.map((stage) => stage.id)) ?? [];
     },
     professionSamples(): unknown {
       return professionValidation?.samples() ?? [];

@@ -29,7 +29,9 @@ const {
   HEAVY_FULL_CHARGE_FRAMES,
   resolveAction,
   resolveDashCooldown,
+  resolveExecuteHeal,
   resolveExecuteRange,
+  resolveProfessionDamageTakenMultiplier,
   resolveSkillCost,
 } = actions;
 
@@ -57,6 +59,7 @@ function damagePerSecond(damage, frames) {
 const swiftChain = ['slash', 'slash2', 'slash3'].map((id) => resolveAction(id, 'swift'));
 const heavyCharge = resolveAction('heavyCharge', 'heavy');
 const heavyRelease = resolveAction('heavyCharged', 'heavy');
+const heavyExecute = resolveAction('execute', 'heavy');
 const arcanePulse = resolveAction('arcanePulse', 'arcane');
 const arcaneSkill = resolveAction('skill', 'arcane');
 
@@ -113,6 +116,11 @@ const rows = [
 if (!heavyCharge.superArmor || !heavyRelease.superArmor) fail('重击蓄力/释放必须全程超级护甲');
 if (heavyHit.damage < arcaneHit.damage * 2) fail('重击满蓄力单次伤害不够突出');
 if (resolveDashCooldown('heavy') <= resolveDashCooldown('arcane')) fail('重击冲刺冷却必须最长');
+if (resolveProfessionDamageTakenMultiplier('heavy') >= resolveProfessionDamageTakenMultiplier('swift')) {
+  fail('重击必须用基础减伤落实抗压定位');
+}
+if (resolveExecuteHeal('heavy') <= resolveExecuteHeal('swift')) fail('重击处决回复必须最高');
+if (heavyExecute.frames <= resolveAction('execute', 'swift').frames) fail('重击处决动画必须更长');
 
 // 疾锋：三段高频连击，冲刺最频繁但单次无敌窗最短。
 if (swiftChain.length !== 3 || swiftChain.some((action) => !hit(action))) fail('疾锋三段链不完整');
@@ -180,6 +188,7 @@ const emptyModel = buildValidationPanelModel(
   emptyStore.report(),
   emptyStore.equipmentReport(),
   (id) => id,
+  emptyStore.coverage(['s1', 's2']),
 );
 if (emptyModel.totalSamples !== 0) panelFail('无样本时总数应为 0');
 if (emptyModel.professions.length !== 3) panelFail('三张职业卡必须恒定存在');
@@ -198,6 +207,9 @@ if (!emptyModel.equipment.empty || emptyModel.equipment.rows.length !== 0) {
 if (emptyModel.equipment.verdictText !== '暂无样本 · 无法判定') {
   panelFail(`无样本时必须说"无法判定"而不是"未达标"，得到 ${emptyModel.equipment.verdictText}`);
 }
+if (!emptyModel.professions.every((card) => card.coverageText.includes('0/2'))) {
+  panelFail('无样本时关卡覆盖必须明确显示 0/2');
+}
 
 // --- 场景 2：只有一套配装（头部必然 100%，应判未达标）---
 const singleStore = new ProfessionValidationStore(null);
@@ -208,6 +220,7 @@ const singleModel = buildValidationPanelModel(
   singleStore.report(),
   singleStore.equipmentReport(),
   (id) => id,
+  singleStore.coverage(['s', 'missing']),
 );
 if (singleModel.totalSamples !== 2) panelFail('单一配装样本总数应为 2');
 if (singleModel.equipment.rows.length !== 1) panelFail('单一配装应只有一行');
@@ -228,6 +241,20 @@ if (!heavyCard.actions.length || heavyCard.actions[0].label !== 'slash') {
   panelFail('动作分布应按次数降序，slash 最多');
 }
 if (!swiftCard || !swiftCard.empty) panelFail('没有样本的职业卡仍应标记为空，不能借用别人的数据');
+if (heavyCard.coverageComplete || !heavyCard.coverageText.includes('0/2')) {
+  panelFail(`同一关只有 2 局不能冒充六关覆盖：${heavyCard.coverageText}`);
+}
+
+singleStore.record('s', true, summaryOf('heavy', soloLoadout));
+singleStore.record('missing', true, summaryOf('heavy', soloLoadout));
+singleStore.record('missing', false, summaryOf('heavy', soloLoadout));
+singleStore.record('missing', true, summaryOf('heavy', soloLoadout));
+const completedCoverage = singleStore.coverage(['s', 'missing']).find(
+  (row) => row.profession === 'heavy',
+);
+if (!completedCoverage?.complete || completedCoverage.readyStages !== 2) {
+  panelFail(`两关分别达到 3 局后应完成覆盖：${JSON.stringify(completedCoverage)}`);
+}
 
 // --- 场景 3：多套配装，且要能跨过 40% 门槛 ---
 const manyStore = new ProfessionValidationStore(null);
