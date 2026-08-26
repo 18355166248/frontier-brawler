@@ -34,6 +34,7 @@ import {
   equipmentSlotOf,
 } from '../core/equipment';
 import { MAX_UPGRADE_LEVEL, UPGRADE_TRACK_IDS, UPGRADE_TRACKS } from '../core/upgrades';
+import { BUILDING_UNLOCKS } from '../core/economy';
 import type { World } from '../core/world';
 import { Minimap } from './minimap';
 import type { EquipmentIcons } from './equipment-icons';
@@ -1517,7 +1518,7 @@ export class Renderer {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
     const panelW = 560;
-    const panelH = 400;
+    const panelH = 470;
     const panelX = (canvas.width - panelW) / 2;
     const panelY = (canvas.height - panelH) / 2;
 
@@ -1605,12 +1606,45 @@ export class Renderer {
       }
     });
 
-    // 最终血量，收尾一行
+    // 最终血量与 M5 基地物资一起收尾：战斗产出若只写进档案却不在结算反馈，
+    // 玩家无法建立“打这一关能推动基地”的因果关系。
     const hpY = trackY + 62;
     ctx.textAlign = 'center';
     ctx.font = '13px system-ui, sans-serif';
     ctx.fillStyle = 'rgba(255,255,255,0.55)';
     ctx.fillText(`血量 ${Math.ceil(run.profile.hp)} / ${run.profile.maxHp}`, canvas.width / 2, hpY);
+
+    const baseY = hpY + 28;
+    ctx.strokeStyle = 'rgba(255,255,255,0.12)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(panelX + 40, baseY - 15);
+    ctx.lineTo(panelX + panelW - 40, baseY - 15);
+    ctx.stroke();
+    ctx.fillStyle = '#ffd479';
+    ctx.font = 'bold 13px system-ui, sans-serif';
+    ctx.fillText('基地物资', canvas.width / 2, baseY);
+    ctx.fillStyle = 'rgba(255,255,255,0.78)';
+    ctx.font = '13px system-ui, sans-serif';
+    const resources = run.profile.base.resources;
+    ctx.fillText(
+      `基础材料 ${resources.materials}  ·  图纸 ${resources.blueprints}  ·  稀有材料 ${resources.rareMaterials}`,
+      canvas.width / 2,
+      baseY + 22,
+    );
+
+    const newlyUnlocked = BUILDING_UNLOCKS.find(
+      (building) => building.unlockAfterClears === run.profile.base.completedStageRuns,
+    );
+    if (newlyUnlocked) {
+      ctx.fillStyle = '#8fd4c8';
+      ctx.font = 'bold 13px system-ui, sans-serif';
+      ctx.fillText(
+        `新解锁 · ${newlyUnlocked.label} — ${newlyUnlocked.combatBenefit}`,
+        canvas.width / 2,
+        baseY + 46,
+      );
+    }
 
     ctx.restore();
   }
