@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "sampleType": "simulation-not-human",
-  "generatedAt": "2026-08-26T10:13:28.274Z",
+  "generatedAt": "2026-08-26T11:08:49.458Z",
   "config": {
     "professions": [
       "heavy",
@@ -24,21 +24,21 @@
     {
       "profession": "heavy",
       "samples": 18,
-      "successRate": 0.78,
-      "averageSeconds": 67.5,
-      "averageMoveDistance": 6588.06,
-      "averageEngagementDistance": 124.57,
+      "successRate": 0.83,
+      "averageSeconds": 79.79,
+      "averageMoveDistance": 8348.56,
+      "averageEngagementDistance": 119.63,
       "averageActions": {
         "slash": 0,
         "slash2": 0,
         "slash3": 0,
-        "heavy": 45.33,
-        "heavyCharged": 0,
+        "heavy": 49.44,
+        "heavyCharged": 1.33,
         "arcanePulse": 0,
-        "skill": 5.33,
-        "dash": 23.72,
-        "execute": 3.72,
-        "jump": 23.83,
+        "skill": 5.22,
+        "dash": 29.94,
+        "execute": 4.67,
+        "jump": 32,
         "airSlash": 0
       }
     },
@@ -46,19 +46,19 @@
       "profession": "swift",
       "samples": 18,
       "successRate": 0.94,
-      "averageSeconds": 96.74,
-      "averageMoveDistance": 11576.78,
-      "averageEngagementDistance": 115.19,
+      "averageSeconds": 96.84,
+      "averageMoveDistance": 11603.61,
+      "averageEngagementDistance": 115.22,
       "averageActions": {
-        "slash": 29.44,
+        "slash": 29.5,
         "slash2": 22.61,
-        "slash3": 13.89,
+        "slash3": 13.78,
         "heavy": 0,
         "heavyCharged": 0,
         "arcanePulse": 0,
         "skill": 6.67,
-        "dash": 48.17,
-        "execute": 6.11,
+        "dash": 48.33,
+        "execute": 6.06,
         "jump": 40.5,
         "airSlash": 2.28
       }
@@ -91,6 +91,12 @@
     "passesDiversityTarget": true,
     "loadouts": [
       {
+        "loadout": "breaker-maul / scout-coat / focus-bead",
+        "samples": 4,
+        "share": 0.07,
+        "successRate": 1
+      },
+      {
         "loadout": "ember-focus / scout-coat / focus-bead",
         "samples": 4,
         "share": 0.07,
@@ -100,12 +106,6 @@
         "loadout": "hook-blades / scout-coat / focus-bead",
         "samples": 4,
         "share": 0.07,
-        "successRate": 1
-      },
-      {
-        "loadout": "breaker-maul / scout-coat / focus-bead",
-        "samples": 3,
-        "share": 0.06,
         "successRate": 1
       },
       {
@@ -145,6 +145,12 @@
         "successRate": 1
       },
       {
+        "loadout": "breaker-maul / ritual-robe / focus-bead",
+        "samples": 2,
+        "share": 0.04,
+        "successRate": 0.5
+      },
+      {
         "loadout": "breaker-maul / scout-coat / execution-charm",
         "samples": 2,
         "share": 0.04,
@@ -169,31 +175,13 @@
         "successRate": 1
       },
       {
-        "loadout": "breaker-maul / field-armor / focus-bead",
-        "samples": 1,
-        "share": 0.02,
-        "successRate": 0
-      },
-      {
         "loadout": "breaker-maul / field-armor / none",
         "samples": 1,
         "share": 0.02,
         "successRate": 1
       },
       {
-        "loadout": "breaker-maul / none / focus-bead",
-        "samples": 1,
-        "share": 0.02,
-        "successRate": 0
-      },
-      {
         "loadout": "breaker-maul / none / none",
-        "samples": 1,
-        "share": 0.02,
-        "successRate": 1
-      },
-      {
-        "loadout": "breaker-maul / ritual-robe / focus-bead",
         "samples": 1,
         "share": 0.02,
         "successRate": 1
@@ -329,8 +317,8 @@
       "attempts": 3,
       "clears": 3,
       "successRate": 1,
-      "averageSeconds": 30.27,
-      "averageDamageTaken": 49.33
+      "averageSeconds": 42.73,
+      "averageDamageTaken": 73.33
     },
     {
       "profession": "heavy",
@@ -338,8 +326,8 @@
       "attempts": 3,
       "clears": 3,
       "successRate": 1,
-      "averageSeconds": 51.1,
-      "averageDamageTaken": 103.33
+      "averageSeconds": 136.57,
+      "averageDamageTaken": 154
     },
     {
       "profession": "heavy",
@@ -347,8 +335,8 @@
       "attempts": 3,
       "clears": 3,
       "successRate": 1,
-      "averageSeconds": 90.2,
-      "averageDamageTaken": 122.33
+      "averageSeconds": 59.07,
+      "averageDamageTaken": 50.33
     },
     {
       "profession": "heavy",
@@ -356,17 +344,17 @@
       "attempts": 3,
       "clears": 3,
       "successRate": 1,
-      "averageSeconds": 75.97,
-      "averageDamageTaken": 184.33
+      "averageSeconds": 87.73,
+      "averageDamageTaken": 199.67
     },
     {
       "profession": "heavy",
       "stage": "pass",
       "attempts": 3,
-      "clears": 2,
-      "successRate": 0.67,
-      "averageSeconds": 82.1,
-      "averageDamageTaken": 217.33
+      "clears": 3,
+      "successRate": 1,
+      "averageSeconds": 98.6,
+      "averageDamageTaken": 185.67
     },
     {
       "profession": "heavy",
@@ -374,8 +362,8 @@
       "attempts": 3,
       "clears": 0,
       "successRate": 0,
-      "averageSeconds": 75.37,
-      "averageDamageTaken": 238
+      "averageSeconds": 54.03,
+      "averageDamageTaken": 202
     },
     {
       "profession": "swift",
@@ -401,7 +389,7 @@
       "attempts": 3,
       "clears": 3,
       "successRate": 1,
-      "averageSeconds": 208.4,
+      "averageSeconds": 208.93,
       "averageDamageTaken": 181.67
     },
     {
@@ -410,7 +398,7 @@
       "attempts": 3,
       "clears": 2,
       "successRate": 0.67,
-      "averageSeconds": 103.17,
+      "averageSeconds": 103.27,
       "averageDamageTaken": 190.33
     },
     {
@@ -505,7 +493,7 @@
     },
     {
       "stage": "pass",
-      "spread": 0.33
+      "spread": 0
     },
     {
       "stage": "citadel",
@@ -520,6 +508,12 @@
       "passesDiversityTarget": true,
       "loadouts": [
         {
+          "loadout": "breaker-maul / scout-coat / focus-bead",
+          "samples": 4,
+          "share": 0.07,
+          "successRate": 1
+        },
+        {
           "loadout": "ember-focus / scout-coat / focus-bead",
           "samples": 4,
           "share": 0.07,
@@ -529,12 +523,6 @@
           "loadout": "hook-blades / scout-coat / focus-bead",
           "samples": 4,
           "share": 0.07,
-          "successRate": 1
-        },
-        {
-          "loadout": "breaker-maul / scout-coat / focus-bead",
-          "samples": 3,
-          "share": 0.06,
           "successRate": 1
         },
         {
@@ -574,6 +562,12 @@
           "successRate": 1
         },
         {
+          "loadout": "breaker-maul / ritual-robe / focus-bead",
+          "samples": 2,
+          "share": 0.04,
+          "successRate": 0.5
+        },
+        {
           "loadout": "breaker-maul / scout-coat / execution-charm",
           "samples": 2,
           "share": 0.04,
@@ -598,31 +592,13 @@
           "successRate": 1
         },
         {
-          "loadout": "breaker-maul / field-armor / focus-bead",
-          "samples": 1,
-          "share": 0.02,
-          "successRate": 0
-        },
-        {
           "loadout": "breaker-maul / field-armor / none",
           "samples": 1,
           "share": 0.02,
           "successRate": 1
         },
         {
-          "loadout": "breaker-maul / none / focus-bead",
-          "samples": 1,
-          "share": 0.02,
-          "successRate": 0
-        },
-        {
           "loadout": "breaker-maul / none / none",
-          "samples": 1,
-          "share": 0.02,
-          "successRate": 1
-        },
-        {
-          "loadout": "breaker-maul / ritual-robe / focus-bead",
           "samples": 1,
           "share": 0.02,
           "successRate": 1
@@ -712,7 +688,7 @@
         "finalPhase": "stageComplete",
         "finalRoom": "v3",
         "remainingEnemies": [],
-        "framesSimulated": 2013,
+        "framesSimulated": 2234,
         "summary": {
           "profession": "heavy",
           "equipment": {
@@ -720,25 +696,29 @@
             "armor": null,
             "accessory": null
           },
-          "seconds": 32.5,
-          "basicAttackRatio": 0.5,
-          "depthRatio": 0.376,
-          "totalMoveDistance": 3988,
-          "averageEngagementDistance": 141.1,
-          "executes": 3,
+          "seconds": 36.2,
+          "basicAttackRatio": 0.536,
+          "depthRatio": 0.371,
+          "totalMoveDistance": 4454,
+          "averageEngagementDistance": 135.7,
+          "executes": 2,
           "kills": 8,
           "damageTaken": 56,
+          "damageTakenByKind": {
+            "boss": 46,
+            "grunt": 10
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 0,
             "slash2": 0,
             "slash3": 0,
-            "heavy": 25,
+            "heavy": 30,
             "heavyCharged": 0,
             "arcanePulse": 0,
             "skill": 3,
-            "dash": 16,
-            "execute": 3,
+            "dash": 18,
+            "execute": 2,
             "jump": 3,
             "airSlash": 0
           },
@@ -772,6 +752,9 @@
           "executes": 3,
           "kills": 10,
           "damageTaken": 128,
+          "damageTakenByKind": {
+            "boss": 128
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 0,
@@ -816,6 +799,11 @@
           "executes": 2,
           "kills": 12,
           "damageTaken": 57,
+          "damageTakenByKind": {
+            "ranged": 28,
+            "boss": 19,
+            "grunt": 10
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 0,
@@ -844,7 +832,7 @@
         "finalPhase": "stageComplete",
         "finalRoom": "p4",
         "remainingEnemies": [],
-        "framesSimulated": 4025,
+        "framesSimulated": 4460,
         "summary": {
           "profession": "heavy",
           "equipment": {
@@ -852,26 +840,30 @@
             "armor": "scout-coat",
             "accessory": "focus-bead"
           },
-          "seconds": 65.4,
-          "basicAttackRatio": 0.557,
-          "depthRatio": 0.47,
-          "totalMoveDistance": 6107,
-          "averageEngagementDistance": 129.8,
+          "seconds": 72.7,
+          "basicAttackRatio": 0.55,
+          "depthRatio": 0.473,
+          "totalMoveDistance": 6991,
+          "averageEngagementDistance": 132.5,
           "executes": 5,
           "kills": 13,
-          "damageTaken": 114,
+          "damageTaken": 183,
+          "damageTakenByKind": {
+            "ranged": 52,
+            "boss": 131
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 0,
             "slash2": 0,
             "slash3": 0,
-            "heavy": 68,
+            "heavy": 72,
             "heavyCharged": 0,
             "arcanePulse": 0,
-            "skill": 4,
-            "dash": 21,
+            "skill": 3,
+            "dash": 25,
             "execute": 9,
-            "jump": 20,
+            "jump": 22,
             "airSlash": 0
           },
           "perfectCancels": 0,
@@ -888,7 +880,7 @@
         "finalPhase": "stageComplete",
         "finalRoom": "k4",
         "remainingEnemies": [],
-        "framesSimulated": 5637,
+        "framesSimulated": 5711,
         "summary": {
           "profession": "heavy",
           "equipment": {
@@ -896,24 +888,29 @@
             "armor": "scout-coat",
             "accessory": "execution-charm"
           },
-          "seconds": 92.3,
-          "basicAttackRatio": 0.377,
-          "depthRatio": 0.554,
-          "totalMoveDistance": 10206,
-          "averageEngagementDistance": 117.3,
+          "seconds": 93.5,
+          "basicAttackRatio": 0.376,
+          "depthRatio": 0.555,
+          "totalMoveDistance": 10424,
+          "averageEngagementDistance": 116.9,
           "executes": 2,
           "kills": 13,
           "damageTaken": 202,
+          "damageTakenByKind": {
+            "elite": 82,
+            "ranged": 46,
+            "boss": 74
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 0,
             "slash2": 0,
             "slash3": 0,
-            "heavy": 55,
+            "heavy": 56,
             "heavyCharged": 0,
             "arcanePulse": 0,
             "skill": 6,
-            "dash": 43,
+            "dash": 45,
             "execute": 3,
             "jump": 39,
             "airSlash": 0
@@ -932,7 +929,7 @@
         "finalPhase": "stageComplete",
         "finalRoom": "m4",
         "remainingEnemies": [],
-        "framesSimulated": 4842,
+        "framesSimulated": 5262,
         "summary": {
           "profession": "heavy",
           "equipment": {
@@ -940,26 +937,34 @@
             "armor": "scout-coat",
             "accessory": "execution-charm"
           },
-          "seconds": 79,
-          "basicAttackRatio": 0.531,
-          "depthRatio": 0.414,
-          "totalMoveDistance": 7237,
-          "averageEngagementDistance": 116.6,
+          "seconds": 86,
+          "basicAttackRatio": 0.516,
+          "depthRatio": 0.434,
+          "totalMoveDistance": 8296,
+          "averageEngagementDistance": 115.8,
           "executes": 5,
           "kills": 17,
-          "damageTaken": 185,
+          "damageTaken": 259,
+          "damageTakenByKind": {
+            "charger": 13,
+            "grunt": 10,
+            "ranged": 63,
+            "elite": 20,
+            "shield": 10,
+            "boss": 144
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 0,
             "slash2": 0,
             "slash3": 0,
-            "heavy": 78,
+            "heavy": 79,
             "heavyCharged": 0,
             "arcanePulse": 0,
             "skill": 10,
-            "dash": 29,
+            "dash": 33,
             "execute": 9,
-            "jump": 21,
+            "jump": 22,
             "airSlash": 0
           },
           "perfectCancels": 0,
@@ -976,7 +981,7 @@
         "finalPhase": "stageComplete",
         "finalRoom": "v3",
         "remainingEnemies": [],
-        "framesSimulated": 1813,
+        "framesSimulated": 2817,
         "summary": {
           "profession": "heavy",
           "equipment": {
@@ -984,26 +989,30 @@
             "armor": "field-armor",
             "accessory": null
           },
-          "seconds": 29.2,
-          "basicAttackRatio": 0.55,
-          "depthRatio": 0.32,
-          "totalMoveDistance": 3571,
-          "averageEngagementDistance": 146.4,
-          "executes": 1,
+          "seconds": 46,
+          "basicAttackRatio": 0.387,
+          "depthRatio": 0.458,
+          "totalMoveDistance": 6170,
+          "averageEngagementDistance": 140.1,
+          "executes": 3,
           "kills": 8,
-          "damageTaken": 46,
+          "damageTaken": 82,
+          "damageTakenByKind": {
+            "boss": 71,
+            "grunt": 10
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 0,
             "slash2": 0,
             "slash3": 0,
-            "heavy": 22,
-            "heavyCharged": 0,
+            "heavy": 23,
+            "heavyCharged": 1,
             "arcanePulse": 0,
-            "skill": 2,
-            "dash": 14,
-            "execute": 1,
-            "jump": 1,
+            "skill": 3,
+            "dash": 25,
+            "execute": 3,
+            "jump": 7,
             "airSlash": 0
           },
           "perfectCancels": 0,
@@ -1020,7 +1029,7 @@
         "finalPhase": "stageComplete",
         "finalRoom": "b1n",
         "remainingEnemies": [],
-        "framesSimulated": 2872,
+        "framesSimulated": 2956,
         "summary": {
           "profession": "heavy",
           "equipment": {
@@ -1028,26 +1037,29 @@
             "armor": "ritual-robe",
             "accessory": null
           },
-          "seconds": 46.5,
-          "basicAttackRatio": 0.627,
-          "depthRatio": 0.313,
-          "totalMoveDistance": 4935,
-          "averageEngagementDistance": 124.8,
-          "executes": 1,
+          "seconds": 47.9,
+          "basicAttackRatio": 0.636,
+          "depthRatio": 0.35,
+          "totalMoveDistance": 4485,
+          "averageEngagementDistance": 117.3,
+          "executes": 3,
           "kills": 10,
-          "damageTaken": 16,
+          "damageTaken": 64,
+          "damageTakenByKind": {
+            "boss": 64
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 0,
             "slash2": 0,
             "slash3": 0,
-            "heavy": 42,
-            "heavyCharged": 0,
+            "heavy": 55,
+            "heavyCharged": 1,
             "arcanePulse": 0,
             "skill": 5,
             "dash": 18,
-            "execute": 1,
-            "jump": 1,
+            "execute": 5,
+            "jump": 4,
             "airSlash": 0
           },
           "perfectCancels": 0,
@@ -1064,7 +1076,7 @@
         "finalPhase": "stageComplete",
         "finalRoom": "c4",
         "remainingEnemies": [],
-        "framesSimulated": 4232,
+        "framesSimulated": 3846,
         "summary": {
           "profession": "heavy",
           "equipment": {
@@ -1072,113 +1084,29 @@
             "armor": "scout-coat",
             "accessory": "execution-charm"
           },
-          "seconds": 68.9,
-          "basicAttackRatio": 0.477,
-          "depthRatio": 0.444,
-          "totalMoveDistance": 7136,
-          "averageEngagementDistance": 124.4,
+          "seconds": 62.4,
+          "basicAttackRatio": 0.564,
+          "depthRatio": 0.422,
+          "totalMoveDistance": 6035,
+          "averageEngagementDistance": 117.4,
           "executes": 2,
           "kills": 12,
-          "damageTaken": 144,
+          "damageTaken": 123,
+          "damageTakenByKind": {
+            "ranged": 28,
+            "boss": 95
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 0,
             "slash2": 0,
             "slash3": 0,
-            "heavy": 51,
+            "heavy": 62,
             "heavyCharged": 0,
             "arcanePulse": 0,
             "skill": 6,
-            "dash": 29,
-            "execute": 2,
-            "jump": 19,
-            "airSlash": 0
-          },
-          "perfectCancels": 0,
-          "died": false
-        }
-      },
-      {
-        "mode": "campaign",
-        "profession": "heavy",
-        "stageId": "camp",
-        "variant": 1,
-        "terminal": true,
-        "cleared": true,
-        "finalPhase": "stageComplete",
-        "finalRoom": "p4",
-        "remainingEnemies": [],
-        "framesSimulated": 3735,
-        "summary": {
-          "profession": "heavy",
-          "equipment": {
-            "weapon": null,
-            "armor": "scout-coat",
-            "accessory": "focus-bead"
-          },
-          "seconds": 60.6,
-          "basicAttackRatio": 0.553,
-          "depthRatio": 0.457,
-          "totalMoveDistance": 5474,
-          "averageEngagementDistance": 135.4,
-          "executes": 3,
-          "kills": 13,
-          "damageTaken": 105,
-          "unwarnedLethal": 0,
-          "actions": {
-            "slash": 0,
-            "slash2": 0,
-            "slash3": 0,
-            "heavy": 57,
-            "heavyCharged": 0,
-            "arcanePulse": 0,
-            "skill": 4,
-            "dash": 18,
-            "execute": 6,
-            "jump": 18,
-            "airSlash": 0
-          },
-          "perfectCancels": 0,
-          "died": false
-        }
-      },
-      {
-        "mode": "campaign",
-        "profession": "heavy",
-        "stageId": "pass",
-        "variant": 1,
-        "terminal": true,
-        "cleared": true,
-        "finalPhase": "stageComplete",
-        "finalRoom": "k4",
-        "remainingEnemies": [],
-        "framesSimulated": 4046,
-        "summary": {
-          "profession": "heavy",
-          "equipment": {
-            "weapon": "breaker-maul",
-            "armor": "scout-coat",
-            "accessory": "focus-bead"
-          },
-          "seconds": 65.8,
-          "basicAttackRatio": 0.449,
-          "depthRatio": 0.42,
-          "totalMoveDistance": 7019,
-          "averageEngagementDistance": 136.2,
-          "executes": 2,
-          "kills": 13,
-          "damageTaken": 167,
-          "unwarnedLethal": 0,
-          "actions": {
-            "slash": 0,
-            "slash2": 0,
-            "slash3": 0,
-            "heavy": 44,
-            "heavyCharged": 0,
-            "arcanePulse": 0,
-            "skill": 7,
-            "dash": 30,
-            "execute": 2,
+            "dash": 24,
+            "execute": 3,
             "jump": 15,
             "airSlash": 0
           },
@@ -1189,14 +1117,65 @@
       {
         "mode": "campaign",
         "profession": "heavy",
-        "stageId": "citadel",
+        "stageId": "camp",
         "variant": 1,
         "terminal": true,
         "cleared": true,
         "finalPhase": "stageComplete",
-        "finalRoom": "m4",
+        "finalRoom": "p4",
         "remainingEnemies": [],
-        "framesSimulated": 5574,
+        "framesSimulated": 4519,
+        "summary": {
+          "profession": "heavy",
+          "equipment": {
+            "weapon": null,
+            "armor": "scout-coat",
+            "accessory": "focus-bead"
+          },
+          "seconds": 73.7,
+          "basicAttackRatio": 0.512,
+          "depthRatio": 0.539,
+          "totalMoveDistance": 7603,
+          "averageEngagementDistance": 130.1,
+          "executes": 5,
+          "kills": 13,
+          "damageTaken": 198,
+          "damageTakenByKind": {
+            "grunt": 10,
+            "ranged": 66,
+            "shield": 10,
+            "charger": 14,
+            "boss": 99
+          },
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 0,
+            "slash2": 0,
+            "slash3": 0,
+            "heavy": 65,
+            "heavyCharged": 0,
+            "arcanePulse": 0,
+            "skill": 4,
+            "dash": 27,
+            "execute": 9,
+            "jump": 22,
+            "airSlash": 0
+          },
+          "perfectCancels": 0,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "heavy",
+        "stageId": "pass",
+        "variant": 1,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "k4",
+        "remainingEnemies": [],
+        "framesSimulated": 4433,
         "summary": {
           "profession": "heavy",
           "equipment": {
@@ -1204,26 +1183,84 @@
             "armor": "scout-coat",
             "accessory": "focus-bead"
           },
-          "seconds": 91.2,
-          "basicAttackRatio": 0.418,
-          "depthRatio": 0.47,
-          "totalMoveDistance": 9345,
-          "averageEngagementDistance": 115.3,
-          "executes": 6,
-          "kills": 17,
-          "damageTaken": 214,
+          "seconds": 72.2,
+          "basicAttackRatio": 0.426,
+          "depthRatio": 0.478,
+          "totalMoveDistance": 7607,
+          "averageEngagementDistance": 130.5,
+          "executes": 2,
+          "kills": 13,
+          "damageTaken": 157,
+          "damageTakenByKind": {
+            "elite": 59,
+            "ranged": 45,
+            "shield": 10,
+            "boss": 44
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 0,
             "slash2": 0,
             "slash3": 0,
-            "heavy": 61,
-            "heavyCharged": 0,
+            "heavy": 39,
+            "heavyCharged": 7,
+            "arcanePulse": 0,
+            "skill": 6,
+            "dash": 33,
+            "execute": 3,
+            "jump": 20,
+            "airSlash": 0
+          },
+          "perfectCancels": 0,
+          "died": false
+        }
+      },
+      {
+        "mode": "campaign",
+        "profession": "heavy",
+        "stageId": "citadel",
+        "variant": 1,
+        "terminal": true,
+        "cleared": true,
+        "finalPhase": "stageComplete",
+        "finalRoom": "m4",
+        "remainingEnemies": [],
+        "framesSimulated": 5287,
+        "summary": {
+          "profession": "heavy",
+          "equipment": {
+            "weapon": "breaker-maul",
+            "armor": "scout-coat",
+            "accessory": "focus-bead"
+          },
+          "seconds": 86.5,
+          "basicAttackRatio": 0.507,
+          "depthRatio": 0.429,
+          "totalMoveDistance": 8340,
+          "averageEngagementDistance": 113.1,
+          "executes": 7,
+          "kills": 17,
+          "damageTaken": 187,
+          "damageTakenByKind": {
+            "charger": 13,
+            "grunt": 10,
+            "ranged": 45,
+            "elite": 39,
+            "shield": 10,
+            "boss": 70
+          },
+          "unwarnedLethal": 0,
+          "actions": {
+            "slash": 0,
+            "slash2": 0,
+            "slash3": 0,
+            "heavy": 69,
+            "heavyCharged": 5,
             "arcanePulse": 0,
             "skill": 10,
-            "dash": 40,
+            "dash": 33,
             "execute": 9,
-            "jump": 26,
+            "jump": 20,
             "airSlash": 0
           },
           "perfectCancels": 0,
@@ -1240,7 +1277,7 @@
         "finalPhase": "stageComplete",
         "finalRoom": "v3",
         "remainingEnemies": [],
-        "framesSimulated": 1804,
+        "framesSimulated": 2817,
         "summary": {
           "profession": "heavy",
           "equipment": {
@@ -1248,26 +1285,30 @@
             "armor": null,
             "accessory": "war-sigil"
           },
-          "seconds": 29.1,
-          "basicAttackRatio": 0.5,
-          "depthRatio": 0.316,
-          "totalMoveDistance": 3434,
-          "averageEngagementDistance": 146.4,
-          "executes": 1,
+          "seconds": 46,
+          "basicAttackRatio": 0.387,
+          "depthRatio": 0.458,
+          "totalMoveDistance": 6170,
+          "averageEngagementDistance": 140.1,
+          "executes": 3,
           "kills": 8,
-          "damageTaken": 46,
+          "damageTaken": 82,
+          "damageTakenByKind": {
+            "boss": 71,
+            "grunt": 10
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 0,
             "slash2": 0,
             "slash3": 0,
-            "heavy": 19,
-            "heavyCharged": 0,
+            "heavy": 23,
+            "heavyCharged": 1,
             "arcanePulse": 0,
             "skill": 3,
-            "dash": 14,
-            "execute": 1,
-            "jump": 1,
+            "dash": 25,
+            "execute": 3,
+            "jump": 7,
             "airSlash": 0
           },
           "perfectCancels": 0,
@@ -1284,7 +1325,7 @@
         "finalPhase": "stageComplete",
         "finalRoom": "b1n",
         "remainingEnemies": [],
-        "framesSimulated": 2747,
+        "framesSimulated": 3090,
         "summary": {
           "profession": "heavy",
           "equipment": {
@@ -1292,26 +1333,29 @@
             "armor": null,
             "accessory": "execution-charm"
           },
-          "seconds": 44.5,
-          "basicAttackRatio": 0.639,
-          "depthRatio": 0.324,
-          "totalMoveDistance": 4377,
-          "averageEngagementDistance": 118.1,
-          "executes": 1,
+          "seconds": 50.2,
+          "basicAttackRatio": 0.57,
+          "depthRatio": 0.373,
+          "totalMoveDistance": 5275,
+          "averageEngagementDistance": 126.9,
+          "executes": 4,
           "kills": 10,
-          "damageTaken": 133,
+          "damageTaken": 105,
+          "damageTakenByKind": {
+            "boss": 105
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 0,
             "slash2": 0,
             "slash3": 0,
-            "heavy": 39,
-            "heavyCharged": 0,
+            "heavy": 48,
+            "heavyCharged": 1,
             "arcanePulse": 0,
-            "skill": 4,
-            "dash": 16,
-            "execute": 1,
-            "jump": 1,
+            "skill": 6,
+            "dash": 22,
+            "execute": 6,
+            "jump": 3,
             "airSlash": 0
           },
           "perfectCancels": 0,
@@ -1328,7 +1372,7 @@
         "finalPhase": "stageComplete",
         "finalRoom": "c4",
         "remainingEnemies": [],
-        "framesSimulated": 7332,
+        "framesSimulated": 3586,
         "summary": {
           "profession": "heavy",
           "equipment": {
@@ -1336,26 +1380,30 @@
             "armor": null,
             "accessory": "focus-bead"
           },
-          "seconds": 120.5,
-          "basicAttackRatio": 0.315,
-          "depthRatio": 0.678,
-          "totalMoveDistance": 11384,
-          "averageEngagementDistance": 96.6,
-          "executes": 1,
+          "seconds": 58.1,
+          "basicAttackRatio": 0.579,
+          "depthRatio": 0.381,
+          "totalMoveDistance": 5213,
+          "averageEngagementDistance": 126.1,
+          "executes": 2,
           "kills": 12,
-          "damageTaken": 183,
+          "damageTaken": 47,
+          "damageTakenByKind": {
+            "ranged": 28,
+            "boss": 19
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 0,
             "slash2": 0,
             "slash3": 0,
-            "heavy": 51,
-            "heavyCharged": 0,
+            "heavy": 61,
+            "heavyCharged": 1,
             "arcanePulse": 0,
             "skill": 6,
-            "dash": 31,
-            "execute": 1,
-            "jump": 73,
+            "dash": 21,
+            "execute": 3,
+            "jump": 15,
             "airSlash": 0
           },
           "perfectCancels": 0,
@@ -1368,49 +1416,47 @@
         "stageId": "camp",
         "variant": 2,
         "terminal": true,
-        "cleared": false,
-        "finalPhase": "dead",
+        "cleared": true,
+        "finalPhase": "stageComplete",
         "finalRoom": "p4",
-        "remainingEnemies": [
-          {
-            "kind": "boss",
-            "hp": 109.76,
-            "x": 32.6,
-            "y": 437.01
-          }
-        ],
-        "framesSimulated": 4267,
+        "remainingEnemies": [],
+        "framesSimulated": 6798,
         "summary": {
           "profession": "heavy",
           "equipment": {
             "weapon": "breaker-maul",
-            "armor": null,
+            "armor": "scout-coat",
             "accessory": "focus-bead"
           },
-          "seconds": 69.5,
-          "basicAttackRatio": 0.427,
-          "depthRatio": 0.566,
-          "totalMoveDistance": 6288,
-          "averageEngagementDistance": 125.9,
-          "executes": 2,
-          "kills": 12,
-          "damageTaken": 226,
+          "seconds": 111.6,
+          "basicAttackRatio": 0.368,
+          "depthRatio": 0.744,
+          "totalMoveDistance": 9750,
+          "averageEngagementDistance": 98.9,
+          "executes": 4,
+          "kills": 13,
+          "damageTaken": 169,
+          "damageTakenByKind": {
+            "grunt": 31,
+            "ranged": 65,
+            "boss": 73
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 0,
             "slash2": 0,
             "slash3": 0,
-            "heavy": 41,
-            "heavyCharged": 0,
+            "heavy": 59,
+            "heavyCharged": 4,
             "arcanePulse": 0,
-            "skill": 6,
-            "dash": 20,
-            "execute": 3,
-            "jump": 26,
+            "skill": 5,
+            "dash": 23,
+            "execute": 8,
+            "jump": 72,
             "airSlash": 0
           },
           "perfectCancels": 0,
-          "died": true
+          "died": false
         }
       },
       {
@@ -1419,49 +1465,48 @@
         "stageId": "pass",
         "variant": 2,
         "terminal": true,
-        "cleared": false,
-        "finalPhase": "dead",
+        "cleared": true,
+        "finalPhase": "stageComplete",
         "finalRoom": "k4",
-        "remainingEnemies": [
-          {
-            "kind": "boss",
-            "hp": 276,
-            "x": 539.7,
-            "y": 516
-          }
-        ],
-        "framesSimulated": 4500,
+        "remainingEnemies": [],
+        "framesSimulated": 4575,
         "summary": {
           "profession": "heavy",
           "equipment": {
             "weapon": "breaker-maul",
-            "armor": "field-armor",
+            "armor": "ritual-robe",
             "accessory": "focus-bead"
           },
-          "seconds": 73.3,
-          "basicAttackRatio": 0.374,
-          "depthRatio": 0.487,
-          "totalMoveDistance": 8034,
-          "averageEngagementDistance": 135.5,
+          "seconds": 74.6,
+          "basicAttackRatio": 0.451,
+          "depthRatio": 0.446,
+          "totalMoveDistance": 7548,
+          "averageEngagementDistance": 129.2,
           "executes": 2,
-          "kills": 10,
-          "damageTaken": 257,
+          "kills": 13,
+          "damageTaken": 148,
+          "damageTakenByKind": {
+            "elite": 39,
+            "ranged": 35,
+            "shield": 9,
+            "boss": 64
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 0,
             "slash2": 0,
             "slash3": 0,
-            "heavy": 37,
-            "heavyCharged": 0,
+            "heavy": 45,
+            "heavyCharged": 6,
             "arcanePulse": 0,
-            "skill": 5,
-            "dash": 36,
+            "skill": 6,
+            "dash": 34,
             "execute": 3,
-            "jump": 18,
+            "jump": 19,
             "airSlash": 0
           },
           "perfectCancels": 0,
-          "died": true
+          "died": false
         }
       },
       {
@@ -1470,11 +1515,18 @@
         "stageId": "citadel",
         "variant": 2,
         "terminal": true,
-        "cleared": true,
-        "finalPhase": "stageComplete",
+        "cleared": false,
+        "finalPhase": "dead",
         "finalRoom": "m4",
-        "remainingEnemies": [],
-        "framesSimulated": 6571,
+        "remainingEnemies": [
+          {
+            "kind": "boss",
+            "hp": 402,
+            "x": 466.07,
+            "y": 426.33
+          }
+        ],
+        "framesSimulated": 4484,
         "summary": {
           "profession": "heavy",
           "equipment": {
@@ -1482,30 +1534,37 @@
             "armor": "ritual-robe",
             "accessory": "focus-bead"
           },
-          "seconds": 107.8,
-          "basicAttackRatio": 0.447,
-          "depthRatio": 0.452,
-          "totalMoveDistance": 10013,
-          "averageEngagementDistance": 123,
-          "executes": 7,
-          "kills": 17,
-          "damageTaken": 233,
+          "seconds": 73.1,
+          "basicAttackRatio": 0.476,
+          "depthRatio": 0.471,
+          "totalMoveDistance": 6733,
+          "averageEngagementDistance": 133.1,
+          "executes": 4,
+          "kills": 14,
+          "damageTaken": 287,
+          "damageTakenByKind": {
+            "charger": 27,
+            "ranged": 75,
+            "elite": 102,
+            "shield": 10,
+            "boss": 73
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 0,
             "slash2": 0,
             "slash3": 0,
-            "heavy": 72,
-            "heavyCharged": 0,
+            "heavy": 58,
+            "heavyCharged": 1,
             "arcanePulse": 0,
-            "skill": 8,
-            "dash": 38,
-            "execute": 9,
-            "jump": 34,
+            "skill": 6,
+            "dash": 28,
+            "execute": 5,
+            "jump": 26,
             "airSlash": 0
           },
           "perfectCancels": 0,
-          "died": false
+          "died": true
         }
       },
       {
@@ -1534,6 +1593,9 @@
           "executes": 3,
           "kills": 8,
           "damageTaken": 22,
+          "damageTakenByKind": {
+            "boss": 22
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 12,
@@ -1578,6 +1640,10 @@
           "executes": 4,
           "kills": 10,
           "damageTaken": 34,
+          "damageTakenByKind": {
+            "boss": 22,
+            "grunt": 12
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 26,
@@ -1622,6 +1688,12 @@
           "executes": 5,
           "kills": 12,
           "damageTaken": 57,
+          "damageTakenByKind": {
+            "ranged": 11,
+            "grunt": 12,
+            "shield": 12,
+            "boss": 22
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 37,
@@ -1650,7 +1722,7 @@
         "finalPhase": "stageComplete",
         "finalRoom": "p4",
         "remainingEnemies": [],
-        "framesSimulated": 3669,
+        "framesSimulated": 4008,
         "summary": {
           "profession": "swift",
           "equipment": {
@@ -1658,29 +1730,34 @@
             "armor": "scout-coat",
             "accessory": "focus-bead"
           },
-          "seconds": 59.5,
-          "basicAttackRatio": 0.582,
-          "depthRatio": 0.361,
-          "totalMoveDistance": 5601,
-          "averageEngagementDistance": 131.8,
+          "seconds": 65.1,
+          "basicAttackRatio": 0.545,
+          "depthRatio": 0.391,
+          "totalMoveDistance": 6538,
+          "averageEngagementDistance": 135.3,
           "executes": 3,
           "kills": 13,
-          "damageTaken": 132,
+          "damageTaken": 141,
+          "damageTakenByKind": {
+            "charger": 29,
+            "grunt": 11,
+            "ranged": 101
+          },
           "unwarnedLethal": 0,
           "actions": {
-            "slash": 40,
-            "slash2": 27,
-            "slash3": 18,
+            "slash": 43,
+            "slash2": 26,
+            "slash3": 16,
             "heavy": 0,
             "heavyCharged": 0,
             "arcanePulse": 0,
             "skill": 4,
-            "dash": 28,
-            "execute": 5,
-            "jump": 16,
+            "dash": 37,
+            "execute": 4,
+            "jump": 18,
             "airSlash": 8
           },
-          "perfectCancels": 59,
+          "perfectCancels": 51,
           "died": false
         }
       },
@@ -1694,7 +1771,7 @@
         "finalPhase": "stageComplete",
         "finalRoom": "k4",
         "remainingEnemies": [],
-        "framesSimulated": 4174,
+        "framesSimulated": 4222,
         "summary": {
           "profession": "swift",
           "equipment": {
@@ -1702,29 +1779,35 @@
             "armor": "scout-coat",
             "accessory": "execution-charm"
           },
-          "seconds": 67.9,
-          "basicAttackRatio": 0.504,
-          "depthRatio": 0.433,
-          "totalMoveDistance": 8725,
-          "averageEngagementDistance": 129,
+          "seconds": 68.7,
+          "basicAttackRatio": 0.5,
+          "depthRatio": 0.437,
+          "totalMoveDistance": 8887,
+          "averageEngagementDistance": 128.6,
           "executes": 5,
           "kills": 13,
           "damageTaken": 82,
+          "damageTakenByKind": {
+            "charger": 15,
+            "ranged": 32,
+            "shield": 12,
+            "boss": 22
+          },
           "unwarnedLethal": 0,
           "actions": {
-            "slash": 29,
+            "slash": 30,
             "slash2": 23,
-            "slash3": 14,
+            "slash3": 13,
             "heavy": 0,
             "heavyCharged": 0,
             "arcanePulse": 0,
             "skill": 8,
-            "dash": 40,
+            "dash": 41,
             "execute": 2,
             "jump": 13,
             "airSlash": 2
           },
-          "perfectCancels": 31,
+          "perfectCancels": 30,
           "died": false
         }
       },
@@ -1754,6 +1837,11 @@
           "executes": 9,
           "kills": 17,
           "damageTaken": 87,
+          "damageTakenByKind": {
+            "grunt": 12,
+            "ranged": 53,
+            "elite": 23
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 41,
@@ -1798,6 +1886,9 @@
           "executes": 3,
           "kills": 8,
           "damageTaken": 22,
+          "damageTakenByKind": {
+            "boss": 22
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 12,
@@ -1842,6 +1933,10 @@
           "executes": 5,
           "kills": 10,
           "damageTaken": 162,
+          "damageTakenByKind": {
+            "boss": 151,
+            "grunt": 11
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 33,
@@ -1870,7 +1965,7 @@
         "finalPhase": "stageComplete",
         "finalRoom": "c4",
         "remainingEnemies": [],
-        "framesSimulated": 3825,
+        "framesSimulated": 4039,
         "summary": {
           "profession": "swift",
           "equipment": {
@@ -1878,14 +1973,19 @@
             "armor": "scout-coat",
             "accessory": "execution-charm"
           },
-          "seconds": 62.1,
-          "basicAttackRatio": 0.481,
-          "depthRatio": 0.44,
-          "totalMoveDistance": 7238,
-          "averageEngagementDistance": 116.5,
+          "seconds": 65.7,
+          "basicAttackRatio": 0.466,
+          "depthRatio": 0.471,
+          "totalMoveDistance": 7552,
+          "averageEngagementDistance": 112,
           "executes": 5,
           "kills": 12,
           "damageTaken": 90,
+          "damageTakenByKind": {
+            "ranged": 22,
+            "grunt": 48,
+            "boss": 21
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 27,
@@ -1897,7 +1997,7 @@
             "skill": 6,
             "dash": 35,
             "execute": 7,
-            "jump": 17,
+            "jump": 21,
             "airSlash": 2
           },
           "perfectCancels": 39,
@@ -1914,7 +2014,7 @@
         "finalPhase": "stageComplete",
         "finalRoom": "p4",
         "remainingEnemies": [],
-        "framesSimulated": 3776,
+        "framesSimulated": 4231,
         "summary": {
           "profession": "swift",
           "equipment": {
@@ -1922,29 +2022,33 @@
             "armor": "scout-coat",
             "accessory": "focus-bead"
           },
-          "seconds": 61.3,
-          "basicAttackRatio": 0.582,
-          "depthRatio": 0.399,
-          "totalMoveDistance": 6244,
-          "averageEngagementDistance": 137.3,
-          "executes": 1,
+          "seconds": 68.8,
+          "basicAttackRatio": 0.497,
+          "depthRatio": 0.519,
+          "totalMoveDistance": 6968,
+          "averageEngagementDistance": 123.8,
+          "executes": 4,
           "kills": 13,
-          "damageTaken": 141,
+          "damageTaken": 151,
+          "damageTakenByKind": {
+            "charger": 32,
+            "ranged": 119
+          },
           "unwarnedLethal": 0,
           "actions": {
-            "slash": 37,
-            "slash2": 28,
-            "slash3": 17,
+            "slash": 38,
+            "slash2": 22,
+            "slash3": 13,
             "heavy": 0,
             "heavyCharged": 0,
             "arcanePulse": 0,
             "skill": 4,
             "dash": 29,
-            "execute": 1,
-            "jump": 18,
-            "airSlash": 7
+            "execute": 6,
+            "jump": 27,
+            "airSlash": 8
           },
-          "perfectCancels": 52,
+          "perfectCancels": 47,
           "died": false
         }
       },
@@ -1958,7 +2062,7 @@
         "finalPhase": "stageComplete",
         "finalRoom": "k4",
         "remainingEnemies": [],
-        "framesSimulated": 4137,
+        "framesSimulated": 10109,
         "summary": {
           "profession": "swift",
           "equipment": {
@@ -1966,29 +2070,35 @@
             "armor": "scout-coat",
             "accessory": "focus-bead"
           },
-          "seconds": 67.3,
-          "basicAttackRatio": 0.496,
-          "depthRatio": 0.428,
-          "totalMoveDistance": 8857,
-          "averageEngagementDistance": 129.8,
+          "seconds": 166.8,
+          "basicAttackRatio": 0.291,
+          "depthRatio": 0.559,
+          "totalMoveDistance": 30536,
+          "averageEngagementDistance": 136.2,
           "executes": 5,
           "kills": 13,
-          "damageTaken": 80,
+          "damageTaken": 108,
+          "damageTakenByKind": {
+            "charger": 15,
+            "ranged": 32,
+            "shield": 12,
+            "boss": 50
+          },
           "unwarnedLethal": 0,
           "actions": {
-            "slash": 30,
-            "slash2": 21,
-            "slash3": 14,
+            "slash": 31,
+            "slash2": 23,
+            "slash3": 13,
             "heavy": 0,
             "heavyCharged": 0,
             "arcanePulse": 0,
             "skill": 8,
-            "dash": 41,
+            "dash": 133,
             "execute": 4,
-            "jump": 12,
-            "airSlash": 1
+            "jump": 16,
+            "airSlash": 2
           },
-          "perfectCancels": 26,
+          "perfectCancels": 25,
           "died": false
         }
       },
@@ -2002,7 +2112,7 @@
         "finalPhase": "stageComplete",
         "finalRoom": "m4",
         "remainingEnemies": [],
-        "framesSimulated": 4779,
+        "framesSimulated": 4839,
         "summary": {
           "profession": "swift",
           "equipment": {
@@ -2010,29 +2120,33 @@
             "armor": "scout-coat",
             "accessory": "focus-bead"
           },
-          "seconds": 78,
-          "basicAttackRatio": 0.509,
-          "depthRatio": 0.463,
-          "totalMoveDistance": 8780,
-          "averageEngagementDistance": 117.1,
-          "executes": 8,
+          "seconds": 79,
+          "basicAttackRatio": 0.522,
+          "depthRatio": 0.469,
+          "totalMoveDistance": 8972,
+          "averageEngagementDistance": 115.6,
+          "executes": 7,
           "kills": 17,
-          "damageTaken": 87,
+          "damageTaken": 64,
+          "damageTakenByKind": {
+            "grunt": 12,
+            "ranged": 53
+          },
           "unwarnedLethal": 0,
           "actions": {
-            "slash": 42,
-            "slash2": 29,
-            "slash3": 18,
+            "slash": 43,
+            "slash2": 30,
+            "slash3": 20,
             "heavy": 0,
             "heavyCharged": 0,
             "arcanePulse": 0,
-            "skill": 11,
-            "dash": 48,
-            "execute": 8,
-            "jump": 17,
-            "airSlash": 2
+            "skill": 10,
+            "dash": 47,
+            "execute": 7,
+            "jump": 18,
+            "airSlash": 3
           },
-          "perfectCancels": 53,
+          "perfectCancels": 57,
           "died": false
         }
       },
@@ -2062,6 +2176,9 @@
           "executes": 3,
           "kills": 8,
           "damageTaken": 22,
+          "damageTakenByKind": {
+            "boss": 22
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 12,
@@ -2106,6 +2223,10 @@
           "executes": 2,
           "kills": 10,
           "damageTaken": 36,
+          "damageTakenByKind": {
+            "boss": 23,
+            "grunt": 13
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 29,
@@ -2150,6 +2271,11 @@
           "executes": 5,
           "kills": 12,
           "damageTaken": 204,
+          "damageTakenByKind": {
+            "ranged": 22,
+            "grunt": 48,
+            "boss": 134
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 34,
@@ -2185,7 +2311,7 @@
             "y": 486
           }
         ],
-        "framesSimulated": 11054,
+        "framesSimulated": 11073,
         "summary": {
           "profession": "swift",
           "equipment": {
@@ -2193,29 +2319,35 @@
             "armor": null,
             "accessory": "focus-bead"
           },
-          "seconds": 182.6,
-          "basicAttackRatio": 0.266,
-          "depthRatio": 0.592,
-          "totalMoveDistance": 28500,
-          "averageEngagementDistance": 128.2,
+          "seconds": 182.9,
+          "basicAttackRatio": 0.259,
+          "depthRatio": 0.596,
+          "totalMoveDistance": 28694,
+          "averageEngagementDistance": 128.7,
           "executes": 4,
           "kills": 10,
           "damageTaken": 266,
+          "damageTakenByKind": {
+            "charger": 48,
+            "grunt": 12,
+            "ranged": 110,
+            "boss": 96
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 35,
-            "slash2": 21,
-            "slash3": 15,
+            "slash2": 20,
+            "slash3": 14,
             "heavy": 0,
             "heavyCharged": 0,
             "arcanePulse": 0,
             "skill": 3,
-            "dash": 130,
-            "execute": 7,
+            "dash": 132,
+            "execute": 6,
             "jump": 49,
             "airSlash": 7
           },
-          "perfectCancels": 46,
+          "perfectCancels": 41,
           "died": true
         }
       },
@@ -2245,6 +2377,11 @@
           "executes": 4,
           "kills": 13,
           "damageTaken": 111,
+          "damageTakenByKind": {
+            "charger": 16,
+            "ranged": 76,
+            "boss": 19
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 31,
@@ -2273,7 +2410,7 @@
         "finalPhase": "stageComplete",
         "finalRoom": "m4",
         "remainingEnemies": [],
-        "framesSimulated": 4532,
+        "framesSimulated": 5344,
         "summary": {
           "profession": "swift",
           "equipment": {
@@ -2281,29 +2418,34 @@
             "armor": "ritual-robe",
             "accessory": "focus-bead"
           },
-          "seconds": 73.9,
-          "basicAttackRatio": 0.506,
-          "depthRatio": 0.441,
-          "totalMoveDistance": 8081,
-          "averageEngagementDistance": 121.2,
+          "seconds": 87.4,
+          "basicAttackRatio": 0.505,
+          "depthRatio": 0.487,
+          "totalMoveDistance": 10146,
+          "averageEngagementDistance": 110.8,
           "executes": 7,
           "kills": 17,
-          "damageTaken": 76,
+          "damageTaken": 100,
+          "damageTakenByKind": {
+            "grunt": 24,
+            "ranged": 53,
+            "shield": 24
+          },
           "unwarnedLethal": 0,
           "actions": {
-            "slash": 37,
-            "slash2": 30,
-            "slash3": 16,
+            "slash": 44,
+            "slash2": 31,
+            "slash3": 18,
             "heavy": 0,
             "heavyCharged": 0,
             "arcanePulse": 0,
             "skill": 11,
-            "dash": 44,
-            "execute": 7,
-            "jump": 17,
+            "dash": 50,
+            "execute": 9,
+            "jump": 19,
             "airSlash": 2
           },
-          "perfectCancels": 53,
+          "perfectCancels": 50,
           "died": false
         }
       },
@@ -2333,6 +2475,7 @@
           "executes": 1,
           "kills": 8,
           "damageTaken": 0,
+          "damageTakenByKind": {},
           "unwarnedLethal": 0,
           "actions": {
             "slash": 0,
@@ -2377,6 +2520,10 @@
           "executes": 4,
           "kills": 10,
           "damageTaken": 76,
+          "damageTakenByKind": {
+            "boss": 64,
+            "grunt": 12
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 0,
@@ -2421,6 +2568,10 @@
           "executes": 5,
           "kills": 12,
           "damageTaken": 128,
+          "damageTakenByKind": {
+            "ranged": 66,
+            "boss": 62
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 0,
@@ -2465,6 +2616,10 @@
           "executes": 5,
           "kills": 13,
           "damageTaken": 133,
+          "damageTakenByKind": {
+            "ranged": 102,
+            "boss": 31
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 0,
@@ -2509,6 +2664,10 @@
           "executes": 6,
           "kills": 13,
           "damageTaken": 100,
+          "damageTakenByKind": {
+            "ranged": 84,
+            "charger": 15
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 0,
@@ -2553,6 +2712,12 @@
           "executes": 8,
           "kills": 17,
           "damageTaken": 183,
+          "damageTakenByKind": {
+            "charger": 15,
+            "grunt": 12,
+            "ranged": 95,
+            "boss": 61
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 0,
@@ -2597,6 +2762,7 @@
           "executes": 1,
           "kills": 8,
           "damageTaken": 0,
+          "damageTakenByKind": {},
           "unwarnedLethal": 0,
           "actions": {
             "slash": 0,
@@ -2641,6 +2807,9 @@
           "executes": 3,
           "kills": 10,
           "damageTaken": 74,
+          "damageTakenByKind": {
+            "boss": 74
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 0,
@@ -2685,6 +2854,10 @@
           "executes": 5,
           "kills": 12,
           "damageTaken": 84,
+          "damageTakenByKind": {
+            "ranged": 55,
+            "boss": 29
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 0,
@@ -2729,6 +2902,11 @@
           "executes": 2,
           "kills": 13,
           "damageTaken": 174,
+          "damageTakenByKind": {
+            "ranged": 66,
+            "boss": 96,
+            "grunt": 12
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 0,
@@ -2773,6 +2951,11 @@
           "executes": 2,
           "kills": 13,
           "damageTaken": 156,
+          "damageTakenByKind": {
+            "ranged": 84,
+            "boss": 60,
+            "grunt": 12
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 0,
@@ -2817,6 +3000,12 @@
           "executes": 9,
           "kills": 17,
           "damageTaken": 288,
+          "damageTakenByKind": {
+            "charger": 15,
+            "grunt": 35,
+            "ranged": 148,
+            "boss": 90
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 0,
@@ -2861,6 +3050,7 @@
           "executes": 1,
           "kills": 8,
           "damageTaken": 0,
+          "damageTakenByKind": {},
           "unwarnedLethal": 0,
           "actions": {
             "slash": 0,
@@ -2905,6 +3095,7 @@
           "executes": 2,
           "kills": 10,
           "damageTaken": 0,
+          "damageTakenByKind": {},
           "unwarnedLethal": 0,
           "actions": {
             "slash": 0,
@@ -2949,6 +3140,9 @@
           "executes": 6,
           "kills": 12,
           "damageTaken": 55,
+          "damageTakenByKind": {
+            "ranged": 55
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 0,
@@ -2993,6 +3187,10 @@
           "executes": 2,
           "kills": 13,
           "damageTaken": 203,
+          "damageTakenByKind": {
+            "ranged": 77,
+            "boss": 126
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 0,
@@ -3037,6 +3235,11 @@
           "executes": 6,
           "kills": 13,
           "damageTaken": 126,
+          "damageTakenByKind": {
+            "ranged": 84,
+            "charger": 15,
+            "boss": 26
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 0,
@@ -3081,6 +3284,11 @@
           "executes": 10,
           "kills": 17,
           "damageTaken": 264,
+          "damageTakenByKind": {
+            "charger": 16,
+            "ranged": 154,
+            "boss": 94
+          },
           "unwarnedLethal": 0,
           "actions": {
             "slash": 0,
@@ -3104,8 +3312,14 @@
   "acceptanceSignals": {
     "allStageRunsCompleted": true,
     "allCoverageComplete": true,
-    "overallSuccessRateSpread": 0.22,
-    "overallSuccessRateSpreadBelow20Percent": false,
+    "professionMechanics": {
+      "heavyCharged": true,
+      "swiftThirdStrike": true,
+      "arcanePulseAndSkill": true
+    },
+    "allProfessionMechanicsExercised": true,
+    "overallSuccessRateSpread": 0.17,
+    "overallSuccessRateSpreadBelow20Percent": true,
     "maximumStageSuccessRateSpread": 1,
     "sameStageSuccessRateSpreadBelow20Percent": false,
     "equipmentTopLoadoutShare": 0.07,
@@ -3122,7 +3336,7 @@
       "finalPhase": "stageComplete",
       "finalRoom": "v3",
       "remainingEnemies": [],
-      "framesSimulated": 2013,
+      "framesSimulated": 2234,
       "summary": {
         "profession": "heavy",
         "equipment": {
@@ -3130,25 +3344,29 @@
           "armor": null,
           "accessory": null
         },
-        "seconds": 32.5,
-        "basicAttackRatio": 0.5,
-        "depthRatio": 0.376,
-        "totalMoveDistance": 3988,
-        "averageEngagementDistance": 141.1,
-        "executes": 3,
+        "seconds": 36.2,
+        "basicAttackRatio": 0.536,
+        "depthRatio": 0.371,
+        "totalMoveDistance": 4454,
+        "averageEngagementDistance": 135.7,
+        "executes": 2,
         "kills": 8,
         "damageTaken": 56,
+        "damageTakenByKind": {
+          "boss": 46,
+          "grunt": 10
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 0,
           "slash2": 0,
           "slash3": 0,
-          "heavy": 25,
+          "heavy": 30,
           "heavyCharged": 0,
           "arcanePulse": 0,
           "skill": 3,
-          "dash": 16,
-          "execute": 3,
+          "dash": 18,
+          "execute": 2,
           "jump": 3,
           "airSlash": 0
         },
@@ -3166,7 +3384,7 @@
       "finalPhase": "stageComplete",
       "finalRoom": "v3",
       "remainingEnemies": [],
-      "framesSimulated": 1813,
+      "framesSimulated": 2817,
       "summary": {
         "profession": "heavy",
         "equipment": {
@@ -3174,26 +3392,30 @@
           "armor": "field-armor",
           "accessory": null
         },
-        "seconds": 29.2,
-        "basicAttackRatio": 0.55,
-        "depthRatio": 0.32,
-        "totalMoveDistance": 3571,
-        "averageEngagementDistance": 146.4,
-        "executes": 1,
+        "seconds": 46,
+        "basicAttackRatio": 0.387,
+        "depthRatio": 0.458,
+        "totalMoveDistance": 6170,
+        "averageEngagementDistance": 140.1,
+        "executes": 3,
         "kills": 8,
-        "damageTaken": 46,
+        "damageTaken": 82,
+        "damageTakenByKind": {
+          "boss": 71,
+          "grunt": 10
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 0,
           "slash2": 0,
           "slash3": 0,
-          "heavy": 22,
-          "heavyCharged": 0,
+          "heavy": 23,
+          "heavyCharged": 1,
           "arcanePulse": 0,
-          "skill": 2,
-          "dash": 14,
-          "execute": 1,
-          "jump": 1,
+          "skill": 3,
+          "dash": 25,
+          "execute": 3,
+          "jump": 7,
           "airSlash": 0
         },
         "perfectCancels": 0,
@@ -3210,7 +3432,7 @@
       "finalPhase": "stageComplete",
       "finalRoom": "v3",
       "remainingEnemies": [],
-      "framesSimulated": 1804,
+      "framesSimulated": 2817,
       "summary": {
         "profession": "heavy",
         "equipment": {
@@ -3218,26 +3440,30 @@
           "armor": null,
           "accessory": "war-sigil"
         },
-        "seconds": 29.1,
-        "basicAttackRatio": 0.5,
-        "depthRatio": 0.316,
-        "totalMoveDistance": 3434,
-        "averageEngagementDistance": 146.4,
-        "executes": 1,
+        "seconds": 46,
+        "basicAttackRatio": 0.387,
+        "depthRatio": 0.458,
+        "totalMoveDistance": 6170,
+        "averageEngagementDistance": 140.1,
+        "executes": 3,
         "kills": 8,
-        "damageTaken": 46,
+        "damageTaken": 82,
+        "damageTakenByKind": {
+          "boss": 71,
+          "grunt": 10
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 0,
           "slash2": 0,
           "slash3": 0,
-          "heavy": 19,
-          "heavyCharged": 0,
+          "heavy": 23,
+          "heavyCharged": 1,
           "arcanePulse": 0,
           "skill": 3,
-          "dash": 14,
-          "execute": 1,
-          "jump": 1,
+          "dash": 25,
+          "execute": 3,
+          "jump": 7,
           "airSlash": 0
         },
         "perfectCancels": 0,
@@ -3270,6 +3496,9 @@
         "executes": 3,
         "kills": 10,
         "damageTaken": 128,
+        "damageTakenByKind": {
+          "boss": 128
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 0,
@@ -3298,7 +3527,7 @@
       "finalPhase": "stageComplete",
       "finalRoom": "b1n",
       "remainingEnemies": [],
-      "framesSimulated": 3036,
+      "framesSimulated": 10652,
       "summary": {
         "profession": "heavy",
         "equipment": {
@@ -3306,26 +3535,29 @@
           "armor": "ritual-robe",
           "accessory": null
         },
-        "seconds": 49.3,
-        "basicAttackRatio": 0.592,
-        "depthRatio": 0.346,
-        "totalMoveDistance": 5408,
-        "averageEngagementDistance": 124.4,
-        "executes": 1,
+        "seconds": 176.2,
+        "basicAttackRatio": 0.237,
+        "depthRatio": 0.714,
+        "totalMoveDistance": 21194,
+        "averageEngagementDistance": 75.7,
+        "executes": 4,
         "kills": 10,
-        "damageTaken": 56,
+        "damageTaken": 167,
+        "damageTakenByKind": {
+          "boss": 167
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 0,
           "slash2": 0,
           "slash3": 0,
-          "heavy": 42,
-          "heavyCharged": 0,
+          "heavy": 53,
+          "heavyCharged": 2,
           "arcanePulse": 0,
           "skill": 5,
-          "dash": 19,
-          "execute": 1,
-          "jump": 4,
+          "dash": 65,
+          "execute": 7,
+          "jump": 100,
           "airSlash": 0
         },
         "perfectCancels": 0,
@@ -3342,7 +3574,7 @@
       "finalPhase": "stageComplete",
       "finalRoom": "b1n",
       "remainingEnemies": [],
-      "framesSimulated": 2882,
+      "framesSimulated": 10652,
       "summary": {
         "profession": "heavy",
         "equipment": {
@@ -3350,26 +3582,29 @@
           "armor": null,
           "accessory": "execution-charm"
         },
-        "seconds": 46.7,
-        "basicAttackRatio": 0.646,
-        "depthRatio": 0.322,
-        "totalMoveDistance": 4425,
-        "averageEngagementDistance": 116,
-        "executes": 1,
+        "seconds": 176.2,
+        "basicAttackRatio": 0.237,
+        "depthRatio": 0.714,
+        "totalMoveDistance": 21194,
+        "averageEngagementDistance": 75.7,
+        "executes": 4,
         "kills": 10,
-        "damageTaken": 126,
+        "damageTaken": 167,
+        "damageTakenByKind": {
+          "boss": 167
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 0,
           "slash2": 0,
           "slash3": 0,
-          "heavy": 42,
-          "heavyCharged": 0,
+          "heavy": 53,
+          "heavyCharged": 2,
           "arcanePulse": 0,
           "skill": 5,
-          "dash": 16,
-          "execute": 1,
-          "jump": 1,
+          "dash": 65,
+          "execute": 7,
+          "jump": 100,
           "airSlash": 0
         },
         "perfectCancels": 0,
@@ -3402,6 +3637,11 @@
         "executes": 2,
         "kills": 12,
         "damageTaken": 57,
+        "damageTakenByKind": {
+          "ranged": 28,
+          "boss": 19,
+          "grunt": 10
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 0,
@@ -3430,7 +3670,7 @@
       "finalPhase": "stageComplete",
       "finalRoom": "c4",
       "remainingEnemies": [],
-      "framesSimulated": 5445,
+      "framesSimulated": 3586,
       "summary": {
         "profession": "heavy",
         "equipment": {
@@ -3438,26 +3678,30 @@
           "armor": "field-armor",
           "accessory": null
         },
-        "seconds": 89.1,
-        "basicAttackRatio": 0.418,
-        "depthRatio": 0.594,
-        "totalMoveDistance": 8225,
-        "averageEngagementDistance": 107.3,
+        "seconds": 58.1,
+        "basicAttackRatio": 0.579,
+        "depthRatio": 0.381,
+        "totalMoveDistance": 5213,
+        "averageEngagementDistance": 126.1,
         "executes": 2,
         "kills": 12,
-        "damageTaken": 127,
+        "damageTaken": 47,
+        "damageTakenByKind": {
+          "ranged": 28,
+          "boss": 19
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 0,
           "slash2": 0,
           "slash3": 0,
-          "heavy": 56,
-          "heavyCharged": 0,
+          "heavy": 61,
+          "heavyCharged": 1,
           "arcanePulse": 0,
           "skill": 6,
-          "dash": 27,
+          "dash": 21,
           "execute": 3,
-          "jump": 42,
+          "jump": 15,
           "airSlash": 0
         },
         "perfectCancels": 0,
@@ -3474,7 +3718,7 @@
       "finalPhase": "stageComplete",
       "finalRoom": "c4",
       "remainingEnemies": [],
-      "framesSimulated": 7332,
+      "framesSimulated": 3586,
       "summary": {
         "profession": "heavy",
         "equipment": {
@@ -3482,26 +3726,30 @@
           "armor": null,
           "accessory": "war-sigil"
         },
-        "seconds": 120.5,
-        "basicAttackRatio": 0.315,
-        "depthRatio": 0.678,
-        "totalMoveDistance": 11384,
-        "averageEngagementDistance": 96.6,
-        "executes": 1,
+        "seconds": 58.1,
+        "basicAttackRatio": 0.579,
+        "depthRatio": 0.381,
+        "totalMoveDistance": 5213,
+        "averageEngagementDistance": 126.1,
+        "executes": 2,
         "kills": 12,
-        "damageTaken": 183,
+        "damageTaken": 47,
+        "damageTakenByKind": {
+          "ranged": 28,
+          "boss": 19
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 0,
           "slash2": 0,
           "slash3": 0,
-          "heavy": 51,
-          "heavyCharged": 0,
+          "heavy": 61,
+          "heavyCharged": 1,
           "arcanePulse": 0,
           "skill": 6,
-          "dash": 31,
-          "execute": 1,
-          "jump": 73,
+          "dash": 21,
+          "execute": 3,
+          "jump": 15,
           "airSlash": 0
         },
         "perfectCancels": 0,
@@ -3534,6 +3782,11 @@
         "executes": 5,
         "kills": 13,
         "damageTaken": 240,
+        "damageTakenByKind": {
+          "grunt": 31,
+          "ranged": 56,
+          "boss": 153
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 0,
@@ -3562,7 +3815,7 @@
       "finalPhase": "stageComplete",
       "finalRoom": "p4",
       "remainingEnemies": [],
-      "framesSimulated": 4441,
+      "framesSimulated": 5299,
       "summary": {
         "profession": "heavy",
         "equipment": {
@@ -3570,26 +3823,31 @@
           "armor": "scout-coat",
           "accessory": null
         },
-        "seconds": 72.3,
-        "basicAttackRatio": 0.45,
-        "depthRatio": 0.578,
-        "totalMoveDistance": 6182,
-        "averageEngagementDistance": 135.1,
+        "seconds": 86.7,
+        "basicAttackRatio": 0.482,
+        "depthRatio": 0.493,
+        "totalMoveDistance": 8690,
+        "averageEngagementDistance": 129.3,
         "executes": 4,
         "kills": 13,
-        "damageTaken": 167,
+        "damageTaken": 193,
+        "damageTakenByKind": {
+          "grunt": 31,
+          "ranged": 52,
+          "boss": 111
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 0,
           "slash2": 0,
           "slash3": 0,
-          "heavy": 49,
-          "heavyCharged": 0,
+          "heavy": 67,
+          "heavyCharged": 1,
           "arcanePulse": 0,
           "skill": 6,
-          "dash": 19,
+          "dash": 33,
           "execute": 9,
-          "jump": 26,
+          "jump": 25,
           "airSlash": 0
         },
         "perfectCancels": 0,
@@ -3606,7 +3864,7 @@
       "finalPhase": "stageComplete",
       "finalRoom": "p4",
       "remainingEnemies": [],
-      "framesSimulated": 4094,
+      "framesSimulated": 5351,
       "summary": {
         "profession": "heavy",
         "equipment": {
@@ -3614,26 +3872,31 @@
           "armor": null,
           "accessory": "focus-bead"
         },
-        "seconds": 66.6,
-        "basicAttackRatio": 0.433,
-        "depthRatio": 0.55,
-        "totalMoveDistance": 5741,
-        "averageEngagementDistance": 126.1,
-        "executes": 4,
+        "seconds": 87.5,
+        "basicAttackRatio": 0.393,
+        "depthRatio": 0.657,
+        "totalMoveDistance": 7723,
+        "averageEngagementDistance": 117,
+        "executes": 5,
         "kills": 13,
-        "damageTaken": 146,
+        "damageTaken": 166,
+        "damageTakenByKind": {
+          "grunt": 31,
+          "ranged": 58,
+          "boss": 77
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 0,
           "slash2": 0,
           "slash3": 0,
-          "heavy": 42,
-          "heavyCharged": 0,
+          "heavy": 53,
+          "heavyCharged": 2,
           "arcanePulse": 0,
           "skill": 6,
-          "dash": 18,
-          "execute": 6,
-          "jump": 25,
+          "dash": 22,
+          "execute": 9,
+          "jump": 48,
           "airSlash": 0
         },
         "perfectCancels": 0,
@@ -3650,7 +3913,7 @@
       "finalPhase": "stageComplete",
       "finalRoom": "k4",
       "remainingEnemies": [],
-      "framesSimulated": 5953,
+      "framesSimulated": 6057,
       "summary": {
         "profession": "heavy",
         "equipment": {
@@ -3658,14 +3921,21 @@
           "armor": null,
           "accessory": null
         },
-        "seconds": 97.5,
-        "basicAttackRatio": 0.362,
-        "depthRatio": 0.596,
-        "totalMoveDistance": 10260,
-        "averageEngagementDistance": 111.9,
+        "seconds": 99.3,
+        "basicAttackRatio": 0.358,
+        "depthRatio": 0.594,
+        "totalMoveDistance": 10533,
+        "averageEngagementDistance": 111.7,
         "executes": 4,
         "kills": 13,
-        "damageTaken": 162,
+        "damageTaken": 182,
+        "damageTakenByKind": {
+          "elite": 41,
+          "ranged": 75,
+          "shield": 10,
+          "boss": 46,
+          "grunt": 10
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 0,
@@ -3675,7 +3945,7 @@
           "heavyCharged": 0,
           "arcanePulse": 0,
           "skill": 7,
-          "dash": 38,
+          "dash": 40,
           "execute": 4,
           "jump": 46,
           "airSlash": 0
@@ -3694,7 +3964,7 @@
       "finalPhase": "stageComplete",
       "finalRoom": "k4",
       "remainingEnemies": [],
-      "framesSimulated": 5078,
+      "framesSimulated": 5849,
       "summary": {
         "profession": "heavy",
         "equipment": {
@@ -3702,26 +3972,31 @@
           "armor": "scout-coat",
           "accessory": null
         },
-        "seconds": 83,
-        "basicAttackRatio": 0.408,
-        "depthRatio": 0.493,
-        "totalMoveDistance": 8405,
-        "averageEngagementDistance": 133.3,
-        "executes": 2,
+        "seconds": 95.8,
+        "basicAttackRatio": 0.386,
+        "depthRatio": 0.567,
+        "totalMoveDistance": 9501,
+        "averageEngagementDistance": 114.9,
+        "executes": 3,
         "kills": 13,
-        "damageTaken": 199,
+        "damageTaken": 196,
+        "damageTakenByKind": {
+          "elite": 77,
+          "ranged": 55,
+          "boss": 64
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 0,
           "slash2": 0,
           "slash3": 0,
-          "heavy": 49,
-          "heavyCharged": 0,
+          "heavy": 45,
+          "heavyCharged": 6,
           "arcanePulse": 0,
-          "skill": 8,
-          "dash": 35,
-          "execute": 2,
-          "jump": 26,
+          "skill": 6,
+          "dash": 36,
+          "execute": 4,
+          "jump": 35,
           "airSlash": 0
         },
         "perfectCancels": 0,
@@ -3734,49 +4009,48 @@
       "stageId": "pass",
       "variant": 2,
       "terminal": true,
-      "cleared": false,
-      "finalPhase": "dead",
+      "cleared": true,
+      "finalPhase": "stageComplete",
       "finalRoom": "k4",
-      "remainingEnemies": [
-        {
-          "kind": "boss",
-          "hp": 283.92,
-          "x": 405.01,
-          "y": 516
-        }
-      ],
-      "framesSimulated": 4051,
+      "remainingEnemies": [],
+      "framesSimulated": 6144,
       "summary": {
         "profession": "heavy",
         "equipment": {
           "weapon": null,
           "armor": null,
-          "accessory": "war-sigil"
+          "accessory": "focus-bead"
         },
-        "seconds": 65.8,
-        "basicAttackRatio": 0.352,
-        "depthRatio": 0.474,
-        "totalMoveDistance": 6827,
-        "averageEngagementDistance": 131.7,
-        "executes": 3,
-        "kills": 10,
-        "damageTaken": 291,
+        "seconds": 100.7,
+        "basicAttackRatio": 0.35,
+        "depthRatio": 0.605,
+        "totalMoveDistance": 10184,
+        "averageEngagementDistance": 110.7,
+        "executes": 4,
+        "kills": 13,
+        "damageTaken": 179,
+        "damageTakenByKind": {
+          "elite": 62,
+          "ranged": 57,
+          "boss": 49,
+          "grunt": 11
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 0,
           "slash2": 0,
           "slash3": 0,
-          "heavy": 32,
-          "heavyCharged": 0,
+          "heavy": 45,
+          "heavyCharged": 5,
           "arcanePulse": 0,
-          "skill": 5,
-          "dash": 30,
-          "execute": 3,
-          "jump": 21,
+          "skill": 7,
+          "dash": 38,
+          "execute": 5,
+          "jump": 43,
           "airSlash": 0
         },
         "perfectCancels": 0,
-        "died": true
+        "died": false
       }
     },
     {
@@ -3812,6 +4086,13 @@
         "executes": 3,
         "kills": 14,
         "damageTaken": 258,
+        "damageTakenByKind": {
+          "charger": 27,
+          "ranged": 65,
+          "elite": 82,
+          "shield": 10,
+          "boss": 73
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 0,
@@ -3842,18 +4123,18 @@
       "remainingEnemies": [
         {
           "kind": "elite",
-          "hp": 76,
-          "x": 683.88,
-          "y": 392.09
+          "hp": 4,
+          "x": 632.21,
+          "y": 344.74
         },
         {
           "kind": "ranged",
           "hp": 28,
-          "x": 838.75,
-          "y": 464.66
+          "x": 825.98,
+          "y": 480.63
         }
       ],
-      "framesSimulated": 3958,
+      "framesSimulated": 2731,
       "summary": {
         "profession": "heavy",
         "equipment": {
@@ -3861,26 +4142,31 @@
           "armor": null,
           "accessory": null
         },
-        "seconds": 65,
-        "basicAttackRatio": 0.3,
-        "depthRatio": 0.679,
-        "totalMoveDistance": 6323,
-        "averageEngagementDistance": 116.9,
+        "seconds": 44.5,
+        "basicAttackRatio": 0.474,
+        "depthRatio": 0.465,
+        "totalMoveDistance": 3772,
+        "averageEngagementDistance": 131.1,
         "executes": 1,
         "kills": 8,
-        "damageTaken": 196,
+        "damageTaken": 174,
+        "damageTakenByKind": {
+          "charger": 27,
+          "ranged": 65,
+          "elite": 82
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 0,
           "slash2": 0,
           "slash3": 0,
-          "heavy": 27,
-          "heavyCharged": 0,
+          "heavy": 36,
+          "heavyCharged": 1,
           "arcanePulse": 0,
-          "skill": 3,
-          "dash": 22,
-          "execute": 2,
-          "jump": 36,
+          "skill": 4,
+          "dash": 17,
+          "execute": 1,
+          "jump": 19,
           "airSlash": 0
         },
         "perfectCancels": 0,
@@ -3895,43 +4181,54 @@
       "terminal": true,
       "cleared": false,
       "finalPhase": "dead",
-      "finalRoom": "m4",
+      "finalRoom": "m2n",
       "remainingEnemies": [
         {
-          "kind": "boss",
-          "hp": 225.6,
-          "x": 30,
-          "y": 460.71
+          "kind": "elite",
+          "hp": 4,
+          "x": 632.21,
+          "y": 344.74
+        },
+        {
+          "kind": "ranged",
+          "hp": 28,
+          "x": 825.98,
+          "y": 480.63
         }
       ],
-      "framesSimulated": 5383,
+      "framesSimulated": 2731,
       "summary": {
         "profession": "heavy",
         "equipment": {
           "weapon": null,
           "armor": null,
-          "accessory": "war-sigil"
+          "accessory": null
         },
-        "seconds": 88,
-        "basicAttackRatio": 0.421,
-        "depthRatio": 0.528,
-        "totalMoveDistance": 7921,
-        "averageEngagementDistance": 121.1,
-        "executes": 3,
-        "kills": 14,
-        "damageTaken": 260,
+        "seconds": 44.5,
+        "basicAttackRatio": 0.474,
+        "depthRatio": 0.465,
+        "totalMoveDistance": 3772,
+        "averageEngagementDistance": 131.1,
+        "executes": 1,
+        "kills": 8,
+        "damageTaken": 174,
+        "damageTakenByKind": {
+          "charger": 27,
+          "ranged": 65,
+          "elite": 82
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 0,
           "slash2": 0,
           "slash3": 0,
-          "heavy": 56,
-          "heavyCharged": 0,
+          "heavy": 36,
+          "heavyCharged": 1,
           "arcanePulse": 0,
-          "skill": 8,
-          "dash": 32,
-          "execute": 7,
-          "jump": 30,
+          "skill": 4,
+          "dash": 17,
+          "execute": 1,
+          "jump": 19,
           "airSlash": 0
         },
         "perfectCancels": 0,
@@ -3964,6 +4261,9 @@
         "executes": 3,
         "kills": 8,
         "damageTaken": 22,
+        "damageTakenByKind": {
+          "boss": 22
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 12,
@@ -4008,6 +4308,9 @@
         "executes": 3,
         "kills": 8,
         "damageTaken": 22,
+        "damageTakenByKind": {
+          "boss": 22
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 12,
@@ -4052,6 +4355,9 @@
         "executes": 3,
         "kills": 8,
         "damageTaken": 22,
+        "damageTakenByKind": {
+          "boss": 22
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 12,
@@ -4096,6 +4402,10 @@
         "executes": 2,
         "kills": 10,
         "damageTaken": 34,
+        "damageTakenByKind": {
+          "boss": 22,
+          "grunt": 12
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 31,
@@ -4140,6 +4450,10 @@
         "executes": 2,
         "kills": 10,
         "damageTaken": 34,
+        "damageTakenByKind": {
+          "boss": 22,
+          "grunt": 12
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 31,
@@ -4184,6 +4498,10 @@
         "executes": 2,
         "kills": 10,
         "damageTaken": 34,
+        "damageTakenByKind": {
+          "boss": 22,
+          "grunt": 12
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 31,
@@ -4212,7 +4530,7 @@
       "finalPhase": "stageComplete",
       "finalRoom": "c4",
       "remainingEnemies": [],
-      "framesSimulated": 8574,
+      "framesSimulated": 8669,
       "summary": {
         "profession": "swift",
         "equipment": {
@@ -4220,24 +4538,29 @@
           "armor": null,
           "accessory": null
         },
-        "seconds": 141.2,
-        "basicAttackRatio": 0.309,
-        "depthRatio": 0.608,
-        "totalMoveDistance": 18156,
-        "averageEngagementDistance": 90.6,
+        "seconds": 142.8,
+        "basicAttackRatio": 0.311,
+        "depthRatio": 0.606,
+        "totalMoveDistance": 18445,
+        "averageEngagementDistance": 90.7,
         "executes": 5,
         "kills": 12,
         "damageTaken": 219,
+        "damageTakenByKind": {
+          "ranged": 11,
+          "grunt": 36,
+          "boss": 172
+        },
         "unwarnedLethal": 0,
         "actions": {
-          "slash": 33,
-          "slash2": 25,
-          "slash3": 15,
+          "slash": 34,
+          "slash2": 26,
+          "slash3": 14,
           "heavy": 0,
           "heavyCharged": 0,
           "arcanePulse": 0,
           "skill": 6,
-          "dash": 80,
+          "dash": 81,
           "execute": 8,
           "jump": 65,
           "airSlash": 4
@@ -4272,6 +4595,11 @@
         "executes": 5,
         "kills": 12,
         "damageTaken": 122,
+        "damageTakenByKind": {
+          "ranged": 22,
+          "grunt": 48,
+          "boss": 52
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 33,
@@ -4316,6 +4644,11 @@
         "executes": 5,
         "kills": 12,
         "damageTaken": 204,
+        "damageTakenByKind": {
+          "ranged": 22,
+          "grunt": 48,
+          "boss": 134
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 34,
@@ -4351,7 +4684,7 @@
           "y": 486
         }
       ],
-      "framesSimulated": 10042,
+      "framesSimulated": 10061,
       "summary": {
         "profession": "swift",
         "equipment": {
@@ -4359,29 +4692,36 @@
           "armor": null,
           "accessory": null
         },
-        "seconds": 165.7,
-        "basicAttackRatio": 0.296,
-        "depthRatio": 0.565,
-        "totalMoveDistance": 27140,
-        "averageEngagementDistance": 135.2,
+        "seconds": 166,
+        "basicAttackRatio": 0.289,
+        "depthRatio": 0.568,
+        "totalMoveDistance": 27334,
+        "averageEngagementDistance": 135.7,
         "executes": 4,
         "kills": 10,
         "damageTaken": 245,
+        "damageTakenByKind": {
+          "charger": 48,
+          "grunt": 12,
+          "ranged": 77,
+          "shield": 12,
+          "boss": 96
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 36,
-          "slash2": 21,
-          "slash3": 16,
+          "slash2": 20,
+          "slash3": 15,
           "heavy": 0,
           "heavyCharged": 0,
           "arcanePulse": 0,
           "skill": 3,
-          "dash": 129,
-          "execute": 7,
+          "dash": 131,
+          "execute": 6,
           "jump": 29,
           "airSlash": 6
         },
-        "perfectCancels": 46,
+        "perfectCancels": 41,
         "died": true
       }
     },
@@ -4411,6 +4751,12 @@
         "executes": 4,
         "kills": 13,
         "damageTaken": 160,
+        "damageTakenByKind": {
+          "charger": 46,
+          "grunt": 12,
+          "ranged": 90,
+          "shield": 12
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 31,
@@ -4455,6 +4801,12 @@
         "executes": 7,
         "kills": 13,
         "damageTaken": 166,
+        "damageTakenByKind": {
+          "charger": 49,
+          "grunt": 25,
+          "ranged": 80,
+          "shield": 12
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 38,
@@ -4499,6 +4851,11 @@
         "executes": 6,
         "kills": 13,
         "damageTaken": 148,
+        "damageTakenByKind": {
+          "charger": 16,
+          "ranged": 110,
+          "boss": 22
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 28,
@@ -4543,6 +4900,11 @@
         "executes": 5,
         "kills": 13,
         "damageTaken": 141,
+        "damageTakenByKind": {
+          "charger": 16,
+          "ranged": 106,
+          "boss": 19
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 31,
@@ -4587,6 +4949,12 @@
         "executes": 5,
         "kills": 13,
         "damageTaken": 141,
+        "damageTakenByKind": {
+          "charger": 16,
+          "ranged": 89,
+          "shield": 13,
+          "boss": 23
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 26,
@@ -4631,6 +4999,11 @@
         "executes": 6,
         "kills": 17,
         "damageTaken": 91,
+        "damageTakenByKind": {
+          "grunt": 24,
+          "ranged": 55,
+          "shield": 12
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 38,
@@ -4675,6 +5048,10 @@
         "executes": 5,
         "kills": 17,
         "damageTaken": 67,
+        "damageTakenByKind": {
+          "grunt": 12,
+          "ranged": 55
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 36,
@@ -4719,6 +5096,12 @@
         "executes": 8,
         "kills": 17,
         "damageTaken": 105,
+        "damageTakenByKind": {
+          "grunt": 12,
+          "ranged": 55,
+          "elite": 25,
+          "shield": 13
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 37,
@@ -4763,6 +5146,7 @@
         "executes": 1,
         "kills": 8,
         "damageTaken": 0,
+        "damageTakenByKind": {},
         "unwarnedLethal": 0,
         "actions": {
           "slash": 0,
@@ -4807,6 +5191,7 @@
         "executes": 1,
         "kills": 8,
         "damageTaken": 0,
+        "damageTakenByKind": {},
         "unwarnedLethal": 0,
         "actions": {
           "slash": 0,
@@ -4851,6 +5236,7 @@
         "executes": 1,
         "kills": 8,
         "damageTaken": 0,
+        "damageTakenByKind": {},
         "unwarnedLethal": 0,
         "actions": {
           "slash": 0,
@@ -4895,6 +5281,9 @@
         "executes": 2,
         "kills": 10,
         "damageTaken": 32,
+        "damageTakenByKind": {
+          "boss": 32
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 0,
@@ -4939,6 +5328,9 @@
         "executes": 2,
         "kills": 10,
         "damageTaken": 32,
+        "damageTakenByKind": {
+          "boss": 32
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 0,
@@ -4983,6 +5375,9 @@
         "executes": 2,
         "kills": 10,
         "damageTaken": 32,
+        "damageTakenByKind": {
+          "boss": 32
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 0,
@@ -5027,6 +5422,11 @@
         "executes": 6,
         "kills": 12,
         "damageTaken": 223,
+        "damageTakenByKind": {
+          "ranged": 55,
+          "boss": 156,
+          "grunt": 12
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 0,
@@ -5071,6 +5471,9 @@
         "executes": 6,
         "kills": 12,
         "damageTaken": 55,
+        "damageTakenByKind": {
+          "ranged": 55
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 0,
@@ -5115,6 +5518,9 @@
         "executes": 6,
         "kills": 12,
         "damageTaken": 55,
+        "damageTakenByKind": {
+          "ranged": 55
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 0,
@@ -5159,6 +5565,11 @@
         "executes": 5,
         "kills": 13,
         "damageTaken": 209,
+        "damageTakenByKind": {
+          "ranged": 99,
+          "charger": 16,
+          "boss": 94
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 0,
@@ -5203,6 +5614,13 @@
         "executes": 5,
         "kills": 13,
         "damageTaken": 160,
+        "damageTakenByKind": {
+          "ranged": 70,
+          "charger": 14,
+          "shield": 11,
+          "boss": 55,
+          "grunt": 11
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 0,
@@ -5247,6 +5665,10 @@
         "executes": 6,
         "kills": 13,
         "damageTaken": 91,
+        "damageTakenByKind": {
+          "ranged": 57,
+          "boss": 34
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 0,
@@ -5291,6 +5713,12 @@
         "executes": 5,
         "kills": 13,
         "damageTaken": 123,
+        "damageTakenByKind": {
+          "ranged": 33,
+          "charger": 16,
+          "boss": 62,
+          "grunt": 12
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 0,
@@ -5335,6 +5763,11 @@
         "executes": 3,
         "kills": 13,
         "damageTaken": 105,
+        "damageTakenByKind": {
+          "ranged": 33,
+          "charger": 16,
+          "boss": 56
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 0,
@@ -5379,6 +5812,10 @@
         "executes": 3,
         "kills": 13,
         "damageTaken": 49,
+        "damageTakenByKind": {
+          "ranged": 33,
+          "charger": 16
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 0,
@@ -5423,6 +5860,12 @@
         "executes": 7,
         "kills": 17,
         "damageTaken": 225,
+        "damageTakenByKind": {
+          "charger": 32,
+          "ranged": 55,
+          "boss": 126,
+          "grunt": 12
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 0,
@@ -5467,6 +5910,12 @@
         "executes": 9,
         "kills": 17,
         "damageTaken": 208,
+        "damageTakenByKind": {
+          "charger": 32,
+          "ranged": 55,
+          "boss": 111,
+          "grunt": 11
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 0,
@@ -5511,6 +5960,12 @@
         "executes": 7,
         "kills": 17,
         "damageTaken": 199,
+        "damageTakenByKind": {
+          "charger": 32,
+          "ranged": 55,
+          "boss": 100,
+          "grunt": 13
+        },
         "unwarnedLethal": 0,
         "actions": {
           "slash": 0,

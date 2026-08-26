@@ -110,6 +110,13 @@ const maximumStageSuccessRateSpread = Math.max(
   ...stageSuccessRateSpreads.map((row) => row.spread),
 );
 const overallSuccessRateSpread = Math.max(...successRates) - Math.min(...successRates);
+const professionMechanics = {
+  heavyCharged: actionAverage(professionReport, 'heavy', 'heavyCharged') > 0,
+  swiftThirdStrike: actionAverage(professionReport, 'swift', 'slash3') > 0,
+  arcanePulseAndSkill:
+    actionAverage(professionReport, 'arcane', 'arcanePulse') > 0 &&
+    actionAverage(professionReport, 'arcane', 'skill') > 0,
+};
 const report = {
   schemaVersion: 1,
   sampleType: 'simulation-not-human',
@@ -134,6 +141,8 @@ const report = {
   acceptanceSignals: {
     allStageRunsCompleted: samples.every((sample) => sample.terminal),
     allCoverageComplete: coverage.every((row) => row.complete),
+    professionMechanics,
+    allProfessionMechanicsExercised: Object.values(professionMechanics).every(Boolean),
     overallSuccessRateSpread: round(overallSuccessRateSpread),
     overallSuccessRateSpreadBelow20Percent: overallSuccessRateSpread < 0.2,
     maximumStageSuccessRateSpread: round(maximumStageSuccessRateSpread),
@@ -162,6 +171,19 @@ console.log(JSON.stringify(report.acceptanceSignals, null, 2));
 if (outputPath) {
   await writeFile(outputPath, `${JSON.stringify(report, null, 2)}\n`, 'utf8');
   console.log(`[simulate_validation] 报告已写入 ${outputPath}`);
+}
+
+// 这里只卡“模拟器有没有真正完成它声称完成的覆盖”。职业胜率和配装分布是
+// 辅助信号，更不能替代真人手感验收，因此即使超出目标也只写进报告，不让 CI
+// 冒充设计验收。反过来，没跑到终局或没触发职业核心招式属于客观的烟测失效。
+const smokeFailures = [
+  !report.acceptanceSignals.allStageRunsCompleted && '存在样本未在时限内到达终局',
+  !report.acceptanceSignals.allCoverageComplete && '三职业六关样本覆盖不完整',
+  !report.acceptanceSignals.allProfessionMechanicsExercised && '至少一个职业核心机制未被触发',
+].filter(Boolean);
+if (smokeFailures.length) {
+  for (const failure of smokeFailures) console.error(`[simulate_validation] FAIL: ${failure}`);
+  process.exitCode = 1;
 }
 
 function simulateStage(stage, profession, variant, profile = createProfile(), mode = 'isolated') {
@@ -273,7 +295,9 @@ function botInput(run, frame, variant) {
             !(committingToRanged && enemy.action === 'aim') && isDangerous(enemy, player),
         )
       : [];
-  const executeRange = run.profile.profession === 'arcane' ? 100 : 70;
+  // 必须复用核心层的真实触发距离；验证器曾把近战写成 70px，而游戏实际是
+  // 62px，导致 63-70px 区间里机器人停止规避、反复提交必然失败的处决。
+  const executeRange = game.resolveExecuteRange(run.profile.profession);
   const executable = enemies.some(
     (enemy) =>
       enemy.hp / enemy.maxHp <= 0.25 &&
@@ -328,14 +352,26 @@ function botInput(run, frame, variant) {
 
   if (run.profile.profession === 'heavy') {
     const charging = player.action === 'heavyCharge';
-    // 自动玩家缺少“安全满蓄力窗口”的判断，三档以短/中蓄力覆盖稳定攻防循环；
-    // 满蓄力机制本身由 validate:professions 的确定性断言覆盖。
-    const chargeTarget = [1, 4, 8][variant] ?? 4;
+    const chargeFramesLeft = Math.max(0, game.HEAVY_FULL_CHARGE_FRAMES - player.actionFrame);
+    const nearbyEnemies = enemies.filter((enemy) => distance(player, enemy) < 135);
+    // 满蓄力要读“敌人出手后的冷却窗口”，不能每次攻击都原地硬扛 30 帧。
+    // 冷却与剩余蓄力时间一起递减，这个条件一旦成立便能稳定保持到蓄满；
+    // bossSummon 是另一段明确的安全窗口。危险动作一旦出现，上方规避分支仍会
+    // 立即松键，以短按攻击收手，模拟真人不会为了蓄满无视地面预警的行为。
+    const safeFullCharge =
+      variant > 0 &&
+      nearbyEnemies.length > 0 &&
+      nearbyEnemies.every(
+        (enemy) =>
+          enemy.attackCooldown >= chargeFramesLeft + 6 ||
+          (enemy.action === 'bossSummon' &&
+            game.resolveAction(enemy.action).frames - enemy.actionFrame >= chargeFramesLeft + 6),
+      );
     return {
       moveX,
       moveY,
       attack: !charging && inRange,
-      attackHeld: charging && player.actionFrame < chargeTarget,
+      attackHeld: charging && safeFullCharge,
       dash: !inRange && Math.abs(dx) > desired + 70 && player.dashCooldown <= 0,
       jump: false,
       skill: player.energy >= 50 && enemies.filter((enemy) => distance(player, enemy) < 100).length >= 2,
@@ -400,6 +436,10 @@ function distance(a, b) {
 
 function average(values) {
   return values.length ? values.reduce((sum, value) => sum + value, 0) / values.length : 0;
+}
+
+function actionAverage(report, profession, action) {
+  return report.find((row) => row.profession === profession)?.averageActions[action] ?? 0;
 }
 
 function round(value) {

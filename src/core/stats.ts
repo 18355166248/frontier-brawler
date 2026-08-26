@@ -68,6 +68,8 @@ export class RunStats {
 
   damageTaken = 0;
   hitsTaken = 0;
+  /** 按敌人类型拆分承伤，定位职业在综合关究竟被哪类机制克制。 */
+  readonly damageTakenByKind: Partial<Record<EnemyKind | 'unknown', number>> = {};
   /**
    * 无预警地打到玩家的伤害。M1 验收第 4 条要求这里**致死的那部分必须为 0**。
    * 低伤害的贴脸普攻允许无预警（它的前摇本身就是提示），
@@ -99,6 +101,7 @@ export class RunStats {
   recordDamageTaken(damage: number, telegraphed: boolean, attacker: EnemyKind | 'unknown', lethal: boolean): void {
     this.damageTaken += damage;
     this.hitsTaken += 1;
+    this.damageTakenByKind[attacker] = (this.damageTakenByKind[attacker] ?? 0) + damage;
     if (!telegraphed) {
       this.unwarned.push({ frame: this.frames, attacker, damage, lethal });
     }
@@ -127,6 +130,12 @@ export class RunStats {
     this.perfectCancels += other.perfectCancels;
     this.damageTaken += other.damageTaken;
     this.hitsTaken += other.hitsTaken;
+    for (const [kind, damage] of Object.entries(other.damageTakenByKind) as [
+      EnemyKind | 'unknown',
+      number,
+    ][]) {
+      this.damageTakenByKind[kind] = (this.damageTakenByKind[kind] ?? 0) + damage;
+    }
     this.unwarned.push(...other.unwarned);
   }
 
@@ -202,6 +211,7 @@ export class RunStats {
     executes: number;
     kills: number;
     damageTaken: number;
+    damageTakenByKind: Partial<Record<EnemyKind | 'unknown', number>>;
     unwarnedLethal: number;
     actions: Record<OffensiveAction, number>;
     perfectCancels: number;
@@ -216,6 +226,9 @@ export class RunStats {
       executes: this.executes,
       kills: this.kills,
       damageTaken: Math.round(this.damageTaken),
+      damageTakenByKind: Object.fromEntries(
+        Object.entries(this.damageTakenByKind).map(([kind, damage]) => [kind, Math.round(damage)]),
+      ),
       unwarnedLethal: this.lethalUnwarned.length,
       actions: { ...this.actions },
       perfectCancels: this.perfectCancels,
