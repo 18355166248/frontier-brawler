@@ -182,7 +182,9 @@ window.addEventListener('keydown', (e) => {
   if (run.phase === 'baseMenu') {
     const index = Number(e.code.replace('Digit', '')) - 1;
     const building = BUILDING_IDS[index];
-    if (building === 'archive' && run.profile.base.completedBuildings.includes('archive')) {
+    if (building === 'alchemyLab' && run.profile.base.completedBuildings.includes('alchemyLab')) {
+      run.craftTonic();
+    } else if (building === 'archive' && run.profile.base.completedBuildings.includes('archive')) {
       run.cycleArchiveTrack();
     } else if (building) {
       run.queueBaseBuilding(building, Date.now());
@@ -453,6 +455,8 @@ if (import.meta.env.DEV) {
         unlockedBuildings: unlockedBuildings(run.profile.base),
         constructionQueue: run.profile.base.constructionQueue.map((job) => ({ ...job })),
         lastActiveAtMs: run.profile.base.lastActiveAtMs,
+        tonics: run.profile.base.tonics,
+        archiveTrack: run.profile.base.archiveTrack,
         resourceLedgerEntries: run.profile.base.resourceLedger.length,
         pendingEquipment: run.pendingEquipment ? [...run.pendingEquipment] : null,
         seconds: Number((run.stats.frames / 60).toFixed(1)),

@@ -54,6 +54,7 @@ import {
   MAX_OFFLINE_INCOME_MS,
   hasBuilding,
   selectArchiveTrack,
+  craftTonic,
 } from './economy';
 import type { BaseProgress, BuildingId, OfflineIncomeResult } from './economy';
 
@@ -111,6 +112,10 @@ export function createStageProfile(previous?: PlayerProfile): PlayerProfile {
   next.base = previous.base ? cloneBaseProgress(previous.base) : createBaseProgress();
   if (hasBuilding(next.base, 'archive') && next.base.archiveTrack) {
     next.upgrades[next.base.archiveTrack] = 1;
+  }
+  if (hasBuilding(next.base, 'alchemyLab') && next.base.tonics > 0) {
+    next.base.tonics -= 1;
+    next.energy = next.maxEnergy;
   }
   return next;
 }
@@ -405,6 +410,12 @@ export class Run {
       this.profile.base,
       UPGRADE_TRACK_IDS[(index + 1) % UPGRADE_TRACK_IDS.length],
     );
+  }
+
+  /** 丹房卡直接制作补给，成本仍由 economy 的原子账本统一处理。 */
+  craftTonic(): boolean {
+    if (!this.baseMenuOpen) return false;
+    return craftTonic(this.profile.base);
   }
 
   /** 主循环和调试验证共用同一结算入口，返回值可供后续完成动效消费。 */

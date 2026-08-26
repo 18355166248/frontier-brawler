@@ -97,12 +97,15 @@ export interface BaseProgress {
   nextLedgerSequence: number;
   /** 藏经阁单选的永久起始路线；只提供一级，不引入第二套天赋等级系统。 */
   archiveTrack: UpgradeTrackId | null;
+  /** 丹房制作的出击补给；每次进入新关消耗一份并充满初始能量。 */
+  tonics: number;
 }
 
 const MAX_LEDGER_ENTRIES = 200;
 /** 资源田首轮产速与离线上限；只产基础材料，仍需真机观察建造节奏。 */
 export const RESOURCE_FIELD_MATERIALS_PER_HOUR = 12;
 export const MAX_OFFLINE_INCOME_MS = 8 * 3_600_000;
+export const TONIC_MATERIAL_COST = 10;
 
 export function createBaseProgress(): BaseProgress {
   return {
@@ -115,6 +118,7 @@ export function createBaseProgress(): BaseProgress {
     resourceLedger: [],
     nextLedgerSequence: 1,
     archiveTrack: null,
+    tonics: 0,
   };
 }
 
@@ -142,6 +146,7 @@ export function cloneBaseProgress(progress: BaseProgress): BaseProgress {
     archiveTrack: UPGRADE_TRACK_IDS.includes(progress.archiveTrack as UpgradeTrackId)
       ? progress.archiveTrack
       : null,
+    tonics: validBalance(progress.tonics) ? progress.tonics : 0,
   };
 }
 
@@ -202,6 +207,17 @@ export function hasBuilding(progress: BaseProgress, building: BuildingId): boole
 export function selectArchiveTrack(progress: BaseProgress, track: UpgradeTrackId): boolean {
   if (!hasBuilding(progress, 'archive') || !UPGRADE_TRACK_IDS.includes(track)) return false;
   progress.archiveTrack = track;
+  return true;
+}
+
+/** 丹房补给只消耗基础材料；先校验库存上限，避免扣款后计数溢出。 */
+export function craftTonic(progress: BaseProgress): boolean {
+  if (!hasBuilding(progress, 'alchemyLab')) return false;
+  if (!validBalance(progress.tonics) || progress.tonics >= Number.MAX_SAFE_INTEGER) return false;
+  if (!applyResourceChanges(progress, { materials: -TONIC_MATERIAL_COST }, 'craft:tonic')) {
+    return false;
+  }
+  progress.tonics += 1;
   return true;
 }
 

@@ -39,6 +39,7 @@ import {
   BUILDING_UNLOCKS,
   canAffordResources,
   hasBuilding,
+  TONIC_MATERIAL_COST,
   unlockedBuildings,
 } from '../core/economy';
 import type { World } from '../core/world';
@@ -1594,9 +1595,13 @@ export class Renderer {
       let status = `按 ${index + 1} 建造`;
       let statusColor = '#ffd479';
       if (completed) {
-        status = building.id === 'archive'
-          ? `永久路线 · ${progress.archiveTrack ? UPGRADE_TRACKS[progress.archiveTrack].label : '未选择'}\n按 5 切换`
-          : '已完成';
+        if (building.id === 'archive') {
+          status = `永久路线 · ${progress.archiveTrack ? UPGRADE_TRACKS[progress.archiveTrack].label : '未选择'}\n按 5 切换`;
+        } else if (building.id === 'alchemyLab') {
+          status = `出击补给 ${progress.tonics} · 材料 ${TONIC_MATERIAL_COST}\n按 3 制作`;
+        } else {
+          status = '已完成';
+        }
         statusColor = '#8fd4c8';
       } else if (job) {
         status = `施工中 · ${Math.ceil(Math.max(0, job.completesAtMs - nowMs) / 1_000)} 秒`;

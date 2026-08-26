@@ -34,6 +34,7 @@ const {
   STAGES,
   applyResourceChanges,
   canAffordResources,
+  craftTonic,
   createProfile,
   createStageProfile,
   queueBuildingConstruction,
@@ -132,18 +133,24 @@ delete partialLegacyProfile.base.resources;
 delete partialLegacyProfile.base.resourceLedger;
 delete partialLegacyProfile.base.nextLedgerSequence;
 delete partialLegacyProfile.base.archiveTrack;
+delete partialLegacyProfile.base.tonics;
 const migratedPartial = createStageProfile(partialLegacyProfile);
 if (
   migratedPartial.base.resources.materials !== 0 ||
   migratedPartial.base.resourceLedger.length !== 0 ||
   migratedPartial.base.nextLedgerSequence !== 1 ||
-  migratedPartial.base.archiveTrack !== null
+  migratedPartial.base.archiveTrack !== null ||
+  migratedPartial.base.tonics !== 0
 ) fail('base 存在但账本子字段缺失时迁移失败');
 
 const malformedArchiveProfile = createProfile();
 malformedArchiveProfile.base.archiveTrack = 'offense2';
 if (createStageProfile(malformedArchiveProfile).base.archiveTrack !== null) {
   fail('非法藏经阁路线没有在迁移时降级为空');
+}
+malformedArchiveProfile.base.tonics = -1;
+if (createStageProfile(malformedArchiveProfile).base.tonics !== 0) {
+  fail('非法丹房补给数量没有在迁移时降级为零');
 }
 
 const archiveProfile = createProfile();
@@ -160,6 +167,26 @@ archiveProfile.base.completedBuildings = [];
 const unbuiltArchiveStageProfile = createStageProfile(archiveProfile);
 if (unbuiltArchiveStageProfile.upgrades.offense !== 0) {
   fail('只有路线字段、没有建成藏经阁时仍获得了永久等级');
+}
+
+const tonicProfile = createProfile();
+applyResourceChanges(tonicProfile.base, { materials: 20 }, 'tonic-test-grant');
+if (craftTonic(tonicProfile.base)) fail('丹房建成前允许制作补给');
+tonicProfile.base.completedBuildings.push('alchemyLab');
+if (!craftTonic(tonicProfile.base) || tonicProfile.base.tonics !== 1) {
+  fail('丹房建成后无法制作出击补给');
+}
+if (tonicProfile.base.resources.materials !== 10) fail('出击补给没有通过账本扣除正确成本');
+const tonicStageProfile = createStageProfile(tonicProfile);
+if (tonicStageProfile.energy !== tonicStageProfile.maxEnergy || tonicStageProfile.base.tonics !== 0) {
+  fail('出击补给没有在下一关恰好消耗一份并充满能量');
+}
+if (createStageProfile(tonicStageProfile).energy !== 0) fail('补给耗尽后下一关能量没有回落基线');
+tonicProfile.base.completedBuildings = [];
+tonicProfile.base.tonics = 1;
+const unbuiltTonicStageProfile = createStageProfile(tonicProfile);
+if (unbuiltTonicStageProfile.energy !== 0 || unbuiltTonicStageProfile.base.tonics !== 1) {
+  fail('丹房未建成时错误地消耗并应用了补给');
 }
 
 const malformedProfile = createProfile();
@@ -371,6 +398,9 @@ if (run.profile.base.archiveTrack !== 'offense') fail('藏经阁首次切换没�
 if (!run.cycleArchiveTrack() || run.profile.base.archiveTrack !== 'arcane') {
   fail('藏经阁路线无法免费改选');
 }
+run.profile.base.completedBuildings.push('alchemyLab');
+applyResourceChanges(run.profile.base, { materials: 10 }, 'menu-tonic-grant');
+if (!run.craftTonic() || run.profile.base.tonics !== 1) fail('基地菜单无法制作丹房补给');
 
 if (!process.exitCode) {
   console.log('[validate_economy] 战斗产出、资源账本、建筑解锁、建造队列、离线收益与跨关迁移通过');
