@@ -22,6 +22,12 @@ export interface BuildingUnlockDef {
   combatBenefit: string;
 }
 
+export interface BuildingPlanDef {
+  id: BuildingId;
+  durationMs: number;
+  cost: Partial<ResourceBalances>;
+}
+
 /** 首日按通关次数逐栋开放，避免第一次回基地同时面对五套系统。 */
 export const BUILDING_UNLOCKS: readonly BuildingUnlockDef[] = [
   { id: 'trainingGround', label: '演武场', unlockAfterClears: 1, combatBenefit: '解锁职业与职业天赋' },
@@ -30,6 +36,38 @@ export const BUILDING_UNLOCKS: readonly BuildingUnlockDef[] = [
   { id: 'resourceField', label: '资源田', unlockAfterClears: 4, combatBenefit: '提供基础材料以加快建设' },
   { id: 'archive', label: '藏经阁', unlockAfterClears: 5, combatBenefit: '解锁永久战斗天赋' },
 ];
+
+/**
+ * 首轮可玩成本以“当次解锁后有机会立刻开工”为基线，等待时间控制在一分钟内。
+ * 后续量化只调整此表，不让输入层、渲染层各自维护一份价格。
+ */
+export const BUILDING_PLANS: Readonly<Record<BuildingId, BuildingPlanDef>> = {
+  trainingGround: {
+    id: 'trainingGround',
+    durationMs: 5_000,
+    cost: { materials: 15, blueprints: 1 },
+  },
+  forge: {
+    id: 'forge',
+    durationMs: 15_000,
+    cost: { materials: 35, blueprints: 2 },
+  },
+  alchemyLab: {
+    id: 'alchemyLab',
+    durationMs: 30_000,
+    cost: { materials: 55, blueprints: 3, rareMaterials: 1 },
+  },
+  resourceField: {
+    id: 'resourceField',
+    durationMs: 45_000,
+    cost: { materials: 80, blueprints: 4, rareMaterials: 1 },
+  },
+  archive: {
+    id: 'archive',
+    durationMs: 60_000,
+    cost: { materials: 120, blueprints: 6, rareMaterials: 2 },
+  },
+};
 
 export interface ResourceLedgerEntry {
   sequence: number;
@@ -144,6 +182,16 @@ export function unlockedBuildings(progress: BaseProgress): BuildingId[] {
   ).map((building) => building.id);
 }
 
+export function canAffordResources(
+  progress: BaseProgress,
+  cost: Partial<ResourceBalances>,
+): boolean {
+  return RESOURCE_IDS.every((resource) => {
+    const amount = cost[resource] ?? 0;
+    return Number.isSafeInteger(amount) && amount >= 0 && progress.resources[resource] >= amount;
+  });
+}
+
 export interface QueueConstructionOptions {
   nowMs: number;
   durationMs: number;
@@ -169,6 +217,13 @@ export function queueBuildingConstruction(
   const costs = RESOURCE_IDS.map((resource) => options.cost[resource] ?? 0);
   if (costs.some((amount) => !Number.isSafeInteger(amount) || amount < 0)) return false;
 
+  // 完成时间也属于交易前置条件，必须先校验再扣款；否则极大时间戳溢出时会
+  // 留下“资源已扣、队列却不可结算”的半笔建造。
+  const previous = progress.constructionQueue.at(-1);
+  const startsAtMs = Math.max(options.nowMs, previous?.completesAtMs ?? options.nowMs);
+  const completesAtMs = startsAtMs + options.durationMs;
+  if (!Number.isSafeInteger(startsAtMs) || !Number.isSafeInteger(completesAtMs)) return false;
+
   const costChanges = Object.fromEntries(
     RESOURCE_IDS.map((resource) => [resource, -(options.cost[resource] ?? 0)]),
   ) as Partial<ResourceBalances>;
@@ -176,12 +231,10 @@ export function queueBuildingConstruction(
     if (!applyResourceChanges(progress, costChanges, `construction:${building}`)) return false;
   }
 
-  const previous = progress.constructionQueue.at(-1);
-  const startsAtMs = Math.max(options.nowMs, previous?.completesAtMs ?? options.nowMs);
   progress.constructionQueue.push({
     building,
     startsAtMs,
-    completesAtMs: startsAtMs + options.durationMs,
+    completesAtMs,
   });
   return true;
 }

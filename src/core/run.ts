@@ -41,12 +41,16 @@ import type { UpgradeTrackId } from './upgrades';
 import { availableTracks, computeUpgradeStats } from './upgrades';
 import {
   applyResourceChanges,
+  BUILDING_IDS,
   cloneBaseProgress,
   createBaseProgress,
   recordStageCompletion,
   roomResourceReward,
+  BUILDING_PLANS,
+  queueBuildingConstruction,
+  settleConstruction,
 } from './economy';
-import type { BaseProgress } from './economy';
+import type { BaseProgress, BuildingId } from './economy';
 
 /** 血量成长的基准值，不能让 profile.maxHp 自己滚雪球——见 upgrades.ts 顶部说明。 */
 const BASE_MAX_HP = 160;
@@ -116,6 +120,8 @@ export type RunPhase =
   | 'equipmentChoice'
   /** 玩家主动打开装备面板，战斗暂停 */
   | 'equipmentMenu'
+  /** 通关后进入基地建造面板，等待和资源结算仍继续 */
+  | 'baseMenu'
   /** 正在切换房间 */
   | 'transition'
   /** 整关打完 */
@@ -194,6 +200,7 @@ export class Run {
   /** 精英/首领房首次清空后的待选装备；选择期间战斗逻辑暂停。 */
   pendingEquipment: EquipmentId[] | null = null;
   equipmentMenuOpen = false;
+  baseMenuOpen = false;
 
   /** 整关的累计统计。每间房的 World 各有一份，这里汇总。 */
   stats = new RunStats();
@@ -340,6 +347,37 @@ export class Run {
     return this.equip(options[(current + 1) % options.length], 'accessory');
   }
 
+  /** 基地入口只在通关且战利品已领取后开放，避免多个选择层互相抢数字键。 */
+  toggleBaseMenu(nowMs: number): boolean {
+    if (this.baseMenuOpen) {
+      this.baseMenuOpen = false;
+      return true;
+    }
+    if (!this.stageCleared || this.pendingEquipment || !Number.isSafeInteger(nowMs) || nowMs < 0) {
+      return false;
+    }
+    settleConstruction(this.profile.base, nowMs);
+    this.baseMenuOpen = true;
+    return true;
+  }
+
+  /** 建造按钮只传建筑 id；价格和时长集中取经营配置，UI 无法伪造免费建造。 */
+  queueBaseBuilding(building: BuildingId, nowMs: number): boolean {
+    if (!this.baseMenuOpen) return false;
+    if (!BUILDING_IDS.includes(building)) return false;
+    const plan = BUILDING_PLANS[building];
+    return queueBuildingConstruction(this.profile.base, building, {
+      nowMs,
+      durationMs: plan.durationMs,
+      cost: plan.cost,
+    });
+  }
+
+  /** 主循环和调试验证共用同一结算入口，返回值可供后续完成动效消费。 */
+  settleBaseConstruction(nowMs: number): BuildingId[] {
+    return settleConstruction(this.profile.base, nowMs);
+  }
+
   /**
    * 整关是否打完：终点 Boss 房清空即结算。
    *
@@ -364,6 +402,7 @@ export class Run {
     if (this.pendingChoice) return 'choosing';
     if (this.pendingEquipment) return 'equipmentChoice';
     if (this.equipmentMenuOpen) return 'equipmentMenu';
+    if (this.baseMenuOpen) return 'baseMenu';
     if (this.stageCleared) return 'stageComplete';
     if (this.cleared.has(this.room.id)) return 'cleared';
     return 'fighting';
@@ -403,7 +442,12 @@ export class Run {
     };
 
     // 选择界面是正式暂停态；不能让遮罩背后的敌人先走位、出手或累计计时。
-    if (!this.professionConfirmed || this.pendingEquipment || this.equipmentMenuOpen) return empty;
+    if (
+      !this.professionConfirmed ||
+      this.pendingEquipment ||
+      this.equipmentMenuOpen ||
+      this.baseMenuOpen
+    ) return empty;
 
     if (this.transition > 0) {
       this.transition -= 1;

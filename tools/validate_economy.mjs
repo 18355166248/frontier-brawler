@@ -27,10 +27,13 @@ if (!source) throw new Error('无法加载经营核心');
 const economy = await import(`data:text/javascript;base64,${Buffer.from(source).toString('base64')}`);
 const {
   BUILDING_UNLOCKS,
+  BUILDING_IDS,
+  BUILDING_PLANS,
   EMPTY_INPUT,
   Run,
   STAGES,
   applyResourceChanges,
+  canAffordResources,
   createProfile,
   createStageProfile,
   queueBuildingConstruction,
@@ -45,6 +48,18 @@ const fail = (message) => {
   console.error(`[validate_economy] FAIL: ${message}`);
   process.exitCode = 1;
 };
+
+if (
+  BUILDING_IDS.some((id) => {
+    const plan = BUILDING_PLANS[id];
+    return (
+      plan.id !== id ||
+      !Number.isSafeInteger(plan.durationMs) ||
+      plan.durationMs <= 0 ||
+      Object.values(plan.cost).some((amount) => !Number.isSafeInteger(amount) || amount < 0)
+    );
+  })
+) fail('建筑价格或时长配置不完整');
 
 if (Object.keys(roomResourceReward(1, 'start')).length !== 0) fail('起始房错误地产出资源');
 if (Object.keys(roomResourceReward(1, 'reward')).length !== 0) fail('奖励房错误地产出资源');
@@ -76,8 +91,14 @@ if (Object.keys(roomResourceReward(Number.MAX_SAFE_INTEGER, 'boss')).length !== 
 }
 
 const profile = createProfile();
+if (canAffordResources(profile.base, BUILDING_PLANS.trainingGround.cost)) {
+  fail('空资源档案错误地满足了建造成本');
+}
 if (!applyResourceChanges(profile.base, { materials: 40, blueprints: 2 }, 'stage-clear')) {
   fail('合法收入写入失败');
+}
+if (!canAffordResources(profile.base, BUILDING_PLANS.trainingGround.cost)) {
+  fail('资源充足时仍被判定为不可建造');
 }
 if (!applyResourceChanges(profile.base, { materials: -25, blueprints: -1 }, 'construction')) {
   fail('多资源原子消耗失败');
@@ -179,6 +200,7 @@ for (const options of [
   { nowMs: 1.5, durationMs: 10, cost: {} },
   { nowMs: 0, durationMs: 10, cost: { materials: -1 } },
   { nowMs: 0, durationMs: 10, cost: { materials: 1.5 } },
+  { nowMs: Number.MAX_SAFE_INTEGER, durationMs: 10, cost: { materials: 1 } },
 ]) {
   const before = JSON.stringify(invalidQueueProfile.base);
   if (queueBuildingConstruction(invalidQueueProfile.base, 'trainingGround', options)) {
@@ -225,6 +247,7 @@ if (offlineProfile.base.resources.blueprints !== 0 || offlineProfile.base.resour
 // 集成验证：Boss 房首次清空计一次；在结算/掉落界面继续 step 不能重复累计。
 const runProfile = createProfile();
 const run = new Run(STAGES[0], runProfile);
+if (run.toggleBaseMenu(1_000)) fail('通关前错误地开放了基地菜单');
 run.setProfession('swift');
 run.enterRoom('v3', null);
 for (const entity of run.world.entities) {
@@ -258,6 +281,25 @@ if (JSON.stringify(run.profile.base.resources) !== JSON.stringify(firstBossResou
 }
 const inheritedClear = createStageProfile(run.profile);
 if (inheritedClear.base.completedStageRuns !== 1) fail('通关次数没有跨关继承');
+
+if (!run.toggleBaseMenu(1_000) || run.phase !== 'baseMenu') {
+  fail('通关并领取战利品后无法打开基地菜单');
+}
+if (!run.queueBaseBuilding('trainingGround', 1_000)) fail('首个解锁建筑无法从基地菜单开工');
+if (run.queueBaseBuilding('trainingGround', 1_000)) fail('基地菜单允许同一建筑重复开工');
+if (
+  run.profile.base.resources.materials !==
+    firstBossResources.materials - (BUILDING_PLANS.trainingGround.cost.materials ?? 0) ||
+  run.profile.base.resources.blueprints !==
+    firstBossResources.blueprints - (BUILDING_PLANS.trainingGround.cost.blueprints ?? 0)
+) fail('基地菜单建造没有按配置原子扣除成本');
+if (run.settleBaseConstruction(5_999).length !== 0) fail('基地建筑提前完成');
+if (run.settleBaseConstruction(6_000).join(',') !== 'trainingGround') {
+  fail('基地建筑没有按配置时间完成');
+}
+if (!run.toggleBaseMenu(6_000) || run.phase !== 'stageComplete') {
+  fail('基地菜单无法返回通关结算');
+}
 
 if (!process.exitCode) {
   console.log('[validate_economy] 战斗产出、资源账本、建筑解锁、建造队列、离线收益与跨关迁移通过');

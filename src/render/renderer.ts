@@ -34,7 +34,12 @@ import {
   equipmentSlotOf,
 } from '../core/equipment';
 import { MAX_UPGRADE_LEVEL, UPGRADE_TRACK_IDS, UPGRADE_TRACKS } from '../core/upgrades';
-import { BUILDING_UNLOCKS } from '../core/economy';
+import {
+  BUILDING_PLANS,
+  BUILDING_UNLOCKS,
+  canAffordResources,
+  unlockedBuildings,
+} from '../core/economy';
 import type { World } from '../core/world';
 import { Minimap } from './minimap';
 import type { EquipmentIcons } from './equipment-icons';
@@ -1135,6 +1140,11 @@ export class Renderer {
       return;
     }
 
+    if (run.phase === 'baseMenu') {
+      this.drawBaseMenu(run);
+      return;
+    }
+
     if (run.pendingChoice) {
       this.drawUpgradeChoice(run.pendingChoice, run.profile.upgrades);
       return;
@@ -1466,6 +1476,101 @@ export class Renderer {
       ctx.fillStyle = card.color;
       ctx.font = 'bold 15px system-ui, sans-serif';
       ctx.fillText(card.key, x + cardW / 2, y + cardH - 24);
+    });
+    ctx.restore();
+  }
+
+  /**
+   * M5 基地建造面板。状态完全由档案和统一队列推导，渲染层只读；锁定、资源
+   * 不足、排队和完成四种状态必须同时可辨，避免按键无响应却不知道原因。
+   */
+  private drawBaseMenu(run: Run): void {
+    const { ctx, canvas } = this;
+    const progress = run.profile.base;
+    const unlocked = new Set(unlockedBuildings(progress));
+    const nowMs = Date.now();
+    const cardW = 164;
+    const cardH = 292;
+    const gap = 12;
+    const startX = (canvas.width - BUILDING_UNLOCKS.length * cardW - (BUILDING_UNLOCKS.length - 1) * gap) / 2;
+    const y = 142;
+
+    ctx.save();
+    ctx.fillStyle = 'rgba(8,10,13,0.84)';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    ctx.textAlign = 'center';
+    ctx.fillStyle = '#ffffff';
+    ctx.font = 'bold 24px system-ui, sans-serif';
+    ctx.fillText('边境基地', canvas.width / 2, 62);
+    ctx.fillStyle = 'rgba(255,255,255,0.58)';
+    ctx.font = '13px system-ui, sans-serif';
+    ctx.fillText('按 1–5 开始建造 · 建筑串行施工 · 按 G 返回结算', canvas.width / 2, 86);
+    ctx.fillStyle = '#ffd479';
+    ctx.font = 'bold 13px system-ui, sans-serif';
+    ctx.fillText(
+      `基础材料 ${progress.resources.materials}  ·  图纸 ${progress.resources.blueprints}  ·  稀有材料 ${progress.resources.rareMaterials}`,
+      canvas.width / 2,
+      112,
+    );
+
+    BUILDING_UNLOCKS.forEach((building, index) => {
+      const plan = BUILDING_PLANS[building.id];
+      const x = startX + index * (cardW + gap);
+      const completed = progress.completedBuildings.includes(building.id);
+      const job = progress.constructionQueue.find((item) => item.building === building.id);
+      const available = unlocked.has(building.id);
+      const affordable = canAffordResources(progress, plan.cost);
+      const active = !completed && !job && available && affordable;
+      const color = completed ? '#8fd4c8' : active ? '#ffd479' : 'rgba(255,255,255,0.28)';
+
+      ctx.fillStyle = 'rgba(20,24,30,0.94)';
+      ctx.strokeStyle = color;
+      ctx.lineWidth = active || completed ? 2 : 1;
+      this.roundRect(ctx, x, y, cardW, cardH, 10);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = color;
+      ctx.font = 'bold 17px system-ui, sans-serif';
+      ctx.fillText(building.label, x + cardW / 2, y + 34);
+      ctx.fillStyle = 'rgba(255,255,255,0.72)';
+      ctx.font = '12px system-ui, sans-serif';
+      this.wrapText(building.combatBenefit, x + cardW / 2, y + 62, cardW - 24, 17);
+
+      ctx.fillStyle = 'rgba(255,255,255,0.44)';
+      ctx.font = '11px system-ui, sans-serif';
+      ctx.fillText('建造成本', x + cardW / 2, y + 129);
+      ctx.fillStyle = 'rgba(255,255,255,0.82)';
+      ctx.font = '12px system-ui, sans-serif';
+      ctx.fillText(
+        `材料 ${plan.cost.materials ?? 0} · 图纸 ${plan.cost.blueprints ?? 0}`,
+        x + cardW / 2,
+        y + 150,
+      );
+      ctx.fillText(
+        `稀有 ${plan.cost.rareMaterials ?? 0} · ${Math.ceil(plan.durationMs / 1_000)} 秒`,
+        x + cardW / 2,
+        y + 170,
+      );
+
+      let status = `按 ${index + 1} 建造`;
+      let statusColor = '#ffd479';
+      if (completed) {
+        status = '已完成';
+        statusColor = '#8fd4c8';
+      } else if (job) {
+        status = `施工中 · ${Math.ceil(Math.max(0, job.completesAtMs - nowMs) / 1_000)} 秒`;
+        statusColor = '#7fe8ff';
+      } else if (!available) {
+        status = `${building.unlockAfterClears} 次通关后解锁`;
+        statusColor = 'rgba(255,255,255,0.38)';
+      } else if (!affordable) {
+        status = '资源不足';
+        statusColor = '#e2705c';
+      }
+      ctx.fillStyle = statusColor;
+      ctx.font = 'bold 12px system-ui, sans-serif';
+      this.wrapText(status, x + cardW / 2, y + cardH - 52, cardW - 20, 16);
     });
     ctx.restore();
   }

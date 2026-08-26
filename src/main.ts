@@ -23,6 +23,8 @@ import { ProfessionValidationStore } from './dev/profession-validation';
 import { ValidationPanel } from './dev/validation-panel';
 import { ACCESSORY_IDS, ARMOR_IDS, WEAPON_IDS, equipmentLabel } from './core/equipment';
 import type { EquipmentId, EquipmentSlot } from './core/equipment';
+import { BUILDING_IDS, unlockedBuildings } from './core/economy';
+import type { BuildingId } from './core/economy';
 
 /** 三选一的按键，和 render/renderer.ts 里卡片上画的键位一一对应 */
 const CHOICE_KEYS: Record<string, UpgradeTrackId> = {
@@ -168,6 +170,7 @@ window.addEventListener('keydown', (e) => {
   if (!e.repeat) queueActionEdge(e.code);
   if (e.code === 'KeyR') startStage(stageIndex, run.profile);
   if (e.code === 'KeyB' && !e.repeat) run.toggleEquipmentMenu();
+  if (e.code === 'KeyG' && !e.repeat) run.toggleBaseMenu(Date.now());
   // 最后一关通关后没有下一关可进——不加这条边界的话，Math.min 会把
   // stageIndex+1 钳回原地，按 N 变成"用全新档案重开第 6 关"，
   // 玩家会以为按键没反应，而不是"这已经是终点"。
@@ -176,7 +179,11 @@ window.addEventListener('keydown', (e) => {
   }
   const track = CHOICE_KEYS[e.code];
   const profession = PROFESSION_KEYS[e.code];
-  if (profession && run.phase === 'professionSelect') {
+  if (run.phase === 'baseMenu') {
+    const index = Number(e.code.replace('Digit', '')) - 1;
+    const building = BUILDING_IDS[index];
+    if (building) run.queueBaseBuilding(building, Date.now());
+  } else if (profession && run.phase === 'professionSelect') {
     run.setProfession(profession);
   } else if (run.phase === 'equipmentMenu') {
     const slot = EQUIPMENT_SLOT_KEYS[e.code];
@@ -254,6 +261,8 @@ let paused = false;
 
 /** 推进一个逻辑帧并把事件转给表现层。自动化验证也复用它，保证跑的是同一条路径。 */
 function stepOnce(): void {
+  // 建造使用真实时间而非战斗帧：暂停、切关或页面后台时都应照常到期。
+  run.settleBaseConstruction(Date.now());
   const events = run.step(readInput());
   if (events.damage.length) renderer.onEvents(events.damage);
   if (events.executes.length) renderer.onExecutes(events.executes);
@@ -331,6 +340,13 @@ if (import.meta.env.DEV) {
     /** M4 掉落调试：直接收入库存，不自动装备。 */
     grantEquipment(id: EquipmentId): void {
       run.grantEquipment(id);
+    },
+    toggleBase(): boolean {
+      return run.toggleBaseMenu(Date.now());
+    },
+    queueBuilding(id: BuildingId): boolean {
+      if (!BUILDING_IDS.includes(id)) return false;
+      return run.queueBaseBuilding(id, Date.now());
     },
     /** 清空当前房间的敌人，用来快速验证开门与切换 */
     clearRoom(): void {
@@ -424,6 +440,7 @@ if (import.meta.env.DEV) {
         resources: { ...run.profile.base.resources },
         completedStageRuns: run.profile.base.completedStageRuns,
         completedBuildings: [...run.profile.base.completedBuildings],
+        unlockedBuildings: unlockedBuildings(run.profile.base),
         constructionQueue: run.profile.base.constructionQueue.map((job) => ({ ...job })),
         lastActiveAtMs: run.profile.base.lastActiveAtMs,
         resourceLedgerEntries: run.profile.base.resourceLedger.length,
