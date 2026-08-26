@@ -185,6 +185,11 @@ export function unlockedBuildings(progress: BaseProgress): BuildingId[] {
   ).map((building) => building.id);
 }
 
+/** 建筑能力统一从“已完成”读取，解锁或排队都不等于已经生效。 */
+export function hasBuilding(progress: BaseProgress, building: BuildingId): boolean {
+  return progress.completedBuildings.includes(building);
+}
+
 export function canAffordResources(
   progress: BaseProgress,
   cost: Partial<ResourceBalances>,

@@ -183,7 +183,11 @@ window.addEventListener('keydown', (e) => {
     const index = Number(e.code.replace('Digit', '')) - 1;
     const building = BUILDING_IDS[index];
     if (building) run.queueBaseBuilding(building, Date.now());
-  } else if (profession && run.phase === 'professionSelect') {
+  } else if (
+    profession &&
+    run.phase === 'professionSelect' &&
+    run.canSelectProfession(profession)
+  ) {
     run.setProfession(profession);
   } else if (run.phase === 'equipmentMenu') {
     const slot = EQUIPMENT_SLOT_KEYS[e.code];

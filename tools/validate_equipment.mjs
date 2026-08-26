@@ -120,6 +120,9 @@ if (run.player?.damageTakenMultiplier !== 0.88) fail('行阵甲减伤没有同�
 if (run.player?.executeHealBonus !== 8) fail('收魂佩处决回复没有同步到玩家');
 if (run.player?.speed !== run.profile.speed * 0.94) fail('行阵甲移速代价没有同步到玩家');
 if (!run.equip(null, 'weapon') || run.profile.equipment.weapon !== null) fail('卸下武器失败');
+if (run.toggleEquipmentMenu()) fail('锻造台建成前不应开放装备面板');
+// 掉落与机械 equip 入口保持可用，只有正式换装面板受建筑门禁。
+run.profile.base.completedBuildings.push('forge');
 if (run.player) run.player.action = 'arcanePulse';
 if (run.toggleEquipmentMenu()) fail('攻击动作途中不应允许打开装备面板');
 if (run.player) run.player.action = 'idle';

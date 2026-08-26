@@ -271,6 +271,18 @@ if (fieldProfile.base.resources.blueprints !== 6 || fieldProfile.base.resources.
 const runProfile = createProfile();
 const run = new Run(STAGES[0], runProfile);
 if (run.toggleBaseMenu(1_000)) fail('通关前错误地开放了基地菜单');
+if (
+  run.availableProfessions.join(',') !== 'swift' ||
+  !run.canSelectProfession('swift') ||
+  run.canSelectProfession('heavy') ||
+  run.canSelectProfession('arcane')
+) fail('演武场建成前的正式职业能力模型错误');
+// setProfession 是开发地址和自动验证共用的机械入口，不应被正式 UI 门禁污染。
+run.setProfession('heavy');
+if (run.profile.profession !== 'heavy') fail('职业机械入口错误地依赖演武场');
+if (!run.canSelectProfession('heavy') || run.canSelectProfession('arcane')) {
+  fail('旧档案当前职业没有保留，或借机开放了其他锁定职业');
+}
 run.setProfession('swift');
 run.enterRoom('v3', null);
 for (const entity of run.world.entities) {
@@ -319,6 +331,9 @@ if (
 if (run.settleBaseConstruction(5_999).length !== 0) fail('基地建筑提前完成');
 if (run.settleBaseConstruction(6_000).join(',') !== 'trainingGround') {
   fail('基地建筑没有按配置时间完成');
+}
+if (!run.canSelectProfession('heavy') || !run.canSelectProfession('arcane')) {
+  fail('演武场建成后没有同时开放重击与术法');
 }
 if (!run.toggleBaseMenu(6_000) || run.phase !== 'stageComplete') {
   fail('基地菜单无法返回通关结算');

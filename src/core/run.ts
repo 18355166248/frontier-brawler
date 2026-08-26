@@ -11,7 +11,7 @@
  */
 import type { Direction, RoomDef, StageDef } from './level';
 import { OPPOSITE, arenaOf, findRoom } from './level';
-import { DEFAULT_PROFESSION } from './types';
+import { DEFAULT_PROFESSION, PROFESSION_IDS } from './types';
 import type { Entity, Profession, Vec2, WorldEvents } from './types';
 import {
   ACCESSORY_IDS,
@@ -52,6 +52,7 @@ import {
   settleOfflineIncome,
   RESOURCE_FIELD_MATERIALS_PER_HOUR,
   MAX_OFFLINE_INCOME_MS,
+  hasBuilding,
 } from './economy';
 import type { BaseProgress, BuildingId, OfflineIncomeResult } from './economy';
 
@@ -230,6 +231,20 @@ export class Run {
     return this.world.player;
   }
 
+  /** 正式选择界面读取这份能力模型；机械设置器仍保留给开发地址和回归脚本。 */
+  get availableProfessions(): Profession[] {
+    if (hasBuilding(this.profile.base, 'trainingGround')) return [...PROFESSION_IDS];
+    // 旧档案或开发地址可能已经在使用未解锁职业：允许继续选当前职业，但不能
+    // 借此切到另一个锁定职业，避免版本升级时追溯夺走玩家已有状态。
+    return PROFESSION_IDS.filter(
+      (profession) => profession === DEFAULT_PROFESSION || profession === this.profile.profession,
+    );
+  }
+
+  canSelectProfession(profession: Profession): boolean {
+    return this.availableProfessions.includes(profession);
+  }
+
   /**
    * 职业先写档案再同步当前实体：档案保证切房后不丢，实体保证当前房间立刻生效。
    * 后续职业选择界面和开发期调试入口都必须走这里，不能各自只改一边。
@@ -319,6 +334,7 @@ export class Run {
       this.pendingChoice ||
       this.pendingEquipment ||
       this.stageCleared ||
+      !hasBuilding(this.profile.base, 'forge') ||
       (this.player?.action !== 'idle' && this.player?.action !== 'move')
     ) {
       return false;

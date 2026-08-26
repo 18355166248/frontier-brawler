@@ -38,6 +38,7 @@ import {
   BUILDING_PLANS,
   BUILDING_UNLOCKS,
   canAffordResources,
+  hasBuilding,
   unlockedBuildings,
 } from '../core/economy';
 import type { World } from '../core/world';
@@ -1131,7 +1132,7 @@ export class Renderer {
     }
 
     if (run.phase === 'professionSelect') {
-      this.drawProfessionChoice();
+      this.drawProfessionChoice(run);
       return;
     }
 
@@ -1151,7 +1152,7 @@ export class Renderer {
     }
 
     if (run.pendingEquipment) {
-      this.drawEquipmentChoice(run.pendingEquipment);
+      this.drawEquipmentChoice(run);
       return;
     }
 
@@ -1200,10 +1201,25 @@ export class Renderer {
     ctx.fillText(player.dashCooldown > 0 ? `冲刺 ${player.dashCooldown}` : '冲刺就绪', 14, 76);
     ctx.fillStyle = player.jumpCooldown > 0 ? 'rgba(255,255,255,0.35)' : '#8fd4c8';
     ctx.fillText(player.jumpCooldown > 0 ? `跳跃 ${player.jumpCooldown}` : '跳跃就绪', 100, 76);
+
+    if (!hasBuilding(run.profile.base, 'forge')) {
+      const storedEquipment =
+        run.profile.inventory.weapons.length +
+        run.profile.inventory.armors.length +
+        run.profile.inventory.accessories.length;
+      ctx.fillStyle = storedEquipment > 0 ? '#ffd479' : 'rgba(255,255,255,0.38)';
+      ctx.fillText(
+        storedEquipment > 0
+          ? `库存已有 ${storedEquipment} 件装备 · 建成锻造台后可换装`
+          : '建成锻造台后开放装备功能',
+        14,
+        96,
+      );
+    }
   }
 
   /** 出击前职业选择沿用三选一的遮罩和卡片语言，避免再造一套菜单视觉。 */
-  private drawProfessionChoice(): void {
+  private drawProfessionChoice(run: Run): void {
     const { ctx, canvas } = this;
     ctx.save();
     ctx.fillStyle = 'rgba(8,10,13,0.78)';
@@ -1214,7 +1230,15 @@ export class Renderer {
     ctx.fillText('选择本次出击职业', canvas.width / 2, 86);
     ctx.font = '13px system-ui, sans-serif';
     ctx.fillStyle = 'rgba(255,255,255,0.58)';
-    ctx.fillText('M2 验证阶段全部开放 · 按 1 / 2 / 3 选择', canvas.width / 2, 110);
+    ctx.fillText(
+      hasBuilding(run.profile.base, 'trainingGround')
+        ? '按 1 / 2 / 3 选择'
+        : run.profile.profession === 'swift'
+          ? '疾锋可用 · 建成演武场后解锁重击与术法'
+          : '保留当前职业 · 建成演武场后解锁全部职业',
+      canvas.width / 2,
+      110,
+    );
 
     const ids: Profession[] = ['heavy', 'swift', 'arcane'];
     const cardW = 220;
@@ -1224,28 +1248,35 @@ export class Renderer {
     const y = 154;
     ids.forEach((id, index) => {
       const card = PROFESSION_CARDS[id];
+      const available = run.canSelectProfession(id);
       const x = startX + index * (cardW + gap);
       ctx.fillStyle = 'rgba(20,24,30,0.94)';
-      ctx.strokeStyle = card.color;
-      ctx.lineWidth = 2;
+      ctx.strokeStyle = available ? card.color : 'rgba(255,255,255,0.2)';
+      ctx.lineWidth = available ? 2 : 1;
       this.roundRect(ctx, x, y, cardW, cardH, 12);
       ctx.fill();
       ctx.stroke();
-      ctx.fillStyle = card.color;
+      ctx.fillStyle = available ? card.color : 'rgba(255,255,255,0.32)';
       ctx.font = 'bold 26px system-ui, sans-serif';
       ctx.fillText(card.label, x + cardW / 2, y + 52);
       ctx.font = '13px system-ui, sans-serif';
       ctx.fillText(card.theme, x + cardW / 2, y + 79);
-      ctx.fillStyle = 'rgba(255,255,255,0.82)';
+      ctx.fillStyle = available ? 'rgba(255,255,255,0.82)' : 'rgba(255,255,255,0.36)';
       ctx.font = '13px system-ui, sans-serif';
       this.wrapText(card.detail, x + cardW / 2, y + 112, cardW - 32, 20);
-      ctx.beginPath();
-      ctx.arc(x + cardW / 2, y + cardH - 30, 17, 0, Math.PI * 2);
-      ctx.strokeStyle = card.color;
-      ctx.stroke();
-      ctx.fillStyle = card.color;
-      ctx.font = 'bold 16px system-ui, sans-serif';
-      ctx.fillText(card.key, x + cardW / 2, y + cardH - 24);
+      if (available) {
+        ctx.beginPath();
+        ctx.arc(x + cardW / 2, y + cardH - 30, 17, 0, Math.PI * 2);
+        ctx.strokeStyle = card.color;
+        ctx.stroke();
+        ctx.fillStyle = card.color;
+        ctx.font = 'bold 16px system-ui, sans-serif';
+        ctx.fillText(card.key, x + cardW / 2, y + cardH - 24);
+      } else {
+        ctx.fillStyle = 'rgba(255,255,255,0.42)';
+        ctx.font = 'bold 12px system-ui, sans-serif';
+        ctx.fillText('演武场未建成', x + cardW / 2, y + cardH - 25);
+      }
     });
     ctx.restore();
   }
@@ -1326,8 +1357,9 @@ export class Renderer {
   }
 
   /** 精英/首领掉落沿用局内三选一的视觉语言，选择后先收入库存。 */
-  private drawEquipmentChoice(options: EquipmentId[]): void {
+  private drawEquipmentChoice(run: Run): void {
     const { ctx, canvas } = this;
+    const options = run.pendingEquipment ?? [];
     const slotLabel: Record<EquipmentSlot, string> = {
       weapon: '武器',
       armor: '护甲',
@@ -1348,7 +1380,13 @@ export class Renderer {
     ctx.fillText('选择一件战利品', canvas.width / 2, 86);
     ctx.font = '13px system-ui, sans-serif';
     ctx.fillStyle = 'rgba(255,255,255,0.58)';
-    ctx.fillText('精英 / 首领房首次清空掉落 · 按 1 / 2 / 3 收入库存', canvas.width / 2, 110);
+    ctx.fillText(
+      hasBuilding(run.profile.base, 'forge')
+        ? '精英 / 首领房首次清空掉落 · 按 1 / 2 / 3 收入库存'
+        : '按 1 / 2 / 3 存入库房 · 锻造台建成后即可装备',
+      canvas.width / 2,
+      110,
+    );
 
     const cardW = 210;
     const cardH = 250;
@@ -1728,7 +1766,11 @@ export class Renderer {
     ctx.stroke();
     ctx.fillStyle = '#ffd479';
     ctx.font = 'bold 13px system-ui, sans-serif';
-    ctx.fillText('基地物资', canvas.width / 2, baseY);
+    const storedEquipment =
+      run.profile.inventory.weapons.length +
+      run.profile.inventory.armors.length +
+      run.profile.inventory.accessories.length;
+    ctx.fillText(`基地物资 · 库存装备 ${storedEquipment}`, canvas.width / 2, baseY);
     ctx.fillStyle = 'rgba(255,255,255,0.78)';
     ctx.font = '13px system-ui, sans-serif';
     const resources = run.profile.base.resources;
