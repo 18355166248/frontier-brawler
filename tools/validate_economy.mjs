@@ -75,6 +75,27 @@ if (migrated.base.resources.materials !== 0 || migrated.base.resourceLedger.leng
   fail('缺少 M5 字段的旧档案没有迁移为空账本');
 }
 
+const partialLegacyProfile = createProfile();
+delete partialLegacyProfile.base.resources;
+delete partialLegacyProfile.base.resourceLedger;
+delete partialLegacyProfile.base.nextLedgerSequence;
+const migratedPartial = createStageProfile(partialLegacyProfile);
+if (
+  migratedPartial.base.resources.materials !== 0 ||
+  migratedPartial.base.resourceLedger.length !== 0 ||
+  migratedPartial.base.nextLedgerSequence !== 1
+) fail('base 存在但账本子字段缺失时迁移失败');
+
+const malformedProfile = createProfile();
+delete malformedProfile.base.resources.materials;
+if (applyResourceChanges(malformedProfile.base, { materials: -1 }, 'malformed-spend')) {
+  fail('畸形余额绕过了非负校验');
+}
+malformedProfile.base.resources.materials = Number.MAX_SAFE_INTEGER;
+if (applyResourceChanges(malformedProfile.base, { materials: 1 }, 'overflow')) {
+  fail('余额结果允许越过 MAX_SAFE_INTEGER');
+}
+
 const unlockProfile = createProfile();
 const expectedUnlocks = ['trainingGround', 'forge', 'alchemyLab', 'resourceField', 'archive'];
 for (let clears = 0; clears <= expectedUnlocks.length; clears += 1) {
@@ -116,6 +137,38 @@ if (settleConstruction(queueProfile.base, 1_300).join(',') !== 'forge') {
   fail('跨多个时间点结算队列失败');
 }
 if (queueProfile.base.resources.materials !== 20) fail('建造成本没有走统一资源账本');
+if (settleConstruction(queueProfile.base, -1).length !== 0) fail('结算接受了负时间戳');
+if (settleConstruction(queueProfile.base, 1.5).length !== 0) fail('结算接受了小数时间戳');
+
+const invalidQueueProfile = createProfile();
+recordStageCompletion(invalidQueueProfile.base);
+applyResourceChanges(invalidQueueProfile.base, { materials: 100 }, 'test-grant');
+for (const options of [
+  { nowMs: 0, durationMs: 0, cost: {} },
+  { nowMs: 0, durationMs: -1, cost: {} },
+  { nowMs: 1.5, durationMs: 10, cost: {} },
+  { nowMs: 0, durationMs: 10, cost: { materials: -1 } },
+  { nowMs: 0, durationMs: 10, cost: { materials: 1.5 } },
+]) {
+  const before = JSON.stringify(invalidQueueProfile.base);
+  if (queueBuildingConstruction(invalidQueueProfile.base, 'trainingGround', options)) {
+    fail(`非法建造参数被接受：${JSON.stringify(options)}`);
+  }
+  if (JSON.stringify(invalidQueueProfile.base) !== before) fail('非法建造参数修改了资源或队列');
+}
+
+const cappedLedgerProfile = createProfile();
+for (let index = 0; index < 260; index += 1) {
+  applyResourceChanges(cappedLedgerProfile.base, { materials: 1 }, 'ledger-cap');
+}
+if (
+  cappedLedgerProfile.base.resourceLedger.length !== 200 ||
+  cappedLedgerProfile.base.resourceLedger[0]?.sequence !== 61 ||
+  cappedLedgerProfile.base.resourceLedger.at(-1)?.sequence !== 260
+) fail('流水上限或 sequence 连续性错误');
+if (applyResourceChanges(cappedLedgerProfile.base, { materials: 1 }, '   ')) {
+  fail('空白交易原因未被拒绝');
+}
 
 const offlineProfile = createProfile();
 const hour = 3_600_000;
@@ -127,9 +180,12 @@ const secondQuarter = settleOfflineIncome(offlineProfile.base, 10_000 + hour, 10
 if (quarterHour.creditedMaterials !== 2 || secondQuarter.creditedMaterials !== 3) {
   fail('零碎离线时间没有正确累计');
 }
-const beforeClockRollback = JSON.stringify(offlineProfile.base);
 settleOfflineIncome(offlineProfile.base, 1, 10, 8 * hour);
-if (JSON.stringify(offlineProfile.base) !== beforeClockRollback) fail('系统时钟回拨仍产生了收益');
+if (offlineProfile.base.lastActiveAtMs !== 1 || offlineProfile.base.offlineProductionUnits !== 0) {
+  fail('系统时钟回拨后没有安全地重新锚定');
+}
+const recovered = settleOfflineIncome(offlineProfile.base, 1 + hour, 10, 8 * hour);
+if (recovered.creditedMaterials !== 10) fail('时钟校正后离线收益没有恢复');
 const capped = settleOfflineIncome(offlineProfile.base, 10_000 + 20 * hour, 10, 8 * hour);
 if (capped.creditedMaterials !== 80) fail('离线收益没有按上限截断');
 if (offlineProfile.base.resources.blueprints !== 0 || offlineProfile.base.resources.rareMaterials !== 0) {
@@ -146,6 +202,15 @@ for (const entity of run.world.entities) {
 }
 for (let frame = 0; frame < 30; frame += 1) run.step(EMPTY_INPUT);
 if (run.profile.base.completedStageRuns !== 1) fail('Boss 首次清空没有准确记录一次通关');
+if (run.pendingEquipment?.[0]) run.chooseEquipment(run.pendingEquipment[0]);
+run.enterRoom('v3', null);
+for (const entity of run.world.entities) {
+  if (entity.team === 'enemy') entity.dead = true;
+}
+for (let frame = 0; frame < 30; frame += 1) run.step(EMPTY_INPUT);
+if (run.profile.base.completedStageRuns !== 1) fail('重入已清空 Boss 房重复累计通关');
+const inheritedClear = createStageProfile(run.profile);
+if (inheritedClear.base.completedStageRuns !== 1) fail('通关次数没有跨关继承');
 
 if (!process.exitCode) {
   console.log('[validate_economy] 资源账本、建筑解锁、建造队列、离线收益与跨关迁移通过');

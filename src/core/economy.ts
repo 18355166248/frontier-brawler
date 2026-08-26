@@ -72,16 +72,30 @@ export function createBaseProgress(): BaseProgress {
 
 /** 跨关与后续存档加载都必须深拷贝，避免旧档案和新 Run 共用流水数组。 */
 export function cloneBaseProgress(progress: BaseProgress): BaseProgress {
+  const sourceResources = progress.resources ?? createBaseProgress().resources;
+  const resourceLedger = (progress.resourceLedger ?? []).map((entry) => ({ ...entry }));
+  const maxSequence = resourceLedger.reduce((max, entry) => Math.max(max, entry.sequence), 0);
   return {
     completedStageRuns: progress.completedStageRuns ?? 0,
     completedBuildings: [...(progress.completedBuildings ?? [])],
     constructionQueue: (progress.constructionQueue ?? []).map((job) => ({ ...job })),
     lastActiveAtMs: progress.lastActiveAtMs ?? null,
     offlineProductionUnits: progress.offlineProductionUnits ?? 0,
-    resources: { ...progress.resources },
-    resourceLedger: progress.resourceLedger.map((entry) => ({ ...entry })),
-    nextLedgerSequence: progress.nextLedgerSequence,
+    resources: {
+      materials: validBalance(sourceResources.materials) ? sourceResources.materials : 0,
+      blueprints: validBalance(sourceResources.blueprints) ? sourceResources.blueprints : 0,
+      rareMaterials: validBalance(sourceResources.rareMaterials) ? sourceResources.rareMaterials : 0,
+    },
+    resourceLedger,
+    nextLedgerSequence:
+      Number.isSafeInteger(progress.nextLedgerSequence) && progress.nextLedgerSequence > maxSequence
+        ? progress.nextLedgerSequence
+        : maxSequence + 1,
   };
+}
+
+function validBalance(value: unknown): value is number {
+  return Number.isSafeInteger(value) && (value as number) >= 0;
 }
 
 export function recordStageCompletion(progress: BaseProgress): void {
@@ -138,7 +152,7 @@ export function queueBuildingConstruction(
 
 /** 返回这次新完成的建筑，供 UI 做逐栋完成反馈。 */
 export function settleConstruction(progress: BaseProgress, nowMs: number): BuildingId[] {
-  if (!Number.isFinite(nowMs)) return [];
+  if (!Number.isSafeInteger(nowMs) || nowMs < 0) return [];
   const completed: BuildingId[] = [];
   while (progress.constructionQueue[0]?.completesAtMs <= nowMs) {
     const job = progress.constructionQueue.shift();
@@ -178,7 +192,14 @@ export function settleOfflineIncome(
     progress.lastActiveAtMs = nowMs;
     return { elapsedMs: 0, creditedMaterials: 0 };
   }
-  if (nowMs <= progress.lastActiveAtMs) return { elapsedMs: 0, creditedMaterials: 0 };
+  if (nowMs < progress.lastActiveAtMs) {
+    // 本地设备从错误的未来时间校正回来时重新锚定；丢弃不足一个材料的余数，
+    // 避免把两个不连续时钟区间拼成收入，同时保证收益不会永久冻结。
+    progress.lastActiveAtMs = nowMs;
+    progress.offlineProductionUnits = 0;
+    return { elapsedMs: 0, creditedMaterials: 0 };
+  }
+  if (nowMs === progress.lastActiveAtMs) return { elapsedMs: 0, creditedMaterials: 0 };
 
   const elapsedMs = Math.min(nowMs - progress.lastActiveAtMs, maxOfflineMs);
   if (!Number.isSafeInteger(elapsedMs * materialsPerHour)) {
@@ -210,7 +231,13 @@ export function applyResourceChanges(
   });
   if (!entries.length) return false;
   if (entries.some(({ amount }) => !Number.isSafeInteger(amount))) return false;
-  if (entries.some(({ resource, amount }) => progress.resources[resource] + amount < 0)) return false;
+  if (
+    entries.some(({ resource, amount }) => {
+      const balance = progress.resources[resource];
+      const next = balance + amount;
+      return !validBalance(balance) || !Number.isSafeInteger(next) || next < 0;
+    })
+  ) return false;
 
   for (const { resource, amount } of entries) {
     progress.resources[resource] += amount;
