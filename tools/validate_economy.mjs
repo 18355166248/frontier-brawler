@@ -35,6 +35,7 @@ const {
   createStageProfile,
   queueBuildingConstruction,
   recordStageCompletion,
+  roomResourceReward,
   settleConstruction,
   settleOfflineIncome,
   unlockedBuildings,
@@ -44,6 +45,35 @@ const fail = (message) => {
   console.error(`[validate_economy] FAIL: ${message}`);
   process.exitCode = 1;
 };
+
+if (Object.keys(roomResourceReward(1, 'start')).length !== 0) fail('起始房错误地产出资源');
+if (Object.keys(roomResourceReward(1, 'reward')).length !== 0) fail('奖励房错误地产出资源');
+const normalReward = roomResourceReward(2, 'normal');
+if (
+  normalReward.materials !== 5 ||
+  normalReward.blueprints !== undefined ||
+  normalReward.rareMaterials !== undefined
+) fail('普通房产出梯度错误');
+const earlyEliteReward = roomResourceReward(4, 'elite');
+const lateEliteReward = roomResourceReward(5, 'elite');
+if (earlyEliteReward.blueprints !== 1 || earlyEliteReward.rareMaterials !== undefined) {
+  fail('低阶段精英房产出梯度错误');
+}
+if (lateEliteReward.blueprints !== 1 || lateEliteReward.rareMaterials !== 1) {
+  fail('高阶段精英房没有产出稀有材料');
+}
+const earlyBossReward = roomResourceReward(2, 'boss');
+const lateBossReward = roomResourceReward(3, 'boss');
+if (earlyBossReward.blueprints !== 2 || earlyBossReward.rareMaterials !== undefined) {
+  fail('低阶段 Boss 房产出梯度错误');
+}
+if (lateBossReward.blueprints !== 2 || lateBossReward.rareMaterials !== 1) {
+  fail('中后期 Boss 房没有产出稀有材料');
+}
+if (Object.keys(roomResourceReward(0, 'boss')).length !== 0) fail('非法关卡序号仍产出资源');
+if (Object.keys(roomResourceReward(Number.MAX_SAFE_INTEGER, 'boss')).length !== 0) {
+  fail('溢出的关卡资源计算没有被拒绝');
+}
 
 const profile = createProfile();
 if (!applyResourceChanges(profile.base, { materials: 40, blueprints: 2 }, 'stage-clear')) {
@@ -202,6 +232,20 @@ for (const entity of run.world.entities) {
 }
 for (let frame = 0; frame < 30; frame += 1) run.step(EMPTY_INPUT);
 if (run.profile.base.completedStageRuns !== 1) fail('Boss 首次清空没有准确记录一次通关');
+const firstBossResources = { ...run.profile.base.resources };
+const expectedBossReward = roomResourceReward(STAGES[0].index, 'boss');
+if (
+  firstBossResources.materials !== expectedBossReward.materials ||
+  firstBossResources.blueprints !== expectedBossReward.blueprints ||
+  firstBossResources.rareMaterials !== (expectedBossReward.rareMaterials ?? 0)
+) fail('Boss 首次清空没有通过统一账本发放正确资源');
+if (
+  !run.profile.base.resourceLedger.every(
+    (entry) => entry.reason === `room-clear:${STAGES[0].id}:v3`,
+  )
+) {
+  fail('Boss 战斗产出的流水原因不可追溯');
+}
 if (run.pendingEquipment?.[0]) run.chooseEquipment(run.pendingEquipment[0]);
 run.enterRoom('v3', null);
 for (const entity of run.world.entities) {
@@ -209,9 +253,12 @@ for (const entity of run.world.entities) {
 }
 for (let frame = 0; frame < 30; frame += 1) run.step(EMPTY_INPUT);
 if (run.profile.base.completedStageRuns !== 1) fail('重入已清空 Boss 房重复累计通关');
+if (JSON.stringify(run.profile.base.resources) !== JSON.stringify(firstBossResources)) {
+  fail('重入已清空 Boss 房重复发放资源');
+}
 const inheritedClear = createStageProfile(run.profile);
 if (inheritedClear.base.completedStageRuns !== 1) fail('通关次数没有跨关继承');
 
 if (!process.exitCode) {
-  console.log('[validate_economy] 资源账本、建筑解锁、建造队列、离线收益与跨关迁移通过');
+  console.log('[validate_economy] 战斗产出、资源账本、建筑解锁、建造队列、离线收益与跨关迁移通过');
 }

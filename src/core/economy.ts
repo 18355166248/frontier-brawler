@@ -1,3 +1,5 @@
+import type { RoomKind } from './level';
+
 /** M5 局外资源：基础材料可离线产出，图纸和稀有材料只能通过战斗获得。 */
 export const RESOURCE_IDS = ['materials', 'blueprints', 'rareMaterials'] as const;
 export type ResourceId = (typeof RESOURCE_IDS)[number];
@@ -100,6 +102,40 @@ function validBalance(value: unknown): value is number {
 
 export function recordStageCompletion(progress: BaseProgress): void {
   progress.completedStageRuns += 1;
+}
+
+/**
+ * 房间首次清空的基础产出。数值先保持小而可读，后续真机量化只调整这一张表；
+ * 奖励房和起始房不产资源，避免无战斗路径刷账本。
+ */
+export function roomResourceReward(
+  stageIndex: number,
+  kind: RoomKind,
+): Partial<ResourceBalances> {
+  if (!Number.isSafeInteger(stageIndex) || stageIndex < 1) return {};
+  let reward: Partial<ResourceBalances>;
+  switch (kind) {
+    case 'normal':
+      reward = { materials: 3 + stageIndex };
+      break;
+    case 'elite':
+      reward = {
+        materials: 8 + stageIndex * 2,
+        blueprints: 1,
+        ...(stageIndex >= 5 ? { rareMaterials: 1 } : {}),
+      };
+      break;
+    case 'boss':
+      reward = {
+        materials: 15 + stageIndex * 3,
+        blueprints: 2,
+        ...(stageIndex >= 3 ? { rareMaterials: 1 } : {}),
+      };
+      break;
+    default:
+      return {};
+  }
+  return Object.values(reward).every(Number.isSafeInteger) ? reward : {};
 }
 
 export function unlockedBuildings(progress: BaseProgress): BuildingId[] {

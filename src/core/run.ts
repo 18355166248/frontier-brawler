@@ -39,7 +39,13 @@ import { resolveProfessionDamageTakenMultiplier } from './actions';
 import { RunStats } from './stats';
 import type { UpgradeTrackId } from './upgrades';
 import { availableTracks, computeUpgradeStats } from './upgrades';
-import { cloneBaseProgress, createBaseProgress, recordStageCompletion } from './economy';
+import {
+  applyResourceChanges,
+  cloneBaseProgress,
+  createBaseProgress,
+  recordStageCompletion,
+  roomResourceReward,
+} from './economy';
 import type { BaseProgress } from './economy';
 
 /** 血量成长的基准值，不能让 profile.maxHp 自己滚雪球——见 upgrades.ts 顶部说明。 */
@@ -443,6 +449,16 @@ export class Run {
 
   private markCleared(room: RoomDef): void {
     this.cleared.add(room.id);
+    // 资源与通关计数共用“首次清空”事实，重进房间不会重复结算；统一账本则让
+    // 后续基地 UI、存档和调试工具都能追溯每笔战斗产出。
+    const resourceReward = roomResourceReward(this.stage.index, room.kind);
+    if (Object.values(resourceReward).some((amount) => amount > 0)) {
+      applyResourceChanges(
+        this.profile.base,
+        resourceReward,
+        `room-clear:${this.stage.id}:${room.id}`,
+      );
+    }
     // 通关次数必须绑定 Boss 房“首次清空”这个唯一事实；放在下一关按钮或结算
     // UI 会让自动模拟、触控入口和重复按键各自产生不同计数。
     if (room.kind === 'boss') recordStageCompletion(this.profile.base);
