@@ -422,6 +422,7 @@ if (import.meta.env.DEV) {
           accessories: [...run.profile.inventory.accessories],
         },
         resources: { ...run.profile.base.resources },
+        completedStageRuns: run.profile.base.completedStageRuns,
         resourceLedgerEntries: run.profile.base.resourceLedger.length,
         pendingEquipment: run.pendingEquipment ? [...run.pendingEquipment] : null,
         seconds: Number((run.stats.frames / 60).toFixed(1)),

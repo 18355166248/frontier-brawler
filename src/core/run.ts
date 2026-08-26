@@ -39,7 +39,7 @@ import { resolveProfessionDamageTakenMultiplier } from './actions';
 import { RunStats } from './stats';
 import type { UpgradeTrackId } from './upgrades';
 import { availableTracks, computeUpgradeStats } from './upgrades';
-import { cloneBaseProgress, createBaseProgress } from './economy';
+import { cloneBaseProgress, createBaseProgress, recordStageCompletion } from './economy';
 import type { BaseProgress } from './economy';
 
 /** 血量成长的基准值，不能让 profile.maxHp 自己滚雪球——见 upgrades.ts 顶部说明。 */
@@ -443,6 +443,9 @@ export class Run {
 
   private markCleared(room: RoomDef): void {
     this.cleared.add(room.id);
+    // 通关次数必须绑定 Boss 房“首次清空”这个唯一事实；放在下一关按钮或结算
+    // UI 会让自动模拟、触控入口和重复按键各自产生不同计数。
+    if (room.kind === 'boss') recordStageCompletion(this.profile.base);
     this.offerEquipmentDrop(room);
   }
 
