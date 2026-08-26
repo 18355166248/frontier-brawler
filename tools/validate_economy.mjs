@@ -33,7 +33,9 @@ const {
   applyResourceChanges,
   createProfile,
   createStageProfile,
+  queueBuildingConstruction,
   recordStageCompletion,
+  settleConstruction,
   unlockedBuildings,
 } = economy;
 
@@ -85,6 +87,35 @@ if (BUILDING_UNLOCKS.some((building, index) => building.unlockAfterClears !== in
   fail('五栋建筑没有按 1-5 次通关逐栋开放');
 }
 
+const queueProfile = createProfile();
+recordStageCompletion(queueProfile.base);
+recordStageCompletion(queueProfile.base);
+applyResourceChanges(queueProfile.base, { materials: 50 }, 'test-grant');
+if (!queueBuildingConstruction(queueProfile.base, 'trainingGround', {
+  nowMs: 1_000,
+  durationMs: 100,
+  cost: { materials: 10 },
+})) fail('已解锁建筑无法加入队列');
+if (!queueBuildingConstruction(queueProfile.base, 'forge', {
+  nowMs: 1_000,
+  durationMs: 200,
+  cost: { materials: 20 },
+})) fail('第二栋建筑无法串行排队');
+if (queueProfile.base.constructionQueue[1]?.startsAtMs !== 1_100) fail('第二栋建筑没有串行等待');
+if (queueBuildingConstruction(queueProfile.base, 'forge', {
+  nowMs: 1_000,
+  durationMs: 10,
+  cost: {},
+})) fail('同一建筑被重复加入队列');
+if (settleConstruction(queueProfile.base, 1_099).length !== 0) fail('建筑提前完成');
+if (settleConstruction(queueProfile.base, 1_100).join(',') !== 'trainingGround') {
+  fail('第一栋建筑没有按时完成');
+}
+if (settleConstruction(queueProfile.base, 1_300).join(',') !== 'forge') {
+  fail('跨多个时间点结算队列失败');
+}
+if (queueProfile.base.resources.materials !== 20) fail('建造成本没有走统一资源账本');
+
 // 集成验证：Boss 房首次清空计一次；在结算/掉落界面继续 step 不能重复累计。
 const runProfile = createProfile();
 const run = new Run(STAGES[0], runProfile);
@@ -97,5 +128,5 @@ for (let frame = 0; frame < 30; frame += 1) run.step(EMPTY_INPUT);
 if (run.profile.base.completedStageRuns !== 1) fail('Boss 首次清空没有准确记录一次通关');
 
 if (!process.exitCode) {
-  console.log('[validate_economy] 资源账本、跨关迁移、Boss 通关计数与五建筑解锁顺序通过');
+  console.log('[validate_economy] 资源账本、建筑解锁、串行建造队列与跨关迁移通过');
 }

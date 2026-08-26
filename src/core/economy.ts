@@ -37,8 +37,16 @@ export interface ResourceLedgerEntry {
   reason: string;
 }
 
+export interface ConstructionJob {
+  building: BuildingId;
+  startsAtMs: number;
+  completesAtMs: number;
+}
+
 export interface BaseProgress {
   completedStageRuns: number;
+  completedBuildings: BuildingId[];
+  constructionQueue: ConstructionJob[];
   resources: ResourceBalances;
   resourceLedger: ResourceLedgerEntry[];
   nextLedgerSequence: number;
@@ -49,6 +57,8 @@ const MAX_LEDGER_ENTRIES = 200;
 export function createBaseProgress(): BaseProgress {
   return {
     completedStageRuns: 0,
+    completedBuildings: [],
+    constructionQueue: [],
     resources: { materials: 0, blueprints: 0, rareMaterials: 0 },
     resourceLedger: [],
     nextLedgerSequence: 1,
@@ -59,6 +69,8 @@ export function createBaseProgress(): BaseProgress {
 export function cloneBaseProgress(progress: BaseProgress): BaseProgress {
   return {
     completedStageRuns: progress.completedStageRuns ?? 0,
+    completedBuildings: [...(progress.completedBuildings ?? [])],
+    constructionQueue: (progress.constructionQueue ?? []).map((job) => ({ ...job })),
     resources: { ...progress.resources },
     resourceLedger: progress.resourceLedger.map((entry) => ({ ...entry })),
     nextLedgerSequence: progress.nextLedgerSequence,
@@ -73,6 +85,61 @@ export function unlockedBuildings(progress: BaseProgress): BuildingId[] {
   return BUILDING_UNLOCKS.filter(
     (building) => progress.completedStageRuns >= building.unlockAfterClears,
   ).map((building) => building.id);
+}
+
+export interface QueueConstructionOptions {
+  nowMs: number;
+  durationMs: number;
+  cost: Partial<ResourceBalances>;
+}
+
+/**
+ * 建造队列串行执行：后一栋从前一栋完成时开始，而不是所有建筑同时倒计时。
+ * 时长由调用方提供，机制骨架不提前固化尚未真机验证的等待数值。
+ */
+export function queueBuildingConstruction(
+  progress: BaseProgress,
+  building: BuildingId,
+  options: QueueConstructionOptions,
+): boolean {
+  if (!BUILDING_IDS.includes(building)) return false;
+  if (!unlockedBuildings(progress).includes(building)) return false;
+  if (progress.completedBuildings.includes(building)) return false;
+  if (progress.constructionQueue.some((job) => job.building === building)) return false;
+  if (!Number.isSafeInteger(options.nowMs) || options.nowMs < 0) return false;
+  if (!Number.isSafeInteger(options.durationMs) || options.durationMs <= 0) return false;
+
+  const costs = RESOURCE_IDS.map((resource) => options.cost[resource] ?? 0);
+  if (costs.some((amount) => !Number.isSafeInteger(amount) || amount < 0)) return false;
+
+  const costChanges = Object.fromEntries(
+    RESOURCE_IDS.map((resource) => [resource, -(options.cost[resource] ?? 0)]),
+  ) as Partial<ResourceBalances>;
+  if (costs.some((amount) => amount > 0)) {
+    if (!applyResourceChanges(progress, costChanges, `construction:${building}`)) return false;
+  }
+
+  const previous = progress.constructionQueue.at(-1);
+  const startsAtMs = Math.max(options.nowMs, previous?.completesAtMs ?? options.nowMs);
+  progress.constructionQueue.push({
+    building,
+    startsAtMs,
+    completesAtMs: startsAtMs + options.durationMs,
+  });
+  return true;
+}
+
+/** 返回这次新完成的建筑，供 UI 做逐栋完成反馈。 */
+export function settleConstruction(progress: BaseProgress, nowMs: number): BuildingId[] {
+  if (!Number.isFinite(nowMs)) return [];
+  const completed: BuildingId[] = [];
+  while (progress.constructionQueue[0]?.completesAtMs <= nowMs) {
+    const job = progress.constructionQueue.shift();
+    if (!job || progress.completedBuildings.includes(job.building)) continue;
+    progress.completedBuildings.push(job.building);
+    completed.push(job.building);
+  }
+  return completed;
 }
 
 /**

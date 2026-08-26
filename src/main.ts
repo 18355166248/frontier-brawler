@@ -423,6 +423,8 @@ if (import.meta.env.DEV) {
         },
         resources: { ...run.profile.base.resources },
         completedStageRuns: run.profile.base.completedStageRuns,
+        completedBuildings: [...run.profile.base.completedBuildings],
+        constructionQueue: run.profile.base.constructionQueue.map((job) => ({ ...job })),
         resourceLedgerEntries: run.profile.base.resourceLedger.length,
         pendingEquipment: run.pendingEquipment ? [...run.pendingEquipment] : null,
         seconds: Number((run.stats.frames / 60).toFixed(1)),
