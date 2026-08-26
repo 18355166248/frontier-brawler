@@ -421,6 +421,8 @@ if (import.meta.env.DEV) {
           armors: [...run.profile.inventory.armors],
           accessories: [...run.profile.inventory.accessories],
         },
+        resources: { ...run.profile.base.resources },
+        resourceLedgerEntries: run.profile.base.resourceLedger.length,
         pendingEquipment: run.pendingEquipment ? [...run.pendingEquipment] : null,
         seconds: Number((run.stats.frames / 60).toFixed(1)),
       };

@@ -10,6 +10,7 @@
     "check": "tsc --noEmit",
     "validate:professions": "node tools/validate_professions.mjs",
     "validate:equipment": "node tools/validate_equipment.mjs",
+    "validate:economy": "node tools/validate_economy.mjs",
     "simulate:validation": "node tools/simulate_validation.mjs"
   },
   "devDependencies": {

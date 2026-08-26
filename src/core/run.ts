@@ -39,6 +39,8 @@ import { resolveProfessionDamageTakenMultiplier } from './actions';
 import { RunStats } from './stats';
 import type { UpgradeTrackId } from './upgrades';
 import { availableTracks, computeUpgradeStats } from './upgrades';
+import { cloneBaseProgress, createBaseProgress } from './economy';
+import type { BaseProgress } from './economy';
 
 /** 血量成长的基准值，不能让 profile.maxHp 自己滚雪球——见 upgrades.ts 顶部说明。 */
 const BASE_MAX_HP = 160;
@@ -49,6 +51,8 @@ export interface PlayerProfile {
   profession: Profession;
   equipment: EquipmentLoadout;
   inventory: EquipmentInventory;
+  /** M5 局外进度；和装备库存一样跨关保留，血量与局内成长仍会重置。 */
+  base: BaseProgress;
   hp: number;
   maxHp: number;
   energy: number;
@@ -63,6 +67,7 @@ export function createProfile(): PlayerProfile {
     profession: DEFAULT_PROFESSION,
     equipment: createEmptyLoadout(),
     inventory: createEquipmentInventory(),
+    base: createBaseProgress(),
     hp: BASE_MAX_HP,
     maxHp: BASE_MAX_HP,
     energy: 0,
@@ -86,6 +91,9 @@ export function createStageProfile(previous?: PlayerProfile): PlayerProfile {
     armors: [...previous.inventory.armors],
     accessories: [...previous.inventory.accessories],
   };
+  // 开发热更新或未来旧存档可能没有 M5 字段；缺失时从空账本迁移，不能让
+  // “进入下一关”因为读取 undefined 而中断。
+  next.base = previous.base ? cloneBaseProgress(previous.base) : createBaseProgress();
   return next;
 }
 
