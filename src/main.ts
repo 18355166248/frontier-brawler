@@ -16,9 +16,12 @@ import type { UpgradeTrackId } from './core/upgrades';
 import type { InputState } from './core/world';
 import { Renderer } from './render/renderer';
 import { SpriteSheet } from './render/sprites';
+import { EquipmentIcons } from './render/equipment-icons';
 import { PROFESSION_IDS } from './core/types';
 import type { ActionState, Profession } from './core/types';
 import { ProfessionValidationStore } from './dev/profession-validation';
+import { ValidationPanel } from './dev/validation-panel';
+import { ACCESSORY_IDS, ARMOR_IDS, WEAPON_IDS, equipmentLabel } from './core/equipment';
 import type { EquipmentId, EquipmentSlot } from './core/equipment';
 
 /** 三选一的按键，和 render/renderer.ts 里卡片上画的键位一一对应 */
@@ -72,7 +75,7 @@ for (const [kind, rows] of Object.entries(ENEMY_SHEET_ROWS)) {
   sheets.set(kind, new SpriteSheet({ url: `art/enemy-${kind}-v2.png`, columns: 4, rows }));
 }
 
-const renderer = new Renderer(canvas, sheets);
+const renderer = new Renderer(canvas, sheets, new EquipmentIcons());
 
 /**
  * 手写的房间图最容易出两种错：门只连了单向，和网格坐标与门方向对不上。
@@ -87,6 +90,14 @@ let stageIndex = 0;
 let run = new Run(STAGES[stageIndex], createProfile());
 const professionValidation = import.meta.env.DEV ? new ProfessionValidationStore() : null;
 const recordedValidationRuns = new WeakSet<Run>();
+/**
+ * M2/M4 验收面板。和上面的样本记录器一样只在 DEV 下构造，
+ * 生产构建里 `import.meta.env.DEV` 会被替换成 false 后整段摇掉。
+ */
+const validationPanel =
+  import.meta.env.DEV && professionValidation
+    ? new ValidationPanel(professionValidation, (id) => equipmentLabel(id as EquipmentId))
+    : null;
 
 function startStage(index: number, carryFrom?: Run['profile']): void {
   stageIndex = Math.max(0, Math.min(STAGES.length - 1, index));
@@ -101,6 +112,7 @@ if (import.meta.env.DEV) {
   const requestedStage = Number(params.get('stage'));
   const requestedRoom = params.get('room');
   const requestedProfession = params.get('profession') as Profession | null;
+  const requestedEquipment = params.getAll('equipment');
   if (Number.isInteger(requestedStage) && requestedStage >= 1 && requestedStage <= STAGES.length) {
     startStage(requestedStage - 1);
   }
@@ -109,6 +121,13 @@ if (import.meta.env.DEV) {
   }
   if (requestedProfession && PROFESSION_IDS.includes(requestedProfession)) {
     run.setProfession(requestedProfession);
+  }
+  const equipmentIds = new Set<string>([...WEAPON_IDS, ...ARMOR_IDS, ...ACCESSORY_IDS]);
+  for (const rawId of requestedEquipment) {
+    if (!equipmentIds.has(rawId)) continue;
+    const id = rawId as EquipmentId;
+    run.grantEquipment(id);
+    run.equip(id);
   }
 }
 
@@ -134,6 +153,13 @@ function queueActionEdge(code: string): void {
 }
 
 window.addEventListener('keydown', (e) => {
+  // 验收面板先看一眼：它只吃自己的键（V/O/C/Y/Esc），吃掉就不再交给游戏，
+  // 免得"按 C 确认清空"顺手也触发了别的操作。其余键照常透传，
+  // 面板是覆盖层不是暂停态。
+  if (!e.repeat && validationPanel?.handleKey(e.code)) {
+    e.preventDefault();
+    return;
+  }
   keys.add(e.code);
   if (!e.repeat) queueActionEdge(e.code);
   if (e.code === 'KeyR') startStage(stageIndex, run.profile);
@@ -250,6 +276,8 @@ function frame(now: number): void {
   }
 
   renderer.draw(run);
+  // 画在所有游戏 UI 之上：它是开发期的检查工具，不是玩法界面
+  validationPanel?.draw(canvas.getContext('2d')!, canvas.width, canvas.height);
   rafId = requestAnimationFrame(frame);
 }
 
@@ -350,6 +378,15 @@ if (import.meta.env.DEV) {
     },
     professionSamples(): unknown {
       return professionValidation?.samples() ?? [];
+    },
+    /** 开关 M2/M4 验收面板；键盘 V 走的是同一条路径。 */
+    toggleValidationPanel(): boolean {
+      validationPanel?.handleKey('KeyV');
+      return validationPanel?.open ?? false;
+    },
+    /** 面板当前呈现的行，自动化验证直接断言这个而不是截图。 */
+    validationPanelModel(): unknown {
+      return validationPanel?.model() ?? null;
     },
     clearProfessionSamples(): void {
       professionValidation?.clear();

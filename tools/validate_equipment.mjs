@@ -11,6 +11,7 @@ const bundled = await build({
       "export * from './src/core/run.ts';",
       "export * from './src/core/world.ts';",
       "export * from './src/dev/profession-validation.ts';",
+      "export * from './src/render/equipment-icons.ts';",
     ].join('\n'),
     resolveDir: process.cwd(),
     sourcefile: 'equipment-validator-entry.ts',
@@ -36,6 +37,8 @@ const {
   ARMOR_IDS,
   ACCESSORY_IDS,
   ProfessionValidationStore,
+  EQUIPMENT_ICON_PATHS,
+  WEAPON_IDS,
   createProfile,
   createStageProfile,
   resolveAction,
@@ -60,6 +63,12 @@ for (const [weapon, action] of Object.entries(expectedAction)) {
   const equipped = resolveAction(action, profession, weapon);
   if (!WEAPON_ACTIONS[weapon][action]) fail(`${weapon} 没有覆盖声明的 ${action}`);
   if (JSON.stringify(base) === JSON.stringify(equipped)) fail(`${weapon} 没有改变招式手感数据`);
+}
+
+const expectedIconIds = [...WEAPON_IDS, ...ARMOR_IDS, ...ACCESSORY_IDS].sort();
+const actualIconIds = Object.keys(EQUIPMENT_ICON_PATHS).sort();
+if (JSON.stringify(actualIconIds) !== JSON.stringify(expectedIconIds)) {
+  fail(`正式装备图标未覆盖完整目录：${JSON.stringify(actualIconIds)}`);
 }
 
 const stage = {

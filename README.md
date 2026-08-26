@@ -268,6 +268,8 @@ __game.professionReport()         // M2 已记录样本的三职业聚合对比
 __game.equipmentReport()          // M4 已记录样本的配装占比与多样性门槛
 __game.professionSamples()        // M2 原始样本；每次通关或死亡自动记录
 __game.clearProfessionSamples()   // 清空本机 M2 验收样本
+__game.toggleValidationPanel()    // 开关 M2/M4 验收面板（等同键盘 V）
+__game.validationPanelModel()     // 面板当前呈现的行，自动化断言读这个
 __game.unwarned()                 // 无预警伤害明细，验收第 4 条逐条 review 用
 __game.run                        // Run 状态：当前房间、已清空集合、门状态
 __game.progress()                 // 关卡进度摘要
@@ -279,7 +281,38 @@ __game.clearRoom()                // 清空当前房间敌人，验证开门与�
 Canvas 视觉回归也可用开发地址直达教学房，例如
 `http://127.0.0.1:4317/?stage=3&room=c1&profession=swift`；`stage` 从 1 起，`room` 必须属于该关，
 `profession` 可选 `heavy`、`swift`、`arcane`。
+可重复传 `equipment` 直接收入库存并装备，用于稳定复现装备卡片，例如：
+`?profession=heavy&equipment=iron-maul&equipment=field-armor`。
 这条入口只在开发模式存在，生产构建会移除。
+
+### M2 / M4 验收面板（开发期，按 `V`）
+
+真人连打六关时不会停下来开控制台，所以把 `professionReport()` 和
+`equipmentReport()` 的数字直接画到画面上：三职业的样本数、成功率、平均用时、
+移动距离、平均交战距离和动作分布，加上 M4 的配装占比、成功率和
+「头部配装是否 < 40%」的达标结论。
+
+| 键 | 作用 |
+| --- | --- |
+| `V` | 开关面板 |
+| `O` | 导出 JSON（样本 + 两份报告，带时间戳文件名） |
+| `C` → `Y` | 清空样本；`C` 只是弹确认，必须再按 `Y` 才真的清 |
+| `Esc` | 有待确认时撤销确认，否则关闭面板 |
+
+面板是**纯覆盖层**：不暂停战斗、不改 `Run.phase`，走位和出手键照常透传，
+可以一边打一边看数字涨。它只吃自己那几个键（`V`/`O`/`C`/`Y`/`Esc`），
+这几个键游戏本身没有绑定，两边不会互相抢。
+
+「报告 → 可画的行」抽成了纯函数 `buildValidationPanelModel`，
+`npm run validate:professions` 会直接断言它在**无样本 / 单一配装 / 多配装 /
+超量折叠**四种数据下的呈现——画布截图断不了这个。其中最关键的是无样本：
+聚合器为了除零兜底会把成功率和均值都算成 0，面板若照搬就会把
+「还没有样本」显示成「成功率 0%」，这两个结论在验收会上是相反的，
+所以面板对空样本一律显示 `—` 和「无法判定」，不显示 0 和「未达标」。
+
+整个面板只在 `import.meta.env.DEV` 下构造，生产构建里连同
+`ProfessionValidationStore` 一起被整段 tree-shake（可用
+`grep 验收面板 dist/assets/*.js` 复核，应为 0 处）。
 
 注入输入有个坑：攻击/冲刺/技能/处决都取"按下那一瞬间"，
 连续两帧都按住只会触发一次。脚本里要模拟连按，中间得插一帧松开：
@@ -315,8 +348,8 @@ __game.overallStats()
   slash2 行，重击蓄力复用 idle。跳跃的高度变化靠渲染层
   的 Y 轴偏移体现，不依赖专属美术帧，
   所以视觉上能看出「在跳」，只是角色本身的姿态还是 idle 那张。
-- 三职业专属动作美术和经营层尚未实现；装备机制已有多套可选配置，静态图标
-  仍等待按素材交付规范接入。
+- 三职业专属动作美术和经营层尚未实现；装备机制已有多套可选配置，12 件装备
+  已接入 64×64 正式静态图标和加载失败占位回退。
 - 没有音效。
 
 ## 下一步

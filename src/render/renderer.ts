@@ -36,6 +36,7 @@ import {
 import { MAX_UPGRADE_LEVEL, UPGRADE_TRACK_IDS, UPGRADE_TRACKS } from '../core/upgrades';
 import type { World } from '../core/world';
 import { Minimap } from './minimap';
+import type { EquipmentIcons } from './equipment-icons';
 import type { SpriteSheet } from './sprites';
 
 /** 跳跃的视觉离地高度峰值（像素）。纯渲染表现，逻辑层不知道"高度"这个概念。 */
@@ -288,6 +289,7 @@ export class Renderer {
   constructor(
     private canvas: HTMLCanvasElement,
     private sheets: Map<string, SpriteSheet>,
+    private equipmentIcons?: EquipmentIcons,
   ) {
     const ctx = canvas.getContext('2d');
     if (!ctx) throw new Error('拿不到 2d context');
@@ -1338,11 +1340,11 @@ export class Renderer {
     ctx.fillText('精英 / 首领房首次清空掉落 · 按 1 / 2 / 3 收入库存', canvas.width / 2, 110);
 
     const cardW = 210;
-    const cardH = 210;
+    const cardH = 250;
     const gap = 22;
     const totalW = options.length * cardW + (options.length - 1) * gap;
     const startX = (canvas.width - totalW) / 2;
-    const y = 150;
+    const y = 136;
     options.forEach((id, index) => {
       const slot = equipmentSlotOf(id);
       const color = slotColor[slot];
@@ -1355,13 +1357,14 @@ export class Renderer {
       ctx.stroke();
       ctx.fillStyle = 'rgba(255,255,255,0.55)';
       ctx.font = '12px system-ui, sans-serif';
-      ctx.fillText(slotLabel[slot], x + cardW / 2, y + 31);
+      ctx.fillText(slotLabel[slot], x + cardW / 2, y + 25);
+      this.drawEquipmentIcon(id, x + cardW / 2, y + 65, color, 64);
       ctx.fillStyle = color;
-      ctx.font = 'bold 23px system-ui, sans-serif';
-      ctx.fillText(equipmentLabel(id), x + cardW / 2, y + 67);
+      ctx.font = 'bold 20px system-ui, sans-serif';
+      ctx.fillText(equipmentLabel(id), x + cardW / 2, y + 111);
       ctx.fillStyle = 'rgba(255,255,255,0.84)';
       ctx.font = '13px system-ui, sans-serif';
-      this.wrapText(equipmentDescription(id), x + cardW / 2, y + 105, cardW - 30, 19);
+      this.wrapText(equipmentDescription(id), x + cardW / 2, y + 140, cardW - 30, 18);
       ctx.beginPath();
       ctx.arc(x + cardW / 2, y + cardH - 30, 16, 0, Math.PI * 2);
       ctx.strokeStyle = color;
@@ -1442,17 +1445,18 @@ export class Renderer {
       ctx.fillStyle = 'rgba(255,255,255,0.52)';
       ctx.font = '12px system-ui, sans-serif';
       ctx.fillText(`库存 ${card.owned}`, x + cardW / 2, y + 61);
+      if (card.current) this.drawEquipmentIcon(card.current, x + cardW / 2, y + 98, card.color, 56);
       ctx.fillStyle = '#ffffff';
-      ctx.font = 'bold 22px system-ui, sans-serif';
-      ctx.fillText(card.current ? equipmentLabel(card.current) : '未装备', x + cardW / 2, y + 103);
+      ctx.font = 'bold 19px system-ui, sans-serif';
+      ctx.fillText(card.current ? equipmentLabel(card.current) : '未装备', x + cardW / 2, y + 139);
       ctx.fillStyle = 'rgba(255,255,255,0.76)';
       ctx.font = '13px system-ui, sans-serif';
       this.wrapText(
         card.current ? equipmentDescription(card.current) : '清空精英或首领房获得装备。',
         x + cardW / 2,
-        y + 135,
+        y + 165,
         cardW - 30,
-        19,
+        18,
       );
       ctx.beginPath();
       ctx.arc(x + cardW / 2, y + cardH - 29, 16, 0, Math.PI * 2);
@@ -1463,6 +1467,33 @@ export class Renderer {
       ctx.fillText(card.key, x + cardW / 2, y + cardH - 24);
     });
     ctx.restore();
+  }
+
+  /** 正式 PNG 未覆盖或加载失败时画稳定占位，不让素材缺口变成空白卡片。 */
+  private drawEquipmentIcon(
+    id: EquipmentId,
+    centerX: number,
+    centerY: number,
+    color: string,
+    size: number,
+  ): void {
+    const x = centerX - size / 2;
+    const y = centerY - size / 2;
+    this.ctx.fillStyle = 'rgba(255,255,255,0.06)';
+    this.roundRect(this.ctx, x, y, size, size, 8);
+    this.ctx.fill();
+    if (this.equipmentIcons?.draw(this.ctx, id, x, y, size)) return;
+
+    const slot = equipmentSlotOf(id);
+    const glyph: Record<EquipmentSlot, string> = { weapon: '刃', armor: '甲', accessory: '印' };
+    this.ctx.strokeStyle = color;
+    this.ctx.lineWidth = 2;
+    this.roundRect(this.ctx, x + 5, y + 5, size - 10, size - 10, 7);
+    this.ctx.stroke();
+    this.ctx.textAlign = 'center';
+    this.ctx.fillStyle = color;
+    this.ctx.font = `bold ${Math.round(size * 0.34)}px system-ui, sans-serif`;
+    this.ctx.fillText(glyph[slot], centerX, centerY + size * 0.12);
   }
 
   /**
