@@ -38,7 +38,7 @@ import { World, createEnemy, createEntity } from './world';
 import { resolveProfessionDamageTakenMultiplier } from './actions';
 import { RunStats } from './stats';
 import type { UpgradeTrackId } from './upgrades';
-import { availableTracks, computeUpgradeStats } from './upgrades';
+import { UPGRADE_TRACK_IDS, availableTracks, computeUpgradeStats } from './upgrades';
 import {
   applyResourceChanges,
   BUILDING_IDS,
@@ -53,6 +53,7 @@ import {
   RESOURCE_FIELD_MATERIALS_PER_HOUR,
   MAX_OFFLINE_INCOME_MS,
   hasBuilding,
+  selectArchiveTrack,
 } from './economy';
 import type { BaseProgress, BuildingId, OfflineIncomeResult } from './economy';
 
@@ -92,8 +93,8 @@ export function createProfile(): PlayerProfile {
 }
 
 /**
- * 进入下一关或重试时只继承 M4 装备进度；血量、能量和局内成长仍按关卡重置。
- * 这让首领掉落在下一关可用，又不会提前引入 M5 的完整跨关经营存档。
+ * 进入下一关或重试时继承装备和基地进度；血量、能量和普通局内成长仍重置。
+ * 藏经阁选定路线会在重置后种入一级，复用现有成长数值管线。
  */
 export function createStageProfile(previous?: PlayerProfile): PlayerProfile {
   const next = createProfile();
@@ -108,11 +109,14 @@ export function createStageProfile(previous?: PlayerProfile): PlayerProfile {
   // 开发热更新或未来旧存档可能没有 M5 字段；缺失时从空账本迁移，不能让
   // “进入下一关”因为读取 undefined 而中断。
   next.base = previous.base ? cloneBaseProgress(previous.base) : createBaseProgress();
+  if (hasBuilding(next.base, 'archive') && next.base.archiveTrack) {
+    next.upgrades[next.base.archiveTrack] = 1;
+  }
   return next;
 }
 
 export type RunPhase =
-  /** 出击前选择职业，M2 验证阶段三个职业全部开放 */
+  /** 出击前选择职业；正式路径受演武场门禁，开发/验证入口可直接设置 */
   | 'professionSelect'
   /** 房间里还有活敌人 */
   | 'fighting'
@@ -390,6 +394,17 @@ export class Run {
       durationMs: plan.durationMs,
       cost: plan.cost,
     });
+  }
+
+  /** 已建成的藏经阁用同一张建筑卡循环三条路线，下一次出击时生效。 */
+  cycleArchiveTrack(): boolean {
+    if (!this.baseMenuOpen || !hasBuilding(this.profile.base, 'archive')) return false;
+    const current = this.profile.base.archiveTrack;
+    const index = current ? UPGRADE_TRACK_IDS.indexOf(current) : -1;
+    return selectArchiveTrack(
+      this.profile.base,
+      UPGRADE_TRACK_IDS[(index + 1) % UPGRADE_TRACK_IDS.length],
+    );
   }
 
   /** 主循环和调试验证共用同一结算入口，返回值可供后续完成动效消费。 */

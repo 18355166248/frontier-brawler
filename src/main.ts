@@ -182,7 +182,11 @@ window.addEventListener('keydown', (e) => {
   if (run.phase === 'baseMenu') {
     const index = Number(e.code.replace('Digit', '')) - 1;
     const building = BUILDING_IDS[index];
-    if (building) run.queueBaseBuilding(building, Date.now());
+    if (building === 'archive' && run.profile.base.completedBuildings.includes('archive')) {
+      run.cycleArchiveTrack();
+    } else if (building) {
+      run.queueBaseBuilding(building, Date.now());
+    }
   } else if (
     profession &&
     run.phase === 'professionSelect' &&

@@ -39,6 +39,7 @@ const {
   queueBuildingConstruction,
   recordStageCompletion,
   roomResourceReward,
+  selectArchiveTrack,
   settleConstruction,
   settleOfflineIncome,
   unlockedBuildings,
@@ -130,12 +131,36 @@ const partialLegacyProfile = createProfile();
 delete partialLegacyProfile.base.resources;
 delete partialLegacyProfile.base.resourceLedger;
 delete partialLegacyProfile.base.nextLedgerSequence;
+delete partialLegacyProfile.base.archiveTrack;
 const migratedPartial = createStageProfile(partialLegacyProfile);
 if (
   migratedPartial.base.resources.materials !== 0 ||
   migratedPartial.base.resourceLedger.length !== 0 ||
-  migratedPartial.base.nextLedgerSequence !== 1
+  migratedPartial.base.nextLedgerSequence !== 1 ||
+  migratedPartial.base.archiveTrack !== null
 ) fail('base 存在但账本子字段缺失时迁移失败');
+
+const malformedArchiveProfile = createProfile();
+malformedArchiveProfile.base.archiveTrack = 'offense2';
+if (createStageProfile(malformedArchiveProfile).base.archiveTrack !== null) {
+  fail('非法藏经阁路线没有在迁移时降级为空');
+}
+
+const archiveProfile = createProfile();
+if (selectArchiveTrack(archiveProfile.base, 'offense')) fail('藏经阁建成前允许选择永久路线');
+archiveProfile.base.completedBuildings.push('archive');
+if (!selectArchiveTrack(archiveProfile.base, 'offense')) fail('藏经阁建成后无法选择永久路线');
+const archiveStageProfile = createStageProfile(archiveProfile);
+if (
+  archiveStageProfile.upgrades.offense !== 1 ||
+  archiveStageProfile.upgrades.arcane !== 0 ||
+  archiveStageProfile.upgrades.guardian !== 0
+) fail('藏经阁路线没有在下一次出击种入恰好一级');
+archiveProfile.base.completedBuildings = [];
+const unbuiltArchiveStageProfile = createStageProfile(archiveProfile);
+if (unbuiltArchiveStageProfile.upgrades.offense !== 0) {
+  fail('只有路线字段、没有建成藏经阁时仍获得了永久等级');
+}
 
 const malformedProfile = createProfile();
 delete malformedProfile.base.resources.materials;
@@ -337,6 +362,14 @@ if (!run.canSelectProfession('heavy') || !run.canSelectProfession('arcane')) {
 }
 if (!run.toggleBaseMenu(6_000) || run.phase !== 'stageComplete') {
   fail('基地菜单无法返回通关结算');
+}
+run.profile.base.completedBuildings.push('archive');
+if (!run.toggleBaseMenu(6_000) || !run.cycleArchiveTrack()) {
+  fail('基地菜单无法切换藏经阁永久路线');
+}
+if (run.profile.base.archiveTrack !== 'offense') fail('藏经阁首次切换没有选择锋芒路线');
+if (!run.cycleArchiveTrack() || run.profile.base.archiveTrack !== 'arcane') {
+  fail('藏经阁路线无法免费改选');
 }
 
 if (!process.exitCode) {

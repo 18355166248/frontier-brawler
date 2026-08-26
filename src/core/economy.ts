@@ -1,4 +1,6 @@
 import type { RoomKind } from './level';
+import { UPGRADE_TRACK_IDS } from './upgrades';
+import type { UpgradeTrackId } from './upgrades';
 
 /** M5 局外资源：基础材料可离线产出，图纸和稀有材料只能通过战斗获得。 */
 export const RESOURCE_IDS = ['materials', 'blueprints', 'rareMaterials'] as const;
@@ -93,6 +95,8 @@ export interface BaseProgress {
   resources: ResourceBalances;
   resourceLedger: ResourceLedgerEntry[];
   nextLedgerSequence: number;
+  /** 藏经阁单选的永久起始路线；只提供一级，不引入第二套天赋等级系统。 */
+  archiveTrack: UpgradeTrackId | null;
 }
 
 const MAX_LEDGER_ENTRIES = 200;
@@ -110,6 +114,7 @@ export function createBaseProgress(): BaseProgress {
     resources: { materials: 0, blueprints: 0, rareMaterials: 0 },
     resourceLedger: [],
     nextLedgerSequence: 1,
+    archiveTrack: null,
   };
 }
 
@@ -134,6 +139,9 @@ export function cloneBaseProgress(progress: BaseProgress): BaseProgress {
       Number.isSafeInteger(progress.nextLedgerSequence) && progress.nextLedgerSequence > maxSequence
         ? progress.nextLedgerSequence
         : maxSequence + 1,
+    archiveTrack: UPGRADE_TRACK_IDS.includes(progress.archiveTrack as UpgradeTrackId)
+      ? progress.archiveTrack
+      : null,
   };
 }
 
@@ -188,6 +196,13 @@ export function unlockedBuildings(progress: BaseProgress): BuildingId[] {
 /** 建筑能力统一从“已完成”读取，解锁或排队都不等于已经生效。 */
 export function hasBuilding(progress: BaseProgress, building: BuildingId): boolean {
   return progress.completedBuildings.includes(building);
+}
+
+/** 藏经阁路线可免费改选，但只有建筑真正完成后才能写入档案。 */
+export function selectArchiveTrack(progress: BaseProgress, track: UpgradeTrackId): boolean {
+  if (!hasBuilding(progress, 'archive') || !UPGRADE_TRACK_IDS.includes(track)) return false;
+  progress.archiveTrack = track;
+  return true;
 }
 
 export function canAffordResources(
