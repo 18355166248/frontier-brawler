@@ -339,6 +339,15 @@ if (import.meta.env.DEV) {
     professionReport(): unknown {
       return professionValidation?.report() ?? [];
     },
+    /** M4 配装分布与头部占比，和职业验收共用同一批自动记录样本。 */
+    equipmentReport(): unknown {
+      return professionValidation?.equipmentReport() ?? {
+        totalSamples: 0,
+        topLoadoutShare: 0,
+        passesDiversityTarget: false,
+        loadouts: [],
+      };
+    },
     professionSamples(): unknown {
       return professionValidation?.samples() ?? [];
     },

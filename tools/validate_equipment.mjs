@@ -10,6 +10,7 @@ const bundled = await build({
       "export * from './src/core/equipment.ts';",
       "export * from './src/core/run.ts';",
       "export * from './src/core/world.ts';",
+      "export * from './src/dev/profession-validation.ts';",
     ].join('\n'),
     resolveDir: process.cwd(),
     sourcefile: 'equipment-validator-entry.ts',
@@ -32,6 +33,9 @@ const {
   Run,
   WEAPONS,
   WEAPON_ACTIONS,
+  ARMOR_IDS,
+  ACCESSORY_IDS,
+  ProfessionValidationStore,
   createProfile,
   createStageProfile,
   resolveAction,
@@ -43,8 +47,11 @@ function fail(message) {
 
 const expectedAction = {
   'iron-maul': 'heavyCharged',
+  'breaker-maul': 'heavyCharged',
   'wind-sabers': 'slash3',
+  'hook-blades': 'slash2',
   'spirit-focus': 'arcanePulse',
+  'ember-focus': 'arcanePulse',
 };
 
 for (const [weapon, action] of Object.entries(expectedAction)) {
@@ -102,6 +109,7 @@ if (!run.equip('spirit-focus') || !run.equip('field-armor') || !run.equip('execu
 }
 if (run.player?.damageTakenMultiplier !== 0.88) fail('行阵甲减伤没有同步到玩家');
 if (run.player?.executeHealBonus !== 8) fail('收魂佩处决回复没有同步到玩家');
+if (run.player?.speed !== run.profile.speed * 0.94) fail('行阵甲移速代价没有同步到玩家');
 if (!run.equip(null, 'weapon') || run.profile.equipment.weapon !== null) fail('卸下武器失败');
 if (run.player) run.player.action = 'arcanePulse';
 if (run.toggleEquipmentMenu()) fail('攻击动作途中不应允许打开装备面板');
@@ -146,18 +154,37 @@ for (const entity of dropRun.world.entities) {
   }
 }
 dropRun.step(EMPTY_INPUT);
-const expectedDrop = ['iron-maul', 'field-armor', 'execution-charm'];
 if (dropRun.phase !== 'equipmentChoice') fail('首领房清空后没有进入装备选择暂停态');
-if (JSON.stringify(dropRun.pendingEquipment) !== JSON.stringify(expectedDrop)) {
-  fail(`首领房掉落不正确：${JSON.stringify(dropRun.pendingEquipment)}`);
+if (
+  dropRun.pendingEquipment?.length !== 3 ||
+  !dropRun.pendingEquipment.some((id) => WEAPONS[id]?.profession === 'heavy') ||
+  !dropRun.pendingEquipment.some((id) => ARMOR_IDS.includes(id)) ||
+  !dropRun.pendingEquipment.some((id) => ACCESSORY_IDS.includes(id))
+) {
+  fail(`首领房没有稳定提供武器/护甲/饰品各一件：${JSON.stringify(dropRun.pendingEquipment)}`);
 }
-if (!dropRun.chooseEquipment('iron-maul')) fail('无法领取待选装备');
-if (!dropRun.profile.inventory.weapons.includes('iron-maul')) fail('领取后没有写入库存');
+const droppedWeapon = dropRun.pendingEquipment.find((id) => WEAPONS[id]);
+if (!droppedWeapon || !dropRun.chooseEquipment(droppedWeapon)) fail('无法领取待选武器');
+if (!dropRun.profile.inventory.weapons.includes(droppedWeapon)) fail('领取后没有写入库存');
 if (dropRun.pendingEquipment !== null) fail('领取后没有关闭装备选择');
 const nextStageProfile = createStageProfile(dropRun.profile);
-if (!nextStageProfile.inventory.weapons.includes('iron-maul')) fail('首领/精英掉落没有跨关保留');
+if (!nextStageProfile.inventory.weapons.includes(droppedWeapon)) fail('首领/精英掉落没有跨关保留');
 if (nextStageProfile.hp !== nextStageProfile.maxHp || nextStageProfile.energy !== 0) {
   fail('跨关时战斗资源没有重置');
+}
+
+const validationStore = new ProfessionValidationStore(null);
+if (!dropRun.equip(droppedWeapon)) fail('领取后的武器无法装备用于分布统计');
+const sampleA = dropRun.overallSummary();
+validationStore.record(dropRun.stage.id, true, sampleA);
+validationStore.record(dropRun.stage.id, false, sampleA);
+const variedRun = new Run(stage, createProfile());
+variedRun.setProfession('swift');
+const sampleB = variedRun.overallSummary();
+validationStore.record(variedRun.stage.id, true, sampleB);
+const equipmentReport = validationStore.equipmentReport();
+if (equipmentReport.totalSamples !== 3 || equipmentReport.topLoadoutShare !== 0.67) {
+  fail(`配装分布聚合错误：${JSON.stringify(equipmentReport)}`);
 }
 
 console.table(
@@ -167,4 +194,4 @@ console.table(
     action: expectedAction[id],
   })),
 );
-console.log('[validate_equipment] 三槽位效果、安全换装、跨关掉落与武器覆盖链通过');
+console.log('[validate_equipment] 多套配装效果、安全换装、轮换掉落、分布统计与武器覆盖链通过');

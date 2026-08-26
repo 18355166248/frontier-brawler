@@ -14,6 +14,9 @@ import { OPPOSITE, arenaOf, findRoom } from './level';
 import { DEFAULT_PROFESSION } from './types';
 import type { Entity, Profession, Vec2, WorldEvents } from './types';
 import {
+  ACCESSORY_IDS,
+  ARMOR_IDS,
+  WEAPON_IDS,
   WEAPONS,
   canEquipWeapon,
   createEmptyLoadout,
@@ -432,17 +435,18 @@ export class Run {
    */
   private offerEquipmentDrop(room: RoomDef): void {
     if (room.kind !== 'elite' && room.kind !== 'boss') return;
-    const professionWeapon = Object.values(WEAPONS).find(
-      (weapon) => weapon.profession === this.profile.profession,
+    const seed = this.stage.index + stableEquipmentSeed(room.id);
+    const professionWeapons = WEAPON_IDS.filter(
+      (id) => WEAPONS[id].profession === this.profile.profession,
     );
-    const candidates = ([
-      professionWeapon?.id,
-      'field-armor',
-      'execution-charm',
-    ] satisfies (EquipmentId | undefined)[]).filter(
-      (id): id is EquipmentId => id !== undefined && !this.ownsEquipment(id),
-    );
-    if (candidates.length > 0) this.pendingEquipment = candidates.slice(0, 3);
+    // 每次固定给“职业武器 / 护甲 / 饰品”各一个候选；稳定轮换使同一关可复现，
+    // 又避免扩充目录后仍永远只掉数组第一件。
+    const candidates = [
+      nextUnowned(professionWeapons, seed, (id) => this.ownsEquipment(id)),
+      nextUnowned(ARMOR_IDS, seed + 1, (id) => this.ownsEquipment(id)),
+      nextUnowned(ACCESSORY_IDS, seed + 2, (id) => this.ownsEquipment(id)),
+    ].filter((id): id is EquipmentId => id !== undefined);
+    if (candidates.length > 0) this.pendingEquipment = candidates;
   }
 
   private ownsEquipment(id: EquipmentId): boolean {
@@ -552,10 +556,12 @@ export class Run {
     const stats = computeUpgradeStats(this.profile.upgrades);
     const equipment = resolveEquipmentEffects(this.profile.equipment);
     player.damageMultiplier = stats.damageMultiplier;
-    player.skillDamageMultiplier = stats.skillDamageMultiplier;
+    player.damageMultiplier *= equipment.damageMultiplier;
+    player.skillDamageMultiplier = stats.skillDamageMultiplier * equipment.skillDamageMultiplier;
     player.skillCostMultiplier = stats.skillCostMultiplier;
     player.executeHealBonus = stats.executeHealBonus + equipment.executeHealBonus;
     player.damageTakenMultiplier = equipment.damageTakenMultiplier;
+    player.speed = this.profile.speed * equipment.speedMultiplier;
     player.maxHp = this.profile.maxHp;
     player.hp = this.profile.hp;
   }
@@ -649,4 +655,18 @@ export class Run {
     this.profile.hp = p.hp;
     this.profile.energy = p.energy;
   }
+}
+
+function stableEquipmentSeed(value: string): number {
+  let seed = 0;
+  for (const char of value) seed = (seed * 31 + char.charCodeAt(0)) >>> 0;
+  return seed;
+}
+
+function nextUnowned<T>(items: readonly T[], seed: number, owns: (item: T) => boolean): T | undefined {
+  for (let offset = 0; offset < items.length; offset += 1) {
+    const item = items[(seed + offset) % items.length];
+    if (!owns(item)) return item;
+  }
+  return undefined;
 }

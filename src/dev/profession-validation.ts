@@ -22,6 +22,20 @@ export interface ProfessionReportRow {
   averageActions: Record<string, number>;
 }
 
+export interface EquipmentReportRow {
+  loadout: string;
+  samples: number;
+  share: number;
+  successRate: number;
+}
+
+export interface EquipmentReport {
+  totalSamples: number;
+  topLoadoutShare: number;
+  passesDiversityTarget: boolean;
+  loadouts: EquipmentReportRow[];
+}
+
 const STORAGE_KEY = 'frontier-brawler:m2-profession-samples:v1';
 
 /**
@@ -78,6 +92,39 @@ export class ProfessionValidationStore {
         averageActions,
       };
     });
+  }
+
+  /** M4 用同一批真人通关样本统计配装，不另开一套容易口径漂移的记录器。 */
+  equipmentReport(): EquipmentReport {
+    const groups = new Map<string, ProfessionSample[]>();
+    for (const sample of this.memory) {
+      const equipment = sample.summary.equipment;
+      const key = [
+        equipment.weapon ?? 'none',
+        equipment.armor ?? 'none',
+        equipment.accessory ?? 'none',
+      ].join(' / ');
+      groups.set(key, [...(groups.get(key) ?? []), sample]);
+    }
+
+    const totalSamples = this.memory.length;
+    const loadouts = [...groups.entries()]
+      .map(([loadout, samples]) => ({
+        loadout,
+        samples: samples.length,
+        share: round(samples.length / Math.max(1, totalSamples)),
+        successRate: round(
+          samples.filter((sample) => sample.cleared).length / Math.max(1, samples.length),
+        ),
+      }))
+      .sort((a, b) => b.samples - a.samples || a.loadout.localeCompare(b.loadout));
+    const topLoadoutShare = loadouts[0]?.share ?? 0;
+    return {
+      totalSamples,
+      topLoadoutShare,
+      passesDiversityTarget: totalSamples > 0 && topLoadoutShare < 0.4,
+      loadouts,
+    };
   }
 
   clear(): void {

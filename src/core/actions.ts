@@ -714,6 +714,23 @@ export const WEAPON_ACTIONS: Record<WeaponId, Partial<Record<ActionState, Action
       ],
     },
   },
+  'breaker-maul': {
+    heavyCharged: {
+      ...(PROFESSION_ACTIONS.heavy.heavyCharged ?? ACTIONS.heavyCharged),
+      frames: 32,
+      hitboxes: [
+        {
+          ...ACTIONS.heavyCharged.hitboxes[0],
+          halfWidth: 42,
+          halfDepth: 32,
+          damage: 32,
+          knockback: 11,
+          activeFrom: 9,
+          activeTo: 13,
+        },
+      ],
+    },
+  },
   'wind-sabers': {
     slash3: {
       ...(PROFESSION_ACTIONS.swift.slash3 ?? ACTIONS.slash3),
@@ -729,6 +746,24 @@ export const WEAPON_ACTIONS: Record<WeaponId, Partial<Record<ActionState, Action
       ],
       cancelFrom: 9,
       perfectCancelWindow: { from: 9, to: 13 },
+    },
+  },
+  'hook-blades': {
+    slash2: {
+      ...(PROFESSION_ACTIONS.swift.slash2 ?? ACTIONS.slash2),
+      frames: 26,
+      hitboxes: [
+        {
+          ...ACTIONS.slash2.hitboxes[0],
+          halfWidth: 48,
+          halfDepth: 34,
+          knockback: 7,
+          activeFrom: 6,
+          activeTo: 11,
+        },
+      ],
+      cancelFrom: 13,
+      perfectCancelWindow: { from: 13, to: 16 },
     },
   },
   'spirit-focus': {
@@ -748,6 +783,25 @@ export const WEAPON_ACTIONS: Record<WeaponId, Partial<Record<ActionState, Action
       ],
       cancelFrom: 18,
       perfectCancelWindow: { from: 18, to: 22 },
+    },
+  },
+  'ember-focus': {
+    arcanePulse: {
+      ...(PROFESSION_ACTIONS.arcane.arcanePulse ?? ACTIONS.arcanePulse),
+      frames: 28,
+      hitboxes: [
+        {
+          ...ACTIONS.arcanePulse.hitboxes[0],
+          offset: { x: 56, y: 0 },
+          halfWidth: 32,
+          halfDepth: 30,
+          activeFrom: 10,
+          activeTo: 15,
+          damage: 12,
+        },
+      ],
+      cancelFrom: 15,
+      perfectCancelWindow: { from: 15, to: 19 },
     },
   },
 };
