@@ -43,6 +43,7 @@ const {
 
 const PROFESSIONS = ['heavy', 'swift', 'arcane'];
 const RUNS_PER_STAGE = 3;
+const ROUTE_MODES = ['critical-path', 'full-clear', 'full-clear'];
 const MAX_FRAMES = 60 * 300;
 const outputIndex = process.argv.indexOf('--output');
 const outputPath = outputIndex >= 0 ? process.argv[outputIndex + 1] : null;
@@ -95,6 +96,22 @@ const perStage = PROFESSIONS.flatMap((profession) =>
     };
   }),
 );
+const routeReport = PROFESSIONS.flatMap((profession) =>
+  [...new Set(ROUTE_MODES)].map((routeMode) => {
+    const rows = samples.filter(
+      (sample) => sample.profession === profession && sample.routeMode === routeMode,
+    );
+    return {
+      profession,
+      routeMode,
+      attempts: rows.length,
+      clears: rows.filter((row) => row.cleared).length,
+      successRate: round(rows.filter((row) => row.cleared).length / Math.max(1, rows.length)),
+      averageSeconds: round(average(rows.map((row) => row.summary.seconds))),
+      averageDamageTaken: round(average(rows.map((row) => row.summary.damageTaken))),
+    };
+  }),
+);
 
 const successRates = professionReport.map((row) => row.successRate);
 const stageSuccessRateSpreads = STAGES.map((stage) => {
@@ -106,8 +123,20 @@ const stageSuccessRateSpreads = STAGES.map((stage) => {
     spread: round(Math.max(...rates) - Math.min(...rates)),
   };
 });
+const routeSuccessRateSpreads = [...new Set(ROUTE_MODES)].map((routeMode) => {
+  const rates = routeReport
+    .filter((row) => row.routeMode === routeMode)
+    .map((row) => row.successRate);
+  return {
+    routeMode,
+    spread: round(Math.max(...rates) - Math.min(...rates)),
+  };
+});
 const maximumStageSuccessRateSpread = Math.max(
   ...stageSuccessRateSpreads.map((row) => row.spread),
+);
+const maximumRouteSuccessRateSpread = Math.max(
+  ...routeSuccessRateSpreads.map((row) => row.spread),
 );
 const overallSuccessRateSpread = Math.max(...successRates) - Math.min(...successRates);
 const professionMechanics = {
@@ -125,6 +154,7 @@ const report = {
     professions: PROFESSIONS,
     stages: STAGES.map((stage) => stage.id),
     runsPerStage: RUNS_PER_STAGE,
+    routeModes: ROUTE_MODES,
     maxFramesPerStage: MAX_FRAMES,
     equipment: 'elite and boss drops auto-equipped; campaign inventory carries between stages',
   },
@@ -132,7 +162,9 @@ const report = {
   equipmentReport,
   coverage,
   perStage,
+  routeReport,
   stageSuccessRateSpreads,
+  routeSuccessRateSpreads,
   equipmentCampaign: {
     description: 'six-stage progression with inventory and loadout carried between stages',
     report: equipmentReport,
@@ -147,6 +179,8 @@ const report = {
     overallSuccessRateSpreadBelow20Percent: overallSuccessRateSpread < 0.2,
     maximumStageSuccessRateSpread: round(maximumStageSuccessRateSpread),
     sameStageSuccessRateSpreadBelow20Percent: maximumStageSuccessRateSpread < 0.2,
+    maximumRouteSuccessRateSpread: round(maximumRouteSuccessRateSpread),
+    sameRouteSuccessRateSpreadBelow20Percent: maximumRouteSuccessRateSpread < 0.2,
     equipmentTopLoadoutShare: equipmentReport.topLoadoutShare,
     equipmentTopLoadoutShareBelow40Percent: equipmentReport.passesDiversityTarget,
   },
@@ -164,6 +198,7 @@ console.table(
   })),
 );
 console.table(perStage);
+console.table(routeReport);
 console.log('[simulate_validation] 连续战役头部配装占比', equipmentReport.topLoadoutShare);
 console.log('[simulate_validation] 模拟样本，不可替代真人验收');
 console.log(JSON.stringify(report.acceptanceSignals, null, 2));
@@ -191,6 +226,7 @@ function simulateStage(stage, profession, variant, profile = createProfile(), mo
   resetWorldIdsForTesting();
   const run = new Run(stage, profile);
   run.setProfession(profession);
+  const routeMode = ROUTE_MODES[variant % ROUTE_MODES.length];
   let frame = 0;
 
   while (frame < MAX_FRAMES && run.phase !== 'dead' && run.phase !== 'stageComplete') {
@@ -211,7 +247,8 @@ function simulateStage(stage, profession, variant, profile = createProfile(), mo
     }
 
     if (run.cleared.has(run.room.id)) {
-      const nextRoom = nextUnclearedRoom(run);
+      const nextRoom =
+        routeMode === 'critical-path' ? nextRoomTowardsBoss(run) : nextUnclearedRoom(run);
       if (nextRoom) {
         run.enterRoom(nextRoom, null);
         continue;
@@ -226,6 +263,7 @@ function simulateStage(stage, profession, variant, profile = createProfile(), mo
     profile: run.profile,
     sample: {
       mode,
+      routeMode,
       profession,
       stageId: stage.id,
       variant,
@@ -247,8 +285,22 @@ function simulateStage(stage, profession, variant, profile = createProfile(), mo
   };
 }
 
+/** 主线路线只取当前房到 Boss 的最短路，保留沿途奖励房但跳过可选精英支路。 */
+function nextRoomTowardsBoss(run) {
+  const bossRoom = run.stage.rooms.find((room) => room.kind === 'boss');
+  if (!bossRoom) return null;
+  // Boss 已清空时交还给 Run.step 完成结算，不能把当前房再次当成“下一站”。
+  if (bossRoom.id === run.room.id) return null;
+  return nextRoomOnPath(run, (room) => room.id === bossRoom.id);
+}
+
 /** 找到通往任意未清房间的下一步；只跳过走到门口的机械耗时，不跳过战斗。 */
 function nextUnclearedRoom(run) {
+  return nextRoomOnPath(run, (room) => !run.cleared.has(room.id));
+}
+
+/** 在房间图上找最短下一步；这里只跳过走门耗时，沿途战斗仍由真实 World 推进。 */
+function nextRoomOnPath(run, matches) {
   const byId = new Map(run.stage.rooms.map((room) => [room.id, room]));
   const queue = [[run.room.id]];
   const seen = new Set([run.room.id]);
@@ -256,7 +308,7 @@ function nextUnclearedRoom(run) {
     const path = queue.shift();
     const room = byId.get(path[path.length - 1]);
     if (!room) continue;
-    if (!run.cleared.has(room.id)) return path[1] ?? room.id;
+    if (matches(room)) return path[1] ?? room.id;
     for (const target of Object.values(room.doors)) {
       if (!target || seen.has(target)) continue;
       seen.add(target);

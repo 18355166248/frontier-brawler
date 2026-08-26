@@ -326,9 +326,15 @@ export class Run {
     return this.equip(options[(current + 1) % options.length], 'accessory');
   }
 
-  /** 整关是否打完：所有房间都清空了 */
+  /**
+   * 整关是否打完：终点 Boss 房清空即结算。
+   *
+   * 地图里有明确标成支线的普通/精英房；若要求所有房间清空，玩家击败 Boss
+   * 后还可能被迫原路返回补支路，“支线”和“终点”都会失去实际含义。
+   */
   get stageCleared(): boolean {
-    return this.stage.rooms.every((r) => this.cleared.has(r.id));
+    const bossRoom = this.stage.rooms.find((room) => room.kind === 'boss');
+    return bossRoom ? this.cleared.has(bossRoom.id) : false;
   }
 
   /**
