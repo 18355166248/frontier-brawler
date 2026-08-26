@@ -329,9 +329,9 @@ npm run simulate:validation -- --output docs/experiments/simulated-validation-20
 `sampleType: simulation-not-human`，超出 5 分钟仍未结束的局会保留为
 `finalPhase: fighting`，不会伪装成通关。
 
-2026-08-26 校准后的可复现基线为：54/54 到达真实终局，重装 78%、疾锋 78%、
+2026-08-26 校准后的可复现基线为：54/54 到达真实终局，重装 78%、疾锋 94%、
 术法 100%；总体跨度 22 个百分点，逐关最大跨度 100 个百分点，仍未达到 M2
-“同一关 `< 20%`”的门槛。连续战役的头部配装占比为 9%，通过 M4 的 `< 40%`
+“同一关 `< 20%`”的门槛。连续战役的头部配装占比为 7%，通过 M4 的 `< 40%`
 辅助信号。机器人结果适合拦截状态机、职业动作和装备生命周期退化，不足以单独
 证明真人平衡或配装多样性；最终结论仍以每职业逐关至少 3 局真人样本为准。完整原始结果见
 [`docs/experiments/simulated-validation-2026-08-26.json`](docs/experiments/simulated-validation-2026-08-26.json)。

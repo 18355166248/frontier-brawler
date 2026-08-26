@@ -250,8 +250,11 @@ function botInput(run, frame, variant) {
   const enemies = run.world.entities.filter((entity) => entity.team === 'enemy' && !entity.dead);
   if (!enemies.length) return EMPTY_INPUT;
   // 远程兵有优先级，但不能高到让机器人穿过贴脸精英追屏幕另一端的弓手。
+  const rangedEnemies = enemies.filter((enemy) => enemy.kind === 'ranged');
+  const targetPool =
+    run.profile.profession !== 'arcane' && rangedEnemies.length >= 2 ? rangedEnemies : enemies;
   const targetScore = (enemy) => distance(player, enemy) - (enemy.kind === 'ranged' ? 40 : 0);
-  const target = enemies.reduce((best, enemy) =>
+  const target = targetPool.reduce((best, enemy) =>
     targetScore(enemy) < targetScore(best) ? enemy : best,
   );
   const dx = target.pos.x - player.pos.x;
@@ -259,7 +262,17 @@ function botInput(run, frame, variant) {
   const distanceToTarget = Math.hypot(dx, dy);
   const desired = run.profile.profession === 'arcane' ? 70 : run.profile.profession === 'heavy' ? 48 : 42;
   // 四分钟仍未结束就进入决胜阶段，停止无限规避；剩余一分钟必须打出通关或死亡终局。
-  const dangerous = frame < 60 * 240 ? enemies.filter((enemy) => isDangerous(enemy, player)) : [];
+  const committingToRanged =
+    run.profile.profession !== 'arcane' &&
+    target.kind === 'ranged' &&
+    distance(player, target) < 110;
+  const dangerous =
+    frame < 60 * 240
+      ? enemies.filter(
+          (enemy) =>
+            !(committingToRanged && enemy.action === 'aim') && isDangerous(enemy, player),
+        )
+      : [];
   const executeRange = run.profile.profession === 'arcane' ? 100 : 70;
   const executable = enemies.some(
     (enemy) =>
@@ -315,8 +328,8 @@ function botInput(run, frame, variant) {
 
   if (run.profile.profession === 'heavy') {
     const charging = player.action === 'heavyCharge';
-    // 机器人无法像真人一样读出完整蓄力窗口，默认用短蓄力保证先完成攻防循环；
-    // 三档仍保留少量节奏差异，满蓄力的机制正确性由 validate:professions 单测覆盖。
+    // 自动玩家缺少“安全满蓄力窗口”的判断，三档以短/中蓄力覆盖稳定攻防循环；
+    // 满蓄力机制本身由 validate:professions 的确定性断言覆盖。
     const chargeTarget = [1, 4, 8][variant] ?? 4;
     return {
       moveX,
