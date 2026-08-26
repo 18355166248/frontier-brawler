@@ -36,6 +36,7 @@ const {
   queueBuildingConstruction,
   recordStageCompletion,
   settleConstruction,
+  settleOfflineIncome,
   unlockedBuildings,
 } = economy;
 
@@ -116,6 +117,25 @@ if (settleConstruction(queueProfile.base, 1_300).join(',') !== 'forge') {
 }
 if (queueProfile.base.resources.materials !== 20) fail('建造成本没有走统一资源账本');
 
+const offlineProfile = createProfile();
+const hour = 3_600_000;
+settleOfflineIncome(offlineProfile.base, 10_000, 10, 8 * hour);
+const firstHalfHour = settleOfflineIncome(offlineProfile.base, 10_000 + hour / 2, 10, 8 * hour);
+if (firstHalfHour.creditedMaterials !== 5) fail('半小时离线收益计算错误');
+const quarterHour = settleOfflineIncome(offlineProfile.base, 10_000 + (hour * 3) / 4, 10, 8 * hour);
+const secondQuarter = settleOfflineIncome(offlineProfile.base, 10_000 + hour, 10, 8 * hour);
+if (quarterHour.creditedMaterials !== 2 || secondQuarter.creditedMaterials !== 3) {
+  fail('零碎离线时间没有正确累计');
+}
+const beforeClockRollback = JSON.stringify(offlineProfile.base);
+settleOfflineIncome(offlineProfile.base, 1, 10, 8 * hour);
+if (JSON.stringify(offlineProfile.base) !== beforeClockRollback) fail('系统时钟回拨仍产生了收益');
+const capped = settleOfflineIncome(offlineProfile.base, 10_000 + 20 * hour, 10, 8 * hour);
+if (capped.creditedMaterials !== 80) fail('离线收益没有按上限截断');
+if (offlineProfile.base.resources.blueprints !== 0 || offlineProfile.base.resources.rareMaterials !== 0) {
+  fail('离线收益错误地产出了图纸或稀有材料');
+}
+
 // 集成验证：Boss 房首次清空计一次；在结算/掉落界面继续 step 不能重复累计。
 const runProfile = createProfile();
 const run = new Run(STAGES[0], runProfile);
@@ -128,5 +148,5 @@ for (let frame = 0; frame < 30; frame += 1) run.step(EMPTY_INPUT);
 if (run.profile.base.completedStageRuns !== 1) fail('Boss 首次清空没有准确记录一次通关');
 
 if (!process.exitCode) {
-  console.log('[validate_economy] 资源账本、建筑解锁、串行建造队列与跨关迁移通过');
+  console.log('[validate_economy] 资源账本、建筑解锁、建造队列、离线收益与跨关迁移通过');
 }

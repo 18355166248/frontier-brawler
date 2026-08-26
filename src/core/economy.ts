@@ -47,6 +47,9 @@ export interface BaseProgress {
   completedStageRuns: number;
   completedBuildings: BuildingId[];
   constructionQueue: ConstructionJob[];
+  lastActiveAtMs: number | null;
+  /** 毫秒 × 每小时产量的余数，避免频繁上线吞掉不足一个材料的零碎时间。 */
+  offlineProductionUnits: number;
   resources: ResourceBalances;
   resourceLedger: ResourceLedgerEntry[];
   nextLedgerSequence: number;
@@ -59,6 +62,8 @@ export function createBaseProgress(): BaseProgress {
     completedStageRuns: 0,
     completedBuildings: [],
     constructionQueue: [],
+    lastActiveAtMs: null,
+    offlineProductionUnits: 0,
     resources: { materials: 0, blueprints: 0, rareMaterials: 0 },
     resourceLedger: [],
     nextLedgerSequence: 1,
@@ -71,6 +76,8 @@ export function cloneBaseProgress(progress: BaseProgress): BaseProgress {
     completedStageRuns: progress.completedStageRuns ?? 0,
     completedBuildings: [...(progress.completedBuildings ?? [])],
     constructionQueue: (progress.constructionQueue ?? []).map((job) => ({ ...job })),
+    lastActiveAtMs: progress.lastActiveAtMs ?? null,
+    offlineProductionUnits: progress.offlineProductionUnits ?? 0,
     resources: { ...progress.resources },
     resourceLedger: progress.resourceLedger.map((entry) => ({ ...entry })),
     nextLedgerSequence: progress.nextLedgerSequence,
@@ -140,6 +147,51 @@ export function settleConstruction(progress: BaseProgress, nowMs: number): Build
     completed.push(job.building);
   }
   return completed;
+}
+
+export interface OfflineIncomeResult {
+  elapsedMs: number;
+  creditedMaterials: number;
+}
+
+/**
+ * 离线收益唯一入口，只能写入基础材料。图纸与稀有材料没有参数位，结构上杜绝
+ * “顺手也离线产一点”的规则漂移；时钟回拨时保留原时间戳，避免反复改时间刷取。
+ */
+export function settleOfflineIncome(
+  progress: BaseProgress,
+  nowMs: number,
+  materialsPerHour: number,
+  maxOfflineMs: number,
+): OfflineIncomeResult {
+  if (
+    !Number.isSafeInteger(nowMs) ||
+    nowMs < 0 ||
+    !Number.isSafeInteger(materialsPerHour) ||
+    materialsPerHour < 0 ||
+    !Number.isSafeInteger(maxOfflineMs) ||
+    maxOfflineMs <= 0
+  ) {
+    return { elapsedMs: 0, creditedMaterials: 0 };
+  }
+  if (progress.lastActiveAtMs === null) {
+    progress.lastActiveAtMs = nowMs;
+    return { elapsedMs: 0, creditedMaterials: 0 };
+  }
+  if (nowMs <= progress.lastActiveAtMs) return { elapsedMs: 0, creditedMaterials: 0 };
+
+  const elapsedMs = Math.min(nowMs - progress.lastActiveAtMs, maxOfflineMs);
+  if (!Number.isSafeInteger(elapsedMs * materialsPerHour)) {
+    return { elapsedMs: 0, creditedMaterials: 0 };
+  }
+  progress.lastActiveAtMs = nowMs;
+  const productionUnits = progress.offlineProductionUnits + elapsedMs * materialsPerHour;
+  const creditedMaterials = Math.floor(productionUnits / 3_600_000);
+  progress.offlineProductionUnits = productionUnits % 3_600_000;
+  if (creditedMaterials > 0) {
+    applyResourceChanges(progress, { materials: creditedMaterials }, 'offline-income');
+  }
+  return { elapsedMs, creditedMaterials };
 }
 
 /**
