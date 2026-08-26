@@ -19,6 +19,7 @@ import {
   createEmptyLoadout,
   createEquipmentInventory,
   equipmentSlotOf,
+  resolveEquipmentEffects,
 } from './equipment';
 import type {
   EquipmentId,
@@ -65,6 +66,23 @@ export function createProfile(): PlayerProfile {
     speed: 2.9,
     upgrades: { offense: 0, arcane: 0, guardian: 0 },
   };
+}
+
+/**
+ * 进入下一关或重试时只继承 M4 装备进度；血量、能量和局内成长仍按关卡重置。
+ * 这让首领掉落在下一关可用，又不会提前引入 M5 的完整跨关经营存档。
+ */
+export function createStageProfile(previous?: PlayerProfile): PlayerProfile {
+  const next = createProfile();
+  if (!previous) return next;
+  next.profession = previous.profession;
+  next.equipment = { ...previous.equipment };
+  next.inventory = {
+    weapons: [...previous.inventory.weapons],
+    armors: [...previous.inventory.armors],
+    accessories: [...previous.inventory.accessories],
+  };
+  return next;
 }
 
 export type RunPhase =
@@ -216,11 +234,13 @@ export class Run {
       const armor = id as ArmorId | null;
       if (armor && !this.profile.inventory.armors.includes(armor)) return false;
       this.profile.equipment.armor = armor;
+      this.applyUpgradeStatsToPlayer();
       return true;
     }
     const accessory = id as AccessoryId | null;
     if (accessory && !this.profile.inventory.accessories.includes(accessory)) return false;
     this.profile.equipment.accessory = accessory;
+    this.applyUpgradeStatsToPlayer();
     return true;
   }
 
@@ -268,7 +288,8 @@ export class Run {
       this.transition > 0 ||
       this.pendingChoice ||
       this.pendingEquipment ||
-      this.stageCleared
+      this.stageCleared ||
+      (this.player?.action !== 'idle' && this.player?.action !== 'move')
     ) {
       return false;
     }
@@ -529,10 +550,12 @@ export class Run {
     const player = this.world.player;
     if (!player) return;
     const stats = computeUpgradeStats(this.profile.upgrades);
+    const equipment = resolveEquipmentEffects(this.profile.equipment);
     player.damageMultiplier = stats.damageMultiplier;
     player.skillDamageMultiplier = stats.skillDamageMultiplier;
     player.skillCostMultiplier = stats.skillCostMultiplier;
-    player.executeHealBonus = stats.executeHealBonus;
+    player.executeHealBonus = stats.executeHealBonus + equipment.executeHealBonus;
+    player.damageTakenMultiplier = equipment.damageTakenMultiplier;
     player.maxHp = this.profile.maxHp;
     player.hp = this.profile.hp;
   }

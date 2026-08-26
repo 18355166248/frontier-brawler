@@ -10,7 +10,7 @@
  */
 import { TICK_RATE } from './core/actions';
 import { validateStage } from './core/level';
-import { Run, createProfile } from './core/run';
+import { Run, createProfile, createStageProfile } from './core/run';
 import { STAGES } from './core/stages';
 import type { UpgradeTrackId } from './core/upgrades';
 import type { InputState } from './core/world';
@@ -88,10 +88,10 @@ let run = new Run(STAGES[stageIndex], createProfile());
 const professionValidation = import.meta.env.DEV ? new ProfessionValidationStore() : null;
 const recordedValidationRuns = new WeakSet<Run>();
 
-function startStage(index: number): void {
+function startStage(index: number, carryFrom?: Run['profile']): void {
   stageIndex = Math.max(0, Math.min(STAGES.length - 1, index));
-  // 每关重新给一份满血档案。跨关卡的状态继承要等 M5 的经营层，现在不做。
-  run = new Run(STAGES[stageIndex], createProfile());
+  // M4 装备跨关保留，战斗资源和局内成长仍重置；完整经营存档留给 M5。
+  run = new Run(STAGES[stageIndex], createStageProfile(carryFrom));
 }
 
 if (import.meta.env.DEV) {
@@ -136,13 +136,13 @@ function queueActionEdge(code: string): void {
 window.addEventListener('keydown', (e) => {
   keys.add(e.code);
   if (!e.repeat) queueActionEdge(e.code);
-  if (e.code === 'KeyR') startStage(stageIndex);
+  if (e.code === 'KeyR') startStage(stageIndex, run.profile);
   if (e.code === 'KeyB' && !e.repeat) run.toggleEquipmentMenu();
   // 最后一关通关后没有下一关可进——不加这条边界的话，Math.min 会把
   // stageIndex+1 钳回原地，按 N 变成"用全新档案重开第 6 关"，
   // 玩家会以为按键没反应，而不是"这已经是终点"。
   if (e.code === 'KeyN' && run.phase === 'stageComplete' && stageIndex + 1 < STAGES.length) {
-    startStage(stageIndex + 1);
+    startStage(stageIndex + 1, run.profile);
   }
   const track = CHOICE_KEYS[e.code];
   const profession = PROFESSION_KEYS[e.code];

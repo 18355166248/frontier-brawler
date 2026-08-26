@@ -288,6 +288,8 @@ export interface Entity {
   skillCostMultiplier: number;
   /** 处决额外回复量（守元路线），默认 0 */
   executeHealBonus: number;
+  /** 装备提供的承伤倍率，默认 1；只对玩家有意义。 */
+  damageTakenMultiplier: number;
 
   /**
    * 这次出手是不是在上一个动作的完美取消窗口内触发的——只在触发那一刻

@@ -45,7 +45,7 @@ export const ARMORS: Record<ArmorId, { id: ArmorId; label: string; description: 
   'field-armor': {
     id: 'field-armor',
     label: '行阵甲',
-    description: '基础护甲样品；实际减伤效果在下一阶段接入。',
+    description: '承受伤害降低 12%，换取更稳定的近身容错。',
   },
 };
 
@@ -56,7 +56,7 @@ export const ACCESSORIES: Record<
   'execution-charm': {
     id: 'execution-charm',
     label: '收魂佩',
-    description: '处决饰品样品；实际回复效果在下一阶段接入。',
+    description: '每次成功处决额外回复 8 点生命。',
   },
 };
 
@@ -72,6 +72,11 @@ export interface EquipmentInventory {
   accessories: AccessoryId[];
 }
 
+export interface EquipmentEffects {
+  damageTakenMultiplier: number;
+  executeHealBonus: number;
+}
+
 /** 新档案从空库存开始，装备通过精英/首领房掉落进入库存。 */
 export function createEquipmentInventory(): EquipmentInventory {
   return { weapons: [], armors: [], accessories: [] };
@@ -83,6 +88,14 @@ export function createEmptyLoadout(): EquipmentLoadout {
 
 export function canEquipWeapon(profession: Profession, weapon: WeaponId): boolean {
   return WEAPONS[weapon].profession === profession;
+}
+
+/** 护甲和饰品效果集中换算，避免掉血与处决分支各自认识具体装备 id。 */
+export function resolveEquipmentEffects(loadout: EquipmentLoadout): EquipmentEffects {
+  return {
+    damageTakenMultiplier: loadout.armor === 'field-armor' ? 0.88 : 1,
+    executeHealBonus: loadout.accessory === 'execution-charm' ? 8 : 0,
+  };
 }
 
 export function equipmentSlotOf(id: EquipmentId): EquipmentSlot {

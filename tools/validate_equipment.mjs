@@ -27,7 +27,15 @@ const source = bundled.outputFiles[0]?.text;
 if (!source) throw new Error('无法加载装备模块');
 const game = await import(`data:text/javascript;base64,${Buffer.from(source).toString('base64')}`);
 
-const { EMPTY_INPUT, Run, WEAPONS, WEAPON_ACTIONS, createProfile, resolveAction } = game;
+const {
+  EMPTY_INPUT,
+  Run,
+  WEAPONS,
+  WEAPON_ACTIONS,
+  createProfile,
+  createStageProfile,
+  resolveAction,
+} = game;
 
 function fail(message) {
   throw new Error(`[validate_equipment] ${message}`);
@@ -92,7 +100,12 @@ run.grantEquipment('execution-charm');
 if (!run.equip('spirit-focus') || !run.equip('field-armor') || !run.equip('execution-charm')) {
   fail('合法三槽位装备失败');
 }
+if (run.player?.damageTakenMultiplier !== 0.88) fail('行阵甲减伤没有同步到玩家');
+if (run.player?.executeHealBonus !== 8) fail('收魂佩处决回复没有同步到玩家');
 if (!run.equip(null, 'weapon') || run.profile.equipment.weapon !== null) fail('卸下武器失败');
+if (run.player) run.player.action = 'arcanePulse';
+if (run.toggleEquipmentMenu()) fail('攻击动作途中不应允许打开装备面板');
+if (run.player) run.player.action = 'idle';
 if (!run.toggleEquipmentMenu() || run.phase !== 'equipmentMenu') fail('无法打开装备暂停面板');
 const framesBeforeMenuStep = run.stats.frames;
 run.step(EMPTY_INPUT);
@@ -105,10 +118,24 @@ if (!run.cycleEquipment('weapon') || run.profile.equipment.weapon !== null) {
 }
 if (!run.toggleEquipmentMenu() || run.phase !== 'fighting') fail('无法关闭装备面板');
 
+const armoredPlayer = run.player;
+const attacker = run.world.entities.find((entity) => entity.team === 'enemy');
+if (!armoredPlayer || !attacker) fail('减伤烟测缺少玩家或敌人');
+attacker.pos = { x: armoredPlayer.pos.x + 30, y: armoredPlayer.pos.y };
+attacker.facing = -1;
+attacker.action = 'slash';
+attacker.actionFrame = 8;
+const armorEvents = run.step(EMPTY_INPUT);
+const armorHit = armorEvents.damage.find((event) => event.target === armoredPlayer.id);
+const expectedArmoredDamage = Math.round(resolveAction('slash').hitboxes[0].damage * 0.88);
+if (armorHit?.damage !== expectedArmoredDamage) {
+  fail(`行阵甲实际承伤应为 ${expectedArmoredDamage}，得到 ${armorHit?.damage ?? '未命中'}`);
+}
+
 const dropStage = {
   ...stage,
   id: 'equipment-drop-smoke',
-  rooms: [{ ...stage.rooms[0], kind: 'elite', encounter: ['elite'] }],
+  rooms: [{ ...stage.rooms[0], kind: 'boss', encounter: ['boss'] }],
 };
 const dropRun = new Run(dropStage, createProfile());
 dropRun.setProfession('heavy');
@@ -120,13 +147,18 @@ for (const entity of dropRun.world.entities) {
 }
 dropRun.step(EMPTY_INPUT);
 const expectedDrop = ['iron-maul', 'field-armor', 'execution-charm'];
-if (dropRun.phase !== 'equipmentChoice') fail('精英房清空后没有进入装备选择暂停态');
+if (dropRun.phase !== 'equipmentChoice') fail('首领房清空后没有进入装备选择暂停态');
 if (JSON.stringify(dropRun.pendingEquipment) !== JSON.stringify(expectedDrop)) {
-  fail(`精英房掉落不正确：${JSON.stringify(dropRun.pendingEquipment)}`);
+  fail(`首领房掉落不正确：${JSON.stringify(dropRun.pendingEquipment)}`);
 }
 if (!dropRun.chooseEquipment('iron-maul')) fail('无法领取待选装备');
 if (!dropRun.profile.inventory.weapons.includes('iron-maul')) fail('领取后没有写入库存');
 if (dropRun.pendingEquipment !== null) fail('领取后没有关闭装备选择');
+const nextStageProfile = createStageProfile(dropRun.profile);
+if (!nextStageProfile.inventory.weapons.includes('iron-maul')) fail('首领/精英掉落没有跨关保留');
+if (nextStageProfile.hp !== nextStageProfile.maxHp || nextStageProfile.energy !== 0) {
+  fail('跨关时战斗资源没有重置');
+}
 
 console.table(
   Object.entries(WEAPONS).map(([id, def]) => ({
@@ -135,4 +167,4 @@ console.table(
     action: expectedAction[id],
   })),
 );
-console.log('[validate_equipment] 三槽位、装备面板、武器覆盖链与精英掉落通过');
+console.log('[validate_equipment] 三槽位效果、安全换装、跨关掉落与武器覆盖链通过');

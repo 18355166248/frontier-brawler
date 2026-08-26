@@ -142,6 +142,7 @@ export function createEntity(team: Team, pos: Vec2, overrides: Partial<Entity> =
     skillDamageMultiplier: 1,
     skillCostMultiplier: 1,
     executeHealBonus: 0,
+    damageTakenMultiplier: 1,
     perfectCancelPending: false,
     telegraph: null,
     ai: { turnCooldown: 0, repositionFrames: 0, bossPhase: 1, bossSummoned: false },
@@ -907,7 +908,11 @@ export class World {
       perfectCancel?: boolean;
     },
   ): boolean {
-    target.hp -= damage;
+    // 护甲只影响玩家实际承受的伤害；统计、飘字和致死判断必须使用同一个结果，
+    // 否则画面显示 20、血条却只掉 18，验收数据也会和真实战斗分叉。
+    const appliedDamage =
+      target.team === 'player' ? damage * target.damageTakenMultiplier : damage;
+    target.hp -= appliedDamage;
     const killed = target.hp <= 0;
 
     // 超级护甲：照常掉血，但不进硬直、不换动作。
@@ -939,7 +944,7 @@ export class World {
 
     if (target.team === 'player') {
       this.stats.recordDamageTaken(
-        damage,
+        appliedDamage,
         meta.telegraphed === true,
         meta.attackerKind ?? 'unknown',
         killed,
@@ -949,7 +954,7 @@ export class World {
     const event: DamageEvent = {
       attacker: meta.attacker,
       target: target.id,
-      damage: Math.round(damage),
+      damage: Math.round(appliedDamage),
       at: { x: target.pos.x, y: target.pos.y },
       killed,
       backstab: meta.backstab,
