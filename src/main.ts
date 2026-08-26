@@ -262,7 +262,9 @@ let paused = false;
 /** 推进一个逻辑帧并把事件转给表现层。自动化验证也复用它，保证跑的是同一条路径。 */
 function stepOnce(): void {
   // 建造使用真实时间而非战斗帧：暂停、切关或页面后台时都应照常到期。
-  run.settleBaseConstruction(Date.now());
+  const nowMs = Date.now();
+  run.settleBaseConstruction(nowMs);
+  run.settleBaseOfflineIncome(nowMs);
   const events = run.step(readInput());
   if (events.damage.length) renderer.onEvents(events.damage);
   if (events.executes.length) renderer.onExecutes(events.executes);

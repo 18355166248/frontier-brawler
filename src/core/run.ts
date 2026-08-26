@@ -49,8 +49,11 @@ import {
   BUILDING_PLANS,
   queueBuildingConstruction,
   settleConstruction,
+  settleOfflineIncome,
+  RESOURCE_FIELD_MATERIALS_PER_HOUR,
+  MAX_OFFLINE_INCOME_MS,
 } from './economy';
-import type { BaseProgress, BuildingId } from './economy';
+import type { BaseProgress, BuildingId, OfflineIncomeResult } from './economy';
 
 /** 血量成长的基准值，不能让 profile.maxHp 自己滚雪球——见 upgrades.ts 顶部说明。 */
 const BASE_MAX_HP = 160;
@@ -375,7 +378,30 @@ export class Run {
 
   /** 主循环和调试验证共用同一结算入口，返回值可供后续完成动效消费。 */
   settleBaseConstruction(nowMs: number): BuildingId[] {
-    return settleConstruction(this.profile.base, nowMs);
+    const resourceFieldJob = this.profile.base.constructionQueue.find(
+      (job) => job.building === 'resourceField',
+    );
+    const completed = settleConstruction(this.profile.base, nowMs);
+    if (completed.includes('resourceField') && resourceFieldJob) {
+      // 离线产出从资源田真正完成的时刻起算；若它在页面关闭期间完工，重开时
+      // 仍能拿到完工后那段收益，同时不会把施工前时间也倒灌成材料。
+      this.profile.base.lastActiveAtMs = resourceFieldJob.completesAtMs;
+      this.profile.base.offlineProductionUnits = 0;
+    }
+    return completed;
+  }
+
+  /** 未建成资源田时没有离线入口，结构上保持“建筑完成才生效”。 */
+  settleBaseOfflineIncome(nowMs: number): OfflineIncomeResult {
+    if (!this.profile.base.completedBuildings.includes('resourceField')) {
+      return { elapsedMs: 0, creditedMaterials: 0 };
+    }
+    return settleOfflineIncome(
+      this.profile.base,
+      nowMs,
+      RESOURCE_FIELD_MATERIALS_PER_HOUR,
+      MAX_OFFLINE_INCOME_MS,
+    );
   }
 
   /**

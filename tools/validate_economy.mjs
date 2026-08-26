@@ -244,6 +244,29 @@ if (offlineProfile.base.resources.blueprints !== 0 || offlineProfile.base.resour
   fail('离线收益错误地产出了图纸或稀有材料');
 }
 
+// 集成验证：资源田完工前不产出，完工后从真实完成时刻开始累计。
+const fieldProfile = createProfile();
+for (let clear = 0; clear < 4; clear += 1) recordStageCompletion(fieldProfile.base);
+applyResourceChanges(fieldProfile.base, { materials: 100, blueprints: 10 }, 'field-test-grant');
+if (!queueBuildingConstruction(fieldProfile.base, 'resourceField', {
+  nowMs: 1_000,
+  durationMs: 100,
+  cost: { materials: 80, blueprints: 4 },
+})) fail('资源田无法加入测试队列');
+const fieldRun = new Run(STAGES[0], fieldProfile);
+if (fieldRun.settleBaseOfflineIncome(1_050).creditedMaterials !== 0) {
+  fail('资源田完工前错误地产出离线材料');
+}
+if (fieldRun.settleBaseConstruction(1_200).join(',') !== 'resourceField') {
+  fail('资源田没有按时完工');
+}
+if (fieldProfile.base.lastActiveAtMs !== 1_100) fail('资源田没有从真实完工时刻锚定收益');
+const fieldIncome = fieldRun.settleBaseOfflineIncome(1_100 + hour);
+if (fieldIncome.creditedMaterials !== 12) fail('资源田建成后的首轮离线产速错误');
+if (fieldProfile.base.resources.blueprints !== 6 || fieldProfile.base.resources.rareMaterials !== 0) {
+  fail('资源田离线收益错误地修改了高级资源');
+}
+
 // 集成验证：Boss 房首次清空计一次；在结算/掉落界面继续 step 不能重复累计。
 const runProfile = createProfile();
 const run = new Run(STAGES[0], runProfile);

@@ -96,6 +96,9 @@ export interface BaseProgress {
 }
 
 const MAX_LEDGER_ENTRIES = 200;
+/** 资源田首轮产速与离线上限；只产基础材料，仍需真机观察建造节奏。 */
+export const RESOURCE_FIELD_MATERIALS_PER_HOUR = 12;
+export const MAX_OFFLINE_INCOME_MS = 8 * 3_600_000;
 
 export function createBaseProgress(): BaseProgress {
   return {
