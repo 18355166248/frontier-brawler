@@ -33,6 +33,7 @@ import {
 import type { SaveStorage } from './core/save';
 import { GameAudio } from './audio/game-audio';
 import { TouchControls } from './input/touch-controls';
+import { LoopValidationStore } from './dev/loop-validation';
 
 /** 三选一的按键，和 render/renderer.ts 里卡片上画的键位一一对应 */
 const CHOICE_KEYS: Record<string, UpgradeTrackId> = {
@@ -141,7 +142,9 @@ function saveCampaign(nowMs = Date.now(), force = false): boolean {
   return saved;
 }
 const professionValidation = import.meta.env.DEV ? new ProfessionValidationStore() : null;
+const loopValidation = import.meta.env.DEV ? new LoopValidationStore() : null;
 const recordedValidationRuns = new WeakSet<Run>();
+const defeatSampleByRun = new WeakMap<Run, string>();
 /**
  * M2/M4 验收面板。和上面的样本记录器一样只在 DEV 下构造，
  * 生产构建里 `import.meta.env.DEV` 会被替换成 false 后整段摇掉。
@@ -231,7 +234,16 @@ function handleKeyDown(e: KeyboardEvent): void {
   if (e.code === 'KeyM' && !e.repeat && !audio.toggleMuted()) audio.play('confirm');
   if (e.code === 'KeyR') startStage(stageIndex, run.profile);
   if (e.code === 'KeyB' && !e.repeat && run.toggleEquipmentMenu()) audio.play('confirm');
-  if (e.code === 'KeyG' && !e.repeat && run.toggleBaseMenu(Date.now())) audio.play('confirm');
+  if (e.code === 'KeyG' && !e.repeat) {
+    const openingAfterDefeat = run.phase === 'dead';
+    if (run.toggleBaseMenu(Date.now())) {
+      if (openingAfterDefeat) {
+        const sampleId = defeatSampleByRun.get(run);
+        if (sampleId) loopValidation?.recordBaseChoice(sampleId);
+      }
+      audio.play('confirm');
+    }
+  }
   // 最后一关通关后没有下一关可进——不加这条边界的话，Math.min 会把
   // stageIndex+1 钳回原地，按 N 变成"用全新档案重开第 6 关"，
   // 玩家会以为按键没反应，而不是"这已经是终点"。
@@ -244,11 +256,20 @@ function handleKeyDown(e: KeyboardEvent): void {
     const index = Number(e.code.replace('Digit', '')) - 1;
     const building = BUILDING_IDS[index];
     if (building === 'alchemyLab' && run.profile.base.completedBuildings.includes('alchemyLab')) {
-      if (run.craftTonic()) audio.play('confirm');
+      if (run.craftTonic()) {
+        recordDefeatBaseUse();
+        audio.play('confirm');
+      }
     } else if (building === 'archive' && run.profile.base.completedBuildings.includes('archive')) {
-      if (run.cycleArchiveTrack()) audio.play('confirm');
+      if (run.cycleArchiveTrack()) {
+        recordDefeatBaseUse();
+        audio.play('confirm');
+      }
     } else if (building) {
-      if (run.queueBaseBuilding(building, Date.now())) audio.play('confirm');
+      if (run.queueBaseBuilding(building, Date.now())) {
+        recordDefeatBaseUse();
+        audio.play('confirm');
+      }
     }
   } else if (
     profession &&
@@ -272,6 +293,11 @@ function handleKeyDown(e: KeyboardEvent): void {
   if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) {
     e.preventDefault();
   }
+}
+
+function recordDefeatBaseUse(): void {
+  const sampleId = defeatSampleByRun.get(run);
+  if (sampleId) loopValidation?.recordBaseUse(sampleId);
 }
 
 function handleKeyUp(e: KeyboardEvent): void {
@@ -378,6 +404,9 @@ function stepOnce(): void {
   if (!stageClearedBefore && run.stageCleared) audio.play('stageClear');
   else if (run.cleared.size > clearedBefore) audio.play('roomClear');
   if (phaseBefore !== 'dead' && run.phase === 'dead') audio.play('defeat');
+  if (phaseBefore !== 'dead' && run.phase === 'dead' && loopValidation) {
+    defeatSampleByRun.set(run, loopValidation.recordDefeat(run.stage.id));
+  }
   if (
     professionValidation &&
     !recordedValidationRuns.has(run) &&
@@ -541,6 +570,23 @@ if (import.meta.env.DEV) {
     },
     professionSamples(): unknown {
       return professionValidation?.samples() ?? [];
+    },
+    /** M6 战败后进入/使用基地的真人比例。 */
+    loopReport(): unknown {
+      return loopValidation?.report() ?? {
+        defeats: 0,
+        baseChoices: 0,
+        baseUses: 0,
+        baseChoiceRate: 0,
+        baseUseRate: 0,
+        passesChoiceTarget: false,
+      };
+    },
+    loopSamples(): unknown {
+      return loopValidation?.samples() ?? [];
+    },
+    clearLoopSamples(): void {
+      loopValidation?.clear();
     },
     /** 开关 M2/M4 验收面板；键盘 V 走的是同一条路径。 */
     toggleValidationPanel(): boolean {

@@ -1124,11 +1124,17 @@ export class Renderer {
       24,
     );
 
+    // 战败后也能进入基地，基地层不能被“已经没有存活玩家”这条提前返回挡住。
+    if (run.phase === 'baseMenu') {
+      this.drawBaseMenu(run);
+      return;
+    }
+
     if (!player) {
       ctx.fillStyle = '#e2705c';
       ctx.font = 'bold 22px system-ui, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('倒下了 · 按 R 重来', this.canvas.width / 2, this.canvas.height / 2);
+      ctx.fillText('倒下了 · 按 G 建设基地 · 按 R 重来', this.canvas.width / 2, this.canvas.height / 2);
       return;
     }
 
@@ -1139,11 +1145,6 @@ export class Renderer {
 
     if (run.phase === 'equipmentMenu') {
       this.drawEquipmentMenu(run);
-      return;
-    }
-
-    if (run.phase === 'baseMenu') {
-      this.drawBaseMenu(run);
       return;
     }
 
@@ -1543,7 +1544,11 @@ export class Renderer {
     ctx.fillText('边境基地', canvas.width / 2, 62);
     ctx.fillStyle = 'rgba(255,255,255,0.58)';
     ctx.font = '13px system-ui, sans-serif';
-    ctx.fillText('按 1–5 开始建造 · 建筑串行施工 · 按 G 返回结算', canvas.width / 2, 86);
+    ctx.fillText(
+      `按 1–5 开始建造 · 建筑串行施工 · 按 G 返回${run.stageCleared ? '结算' : '战败界面'}`,
+      canvas.width / 2,
+      86,
+    );
     ctx.fillStyle = '#ffd479';
     ctx.font = 'bold 13px system-ui, sans-serif';
     ctx.fillText(

@@ -14,6 +14,7 @@
     "validate:save": "node tools/validate_save.mjs",
     "validate:audio": "node tools/validate_audio.mjs",
     "validate:touch": "node tools/validate_touch.mjs",
+    "validate:loop": "node tools/validate_loop.mjs",
     "simulate:validation": "node tools/simulate_validation.mjs"
   },
   "devDependencies": {

@@ -323,6 +323,20 @@ if (fieldProfile.base.resources.blueprints !== 6 || fieldProfile.base.resources.
 const runProfile = createProfile();
 const run = new Run(STAGES[0], runProfile);
 if (run.toggleBaseMenu(1_000)) fail('通关前错误地开放了基地菜单');
+
+// 战败后必须能用本局已赚资源建设，再关闭菜单回到失败界面并从原关重试。
+const defeatedRun = new Run(STAGES[0], createProfile());
+defeatedRun.setProfession('swift');
+const defeatedPlayer = defeatedRun.world.player;
+defeatedPlayer.hp = 0;
+defeatedPlayer.dead = true;
+defeatedRun.world.stats.died = true;
+if (!defeatedRun.toggleBaseMenu(1_000) || defeatedRun.phase !== 'baseMenu') {
+  fail('战败后无法进入基地建设');
+}
+if (!defeatedRun.toggleBaseMenu(1_000) || defeatedRun.phase !== 'dead') {
+  fail('战败基地无法返回失败界面');
+}
 if (
   run.availableProfessions.join(',') !== 'swift' ||
   !run.canSelectProfession('swift') ||

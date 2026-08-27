@@ -375,13 +375,21 @@ export class Run {
     return this.equip(options[(current + 1) % options.length], 'accessory');
   }
 
-  /** 基地入口只在通关且战利品已领取后开放，避免多个选择层互相抢数字键。 */
+  /**
+   * 基地入口在通关结算或战败后开放：后者是“打不过 → 建设 → 原关重试”的
+   * 必要闭环。战利品选择仍优先，避免两个选择层同时抢数字键。
+   */
   toggleBaseMenu(nowMs: number): boolean {
     if (this.baseMenuOpen) {
       this.baseMenuOpen = false;
       return true;
     }
-    if (!this.stageCleared || this.pendingEquipment || !Number.isSafeInteger(nowMs) || nowMs < 0) {
+    if (
+      (!this.stageCleared && !this.world.stats.died) ||
+      this.pendingEquipment ||
+      !Number.isSafeInteger(nowMs) ||
+      nowMs < 0
+    ) {
       return false;
     }
     settleConstruction(this.profile.base, nowMs);
@@ -465,12 +473,13 @@ export class Run {
    */
   get phase(): RunPhase {
     if (!this.professionConfirmed) return 'professionSelect';
+    // 战败后的基地建设必须盖在死亡层上；关闭基地后才重新露出重试入口。
+    if (this.baseMenuOpen) return 'baseMenu';
     if (this.world.stats.died) return 'dead';
     if (this.transition > 0) return 'transition';
     if (this.pendingChoice) return 'choosing';
     if (this.pendingEquipment) return 'equipmentChoice';
     if (this.equipmentMenuOpen) return 'equipmentMenu';
-    if (this.baseMenuOpen) return 'baseMenu';
     if (this.stageCleared) return 'stageComplete';
     if (this.cleared.has(this.room.id)) return 'cleared';
     return 'fighting';
