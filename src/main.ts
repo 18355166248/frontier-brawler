@@ -252,13 +252,13 @@ if (import.meta.env.DEV) {
     run.setProfession('swift');
     if (requestedBaseState === 'building') {
       const nowMs = Date.now();
-      run.profile.base.constructionQueue = [{
-        building: 'trainingGround',
+      run.profile.base.constructionQueue = BUILDING_IDS.map((building) => ({
+        building,
         startsAtMs: nowMs,
         completesAtMs: nowMs + 60_000,
-      }];
+      }));
     } else if (requestedBaseState === 'completed') {
-      run.profile.base.completedBuildings = ['trainingGround'];
+      run.profile.base.completedBuildings = [...BUILDING_IDS];
     }
     run.world.stats.died = true;
     run.toggleBaseMenu(Date.now());

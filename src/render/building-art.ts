@@ -4,6 +4,10 @@ export type BuildingArtState = 'unbuilt' | 'building' | 'completed' | 'icon';
 
 const BUILDING_ART_PATHS: Partial<Record<BuildingId, string>> = {
   trainingGround: 'art/buildings/training-ground-v1.png',
+  forge: 'art/buildings/forge-v1.png',
+  alchemyLab: 'art/buildings/alchemy-lab-v1.png',
+  resourceField: 'art/buildings/resource-field-v1.png',
+  archive: 'art/buildings/archive-v1.png',
 };
 
 const STATE_CELL: Record<BuildingArtState, readonly [number, number]> = {
