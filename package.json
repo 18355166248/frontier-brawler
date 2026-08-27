@@ -15,6 +15,7 @@
     "validate:audio": "node tools/validate_audio.mjs",
     "validate:touch": "node tools/validate_touch.mjs",
     "validate:loop": "node tools/validate_loop.mjs",
+    "build:building-art": "python3 tools/build_building_atlas.py docs/experiments/base-buildings-2026-08-27/training-ground-grid.png -o public/art/buildings/training-ground-v1.png",
     "benchmark:50": "node tools/benchmark_50_units.mjs",
     "simulate:validation": "node tools/simulate_validation.mjs"
   },

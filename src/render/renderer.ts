@@ -42,7 +42,9 @@ import {
   TONIC_MATERIAL_COST,
   unlockedBuildings,
 } from '../core/economy';
+import type { BuildingId } from '../core/economy';
 import type { World } from '../core/world';
+import type { BuildingArt, BuildingArtState } from './building-art';
 import { Minimap } from './minimap';
 import type { EquipmentIcons } from './equipment-icons';
 import type { SpriteSheet } from './sprites';
@@ -300,6 +302,7 @@ export class Renderer {
     private canvas: HTMLCanvasElement,
     private sheets: Map<string, SpriteSheet>,
     private equipmentIcons?: EquipmentIcons,
+    private buildingArt?: BuildingArt,
   ) {
     const ctx = canvas.getContext('2d');
     if (!ctx) throw new Error('拿不到 2d context');
@@ -1550,7 +1553,7 @@ export class Renderer {
     const unlocked = new Set(unlockedBuildings(progress));
     const nowMs = Date.now();
     const cardW = 164;
-    const cardH = 292;
+    const cardH = 310;
     const gap = 12;
     const startX = (canvas.width - BUILDING_UNLOCKS.length * cardW - (BUILDING_UNLOCKS.length - 1) * gap) / 2;
     const firstDefeatHasNoBaseAction =
@@ -1612,20 +1615,25 @@ export class Renderer {
       ctx.font = '12px system-ui, sans-serif';
       this.wrapText(building.combatBenefit, x + cardW / 2, y + 62, cardW - 24, 17);
 
+      const artState: BuildingArtState = completed ? 'completed' : job ? 'building' : 'unbuilt';
+      if (!this.buildingArt?.draw(this.ctx, building.id, artState, x + 34, y + 87, 96)) {
+        this.drawBuildingPlaceholder(building.id, x + cardW / 2, y + 135, color);
+      }
+
       ctx.fillStyle = 'rgba(255,255,255,0.44)';
       ctx.font = '11px system-ui, sans-serif';
-      ctx.fillText('建造成本', x + cardW / 2, y + 129);
+      ctx.fillText('建造成本', x + cardW / 2, y + 190);
       ctx.fillStyle = 'rgba(255,255,255,0.82)';
       ctx.font = '12px system-ui, sans-serif';
       ctx.fillText(
         `材料 ${plan.cost.materials ?? 0} · 图纸 ${plan.cost.blueprints ?? 0}`,
         x + cardW / 2,
-        y + 150,
+        y + 211,
       );
       ctx.fillText(
         `稀有 ${plan.cost.rareMaterials ?? 0} · ${Math.ceil(plan.durationMs / 1_000)} 秒`,
         x + cardW / 2,
-        y + 170,
+        y + 231,
       );
 
       let status = `按 ${index + 1} 建造`;
@@ -1654,6 +1662,27 @@ export class Renderer {
       this.wrapText(status, x + cardW / 2, y + cardH - 52, cardW - 20, 16);
     });
     ctx.restore();
+  }
+
+  /** 尚未有正式图集时的紧凑回退；状态颜色仍与卡片边框保持一致。 */
+  private drawBuildingPlaceholder(id: BuildingId, centerX: number, centerY: number, color: string): void {
+    const glyph: Record<BuildingId, string> = {
+      trainingGround: '武',
+      forge: '锻',
+      alchemyLab: '丹',
+      resourceField: '田',
+      archive: '藏',
+    };
+    this.ctx.fillStyle = 'rgba(255,255,255,0.045)';
+    this.roundRect(this.ctx, centerX - 43, centerY - 43, 86, 86, 9);
+    this.ctx.fill();
+    this.ctx.strokeStyle = color;
+    this.ctx.lineWidth = 1.5;
+    this.roundRect(this.ctx, centerX - 35, centerY - 35, 70, 70, 8);
+    this.ctx.stroke();
+    this.ctx.fillStyle = color;
+    this.ctx.font = 'bold 28px system-ui, sans-serif';
+    this.ctx.fillText(glyph[id], centerX, centerY + 10);
   }
 
   /** 正式 PNG 未覆盖或加载失败时画稳定占位，不让素材缺口变成空白卡片。 */

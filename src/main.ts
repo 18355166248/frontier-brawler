@@ -18,6 +18,7 @@ import type { InputState } from './core/world';
 import { Renderer } from './render/renderer';
 import { SpriteSheet } from './render/sprites';
 import { EquipmentIcons } from './render/equipment-icons';
+import { BuildingArt } from './render/building-art';
 import { PROFESSION_IDS } from './core/types';
 import type { ActionState, Profession } from './core/types';
 import { ProfessionValidationStore } from './dev/profession-validation';
@@ -89,7 +90,7 @@ for (const [kind, rows] of Object.entries(ENEMY_SHEET_ROWS)) {
   sheets.set(kind, new SpriteSheet({ url: `art/enemy-${kind}-v2.png`, columns: 4, rows }));
 }
 
-const renderer = new Renderer(canvas, sheets, new EquipmentIcons());
+const renderer = new Renderer(canvas, sheets, new EquipmentIcons(), new BuildingArt());
 renderer.setTouchMode(window.matchMedia('(hover: none), (pointer: coarse)').matches);
 const audio = new GameAudio();
 
@@ -208,6 +209,7 @@ if (import.meta.env.DEV) {
   const requestedProfession = params.get('profession') as Profession | null;
   const requestedEquipment = params.getAll('equipment');
   const requestedStressCount = Number(params.get('stress'));
+  const requestedBaseState = params.get('base');
   if (params.get('touch') === '1') {
     document.body.classList.add('force-touch');
     renderer.setTouchMode(true);
@@ -218,7 +220,8 @@ if (import.meta.env.DEV) {
     params.has('room') ||
     params.has('profession') ||
     params.has('equipment') ||
-    params.has('stress')
+    params.has('stress') ||
+    params.has('base')
   );
   if (Number.isInteger(requestedStage) && requestedStage >= 1 && requestedStage <= STAGES.length) {
     startStage(requestedStage - 1);
@@ -240,6 +243,25 @@ if (import.meta.env.DEV) {
     document.body.classList.add('stress-test');
     run.setProfession('swift');
     spawnStressEnemies(requestedStressCount);
+  }
+  if (['unbuilt', 'building', 'completed'].includes(requestedBaseState ?? '')) {
+    // 建筑三态是 Canvas 像素，DOM 自动化看不到；开发沙盒固定资源和进度，
+    // 让每次换图都能直达同一画面人工复核，且上面的持久化门禁保证不污染存档。
+    run.profile.base.completedStageRuns = BUILDING_IDS.length;
+    run.profile.base.resources = { materials: 999, blueprints: 999, rareMaterials: 999 };
+    run.setProfession('swift');
+    if (requestedBaseState === 'building') {
+      const nowMs = Date.now();
+      run.profile.base.constructionQueue = [{
+        building: 'trainingGround',
+        startsAtMs: nowMs,
+        completesAtMs: nowMs + 60_000,
+      }];
+    } else if (requestedBaseState === 'completed') {
+      run.profile.base.completedBuildings = ['trainingGround'];
+    }
+    run.world.stats.died = true;
+    run.toggleBaseMenu(Date.now());
   }
 }
 
