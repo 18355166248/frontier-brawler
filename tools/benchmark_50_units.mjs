@@ -34,6 +34,8 @@ const stableReport = stableProbe.report(51);
 assert.equal(stableReport.samples, 120);
 assert.equal(stableReport.entities, 51);
 assert.equal(stableReport.passes60FpsTarget, true);
+assert.equal(stableReport.passes50UnitTarget, true);
+assert.equal(stableProbe.report(1).passes50UnitTarget, false);
 
 const boundedProbe = new PerformanceProbe(3);
 boundedProbe.record(Number.NaN, 0, 0);

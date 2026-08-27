@@ -7,6 +7,8 @@ export interface PerformanceReport {
   p95RenderMs: number;
   slowFrameRate: number;
   passes60FpsTarget: boolean;
+  /** M6 的正式口径同时要求 50+ 单位，不能用空场景的高帧率冒充压力验收。 */
+  passes50UnitTarget: boolean;
 }
 
 interface PerformanceSample {
@@ -42,6 +44,7 @@ export class PerformanceProbe {
       frames.filter((frameMs) => frameMs > 20).length / Math.max(1, frames.length),
     );
     const averageFps = averageFrameMs > 0 ? round(1_000 / averageFrameMs) : 0;
+    const passes60FpsTarget = frames.length >= 120 && averageFps >= 58 && slowFrameRate <= 0.05;
     return {
       samples: frames.length,
       entities,
@@ -51,7 +54,8 @@ export class PerformanceProbe {
       p95RenderMs: percentile(renders, 0.95),
       slowFrameRate,
       // 至少两秒样本后才判定，避免刚打开页面的几个偶然快帧误报通过。
-      passes60FpsTarget: frames.length >= 120 && averageFps >= 58 && slowFrameRate <= 0.05,
+      passes60FpsTarget,
+      passes50UnitTarget: entities >= 50 && passes60FpsTarget,
     };
   }
 }

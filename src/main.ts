@@ -152,7 +152,7 @@ const performanceProbe = import.meta.env.DEV ? new PerformanceProbe() : null;
 const recordedValidationRuns = new WeakSet<Run>();
 const defeatSampleByRun = new WeakMap<Run, string>();
 /**
- * M2/M4 验收面板。和上面的样本记录器一样只在 DEV 下构造，
+ * M2/M4/M6 验收面板。和上面的样本记录器一样只在 DEV 下构造，
  * 生产构建里 `import.meta.env.DEV` 会被替换成 false 后整段摇掉。
  */
 const validationPanel =
@@ -161,6 +161,20 @@ const validationPanel =
         professionValidation,
         (id) => equipmentLabel(id as EquipmentId),
         STAGES.map((stage) => stage.id),
+        loopValidation && performanceProbe
+          ? {
+              loop: loopValidation,
+              performance: () => performanceProbe.report(run.world.entities.length),
+              environment: () => ({
+                userAgent: navigator.userAgent,
+                viewport: `${window.innerWidth}×${window.innerHeight}`,
+                devicePixelRatio: window.devicePixelRatio,
+                hardwareConcurrency: navigator.hardwareConcurrency || null,
+                // deviceMemory 并非所有浏览器都暴露；缺失时导出 null，而非伪造设备档位。
+                deviceMemoryGb: (navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? null,
+              }),
+            }
+          : null,
       )
     : null;
 
@@ -288,7 +302,7 @@ function queueActionEdge(code: string): void {
 
 function handleKeyDown(e: KeyboardEvent): void {
   void audio.unlock();
-  // 验收面板先看一眼：它只吃自己的键（V/O/C/Y/Esc），吃掉就不再交给游戏，
+  // 验收面板先看一眼：它只吃自己的键（V/Tab/O/C/Y/Esc），吃掉就不再交给游戏，
   // 免得"按 C 确认清空"顺手也触发了别的操作。其余键照常透传，
   // 面板是覆盖层不是暂停态。
   if (!e.repeat && validationPanel?.handleKey(e.code)) {

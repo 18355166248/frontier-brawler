@@ -1,5 +1,5 @@
 /**
- * M2 / M4 验收面板，只在开发构建里出现。
+ * M2 / M4 / M6 验收面板，只在开发构建里出现。
  *
  * 存在的理由和 `core/stats.ts` 一样：验收标准要求的是可判定的数字
  * （三职业打法是否真的不同、头部配装占比是否 < 40%），不是"感觉还行"。
@@ -23,6 +23,8 @@ import type {
   ProfessionReportRow,
   ProfessionValidationStore,
 } from './profession-validation';
+import type { LoopValidationReport, LoopValidationStore } from './loop-validation';
+import type { PerformanceReport } from './performance-probe';
 
 /** 和 render/renderer.ts 的 PROFESSION_CARDS 保持同名同色，面板不另立一套视觉语言。 */
 const PROFESSION_VIEW: Record<Profession, { label: string; color: string }> = {
@@ -84,6 +86,49 @@ export interface ValidationPanelModel {
   totalSamples: number;
   professions: PanelProfessionCard[];
   equipment: PanelEquipmentSection;
+}
+
+export interface ValidationEnvironment {
+  userAgent: string;
+  viewport: string;
+  devicePixelRatio: number;
+  hardwareConcurrency: number | null;
+  deviceMemoryGb: number | null;
+}
+
+export interface M6ValidationPanelModel {
+  loop: LoopValidationReport;
+  performance: PerformanceReport | null;
+  environment: ValidationEnvironment;
+  loopVerdict: string;
+  performanceVerdict: string;
+}
+
+export interface M6ValidationContext {
+  loop: Pick<LoopValidationStore, 'report' | 'samples' | 'clear'>;
+  performance: () => PerformanceReport | null;
+  environment: () => ValidationEnvironment;
+}
+
+export function buildM6ValidationPanelModel(
+  loop: LoopValidationReport,
+  performance: PerformanceReport | null,
+  environment: ValidationEnvironment,
+): M6ValidationPanelModel {
+  const loopVerdict = loop.defeats === 0
+    ? '暂无战败样本 · 无法判定'
+    : loop.passesChoiceTarget
+      ? `进入基地 ${percent(loop.baseChoiceRate)} > 40% · 达标`
+      : `进入基地 ${percent(loop.baseChoiceRate)} ≤ 40% · 未达标`;
+  let performanceVerdict = '暂无足量帧样本 · 至少持续 2 秒';
+  if (performance && performance.samples >= 120) {
+    performanceVerdict = performance.entities < 50
+      ? `当前仅 ${performance.entities} 单位 · 请用 ?stress=50`
+      : performance.passes50UnitTarget
+        ? '50+ 单位稳定 60fps · 达标'
+        : '50+ 单位未稳定达到 60fps';
+  }
+  return { loop, performance, environment, loopVerdict, performanceVerdict };
 }
 
 function percent(value: number): string {
@@ -188,6 +233,7 @@ const MUTED = 'rgba(255,255,255,0.5)';
  */
 export class ValidationPanel {
   private visible = false;
+  private page: 'combat' | 'm6' = 'combat';
   /** 清空是不可逆的，必须二次确认；这个标记表示正在等第二次按键 */
   private confirmingClear = false;
 
@@ -198,6 +244,7 @@ export class ValidationPanel {
     >,
     private readonly labelOf: (id: string) => string = (id) => id,
     private readonly stageIds: readonly string[] = [],
+    private readonly m6: M6ValidationContext | null = null,
   ) {}
 
   get open(): boolean {
@@ -224,6 +271,11 @@ export class ValidationPanel {
       return true;
     }
     if (!this.visible) return false;
+    if (code === 'Tab' && this.m6) {
+      this.page = this.page === 'combat' ? 'm6' : 'combat';
+      this.confirmingClear = false;
+      return true;
+    }
     if (code === 'KeyO') {
       this.exportJson();
       return true;
@@ -233,7 +285,8 @@ export class ValidationPanel {
       return true;
     }
     if (code === 'KeyY' && this.confirmingClear) {
-      this.store.clear();
+      if (this.page === 'm6') this.m6?.loop.clear();
+      else this.store.clear();
       this.confirmingClear = false;
       return true;
     }
@@ -257,6 +310,10 @@ export class ValidationPanel {
         professionReport: this.store.report(),
         equipmentReport: this.store.equipmentReport(),
         samples: this.store.samples(),
+        loopReport: this.m6?.loop.report() ?? null,
+        loopSamples: this.m6?.loop.samples() ?? [],
+        performanceReport: this.m6?.performance() ?? null,
+        environment: this.m6?.environment() ?? null,
       },
       null,
       2,
@@ -288,29 +345,116 @@ export class ValidationPanel {
     ctx.textAlign = 'center';
     ctx.fillStyle = '#ffffff';
     ctx.font = 'bold 24px system-ui, sans-serif';
-    ctx.fillText('M2 / M4 验收面板', width / 2, 44);
+    ctx.fillText(this.page === 'm6' ? 'M6 闭环 / 真机验收' : 'M2 / M4 验收面板', width / 2, 44);
     ctx.font = '13px system-ui, sans-serif';
     ctx.fillStyle = MUTED;
     ctx.fillText(
-      `共 ${model.totalSamples} 份样本 · O 导出 JSON · C 清空 · V 关闭`,
+      `${this.page === 'm6' ? '循环与性能' : `共 ${model.totalSamples} 份样本`} · Tab 切页 · O 导出 JSON · C 清空 · V 关闭`,
       width / 2,
       66,
     );
 
-    this.drawProfessions(ctx, model, width);
-    this.drawEquipment(ctx, model, width);
+    if (this.page === 'm6' && this.m6) this.drawM6(ctx, width);
+    else {
+      this.drawProfessions(ctx, model, width);
+      this.drawEquipment(ctx, model, width);
+    }
 
     if (this.confirmingClear) {
       ctx.textAlign = 'center';
       ctx.fillStyle = FAIL_COLOR;
       ctx.font = 'bold 15px system-ui, sans-serif';
       ctx.fillText(
-        `确认清空全部 ${model.totalSamples} 份样本？按 Y 确认 · Esc 取消`,
+        `确认清空${this.page === 'm6' ? '循环' : `全部 ${model.totalSamples} 份`}样本？按 Y 确认 · Esc 取消`,
         width / 2,
         height - 18,
       );
     }
     ctx.restore();
+  }
+
+  private drawM6(ctx: CanvasRenderingContext2D, width: number): void {
+    if (!this.m6) return;
+    const model = buildM6ValidationPanelModel(
+      this.m6.loop.report(),
+      this.m6.performance(),
+      this.m6.environment(),
+    );
+    const margin = 44;
+    const gap = 18;
+    const cardW = (width - margin * 2 - gap) / 2;
+    const top = 96;
+    const cardH = 360;
+    const drawCard = (x: number, title: string, verdict: string, pass: boolean | null) => {
+      ctx.fillStyle = 'rgba(20,24,30,0.94)';
+      ctx.strokeStyle = pass === null ? MUTED : pass ? PASS_COLOR : FAIL_COLOR;
+      ctx.lineWidth = 2;
+      roundRect(ctx, x, top, cardW, cardH, 11);
+      ctx.fill();
+      ctx.stroke();
+      ctx.textAlign = 'left';
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 18px system-ui, sans-serif';
+      ctx.fillText(title, x + 22, top + 34);
+      ctx.fillStyle = pass === null ? MUTED : pass ? PASS_COLOR : FAIL_COLOR;
+      ctx.font = 'bold 13px system-ui, sans-serif';
+      ctx.fillText(verdict, x + 22, top + 62);
+    };
+
+    const loopPass = model.loop.defeats ? model.loop.passesChoiceTarget : null;
+    drawCard(margin, '循环咬合', model.loopVerdict, loopPass);
+    this.drawM6Rows(ctx, margin, top, cardW, [
+      ['战败样本', String(model.loop.defeats)],
+      ['进入基地', `${model.loop.baseChoices} · ${percent(model.loop.baseChoiceRate)}`],
+      ['实际建设', `${model.loop.baseUses} · ${percent(model.loop.baseUseRate)}`],
+    ]);
+    ctx.fillStyle = MUTED;
+    ctx.font = '12px system-ui, sans-serif';
+    ctx.fillText('口径：战败后选择进入基地的比例必须 > 40%', margin + 22, top + 184);
+    ctx.fillText('每次死亡自动记样本；G 进入基地、建设后自动归因。', margin + 22, top + 207);
+
+    const perf = model.performance;
+    const perfPass = !perf || perf.samples < 120 || perf.entities < 50
+      ? null
+      : perf.passes50UnitTarget;
+    const right = margin + cardW + gap;
+    drawCard(right, '中端 Android 真机', model.performanceVerdict, perfPass);
+    this.drawM6Rows(ctx, right, top, cardW, [
+      ['场上单位', perf ? String(perf.entities) : '—'],
+      ['平均帧率', perf?.samples ? `${perf.averageFps} fps` : '—'],
+      ['P95 帧耗时', perf?.samples ? `${perf.p95FrameMs} ms` : '—'],
+      ['慢帧占比', perf?.samples ? percent(perf.slowFrameRate) : '—'],
+    ]);
+    ctx.fillStyle = MUTED;
+    ctx.font = '11px system-ui, sans-serif';
+    const env = model.environment;
+    ctx.fillText(`视口 ${env.viewport} · DPR ${env.devicePixelRatio}`, right + 22, top + 220);
+    ctx.fillText(`CPU ${env.hardwareConcurrency ?? '—'} 核 · 内存 ${env.deviceMemoryGb ?? '—'} GB`, right + 22, top + 241);
+    ctx.fillText(env.userAgent.slice(0, 58), right + 22, top + 265);
+    ctx.font = '12px system-ui, sans-serif';
+    ctx.fillText('真机步骤：打开 ?stress=50，横屏保持 10 秒后按 V。', right + 22, top + 307);
+    ctx.fillText('按 O 导出时会连同设备信息和原始样本一起保存。', right + 22, top + 330);
+  }
+
+  private drawM6Rows(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    top: number,
+    cardW: number,
+    rows: string[][],
+  ): void {
+    rows.forEach(([label, value], index) => {
+      const y = top + 98 + index * 27;
+      ctx.textAlign = 'left';
+      ctx.fillStyle = MUTED;
+      ctx.font = '13px system-ui, sans-serif';
+      ctx.fillText(label, x + 22, y);
+      ctx.textAlign = 'right';
+      ctx.fillStyle = '#fff';
+      ctx.font = 'bold 14px system-ui, sans-serif';
+      ctx.fillText(value, x + cardW - 22, y);
+    });
+    ctx.textAlign = 'left';
   }
 
   private drawProfessions(
