@@ -91,6 +91,10 @@
       .touch-controls[data-phase="stageComplete"] [data-touch-key="KeyR"],
       .touch-controls[data-phase="stageComplete"] [data-touch-key="KeyN"] { display: block; }
       .touch-controls [data-touch-key="KeyM"] { display: block; }
+      .touch-controls [data-touch-key="KeyP"] { display: block; }
+      .touch-controls[data-paused="true"] .touch-joystick,
+      .touch-controls[data-paused="true"] .touch-actions,
+      .touch-controls[data-paused="true"] .touch-menu { display: none; }
       body.validation-enabled .touch-controls [data-touch-key="KeyV"] { display: block; }
       .touch-controls[data-validation-open="true"] .touch-joystick,
       .touch-controls[data-validation-open="true"] .touch-actions,
@@ -184,6 +188,7 @@
           <button data-touch-key="KeyB">装</button><button data-touch-key="KeyG">基</button>
           <button data-touch-key="KeyR">重</button><button data-touch-key="KeyN">进</button>
           <button data-touch-key="KeyM">声</button>
+          <button data-touch-key="KeyP" aria-label="暂停或继续游戏">停</button>
           <button data-touch-key="KeyV" aria-label="打开或关闭验收报告">验</button>
           <button data-touch-key="Tab" aria-label="切换验收报告页面">页</button>
           <button data-touch-key="KeyO" aria-label="分享验收报告">报</button>
@@ -212,6 +217,7 @@
       <kbd>B</kbd> 装备
       <kbd>G</kbd> 基地（通关后）
       <kbd>M</kbd> 静音
+      <kbd>P</kbd> 暂停 / 继续
       <kbd>R</kbd> 重来 · <kbd>N</kbd> 下一关
     </div>
     <script type="module" src="/src/main.ts"></script>

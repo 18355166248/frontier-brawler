@@ -47,10 +47,18 @@ export class TouchControls {
   }
 
   dispose(): void {
+    this.releaseAll();
+    this.abort.abort();
+  }
+
+  /** 暂停、切后台或 HMR 时统一释放，避免恢复后残留移动/按键状态。 */
+  releaseAll(): void {
     for (const code of this.buttonPointers.values()) this.options.onKey(code, false);
     this.buttonPointers.clear();
+    this.options.root.querySelectorAll('.is-pressed').forEach((element) => {
+      element.classList.remove('is-pressed');
+    });
     this.resetJoystick();
-    this.abort.abort();
   }
 
   private onJoystickDown = (event: PointerEvent): void => {

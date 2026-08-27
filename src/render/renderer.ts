@@ -314,6 +314,10 @@ export class Renderer {
     this.touchMode = enabled;
   }
 
+  get isTouchMode(): boolean {
+    return this.touchMode;
+  }
+
   onEvents(damage: DamageEvent[]): void {
     for (const d of damage) {
       // 飘字颜色承担信息量：处决、背刺、被格挡各自不同，

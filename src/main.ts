@@ -314,6 +314,11 @@ function handleKeyDown(e: KeyboardEvent): void {
     e.preventDefault();
     return;
   }
+  if (e.code === 'KeyP' && !e.repeat) {
+    setPaused(!paused);
+    e.preventDefault();
+    return;
+  }
   keys.add(e.code);
   if (!e.repeat) queueActionEdge(e.code);
   if (e.code === 'KeyM' && !e.repeat && !audio.toggleMuted()) audio.play('confirm');
@@ -399,6 +404,7 @@ canvas.addEventListener('pointerdown', unlockAudioFromPointer);
 
 const touchRoot = document.getElementById('touch-controls');
 const touchEquipmentButton = touchRoot?.querySelector<HTMLElement>('[data-touch-key="KeyB"]');
+const touchPauseButton = touchRoot?.querySelector<HTMLElement>('[data-touch-key="KeyP"]');
 const touchControls = touchRoot
   ? new TouchControls({
       root: touchRoot,
@@ -474,6 +480,50 @@ let paused = false;
 const performanceHud = document.getElementById('performance-hud');
 let performanceHudCooldown = 0;
 
+/**
+ * 正式暂停和开发调试共用同一个入口。暂停时必须释放所有持续输入，否则恢复后
+ * 浏览器不会补发后台期间丢失的 pointerup，角色会一直朝旧方向移动。
+ */
+function setPaused(next: boolean): void {
+  if (paused === next) return;
+  paused = next;
+  if (!paused) return;
+  keys.clear();
+  injected = {};
+  pendingEdges.attack = false;
+  pendingEdges.dash = false;
+  pendingEdges.skill = false;
+  pendingEdges.execute = false;
+  pendingEdges.jump = false;
+  attackLatch = false;
+  dashLatch = false;
+  skillLatch = false;
+  executeLatch = false;
+  jumpLatch = false;
+  touchControls?.releaseAll();
+}
+
+/** 移动端切应用、锁屏或浏览器退到后台时自动暂停，回来后由玩家明确继续。 */
+function pauseWhenHidden(): void {
+  if (document.hidden) setPaused(true);
+}
+document.addEventListener('visibilitychange', pauseWhenHidden);
+
+function drawPauseOverlay(ctx: CanvasRenderingContext2D): void {
+  if (!paused || validationPanel?.open) return;
+  ctx.save();
+  ctx.fillStyle = 'rgba(5,8,10,0.78)';
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#ffffff';
+  ctx.font = 'bold 34px system-ui, sans-serif';
+  ctx.fillText('已暂停', canvas.width / 2, canvas.height / 2 - 8);
+  ctx.fillStyle = 'rgba(255,255,255,0.65)';
+  ctx.font = '15px system-ui, sans-serif';
+  ctx.fillText(renderer.isTouchMode ? '点「续」返回战斗' : '按 P 返回战斗', canvas.width / 2, canvas.height / 2 + 26);
+  ctx.restore();
+}
+
 /** 推进一个逻辑帧并把事件转给表现层。自动化验证也复用它，保证跑的是同一条路径。 */
 function stepOnce(): void {
   // 建造使用真实时间而非战斗帧：暂停、切关或页面后台时都应照常到期。
@@ -531,9 +581,12 @@ function frame(now: number): void {
     touchRoot.dataset.forgeUnlocked = String(forgeUnlocked);
     touchRoot.dataset.validationOpen = String(validationPanel?.open ?? false);
     touchRoot.dataset.validationClearPending = String(validationPanel?.clearPending ?? false);
+    touchRoot.dataset.paused = String(paused);
+    if (touchPauseButton) touchPauseButton.textContent = paused ? '续' : '停';
     touchEquipmentButton?.setAttribute('aria-disabled', String(!forgeUnlocked));
   }
   renderer.draw(run);
+  drawPauseOverlay(canvas.getContext('2d')!);
   // 画在所有游戏 UI 之上：它是开发期的检查工具，不是玩法界面
   validationPanel?.draw(canvas.getContext('2d')!, canvas.width, canvas.height);
   performanceHud?.classList.toggle('validation-hidden', validationPanel?.open ?? false);
@@ -567,6 +620,7 @@ if (import.meta.hot) {
     window.removeEventListener('keyup', handleKeyUp);
     canvas.removeEventListener('pointerdown', unlockAudioFromPointer);
     window.removeEventListener('pagehide', persistCampaignOnPageHide);
+    document.removeEventListener('visibilitychange', pauseWhenHidden);
   });
 }
 
@@ -647,10 +701,10 @@ if (import.meta.env.DEV) {
     },
     /** 暂停/继续逻辑推进，渲染照常。用来定格检查某一帧的画面。 */
     pause(): void {
-      paused = true;
+      setPaused(true);
     },
     resume(): void {
-      paused = false;
+      setPaused(false);
     },
     /** 注入一帧后自动清掉，用来模拟"按一下"。 */
     tap(input: Partial<InputState>, frames = 2): void {
