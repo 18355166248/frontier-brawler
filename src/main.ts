@@ -31,6 +31,7 @@ import {
   writeCampaignSave,
 } from './core/save';
 import type { SaveStorage } from './core/save';
+import { GameAudio } from './audio/game-audio';
 
 /** 三选一的按键，和 render/renderer.ts 里卡片上画的键位一一对应 */
 const CHOICE_KEYS: Record<string, UpgradeTrackId> = {
@@ -84,6 +85,7 @@ for (const [kind, rows] of Object.entries(ENEMY_SHEET_ROWS)) {
 }
 
 const renderer = new Renderer(canvas, sheets, new EquipmentIcons());
+const audio = new GameAudio();
 
 /**
  * 手写的房间图最容易出两种错：门只连了单向，和网格坐标与门方向对不上。
@@ -213,7 +215,8 @@ function queueActionEdge(code: string): void {
   if (code === 'KeyL' || code === 'KeyQ') pendingEdges.jump = true;
 }
 
-window.addEventListener('keydown', (e) => {
+function handleKeyDown(e: KeyboardEvent): void {
+  void audio.unlock();
   // 验收面板先看一眼：它只吃自己的键（V/O/C/Y/Esc），吃掉就不再交给游戏，
   // 免得"按 C 确认清空"顺手也触发了别的操作。其余键照常透传，
   // 面板是覆盖层不是暂停态。
@@ -223,9 +226,10 @@ window.addEventListener('keydown', (e) => {
   }
   keys.add(e.code);
   if (!e.repeat) queueActionEdge(e.code);
+  if (e.code === 'KeyM' && !e.repeat && !audio.toggleMuted()) audio.play('confirm');
   if (e.code === 'KeyR') startStage(stageIndex, run.profile);
-  if (e.code === 'KeyB' && !e.repeat) run.toggleEquipmentMenu();
-  if (e.code === 'KeyG' && !e.repeat) run.toggleBaseMenu(Date.now());
+  if (e.code === 'KeyB' && !e.repeat && run.toggleEquipmentMenu()) audio.play('confirm');
+  if (e.code === 'KeyG' && !e.repeat && run.toggleBaseMenu(Date.now())) audio.play('confirm');
   // 最后一关通关后没有下一关可进——不加这条边界的话，Math.min 会把
   // stageIndex+1 钳回原地，按 N 变成"用全新档案重开第 6 关"，
   // 玩家会以为按键没反应，而不是"这已经是终点"。
@@ -238,11 +242,11 @@ window.addEventListener('keydown', (e) => {
     const index = Number(e.code.replace('Digit', '')) - 1;
     const building = BUILDING_IDS[index];
     if (building === 'alchemyLab' && run.profile.base.completedBuildings.includes('alchemyLab')) {
-      run.craftTonic();
+      if (run.craftTonic()) audio.play('confirm');
     } else if (building === 'archive' && run.profile.base.completedBuildings.includes('archive')) {
-      run.cycleArchiveTrack();
+      if (run.cycleArchiveTrack()) audio.play('confirm');
     } else if (building) {
-      run.queueBaseBuilding(building, Date.now());
+      if (run.queueBaseBuilding(building, Date.now())) audio.play('confirm');
     }
   } else if (
     profession &&
@@ -250,22 +254,35 @@ window.addEventListener('keydown', (e) => {
     run.canSelectProfession(profession)
   ) {
     run.setProfession(profession);
+    audio.play('confirm');
   } else if (run.phase === 'equipmentMenu') {
     const slot = EQUIPMENT_SLOT_KEYS[e.code];
-    if (slot) run.cycleEquipment(slot);
+    if (slot && run.cycleEquipment(slot)) audio.play('confirm');
   } else if (run.phase === 'equipmentChoice' && run.pendingEquipment) {
     const index = Number(e.code.replace('Digit', '')) - 1;
     const equipment = run.pendingEquipment[index];
-    if (equipment) run.chooseEquipment(equipment);
-  } else if (track && run.phase === 'choosing') {
+    if (equipment && run.chooseEquipment(equipment)) audio.play('confirm');
+  } else if (track && run.phase === 'choosing' && run.pendingChoice?.includes(track)) {
     run.chooseUpgrade(track);
+    audio.play('confirm');
   }
   // 方向键和空格会滚动页面，游戏里要吃掉
   if (['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', 'Space'].includes(e.code)) {
     e.preventDefault();
   }
-});
-window.addEventListener('keyup', (e) => keys.delete(e.code));
+}
+
+function handleKeyUp(e: KeyboardEvent): void {
+  keys.delete(e.code);
+}
+
+function unlockAudioFromPointer(): void {
+  void audio.unlock();
+}
+
+window.addEventListener('keydown', handleKeyDown);
+window.addEventListener('keyup', handleKeyUp);
+canvas.addEventListener('pointerdown', unlockAudioFromPointer);
 
 /** 攻击和冲刺取「按下那一瞬间」，不是持续按住——否则按住不放会变成无限连招。 */
 let attackLatch = false;
@@ -330,11 +347,18 @@ function stepOnce(): void {
   const nowMs = Date.now();
   run.settleBaseConstruction(nowMs);
   run.settleBaseOfflineIncome(nowMs);
+  const clearedBefore = run.cleared.size;
+  const stageClearedBefore = run.stageCleared;
+  const phaseBefore = run.phase;
   const events = run.step(readInput());
+  audio.onWorldEvents(events, run.world.player?.id);
   if (events.damage.length) renderer.onEvents(events.damage);
   if (events.executes.length) renderer.onExecutes(events.executes);
   if (events.skillCasts.length) renderer.onSkillCasts(events.skillCasts);
   if (events.bossPhaseShifts.length) renderer.onBossPhaseShift(events.bossPhaseShifts);
+  if (!stageClearedBefore && run.stageCleared) audio.play('stageClear');
+  else if (run.cleared.size > clearedBefore) audio.play('roomClear');
+  if (phaseBefore !== 'dead' && run.phase === 'dead') audio.play('defeat');
   if (
     professionValidation &&
     !recordedValidationRuns.has(run) &&
@@ -362,14 +386,17 @@ function frame(now: number): void {
   rafId = requestAnimationFrame(frame);
 }
 
-// HMR 会重新执行本模块，但不会停掉上一份的 rAF 循环。
-// 不清理的话每次热更新都多一个循环，全都往同一张 canvas 上画：
-// 画面会在新旧两个世界之间闪，而且改了代码看起来"没生效"。
+// HMR 会重新执行本模块；循环和输入监听都要清掉，否则画面会闪、一次按键会
+// 被多份旧世界重复消费，新增的 AudioContext 也会跟着泄漏。
 if (import.meta.hot) {
   import.meta.hot.dispose(() => {
     saveCampaign(Date.now(), true);
     stopped = true;
     cancelAnimationFrame(rafId);
+    audio.dispose();
+    window.removeEventListener('keydown', handleKeyDown);
+    window.removeEventListener('keyup', handleKeyUp);
+    canvas.removeEventListener('pointerdown', unlockAudioFromPointer);
     window.removeEventListener('pagehide', persistCampaignOnPageHide);
   });
 }
@@ -403,6 +430,10 @@ if (import.meta.env.DEV) {
     /** 只清除磁盘存档，不中断当前这局。 */
     clearSave(): boolean {
       return campaignStorage ? clearCampaignSave(campaignStorage) : false;
+    },
+    /** 音效静音开关；返回 true 表示当前已静音。 */
+    mute(): boolean {
+      return audio.toggleMuted();
     },
     /** 跳到第 n 关（1 起） */
     stage(n: number): void {
