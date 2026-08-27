@@ -11,7 +11,7 @@
 import { TICK_RATE } from './core/actions';
 import { validateStage } from './core/level';
 import { Run, createProfile, createStageProfile } from './core/run';
-import { STAGES } from './core/stages';
+import { nextCampaignStageIndex, STAGES } from './core/stages';
 import type { UpgradeTrackId } from './core/upgrades';
 import { createEnemy } from './core/world';
 import type { InputState } from './core/world';
@@ -334,11 +334,10 @@ function handleKeyDown(e: KeyboardEvent): void {
       audio.play('confirm');
     }
   }
-  // 最后一关通关后没有下一关可进——不加这条边界的话，Math.min 会把
-  // stageIndex+1 钳回原地，按 N 变成"用全新档案重开第 6 关"，
-  // 玩家会以为按键没反应，而不是"这已经是终点"。
-  if (e.code === 'KeyN' && run.phase === 'stageComplete' && stageIndex + 1 < STAGES.length) {
-    startStage(stageIndex + 1, run.profile);
+  if (e.code === 'KeyN' && !e.repeat && run.phase === 'stageComplete') {
+    // 最终关不是死胡同：保留装备和基地回到第一关，局内生命/成长仍按新关重置。
+    startStage(nextCampaignStageIndex(stageIndex), run.profile);
+    audio.play('confirm');
   }
   const track = CHOICE_KEYS[e.code];
   const profession = PROFESSION_KEYS[e.code];
@@ -405,6 +404,7 @@ canvas.addEventListener('pointerdown', unlockAudioFromPointer);
 const touchRoot = document.getElementById('touch-controls');
 const touchEquipmentButton = touchRoot?.querySelector<HTMLElement>('[data-touch-key="KeyB"]');
 const touchPauseButton = touchRoot?.querySelector<HTMLElement>('[data-touch-key="KeyP"]');
+const touchNextButton = touchRoot?.querySelector<HTMLElement>('[data-touch-key="KeyN"]');
 const touchControls = touchRoot
   ? new TouchControls({
       root: touchRoot,
@@ -583,6 +583,7 @@ function frame(now: number): void {
     touchRoot.dataset.validationClearPending = String(validationPanel?.clearPending ?? false);
     touchRoot.dataset.paused = String(paused);
     if (touchPauseButton) touchPauseButton.textContent = paused ? '续' : '停';
+    if (touchNextButton) touchNextButton.textContent = stageIndex + 1 >= STAGES.length ? '轮' : '进';
     touchEquipmentButton?.setAttribute('aria-disabled', String(!forgeUnlocked));
   }
   renderer.draw(run);

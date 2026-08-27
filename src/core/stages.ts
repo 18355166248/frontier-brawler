@@ -237,6 +237,12 @@ export const STAGES: StageDef[] = [
   },
 ];
 
+/** 最终关之后回到第一关开启新远征；装备和基地是否继承由 createStageProfile 决定。 */
+export function nextCampaignStageIndex(currentIndex: number): number {
+  if (!Number.isInteger(currentIndex) || currentIndex < 0 || currentIndex >= STAGES.length) return 0;
+  return currentIndex + 1 < STAGES.length ? currentIndex + 1 : 0;
+}
+
 export function stageByIndex(index: number): StageDef | undefined {
   return STAGES.find((s) => s.index === index);
 }

@@ -8,6 +8,7 @@ const bundled = await build({
       "export * from './src/core/save.ts';",
       "export * from './src/core/run.ts';",
       "export * from './src/core/economy.ts';",
+      "export * from './src/core/stages.ts';",
     ].join('\n'),
     resolveDir: process.cwd(),
     sourcefile: 'save-validation-entry.ts',
@@ -33,6 +34,7 @@ const {
   decodeCampaignSave,
   encodeCampaignSave,
   loadCampaignSave,
+  nextCampaignStageIndex,
   writeCampaignSave,
 } = save;
 
@@ -40,6 +42,10 @@ const failures = [];
 const expect = (condition, message) => {
   if (!condition) failures.push(message);
 };
+
+expect(nextCampaignStageIndex(0) === 1, '普通关卡没有推进到下一关');
+expect(nextCampaignStageIndex(5) === 0, '最终关没有环回第一关开启新远征');
+expect(nextCampaignStageIndex(-1) === 0, '非法关卡索引没有安全降级到第一关');
 
 const profile = createProfile();
 profile.profession = 'arcane';

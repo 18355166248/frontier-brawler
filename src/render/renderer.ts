@@ -1727,8 +1727,7 @@ export class Renderer {
    */
   private drawStageSummary(run: Run): void {
     const { ctx, canvas } = this;
-    // 最后一关通关后没有"下一关"可进，提示语和 main.ts 里 KeyN 的
-    // 边界判断要保持一致，不然会出现"画面说按N，按了却没反应"的落差。
+    // 最后一关用同一个 N 输入开启新一轮，提示语和 main.ts 的环回规则必须一致。
     const isFinalStage = run.stage.index >= STAGES.length;
     const summary = run.overallSummary();
 
@@ -1761,10 +1760,10 @@ export class Renderer {
     ctx.fillText(
       this.touchMode
         ? isFinalStage
-          ? '这是目前的最终关卡 · 点「重」重玩本关'
+          ? '点「轮」开启新一轮 ·「基」整理基地 ·「重」重玩本关'
           : '点「进」进入下一关 · 点「重」重来本关'
         : isFinalStage
-          ? '这是目前的最终关卡 · 按 R 重玩本关'
+          ? '按 N 开启新一轮 · G 整理基地 · R 重玩本关'
           : '按 N 进入下一关 · 按 R 重来本关',
       canvas.width / 2,
       panelY + 66,
