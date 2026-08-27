@@ -87,6 +87,7 @@ for (const [kind, rows] of Object.entries(ENEMY_SHEET_ROWS)) {
 }
 
 const renderer = new Renderer(canvas, sheets, new EquipmentIcons());
+renderer.setTouchMode(window.matchMedia('(hover: none), (pointer: coarse)').matches);
 const audio = new GameAudio();
 
 /**
@@ -173,7 +174,10 @@ if (import.meta.env.DEV) {
   const requestedRoom = params.get('room');
   const requestedProfession = params.get('profession') as Profession | null;
   const requestedEquipment = params.getAll('equipment');
-  if (params.get('touch') === '1') document.body.classList.add('force-touch');
+  if (params.get('touch') === '1') {
+    document.body.classList.add('force-touch');
+    renderer.setTouchMode(true);
+  }
   // 带直达参数的是一次性验收沙盒，不得把跳关或注入装备覆盖玩家的正式存档。
   campaignPersistenceEnabled = !(
     params.has('stage') ||
@@ -313,6 +317,7 @@ window.addEventListener('keyup', handleKeyUp);
 canvas.addEventListener('pointerdown', unlockAudioFromPointer);
 
 const touchRoot = document.getElementById('touch-controls');
+const touchEquipmentButton = touchRoot?.querySelector<HTMLElement>('[data-touch-key="KeyB"]');
 const touchControls = touchRoot
   ? new TouchControls({
       root: touchRoot,
@@ -431,6 +436,9 @@ function frame(now: number): void {
   if (touchRoot) {
     touchRoot.dataset.phase = run.phase;
     touchRoot.dataset.finalStage = String(stageIndex + 1 >= STAGES.length);
+    const forgeUnlocked = run.profile.base.completedBuildings.includes('forge');
+    touchRoot.dataset.forgeUnlocked = String(forgeUnlocked);
+    touchEquipmentButton?.setAttribute('aria-disabled', String(!forgeUnlocked));
   }
   renderer.draw(run);
   // 画在所有游戏 UI 之上：它是开发期的检查工具，不是玩法界面

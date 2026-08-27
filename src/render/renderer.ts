@@ -293,6 +293,7 @@ export class Renderer {
    * 逻辑帧率时会连续好几次渲染都读到同一个逻辑帧，同一步会被踩好几次灰。
    */
   private lastMoveFrame = new Map<number, number>();
+  private touchMode = false;
 
   constructor(
     private canvas: HTMLCanvasElement,
@@ -303,6 +304,10 @@ export class Renderer {
     if (!ctx) throw new Error('拿不到 2d context');
     this.ctx = ctx;
     this.ctx.imageSmoothingEnabled = false;
+  }
+
+  setTouchMode(enabled: boolean): void {
+    this.touchMode = enabled;
   }
 
   onEvents(damage: DamageEvent[]): void {
@@ -1134,7 +1139,11 @@ export class Renderer {
       ctx.fillStyle = '#e2705c';
       ctx.font = 'bold 22px system-ui, sans-serif';
       ctx.textAlign = 'center';
-      ctx.fillText('倒下了 · 按 G 建设基地 · 按 R 重来', this.canvas.width / 2, this.canvas.height / 2);
+      ctx.fillText(
+        this.touchMode ? '倒下了 · 点「基」建设基地 · 点「重」重来' : '倒下了 · 按 G 建设基地 · 按 R 重来',
+        this.canvas.width / 2,
+        this.canvas.height / 2,
+      );
       return;
     }
 
@@ -1192,7 +1201,9 @@ export class Renderer {
     ctx.fillRect(14, 50, w * Math.max(0, player.energy / player.maxEnergy), 7);
     ctx.fillStyle = ready ? PALETTE.energyFull : 'rgba(255,255,255,0.55)';
     ctx.fillText(
-      ready ? '技能就绪 · U' : `${Math.floor(player.energy)} / ${Math.round(cost)}`,
+      ready
+        ? this.touchMode ? '技能就绪 · 点「技」' : '技能就绪 · U'
+        : `${Math.floor(player.energy)} / ${Math.round(cost)}`,
       14 + w + 10,
       58,
     );
@@ -1234,7 +1245,7 @@ export class Renderer {
     ctx.fillStyle = 'rgba(255,255,255,0.58)';
     ctx.fillText(
       hasBuilding(run.profile.base, 'trainingGround')
-        ? '按 1 / 2 / 3 选择'
+        ? `${this.touchMode ? '点' : '按'} 1 / 2 / 3 选择`
         : run.profile.profession === 'swift'
           ? '疾锋可用 · 建成演武场后解锁重击与术法'
           : '保留当前职业 · 建成演武场后解锁全部职业',
@@ -1300,7 +1311,7 @@ export class Renderer {
     ctx.fillText('选择一条成长路线', canvas.width / 2, 86);
     ctx.font = '13px system-ui, sans-serif';
     ctx.fillStyle = 'rgba(255,255,255,0.55)';
-    ctx.fillText('按 1 / 2 / 3 选择', canvas.width / 2, 108);
+    ctx.fillText(`${this.touchMode ? '点' : '按'} 1 / 2 / 3 选择`, canvas.width / 2, 108);
 
     const cardW = 200;
     const cardH = 210;
@@ -1384,8 +1395,8 @@ export class Renderer {
     ctx.fillStyle = 'rgba(255,255,255,0.58)';
     ctx.fillText(
       hasBuilding(run.profile.base, 'forge')
-        ? '精英 / 首领房首次清空掉落 · 按 1 / 2 / 3 收入库存'
-        : '按 1 / 2 / 3 存入库房 · 锻造台建成后即可装备',
+        ? `精英 / 首领房首次清空掉落 · ${this.touchMode ? '点' : '按'} 1 / 2 / 3 收入库存`
+        : `${this.touchMode ? '点' : '按'} 1 / 2 / 3 存入库房 · 锻造台建成后即可装备`,
       canvas.width / 2,
       110,
     );
@@ -1475,7 +1486,11 @@ export class Renderer {
     ctx.fillText('装备', canvas.width / 2, 76);
     ctx.font = '13px system-ui, sans-serif';
     ctx.fillStyle = 'rgba(255,255,255,0.58)';
-    ctx.fillText('按 1 / 2 / 3 循环对应槽位 · 按 B 返回战斗', canvas.width / 2, 101);
+    ctx.fillText(
+      this.touchMode ? '点 1 / 2 / 3 循环对应槽位 · 点「装」返回战斗' : '按 1 / 2 / 3 循环对应槽位 · 按 B 返回战斗',
+      canvas.width / 2,
+      101,
+    );
 
     const cardW = 220;
     const cardH = 230;
@@ -1533,7 +1548,12 @@ export class Renderer {
     const cardH = 292;
     const gap = 12;
     const startX = (canvas.width - BUILDING_UNLOCKS.length * cardW - (BUILDING_UNLOCKS.length - 1) * gap) / 2;
-    const y = 142;
+    const firstDefeatHasNoBaseAction =
+      !run.stageCleared &&
+      progress.completedStageRuns === 0 &&
+      progress.completedBuildings.length === 0 &&
+      progress.constructionQueue.length === 0;
+    const y = firstDefeatHasNoBaseAction ? 158 : 142;
 
     ctx.save();
     ctx.fillStyle = 'rgba(8,10,13,0.84)';
@@ -1545,7 +1565,9 @@ export class Renderer {
     ctx.fillStyle = 'rgba(255,255,255,0.58)';
     ctx.font = '13px system-ui, sans-serif';
     ctx.fillText(
-      `按 1–5 开始建造 · 建筑串行施工 · 按 G 返回${run.stageCleared ? '结算' : '战败界面'}`,
+      this.touchMode
+        ? `点 1–5 开始建造 · 建筑串行施工 · 点「基」返回${run.stageCleared ? '结算' : '战败界面'}`
+        : `按 1–5 开始建造 · 建筑串行施工 · 按 G 返回${run.stageCleared ? '结算' : '战败界面'}`,
       canvas.width / 2,
       86,
     );
@@ -1556,6 +1578,10 @@ export class Renderer {
       canvas.width / 2,
       112,
     );
+    if (firstDefeatHasNoBaseAction) {
+      ctx.fillStyle = '#7fe8ff';
+      ctx.fillText('清空战斗房可获得材料 · 击败首领后解锁演武场', canvas.width / 2, 136);
+    }
 
     BUILDING_UNLOCKS.forEach((building, index) => {
       const plan = BUILDING_PLANS[building.id];
@@ -1601,9 +1627,9 @@ export class Renderer {
       let statusColor = '#ffd479';
       if (completed) {
         if (building.id === 'archive') {
-          status = `永久路线 · ${progress.archiveTrack ? UPGRADE_TRACKS[progress.archiveTrack].label : '未选择'}\n按 5 切换`;
+          status = `永久路线 · ${progress.archiveTrack ? UPGRADE_TRACKS[progress.archiveTrack].label : '未选择'}\n${this.touchMode ? '点' : '按'} 5 切换`;
         } else if (building.id === 'alchemyLab') {
-          status = `出击补给 ${progress.tonics} · 材料 ${TONIC_MATERIAL_COST}\n按 3 制作`;
+          status = `出击补给 ${progress.tonics} · 材料 ${TONIC_MATERIAL_COST}\n${this.touchMode ? '点' : '按'} 3 制作`;
         } else {
           status = '已完成';
         }
@@ -1695,7 +1721,13 @@ export class Renderer {
     ctx.font = '13px system-ui, sans-serif';
     ctx.fillStyle = 'rgba(255,255,255,0.6)';
     ctx.fillText(
-      isFinalStage ? '这是目前的最终关卡 · 按 R 重玩本关' : '按 N 进入下一关 · 按 R 重来本关',
+      this.touchMode
+        ? isFinalStage
+          ? '这是目前的最终关卡 · 点「重」重玩本关'
+          : '点「进」进入下一关 · 点「重」重来本关'
+        : isFinalStage
+          ? '这是目前的最终关卡 · 按 R 重玩本关'
+          : '按 N 进入下一关 · 按 R 重来本关',
       canvas.width / 2,
       panelY + 66,
     );

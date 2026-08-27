@@ -23,8 +23,8 @@ export function audioCuesForWorldEvents(events: WorldEvents, playerId?: number):
   const cues = new Set<AudioCue>();
   for (const event of events.damage) {
     if (event.target === playerId) cues.add('playerHit');
-    else if (event.guarded) cues.add('guard');
     else if (event.killed) cues.add('kill');
+    else if (event.guarded) cues.add('guard');
     else if (event.backstab || event.perfectCancel) cues.add('criticalHit');
     else cues.add('enemyHit');
   }
@@ -94,6 +94,7 @@ type WebkitAudioWindow = typeof globalThis & { webkitAudioContext?: typeof Audio
 export class GameAudio {
   private context: AudioContext | null = null;
   private master: GainNode | null = null;
+  private limiter: DynamicsCompressorNode | null = null;
   private muted = false;
 
   async unlock(): Promise<boolean> {
@@ -104,7 +105,15 @@ export class GameAudio {
       this.context = new AudioContextClass();
       this.master = this.context.createGain();
       this.master.gain.value = 0.22;
-      this.master.connect(this.context.destination);
+      // 多种大反馈可能同帧叠加；压缩器只做峰值安全网，避免主输出削波。
+      this.limiter = this.context.createDynamicsCompressor();
+      this.limiter.threshold.value = -10;
+      this.limiter.knee.value = 12;
+      this.limiter.ratio.value = 8;
+      this.limiter.attack.value = 0.003;
+      this.limiter.release.value = 0.18;
+      this.master.connect(this.limiter);
+      this.limiter.connect(this.context.destination);
     }
     if (this.context.state === 'suspended') {
       try {
@@ -138,6 +147,7 @@ export class GameAudio {
     const context = this.context;
     this.context = null;
     this.master = null;
+    this.limiter = null;
     if (context && context.state !== 'closed') void context.close().catch(() => undefined);
   }
 

@@ -45,9 +45,23 @@ const expected = [
   'enemyHit', 'playerHit', 'kill', 'guard', 'criticalHit',
   'execute', 'skillLight', 'skillHeavy', 'bossPhase',
 ];
+const guardedKillCues = audioCuesForWorldEvents({
+  ...empty,
+  damage: [{
+    attacker: 1,
+    target: 2,
+    damage: 1,
+    at: { x: 0, y: 0 },
+    killed: true,
+    guarded: true,
+  }],
+}, 1);
 const missing = expected.filter((cue) => !cues.includes(cue));
 if (missing.length || cues.length !== expected.length) {
   console.error(`[validate_audio] FAIL: 事件分类错误 ${JSON.stringify(cues)}`);
+  process.exitCode = 1;
+} else if (guardedKillCues.join(',') !== 'kill') {
+  console.error(`[validate_audio] FAIL: 致命格挡没有优先播放击杀音 ${guardedKillCues}`);
   process.exitCode = 1;
 } else if (audioCuesForWorldEvents(empty, 1).length !== 0) {
   console.error('[validate_audio] FAIL: 空事件产生了音效');
