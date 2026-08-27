@@ -17,6 +17,20 @@ export interface LoopValidationReport {
 
 const STORAGE_KEY = 'frontier-brawler:m6-loop-samples:v1';
 
+/** 这些 URL 参数会人工改变关卡或角色，所得终局不能混入真人验收样本。 */
+const SYNTHETIC_VALIDATION_PARAMS = [
+  'stage',
+  'room',
+  'profession',
+  'equipment',
+  'stress',
+  'base',
+] as const;
+
+export function isSyntheticValidationSandbox(params: URLSearchParams): boolean {
+  return SYNTHETIC_VALIDATION_PARAMS.some((key) => params.has(key));
+}
+
 /** M6 只记录“战败后做了什么”，不采集身份信息，也不进入正式战役存档。 */
 export class LoopValidationStore {
   private memory: LoopValidationSample[];

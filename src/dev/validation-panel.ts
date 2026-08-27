@@ -108,6 +108,7 @@ export interface M6ValidationContext {
   loop: Pick<LoopValidationStore, 'report' | 'samples' | 'clear'>;
   performance: () => PerformanceReport | null;
   environment: () => ValidationEnvironment;
+  touchMode?: () => boolean;
 }
 
 export function buildM6ValidationPanelModel(
@@ -251,6 +252,10 @@ export class ValidationPanel {
     return this.visible;
   }
 
+  get clearPending(): boolean {
+    return this.confirmingClear;
+  }
+
   model(): ValidationPanelModel {
     return buildValidationPanelModel(
       this.store.report(),
@@ -277,7 +282,7 @@ export class ValidationPanel {
       return true;
     }
     if (code === 'KeyO') {
-      this.exportJson();
+      void this.exportJson();
       return true;
     }
     if (code === 'KeyC') {
@@ -285,8 +290,9 @@ export class ValidationPanel {
       return true;
     }
     if (code === 'KeyY' && this.confirmingClear) {
-      if (this.page === 'm6') this.m6?.loop.clear();
-      else this.store.clear();
+      // 统一面板导出的是同一轮验收数据；清理也必须原子化，避免只剩半套旧样本。
+      this.store.clear();
+      this.m6?.loop.clear();
       this.confirmingClear = false;
       return true;
     }
@@ -303,7 +309,7 @@ export class ValidationPanel {
    * 导出成文件下载。样本是真人连打六关攒出来的，只在控制台打印的话
    * 一刷新就没了；下载失败（无 DOM / 被拦）时退回控制台，至少不丢数据。
    */
-  private exportJson(): void {
+  private async exportJson(): Promise<void> {
     const payload = JSON.stringify(
       {
         exportedAt: new Date().toISOString(),
@@ -318,14 +324,27 @@ export class ValidationPanel {
       null,
       2,
     );
+    const blob = new Blob([payload], { type: 'application/json' });
+    const filename = `frontier-brawler-validation-${Date.now()}.json`;
     try {
-      const blob = new Blob([payload], { type: 'application/json' });
+      // iOS Safari 上 download 链接很难找到；由真实点按触发时优先拉起系统分享，
+      // 玩家可直接存到“文件”后上传。取消分享不应再偷偷触发一次下载。
+      const file = new File([blob], filename, { type: 'application/json' });
+      if (typeof navigator.share === 'function' && (!navigator.canShare || navigator.canShare({ files: [file] }))) {
+        try {
+          await navigator.share({ title: 'Frontier Brawler 真机验收', files: [file] });
+          return;
+        } catch (error) {
+          if (error instanceof DOMException && error.name === 'AbortError') return;
+        }
+      }
       const url = URL.createObjectURL(blob);
       const link = document.createElement('a');
       link.href = url;
-      link.download = `frontier-brawler-validation-${Date.now()}.json`;
+      link.download = filename;
       link.click();
-      URL.revokeObjectURL(url);
+      // Safari 需要等下载导航真正读取 URL 后才能释放，立即 revoke 会生成空文件。
+      window.setTimeout(() => URL.revokeObjectURL(url), 1_000);
     } catch {
       console.log('[validation-panel] 导出失败，改为打印：\n' + payload);
     }
@@ -349,7 +368,9 @@ export class ValidationPanel {
     ctx.font = '13px system-ui, sans-serif';
     ctx.fillStyle = MUTED;
     ctx.fillText(
-      `${this.page === 'm6' ? '循环与性能' : `共 ${model.totalSamples} 份样本`} · Tab 切页 · O 导出 JSON · C 清空 · V 关闭`,
+      this.m6?.touchMode?.()
+        ? `${this.page === 'm6' ? '循环与性能' : `共 ${model.totalSamples} 份样本`} ·「页」切页 ·「报」导出 ·「清→确」清样本 ·「验」关闭`
+        : `${this.page === 'm6' ? '循环与性能' : `共 ${model.totalSamples} 份样本`} · Tab 切页 · O 导出 JSON · C 清空 · V 关闭`,
       width / 2,
       66,
     );
@@ -365,7 +386,7 @@ export class ValidationPanel {
       ctx.fillStyle = FAIL_COLOR;
       ctx.font = 'bold 15px system-ui, sans-serif';
       ctx.fillText(
-        `确认清空${this.page === 'm6' ? '循环' : `全部 ${model.totalSamples} 份`}样本？按 Y 确认 · Esc 取消`,
+        `确认清空全部真人验收样本？${this.m6?.touchMode?.() ? '点「确」确认' : '按 Y 确认 · Esc 取消'}`,
         width / 2,
         height - 18,
       );
@@ -432,8 +453,20 @@ export class ValidationPanel {
     ctx.fillText(`CPU ${env.hardwareConcurrency ?? '—'} 核 · 内存 ${env.deviceMemoryGb ?? '—'} GB`, right + 22, top + 241);
     ctx.fillText(env.userAgent.slice(0, 58), right + 22, top + 265);
     ctx.font = '12px system-ui, sans-serif';
-    ctx.fillText('真机步骤：打开 ?stress=50，横屏保持 10 秒后按 V。', right + 22, top + 307);
-    ctx.fillText('按 O 导出时会连同设备信息和原始样本一起保存。', right + 22, top + 330);
+    ctx.fillText(
+      this.m6.touchMode?.()
+        ? '真机步骤：保持 10 秒后截图本页，直接发到当前对话。'
+        : '真机步骤：打开 ?stress=50，横屏保持 10 秒后按 V。',
+      right + 22,
+      top + 307,
+    );
+    ctx.fillText(
+      this.m6.touchMode?.()
+        ? '点「报」导出 JSON；未弹分享时到 Safari 下载项查找。'
+        : '按 O 导出时会连同设备信息和原始样本一起保存。',
+      right + 22,
+      top + 330,
+    );
   }
 
   private drawM6Rows(

@@ -35,7 +35,7 @@ import {
 import type { SaveStorage } from './core/save';
 import { GameAudio } from './audio/game-audio';
 import { TouchControls } from './input/touch-controls';
-import { LoopValidationStore } from './dev/loop-validation';
+import { isSyntheticValidationSandbox, LoopValidationStore } from './dev/loop-validation';
 import { PerformanceProbe } from './dev/performance-probe';
 import type { EnemyKind } from './core/types';
 
@@ -121,6 +121,8 @@ let run = new Run(
 );
 let lastCampaignSaveAtMs = 0;
 let campaignPersistenceEnabled = true;
+/** 跳关、压力注入等沙盒局只用于机械验证，不能写入真人验收样本。 */
+let validationSamplingEnabled = true;
 const CAMPAIGN_AUTOSAVE_INTERVAL_MS = 1_000;
 
 /** 通关画面刷新后直接从下一关起点继续，最终关则保留在最终关。 */
@@ -173,10 +175,12 @@ const validationPanel =
                 // deviceMemory 并非所有浏览器都暴露；缺失时导出 null，而非伪造设备档位。
                 deviceMemoryGb: (navigator as Navigator & { deviceMemory?: number }).deviceMemory ?? null,
               }),
+              touchMode: () => window.matchMedia('(hover: none), (pointer: coarse)').matches,
             }
           : null,
       )
     : null;
+if (validationPanel) document.body.classList.add('validation-enabled');
 
 function startStage(index: number, carryFrom?: Run['profile']): void {
   stageIndex = Math.max(0, Math.min(STAGES.length - 1, index));
@@ -188,6 +192,7 @@ function startStage(index: number, carryFrom?: Run['profile']): void {
 /** 只用于开发压力场景：固定网格生成混合兵种，不修改任何正式关卡编成。 */
 function spawnStressEnemies(requestedCount: number): number {
   if (!import.meta.env.DEV || !Number.isFinite(requestedCount)) return 0;
+  validationSamplingEnabled = false;
   const count = Math.max(1, Math.min(100, Math.floor(requestedCount)));
   const world = run.world;
   const player = world.player;
@@ -229,14 +234,9 @@ if (import.meta.env.DEV) {
     renderer.setTouchMode(true);
   }
   // 带直达参数的是一次性验收沙盒，不得把跳关或注入装备覆盖玩家的正式存档。
-  campaignPersistenceEnabled = !(
-    params.has('stage') ||
-    params.has('room') ||
-    params.has('profession') ||
-    params.has('equipment') ||
-    params.has('stress') ||
-    params.has('base')
-  );
+  const syntheticValidationSandbox = isSyntheticValidationSandbox(params);
+  campaignPersistenceEnabled = !syntheticValidationSandbox;
+  validationSamplingEnabled = !syntheticValidationSandbox;
   if (Number.isInteger(requestedStage) && requestedStage >= 1 && requestedStage <= STAGES.length) {
     startStage(requestedStage - 1);
   }
@@ -276,6 +276,11 @@ if (import.meta.env.DEV) {
     }
     run.world.stats.died = true;
     run.toggleBaseMenu(Date.now());
+  }
+  if (params.get('report') === '1' && validationPanel) {
+    // 真机没有键盘：验收专用地址直接打开 M6 页，避免玩家猜 V / Tab 怎么按。
+    validationPanel.handleKey('KeyV');
+    validationPanel.handleKey('Tab');
   }
 }
 
@@ -487,10 +492,11 @@ function stepOnce(): void {
   if (!stageClearedBefore && run.stageCleared) audio.play('stageClear');
   else if (run.cleared.size > clearedBefore) audio.play('roomClear');
   if (phaseBefore !== 'dead' && run.phase === 'dead') audio.play('defeat');
-  if (phaseBefore !== 'dead' && run.phase === 'dead' && loopValidation) {
+  if (validationSamplingEnabled && phaseBefore !== 'dead' && run.phase === 'dead' && loopValidation) {
     defeatSampleByRun.set(run, loopValidation.recordDefeat(run.stage.id));
   }
   if (
+    validationSamplingEnabled &&
     professionValidation &&
     !recordedValidationRuns.has(run) &&
     (run.phase === 'stageComplete' || run.phase === 'dead')
@@ -523,11 +529,14 @@ function frame(now: number): void {
     touchRoot.dataset.finalStage = String(stageIndex + 1 >= STAGES.length);
     const forgeUnlocked = run.profile.base.completedBuildings.includes('forge');
     touchRoot.dataset.forgeUnlocked = String(forgeUnlocked);
+    touchRoot.dataset.validationOpen = String(validationPanel?.open ?? false);
+    touchRoot.dataset.validationClearPending = String(validationPanel?.clearPending ?? false);
     touchEquipmentButton?.setAttribute('aria-disabled', String(!forgeUnlocked));
   }
   renderer.draw(run);
   // 画在所有游戏 UI 之上：它是开发期的检查工具，不是玩法界面
   validationPanel?.draw(canvas.getContext('2d')!, canvas.width, canvas.height);
+  performanceHud?.classList.toggle('validation-hidden', validationPanel?.open ?? false);
   const renderMs = performance.now() - renderStartedAt;
   performanceProbe?.record(frameMs, logicMs, renderMs);
   if (performanceHud && performanceHudCooldown-- <= 0) {
@@ -537,7 +546,7 @@ function frame(now: number): void {
         `${report.entities} units · ${report.averageFps} fps`,
         `p95 frame ${report.p95FrameMs}ms`,
         `logic ${report.p95LogicMs}ms · render ${report.p95RenderMs}ms`,
-        report.passes60FpsTarget ? 'PASS' : `sampling ${report.samples}/120`,
+        report.passes50UnitTarget ? 'PASS' : `sampling ${report.samples}/120`,
       ].join('\n');
     }
     performanceHudCooldown = 30;

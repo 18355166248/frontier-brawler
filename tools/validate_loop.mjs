@@ -21,7 +21,7 @@ const bundled = await build({
 });
 const source = bundled.outputFiles[0]?.text;
 if (!source) throw new Error('无法加载循环验收核心');
-const { buildM6ValidationPanelModel, LoopValidationStore } = await import(
+const { buildM6ValidationPanelModel, isSyntheticValidationSandbox, LoopValidationStore } = await import(
   `data:text/javascript;base64,${Buffer.from(source).toString('base64')}`
 );
 
@@ -32,6 +32,12 @@ const storage = {
   removeItem: (key) => memory.delete(key),
 };
 const store = new LoopValidationStore(storage);
+if (
+  !isSyntheticValidationSandbox(new URLSearchParams('stress=50&report=1')) ||
+  isSyntheticValidationSandbox(new URLSearchParams('report=1&touch=1'))
+) {
+  throw new Error('[validate_loop] 压力沙盒与纯报告入口的样本门禁判定错误');
+}
 const ids = Array.from({ length: 5 }, (_, index) => store.recordDefeat(`stage-${index}`, new Date(index)));
 store.recordBaseChoice(ids[0]);
 store.recordBaseChoice(ids[1]);
