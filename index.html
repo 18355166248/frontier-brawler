@@ -22,6 +22,91 @@
         max-height: calc(100vh - 120px);
         border-radius: 6px; box-shadow: 0 12px 40px rgba(0,0,0,.5);
       }
+      .game-shell { position: relative; }
+      .touch-controls {
+        display: none; position: absolute; inset: 0; pointer-events: none;
+        user-select: none; -webkit-user-select: none; touch-action: none;
+      }
+      .touch-controls button, .touch-joystick { pointer-events: auto; touch-action: none; }
+      .touch-joystick {
+        display: none; position: absolute; left: 4%; bottom: 7%; width: 132px; aspect-ratio: 1;
+        border-radius: 50%; border: 2px solid rgba(200,220,232,.34);
+        background: rgba(18,28,35,.42); box-shadow: inset 0 0 24px rgba(0,0,0,.3);
+      }
+      .touch-knob {
+        position: absolute; width: 58px; aspect-ratio: 1; left: 50%; top: 50%;
+        margin: -29px; border-radius: 50%; background: rgba(205,224,235,.58);
+        box-shadow: 0 3px 14px rgba(0,0,0,.45); pointer-events: none;
+      }
+      .touch-actions { display: none; position: absolute; right: 3%; bottom: 5%; width: 224px; height: 164px; }
+      .touch-actions button, .touch-menu button, .touch-utility button {
+        position: absolute; border: 1px solid rgba(220,235,244,.42); color: #edf6fb;
+        background: rgba(25,38,47,.68); border-radius: 50%; font-weight: 700;
+        text-shadow: 0 1px 2px #000; box-shadow: 0 3px 10px rgba(0,0,0,.35);
+      }
+      .touch-actions button { width: 58px; height: 58px; }
+      .touch-actions button.is-pressed, .touch-menu button.is-pressed, .touch-utility button.is-pressed {
+        transform: scale(.9); background: rgba(105,169,196,.78);
+      }
+      .touch-attack { right: 0; bottom: 30px; }
+      .touch-dash { right: 62px; bottom: 0; }
+      .touch-jump { right: 66px; bottom: 70px; }
+      .touch-skill { right: 128px; bottom: 92px; }
+      .touch-execute { right: 142px; bottom: 25px; }
+      .touch-menu { position: absolute; left: 34%; top: 3%; display: none; gap: 7px; }
+      .touch-menu button, .touch-utility button {
+        position: static; width: 38px; height: 38px; border-radius: 10px; font-size: 12px;
+      }
+      .touch-utility { position: absolute; right: 3%; top: 3%; display: flex; gap: 7px; }
+      .touch-utility button { display: none; }
+      .touch-controls[data-phase="fighting"] .touch-joystick,
+      .touch-controls[data-phase="cleared"] .touch-joystick,
+      .touch-controls[data-phase="transition"] .touch-joystick,
+      .touch-controls[data-phase="fighting"] .touch-actions,
+      .touch-controls[data-phase="cleared"] .touch-actions,
+      .touch-controls[data-phase="transition"] .touch-actions { display: block; }
+      .touch-controls[data-phase="professionSelect"] .touch-menu,
+      .touch-controls[data-phase="choosing"] .touch-menu,
+      .touch-controls[data-phase="equipmentChoice"] .touch-menu,
+      .touch-controls[data-phase="equipmentMenu"] .touch-menu,
+      .touch-controls[data-phase="baseMenu"] .touch-menu { display: flex; }
+      .touch-controls:not([data-phase="baseMenu"]) .touch-menu button:nth-child(n+4) { display: none; }
+      .touch-controls[data-phase="fighting"] [data-touch-key="KeyB"],
+      .touch-controls[data-phase="cleared"] [data-touch-key="KeyB"],
+      .touch-controls[data-phase="equipmentMenu"] [data-touch-key="KeyB"],
+      .touch-controls[data-phase="stageComplete"] [data-touch-key="KeyG"],
+      .touch-controls[data-phase="baseMenu"] [data-touch-key="KeyG"],
+      .touch-controls[data-phase="dead"] [data-touch-key="KeyR"],
+      .touch-controls[data-phase="stageComplete"] [data-touch-key="KeyR"],
+      .touch-controls[data-phase="stageComplete"] [data-touch-key="KeyN"] { display: block; }
+      .touch-controls[data-final-stage="true"] [data-touch-key="KeyN"] { display: none; }
+      .portrait-hint {
+        display: none; position: absolute; inset: 0; place-items: center;
+        background: #10161a; color: #dce8ee; text-align: center; z-index: 5;
+        font-weight: 700; letter-spacing: .08em;
+      }
+      @media (hover: none), (pointer: coarse) {
+        .touch-controls { display: block; }
+        .keys { display: none; }
+      }
+      body.force-touch .touch-controls { display: block; }
+      body.force-touch .keys { display: none; }
+      @media (orientation: portrait) and (hover: none),
+             (orientation: portrait) and (pointer: coarse) {
+        .touch-controls { display: none; }
+        .portrait-hint { display: grid; }
+      }
+      @media (orientation: portrait) {
+        body.force-touch .touch-controls { display: none; }
+        body.force-touch .portrait-hint { display: grid; }
+      }
+      @media (max-width: 700px), (max-height: 520px) {
+        html, body { padding: 0; gap: 0; background: #090c0e; overflow: hidden; }
+        .game-shell { width: 100vw; height: 100vh; display: grid; place-items: center; }
+        canvas { max-width: 100vw; max-height: 100vh; border-radius: 0; }
+        .touch-joystick { width: 112px; }
+        .touch-actions { transform: scale(.88); transform-origin: right bottom; }
+      }
       .keys {
         max-width: min(960px, calc(100vw - 24px));
         font-size: 13px; line-height: 1.8; opacity: .65; letter-spacing: .02em;
@@ -33,7 +118,31 @@
     </style>
   </head>
   <body>
-    <canvas id="game"></canvas>
+    <div class="game-shell">
+      <canvas id="game"></canvas>
+      <div id="touch-controls" class="touch-controls" aria-label="触控操作">
+        <div class="touch-joystick" data-touch-joystick aria-label="移动摇杆">
+          <div class="touch-knob" data-touch-knob></div>
+        </div>
+        <div class="touch-menu" aria-label="选项">
+          <button data-touch-key="Digit1">1</button><button data-touch-key="Digit2">2</button>
+          <button data-touch-key="Digit3">3</button><button data-touch-key="Digit4">4</button>
+          <button data-touch-key="Digit5">5</button>
+        </div>
+        <div class="touch-utility" aria-label="菜单">
+          <button data-touch-key="KeyB">装</button><button data-touch-key="KeyG">基</button>
+          <button data-touch-key="KeyR">重</button><button data-touch-key="KeyN">进</button>
+        </div>
+        <div class="touch-actions" aria-label="战斗操作">
+          <button class="touch-attack" data-touch-key="KeyJ">攻</button>
+          <button class="touch-dash" data-touch-key="KeyK">闪</button>
+          <button class="touch-jump" data-touch-key="KeyL">跃</button>
+          <button class="touch-skill" data-touch-key="KeyU">技</button>
+          <button class="touch-execute" data-touch-key="KeyI">决</button>
+        </div>
+      </div>
+      <div class="portrait-hint">请旋转设备<br />横屏出击</div>
+    </div>
     <div class="keys">
       <kbd>WASD</kbd>/<kbd>方向键</kbd> 走位（上下是纵深）
       <kbd>J</kbd>/<kbd>空格</kbd> 攻击（连按接第二段，按方向可转身）

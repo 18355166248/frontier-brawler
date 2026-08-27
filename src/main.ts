@@ -32,6 +32,7 @@ import {
 } from './core/save';
 import type { SaveStorage } from './core/save';
 import { GameAudio } from './audio/game-audio';
+import { TouchControls } from './input/touch-controls';
 
 /** 三选一的按键，和 render/renderer.ts 里卡片上画的键位一一对应 */
 const CHOICE_KEYS: Record<string, UpgradeTrackId> = {
@@ -169,6 +170,7 @@ if (import.meta.env.DEV) {
   const requestedRoom = params.get('room');
   const requestedProfession = params.get('profession') as Profession | null;
   const requestedEquipment = params.getAll('equipment');
+  if (params.get('touch') === '1') document.body.classList.add('force-touch');
   // 带直达参数的是一次性验收沙盒，不得把跳关或注入装备覆盖玩家的正式存档。
   campaignPersistenceEnabled = !(
     params.has('stage') ||
@@ -284,6 +286,23 @@ window.addEventListener('keydown', handleKeyDown);
 window.addEventListener('keyup', handleKeyUp);
 canvas.addEventListener('pointerdown', unlockAudioFromPointer);
 
+const touchRoot = document.getElementById('touch-controls');
+const touchControls = touchRoot
+  ? new TouchControls({
+      root: touchRoot,
+      onMove: (vector) => {
+        injected.moveX = vector.x;
+        injected.moveY = vector.y;
+      },
+      onKey: (code, pressed) => {
+        const event = new KeyboardEvent(pressed ? 'keydown' : 'keyup', { code });
+        if (pressed) handleKeyDown(event);
+        else handleKeyUp(event);
+      },
+      onInteraction: () => void audio.unlock(),
+    })
+  : null;
+
 /** 攻击和冲刺取「按下那一瞬间」，不是持续按住——否则按住不放会变成无限连招。 */
 let attackLatch = false;
 let dashLatch = false;
@@ -380,6 +399,10 @@ function frame(now: number): void {
     accumulator -= STEP_MS;
   }
 
+  if (touchRoot) {
+    touchRoot.dataset.phase = run.phase;
+    touchRoot.dataset.finalStage = String(stageIndex + 1 >= STAGES.length);
+  }
   renderer.draw(run);
   // 画在所有游戏 UI 之上：它是开发期的检查工具，不是玩法界面
   validationPanel?.draw(canvas.getContext('2d')!, canvas.width, canvas.height);
@@ -394,6 +417,7 @@ if (import.meta.hot) {
     stopped = true;
     cancelAnimationFrame(rafId);
     audio.dispose();
+    touchControls?.dispose();
     window.removeEventListener('keydown', handleKeyDown);
     window.removeEventListener('keyup', handleKeyUp);
     canvas.removeEventListener('pointerdown', unlockAudioFromPointer);
