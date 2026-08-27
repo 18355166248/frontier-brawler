@@ -16,11 +16,16 @@ BUILDINGS = {
     "resource-field": "resource-field",
     "archive": "archive",
 }
+OUTPUT_CELL_SIZE = 192
 CELL_INSET = 12
+MIN_VISIBLE_MARGIN = 8
+BASELINE = OUTPUT_CELL_SIZE - CELL_INSET
+MIN_COMPONENT_AREA = 512
+RUNTIME_STATES = ((0, 0), (1, 0), (0, 1))
 
 
 def alpha_from_magenta(red: int, green: int, blue: int) -> int:
-    """洋红优势越强越透明；保留棕木、红布和暗色抗锯齿边缘。"""
+    """洋红优势越强越透明；饱和紫/品红会误入软过渡带，禁止用于建筑配色。"""
     key_strength = min(red, blue) - green
     if key_strength >= 170:
         return 0
@@ -45,6 +50,42 @@ def keyed_pixel(red: int, green: int, blue: int) -> tuple[int, int, int, int]:
     return foreground[0], foreground[1], foreground[2], alpha
 
 
+def remove_small_components(cell: Image.Image) -> int:
+    """清掉 AI 偶发的独立碎点；主体地台会把合法装饰连成同一大组件。"""
+    alpha = cell.getchannel("A")
+    width, height = alpha.size
+    pixels = alpha.load()
+    visited = bytearray(width * height)
+    rgba = cell.load()
+    removed = 0
+
+    for start_y in range(height):
+        for start_x in range(width):
+            start = start_y * width + start_x
+            if visited[start] or pixels[start_x, start_y] == 0:
+                continue
+            stack = [(start_x, start_y)]
+            visited[start] = 1
+            component: list[tuple[int, int]] = []
+            while stack:
+                x, y = stack.pop()
+                component.append((x, y))
+                for next_x, next_y in ((x - 1, y), (x + 1, y), (x, y - 1), (x, y + 1)):
+                    if next_x < 0 or next_y < 0 or next_x >= width or next_y >= height:
+                        continue
+                    index = next_y * width + next_x
+                    if visited[index] or pixels[next_x, next_y] == 0:
+                        continue
+                    visited[index] = 1
+                    stack.append((next_x, next_y))
+            if len(component) >= MIN_COMPONENT_AREA:
+                continue
+            removed += len(component)
+            for x, y in component:
+                rgba[x, y] = (0, 0, 0, 0)
+    return removed
+
+
 def build(source_path: Path, output_path: Path) -> None:
     source = Image.open(source_path).convert("RGB")
     if source.width % 2 or source.height % 2:
@@ -53,45 +94,66 @@ def build(source_path: Path, output_path: Path) -> None:
     rgba = Image.new("RGBA", source.size)
     rgba.putdata([keyed_pixel(red, green, blue) for red, green, blue in source.getdata()])
 
-    cell_width = source.width // 2
-    cell_height = source.height // 2
-    # 每栋、每态统一缩到同一安全框，避免只修触边格后切换状态时建筑尺寸跳动。
-    normalized = Image.new("RGBA", source.size)
-    target_size = (cell_width - CELL_INSET * 2, cell_height - CELL_INSET * 2)
-    for row in range(2):
-        for column in range(2):
-            box = (
-                column * cell_width,
-                row * cell_height,
-                (column + 1) * cell_width,
-                (row + 1) * cell_height,
-            )
-            cell = rgba.crop(box).resize(target_size, Image.Resampling.LANCZOS)
-            normalized.alpha_composite(
-                cell,
-                (column * cell_width + CELL_INSET, row * cell_height + CELL_INSET),
-            )
-    rgba = normalized
-    alpha = rgba.getchannel("A")
+    source_cell_width = source.width // 2
+    source_cell_height = source.height // 2
+    if CELL_INSET < MIN_VISIBLE_MARGIN:
+        raise SystemExit("CELL_INSET 小于最低安全边距")
 
+    # 源图保留四态和图标；运行时只打包实际绘制的前三态，避免白占 25% 下载体积。
+    output = Image.new("RGBA", (OUTPUT_CELL_SIZE * len(RUNTIME_STATES), OUTPUT_CELL_SIZE))
+    target_size = (OUTPUT_CELL_SIZE - CELL_INSET * 2, OUTPUT_CELL_SIZE - CELL_INSET * 2)
+    source_cells: list[Image.Image] = []
+    removed_pixels = 0
     for row in range(2):
         for column in range(2):
             box = (
-                column * cell_width,
-                row * cell_height,
-                (column + 1) * cell_width,
-                (row + 1) * cell_height,
+                column * source_cell_width,
+                row * source_cell_height,
+                (column + 1) * source_cell_width,
+                (row + 1) * source_cell_height,
             )
-            bounds = alpha.crop(box).getbbox()
-            if bounds is None:
-                raise SystemExit(f"第 {row * 2 + column + 1} 格没有可见内容")
-            left, top, right, bottom = bounds
-            if left < 8 or top < 8 or right > cell_width - 8 or bottom > cell_height - 8:
-                raise SystemExit(f"第 {row * 2 + column + 1} 格可见内容触格: {bounds}")
+            cell = rgba.crop(box)
+            removed_pixels += remove_small_components(cell)
+            if cell.getchannel("A").getbbox() is None:
+                raise SystemExit(f"源图第 {row * 2 + column + 1} 格没有可见内容")
+            source_cells.append(cell)
+
+    for output_column, (source_column, source_row) in enumerate(RUNTIME_STATES):
+        source_index = source_row * 2 + source_column
+        cell = source_cells[source_index].resize(target_size, Image.Resampling.LANCZOS)
+        bounds = cell.getchannel("A").getbbox()
+        if bounds is None:
+            raise SystemExit(f"运行态第 {output_column + 1} 格没有可见内容")
+        # 三态共用同一缩放倍率，并把最低可见像素注册到同一条底线，切状态不再上跳。
+        x = output_column * OUTPUT_CELL_SIZE + CELL_INSET
+        y = BASELINE - bounds[3]
+        output.alpha_composite(cell, (x, y))
+
+        final_bounds = output.getchannel("A").crop((
+            output_column * OUTPUT_CELL_SIZE,
+            0,
+            (output_column + 1) * OUTPUT_CELL_SIZE,
+            OUTPUT_CELL_SIZE,
+        )).getbbox()
+        if final_bounds is None:
+            raise SystemExit(f"运行态第 {output_column + 1} 格没有可见内容")
+        left, top, right, bottom = final_bounds
+        if (
+            left < MIN_VISIBLE_MARGIN
+            or top < MIN_VISIBLE_MARGIN
+            or right > OUTPUT_CELL_SIZE - MIN_VISIBLE_MARGIN
+            or bottom > OUTPUT_CELL_SIZE - MIN_VISIBLE_MARGIN
+        ):
+            raise SystemExit(f"运行态第 {output_column + 1} 格安全边距不足: {final_bounds}")
+        if bottom != BASELINE:
+            raise SystemExit(f"运行态第 {output_column + 1} 格底线未注册: {bottom} != {BASELINE}")
 
     output_path.parent.mkdir(parents=True, exist_ok=True)
-    rgba.save(output_path, optimize=True)
-    print(f"[build_building_atlas] PASS: {source.width}x{source.height} RGBA -> {output_path}")
+    output.save(output_path, optimize=True)
+    print(
+        f"[build_building_atlas] PASS: {output.width}x{output.height} RGBA, "
+        f"baseline={BASELINE}, removed={removed_pixels}px -> {output_path}"
+    )
 
 
 def main() -> None:

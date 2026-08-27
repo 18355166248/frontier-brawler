@@ -1,6 +1,6 @@
 import type { BuildingId } from '../core/economy';
 
-export type BuildingArtState = 'unbuilt' | 'building' | 'completed' | 'icon';
+export type BuildingArtState = 'unbuilt' | 'building' | 'completed';
 
 const BUILDING_ART_PATHS: Partial<Record<BuildingId, string>> = {
   trainingGround: 'art/buildings/training-ground-v1.png',
@@ -10,26 +10,28 @@ const BUILDING_ART_PATHS: Partial<Record<BuildingId, string>> = {
   archive: 'art/buildings/archive-v1.png',
 };
 
-const STATE_CELL: Record<BuildingArtState, readonly [number, number]> = {
-  unbuilt: [0, 0],
-  building: [1, 0],
-  completed: [0, 1],
-  icon: [1, 1],
+const STATE_COLUMN: Record<BuildingArtState, number> = {
+  unbuilt: 0,
+  building: 1,
+  completed: 2,
 };
 
 /**
- * 建筑图集按 2×2 固定排布加载；素材未到齐或加载失败时返回 false，渲染器继续
- * 画稳定占位，避免美术生产进度阻塞基地功能。
+ * 运行时图集只打包三个实际绘制状态，并在第一次打开基地时才开始加载；素材尚未
+ * 加载或加载失败时返回 false，渲染器继续画稳定占位，避免拖慢战斗首屏或阻塞功能。
  */
 export class BuildingArt {
   private readonly images = new Map<BuildingId, HTMLImageElement>();
 
-  constructor() {
-    for (const [id, path] of Object.entries(BUILDING_ART_PATHS)) {
-      const image = new Image();
-      image.src = path;
-      this.images.set(id as BuildingId, image);
-    }
+  private resolveImage(id: BuildingId): HTMLImageElement | undefined {
+    const existing = this.images.get(id);
+    if (existing) return existing;
+    const path = BUILDING_ART_PATHS[id];
+    if (!path) return undefined;
+    const image = new Image();
+    image.src = path;
+    this.images.set(id, image);
+    return image;
   }
 
   draw(
@@ -40,15 +42,15 @@ export class BuildingArt {
     y: number,
     size: number,
   ): boolean {
-    const image = this.images.get(id);
+    const image = this.resolveImage(id);
     if (!image?.complete || image.naturalWidth === 0 || image.naturalHeight === 0) return false;
-    const cellWidth = image.naturalWidth / 2;
-    const cellHeight = image.naturalHeight / 2;
-    const [column, row] = STATE_CELL[state];
+    const cellWidth = image.naturalWidth / 3;
+    const cellHeight = image.naturalHeight;
+    const column = STATE_COLUMN[state];
     ctx.drawImage(
       image,
       column * cellWidth,
-      row * cellHeight,
+      0,
       cellWidth,
       cellHeight,
       x,
