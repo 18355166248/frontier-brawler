@@ -13,6 +13,7 @@ import { validateStage } from './core/level';
 import { Run, createProfile, createStageProfile } from './core/run';
 import { STAGES } from './core/stages';
 import type { UpgradeTrackId } from './core/upgrades';
+import { createEnemy } from './core/world';
 import type { InputState } from './core/world';
 import { Renderer } from './render/renderer';
 import { SpriteSheet } from './render/sprites';
@@ -34,6 +35,8 @@ import type { SaveStorage } from './core/save';
 import { GameAudio } from './audio/game-audio';
 import { TouchControls } from './input/touch-controls';
 import { LoopValidationStore } from './dev/loop-validation';
+import { PerformanceProbe } from './dev/performance-probe';
+import type { EnemyKind } from './core/types';
 
 /** 三选一的按键，和 render/renderer.ts 里卡片上画的键位一一对应 */
 const CHOICE_KEYS: Record<string, UpgradeTrackId> = {
@@ -144,6 +147,7 @@ function saveCampaign(nowMs = Date.now(), force = false): boolean {
 }
 const professionValidation = import.meta.env.DEV ? new ProfessionValidationStore() : null;
 const loopValidation = import.meta.env.DEV ? new LoopValidationStore() : null;
+const performanceProbe = import.meta.env.DEV ? new PerformanceProbe() : null;
 const recordedValidationRuns = new WeakSet<Run>();
 const defeatSampleByRun = new WeakMap<Run, string>();
 /**
@@ -166,6 +170,35 @@ function startStage(index: number, carryFrom?: Run['profile']): void {
   saveCampaign(Date.now(), true);
 }
 
+/** 只用于开发压力场景：固定网格生成混合兵种，不修改任何正式关卡编成。 */
+function spawnStressEnemies(requestedCount: number): number {
+  if (!import.meta.env.DEV || !Number.isFinite(requestedCount)) return 0;
+  const count = Math.max(1, Math.min(100, Math.floor(requestedCount)));
+  const world = run.world;
+  const player = world.player;
+  if (!player) return 0;
+  world.entities = [player];
+  world.projectiles = [];
+  world.attackTokens.clear();
+  run.cleared.delete(run.room.id);
+  const kinds: EnemyKind[] = ['grunt', 'shield', 'ranged', 'charger', 'elite'];
+  const columns = 10;
+  const rows = Math.ceil(count / columns);
+  const minX = world.arena.minX + 300;
+  const maxX = world.arena.maxX - 35;
+  const minY = world.arena.minY + 20;
+  const maxY = world.arena.maxY - 20;
+  for (let index = 0; index < count; index += 1) {
+    const column = index % columns;
+    const row = Math.floor(index / columns);
+    const x = minX + (column / Math.max(1, columns - 1)) * (maxX - minX);
+    const y = minY + (row / Math.max(1, rows - 1)) * (maxY - minY);
+    world.spawn(createEnemy(kinds[index % kinds.length], { x, y }));
+  }
+  performanceProbe?.clear();
+  return count;
+}
+
 if (import.meta.env.DEV) {
   // Canvas 场景没有可点的 DOM 节点，视觉回归若每次都从出生点走过去既慢又
   // 不稳定。开发地址允许 `?stage=3&room=c1` 直达指定房间，生产构建会整段移除。
@@ -174,6 +207,7 @@ if (import.meta.env.DEV) {
   const requestedRoom = params.get('room');
   const requestedProfession = params.get('profession') as Profession | null;
   const requestedEquipment = params.getAll('equipment');
+  const requestedStressCount = Number(params.get('stress'));
   if (params.get('touch') === '1') {
     document.body.classList.add('force-touch');
     renderer.setTouchMode(true);
@@ -183,7 +217,8 @@ if (import.meta.env.DEV) {
     params.has('stage') ||
     params.has('room') ||
     params.has('profession') ||
-    params.has('equipment')
+    params.has('equipment') ||
+    params.has('stress')
   );
   if (Number.isInteger(requestedStage) && requestedStage >= 1 && requestedStage <= STAGES.length) {
     startStage(requestedStage - 1);
@@ -200,6 +235,11 @@ if (import.meta.env.DEV) {
     const id = rawId as EquipmentId;
     run.grantEquipment(id);
     run.equip(id);
+  }
+  if (Number.isInteger(requestedStressCount) && requestedStressCount > 0) {
+    document.body.classList.add('stress-test');
+    run.setProfession('swift');
+    spawnStressEnemies(requestedStressCount);
   }
 }
 
@@ -390,6 +430,8 @@ let last = performance.now();
 let rafId = 0;
 let stopped = false;
 let paused = false;
+const performanceHud = document.getElementById('performance-hud');
+let performanceHudCooldown = 0;
 
 /** 推进一个逻辑帧并把事件转给表现层。自动化验证也复用它，保证跑的是同一条路径。 */
 function stepOnce(): void {
@@ -425,14 +467,21 @@ function stepOnce(): void {
 
 function frame(now: number): void {
   if (stopped) return;
-  accumulator += Math.min(250, now - last);
+  const frameMs = Math.min(250, now - last);
+  accumulator += frameMs;
   last = now;
 
+  let logicMs = 0;
   while (accumulator >= STEP_MS) {
-    if (!paused) stepOnce();
+    if (!paused) {
+      const logicStartedAt = performance.now();
+      stepOnce();
+      logicMs += performance.now() - logicStartedAt;
+    }
     accumulator -= STEP_MS;
   }
 
+  const renderStartedAt = performance.now();
   if (touchRoot) {
     touchRoot.dataset.phase = run.phase;
     touchRoot.dataset.finalStage = String(stageIndex + 1 >= STAGES.length);
@@ -443,6 +492,20 @@ function frame(now: number): void {
   renderer.draw(run);
   // 画在所有游戏 UI 之上：它是开发期的检查工具，不是玩法界面
   validationPanel?.draw(canvas.getContext('2d')!, canvas.width, canvas.height);
+  const renderMs = performance.now() - renderStartedAt;
+  performanceProbe?.record(frameMs, logicMs, renderMs);
+  if (performanceHud && performanceHudCooldown-- <= 0) {
+    const report = performanceProbe?.report(run.world.entities.length);
+    if (report) {
+      performanceHud.textContent = [
+        `${report.entities} units · ${report.averageFps} fps`,
+        `p95 frame ${report.p95FrameMs}ms`,
+        `logic ${report.p95LogicMs}ms · render ${report.p95RenderMs}ms`,
+        report.passes60FpsTarget ? 'PASS' : `sampling ${report.samples}/120`,
+      ].join('\n');
+    }
+    performanceHudCooldown = 30;
+  }
   rafId = requestAnimationFrame(frame);
 }
 
@@ -595,6 +658,13 @@ if (import.meta.env.DEV) {
     },
     clearLoopSamples(): void {
       loopValidation?.clear();
+    },
+    /** M6 50+ 单位压力报告；先用 stress(50) 注入或打开 ?stress=50。 */
+    performanceReport(): unknown {
+      return performanceProbe?.report(run.world.entities.length) ?? null;
+    },
+    stress(count = 50): number {
+      return spawnStressEnemies(count);
     },
     /** 开关 M2/M4 验收面板；键盘 V 走的是同一条路径。 */
     toggleValidationPanel(): boolean {

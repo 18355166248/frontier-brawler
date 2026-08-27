@@ -101,6 +101,13 @@
         background: #10161a; color: #dce8ee; text-align: center; z-index: 5;
         font-weight: 700; letter-spacing: .08em;
       }
+      .performance-hud {
+        display: none; position: absolute; left: 50%; top: 10px; transform: translateX(-50%);
+        z-index: 4; white-space: pre; padding: 7px 10px; border-radius: 6px;
+        background: rgba(5,8,10,.8); color: #8fd4c8; font: 12px/1.35 ui-monospace, monospace;
+        pointer-events: none; text-align: left;
+      }
+      body.stress-test .performance-hud { display: block; }
       @media (hover: none), (pointer: coarse) {
         .touch-controls { display: block; }
         .keys { display: none; }
@@ -159,6 +166,7 @@
         </div>
       </div>
       <div class="portrait-hint">请旋转设备<br />横屏出击</div>
+      <div id="performance-hud" class="performance-hud" aria-live="polite"></div>
     </div>
     <div class="keys">
       <kbd>WASD</kbd>/<kbd>方向键</kbd> 走位（上下是纵深）

@@ -293,6 +293,7 @@ export class Renderer {
    * 逻辑帧率时会连续好几次渲染都读到同一个逻辑帧，同一步会被踩好几次灰。
    */
   private lastMoveFrame = new Map<number, number>();
+  private drawableEntities: Entity[] = [];
   private touchMode = false;
 
   constructor(
@@ -438,8 +439,10 @@ export class Renderer {
     this.drawRings();
 
     // 按纵深排序：y 大的更远，先画，才有正确的前后遮挡
-    const drawable = [...world.entities].sort((a, b) => a.pos.y - b.pos.y);
-    for (const e of drawable) this.drawEntity(e);
+    this.drawableEntities.length = 0;
+    this.drawableEntities.push(...world.entities);
+    this.drawableEntities.sort((a, b) => a.pos.y - b.pos.y);
+    for (const e of this.drawableEntities) this.drawEntity(e);
 
     for (const p of world.projectiles) this.drawProjectile(p);
 
@@ -1112,9 +1115,11 @@ export class Renderer {
     ctx.fillStyle = 'rgba(255,255,255,0.75)';
 
     // 按类型列出剩余敌人，调试时一眼看出场上还剩什么
-    const alive = world.entities.filter((e) => e.team === 'enemy' && !e.dead);
     const byKind = new Map<string, number>();
-    for (const e of alive) {
+    let aliveCount = 0;
+    for (const e of world.entities) {
+      if (e.team !== 'enemy' || e.dead) continue;
+      aliveCount += 1;
       const k = e.kind ?? 'grunt';
       byKind.set(k, (byKind.get(k) ?? 0) + 1);
     }
@@ -1124,7 +1129,7 @@ export class Renderer {
     const profession = player?.profession ? ` · 职业 ${PROFESSION_LABEL[player.profession]}` : '';
     const weapon = player?.weapon ? ` · 武器 ${WEAPONS[player.weapon].label}` : '';
     ctx.fillText(
-      `敌人 ${alive.length}${parts.length ? ' · ' + parts.join(' ') : ''}${profession}${weapon}`,
+      `敌人 ${aliveCount}${parts.length ? ' · ' + parts.join(' ') : ''}${profession}${weapon}`,
       14,
       24,
     );

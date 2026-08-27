@@ -217,7 +217,9 @@ export class World {
 
     this.tick += 1;
     this.stats.frames += 1;
-    this.updateTokens();
+    // 一帧只解析一次玩家引用；50+ 敌人时让每个 AI 都重新 find 会退化成 O(n²)。
+    const player = this.player;
+    this.updateTokens(player);
 
     for (const e of this.entities) {
       if (e.dead) {
@@ -227,11 +229,11 @@ export class World {
       if (e.attackCooldown > 0) e.attackCooldown -= 1;
       if (e.dashCooldown > 0) e.dashCooldown -= 1;
       if (e.jumpCooldown > 0) e.jumpCooldown -= 1;
-      const control = e.team === 'player' ? input : this.enemyThink(e);
+      const control = e.team === 'player' ? input : this.enemyThink(e, player);
       this.stepEntity(e, control);
     }
 
-    this.recordEngagementDistance();
+    this.recordEngagementDistance(player);
 
     this.releaseFinishedTokens();
 
@@ -251,8 +253,7 @@ export class World {
    * 每个有效战斗帧只记一次“玩家到最近活敌人”的距离。
    * 用最近敌人而不是全体均值，避免远处尚未参战的远程兵把职业站位数据抬高。
    */
-  private recordEngagementDistance(): void {
-    const player = this.player;
+  private recordEngagementDistance(player: Entity | undefined): void {
     if (!player || player.dead) return;
     let nearest = Infinity;
     for (const enemy of this.entities) {
@@ -605,8 +606,7 @@ export class World {
    *
    * 具体的走位和起手条件按类型分流，见 enemies.ts。
    */
-  private enemyThink(e: Entity): InputIntent {
-    const target = this.player;
+  private enemyThink(e: Entity, target: Entity | undefined): InputIntent {
     if (!target) return EMPTY_INPUT;
     // 已经在出招途中就不再改朝向，否则冲锋会在突进中途拐弯，预警线就成了谎话
     const busy = e.action !== 'idle' && e.action !== 'move';
@@ -618,8 +618,7 @@ export class World {
   }
 
   /** 发放攻击令牌：把最近的若干敌人选为本轮进攻者。 */
-  private updateTokens(): void {
-    const target = this.player;
+  private updateTokens(target: Entity | undefined): void {
     if (!target) {
       this.attackTokens.clear();
       return;
@@ -631,22 +630,28 @@ export class World {
     }
     if (this.attackTokens.size >= this.maxAttackers) return;
 
-    const candidates = this.entities
-      .filter(
-        (e) =>
-          e.team === 'enemy' &&
-          !e.dead &&
-          !this.attackTokens.has(e.id) &&
-          // 刚出完手的要等冷却，否则同一个敌人会立刻把令牌抢回去，
-          // 轮流进攻就退化成一个人贴着你连打。
-          e.attackCooldown <= 0,
-      )
-      .map((e) => ({ e, d: Math.hypot(e.pos.x - target.pos.x, e.pos.y - target.pos.y) }))
-      .sort((a, b) => a.d - b.d);
-
-    while (this.attackTokens.size < this.maxAttackers && candidates.length) {
-      const next = candidates.shift();
-      if (next) this.attackTokens.add(next.e.id);
+    // 只需要补足 1–2 个令牌，无需构造候选数组并全量排序；逐席线性找最近者
+    // 保持原来的距离优先语义，同时把 50+ 单位场景的分配从 O(n log n) 降到 O(n)。
+    while (this.attackTokens.size < this.maxAttackers) {
+      let nearest: Entity | undefined;
+      let nearestDistanceSq = Infinity;
+      for (const enemy of this.entities) {
+        if (
+          enemy.team !== 'enemy' ||
+          enemy.dead ||
+          enemy.attackCooldown > 0 ||
+          this.attackTokens.has(enemy.id)
+        ) continue;
+        const dx = enemy.pos.x - target.pos.x;
+        const dy = enemy.pos.y - target.pos.y;
+        const distanceSq = dx * dx + dy * dy;
+        if (distanceSq < nearestDistanceSq) {
+          nearest = enemy;
+          nearestDistanceSq = distanceSq;
+        }
+      }
+      if (!nearest) break;
+      this.attackTokens.add(nearest.id);
     }
   }
 
