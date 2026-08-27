@@ -25,6 +25,12 @@ import { ACCESSORY_IDS, ARMOR_IDS, WEAPON_IDS, equipmentLabel } from './core/equ
 import type { EquipmentId, EquipmentSlot } from './core/equipment';
 import { BUILDING_IDS, unlockedBuildings } from './core/economy';
 import type { BuildingId } from './core/economy';
+import {
+  clearCampaignSave,
+  loadCampaignSave,
+  writeCampaignSave,
+} from './core/save';
+import type { SaveStorage } from './core/save';
 
 /** 三选一的按键，和 render/renderer.ts 里卡片上画的键位一一对应 */
 const CHOICE_KEYS: Record<string, UpgradeTrackId> = {
@@ -88,8 +94,49 @@ if (import.meta.env.DEV) {
   if (problems.length) console.error('关卡数据有问题:\n' + problems.join('\n'));
 }
 
-let stageIndex = 0;
-let run = new Run(STAGES[stageIndex], createProfile());
+/** Safari 隐私模式等环境可能在访问 localStorage 属性时就抛错，启动不能因此白屏。 */
+function resolveCampaignStorage(): SaveStorage | null {
+  try {
+    return globalThis.localStorage ?? null;
+  } catch {
+    return null;
+  }
+}
+
+const campaignStorage = resolveCampaignStorage();
+const loadedCampaign = campaignStorage ? loadCampaignSave(campaignStorage, STAGES.length) : null;
+let stageIndex = loadedCampaign?.stageIndex ?? 0;
+let run = new Run(
+  STAGES[stageIndex],
+  loadedCampaign ? createStageProfile(loadedCampaign.profile) : createProfile(),
+);
+let lastCampaignSaveAtMs = 0;
+let campaignPersistenceEnabled = true;
+const CAMPAIGN_AUTOSAVE_INTERVAL_MS = 1_000;
+
+/** 通关画面刷新后直接从下一关起点继续，最终关则保留在最终关。 */
+function campaignResumeStageIndex(): number {
+  return run.phase === 'stageComplete' && stageIndex + 1 < STAGES.length
+    ? stageIndex + 1
+    : stageIndex;
+}
+
+/**
+ * 离线收益每个逻辑帧都会更新时钟，因此按秒节流；离开页面和关键状态切换强制落盘。
+ * 存储不可用时只放弃持久化，不影响当前战斗。
+ */
+function saveCampaign(nowMs = Date.now(), force = false): boolean {
+  if (!campaignStorage || !campaignPersistenceEnabled) return false;
+  if (!force && nowMs - lastCampaignSaveAtMs < CAMPAIGN_AUTOSAVE_INTERVAL_MS) return false;
+  const saved = writeCampaignSave(
+    campaignStorage,
+    campaignResumeStageIndex(),
+    run.profile,
+    nowMs,
+  );
+  if (saved) lastCampaignSaveAtMs = nowMs;
+  return saved;
+}
 const professionValidation = import.meta.env.DEV ? new ProfessionValidationStore() : null;
 const recordedValidationRuns = new WeakSet<Run>();
 /**
@@ -107,8 +154,9 @@ const validationPanel =
 
 function startStage(index: number, carryFrom?: Run['profile']): void {
   stageIndex = Math.max(0, Math.min(STAGES.length - 1, index));
-  // M4 装备跨关保留，战斗资源和局内成长仍重置；完整经营存档留给 M5。
+  // 职业、装备与基地跨关保留，生命、能量和普通局内成长按关卡重置。
   run = new Run(STAGES[stageIndex], createStageProfile(carryFrom));
+  saveCampaign(Date.now(), true);
 }
 
 if (import.meta.env.DEV) {
@@ -119,6 +167,13 @@ if (import.meta.env.DEV) {
   const requestedRoom = params.get('room');
   const requestedProfession = params.get('profession') as Profession | null;
   const requestedEquipment = params.getAll('equipment');
+  // 带直达参数的是一次性验收沙盒，不得把跳关或注入装备覆盖玩家的正式存档。
+  campaignPersistenceEnabled = !(
+    params.has('stage') ||
+    params.has('room') ||
+    params.has('profession') ||
+    params.has('equipment')
+  );
   if (Number.isInteger(requestedStage) && requestedStage >= 1 && requestedStage <= STAGES.length) {
     startStage(requestedStage - 1);
   }
@@ -288,6 +343,7 @@ function stepOnce(): void {
     professionValidation.record(run.stage.id, run.phase === 'stageComplete', run.overallSummary());
     recordedValidationRuns.add(run);
   }
+  saveCampaign(nowMs);
 }
 
 function frame(now: number): void {
@@ -311,10 +367,18 @@ function frame(now: number): void {
 // 画面会在新旧两个世界之间闪，而且改了代码看起来"没生效"。
 if (import.meta.hot) {
   import.meta.hot.dispose(() => {
+    saveCampaign(Date.now(), true);
     stopped = true;
     cancelAnimationFrame(rafId);
+    window.removeEventListener('pagehide', persistCampaignOnPageHide);
   });
 }
+
+// pagehide 同时覆盖刷新、关闭标签页和移动端进入后台，比 beforeunload 更可靠。
+function persistCampaignOnPageHide(): void {
+  saveCampaign(Date.now(), true);
+}
+window.addEventListener('pagehide', persistCampaignOnPageHide);
 
 /**
  * 调试挂钩。开发期用来在控制台直接驱动世界、跑自动化测试，
@@ -331,6 +395,14 @@ if (import.meta.env.DEV) {
     },
     restart(): void {
       startStage(stageIndex);
+    },
+    /** 立即保存当前跨局进度；返回 false 表示浏览器存储不可用。 */
+    save(): boolean {
+      return saveCampaign(Date.now(), true);
+    },
+    /** 只清除磁盘存档，不中断当前这局。 */
+    clearSave(): boolean {
+      return campaignStorage ? clearCampaignSave(campaignStorage) : false;
     },
     /** 跳到第 n 关（1 起） */
     stage(n: number): void {
