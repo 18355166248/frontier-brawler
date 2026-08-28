@@ -38,6 +38,7 @@ import { TouchControls } from './input/touch-controls';
 import { isSyntheticValidationSandbox, LoopValidationStore } from './dev/loop-validation';
 import { PerformanceProbe } from './dev/performance-probe';
 import type { EnemyKind } from './core/types';
+import { FixedStepClock } from './runtime/fixed-step-clock';
 
 /** 三选一的按键，和 render/renderer.ts 里卡片上画的键位一一对应 */
 const CHOICE_KEYS: Record<string, UpgradeTrackId> = {
@@ -471,8 +472,7 @@ function readInput(): InputState {
   };
 }
 
-const STEP_MS = 1000 / TICK_RATE;
-let accumulator = 0;
+const fixedStepClock = new FixedStepClock({ tickRate: TICK_RATE });
 let last = performance.now();
 let rafId = 0;
 let stopped = false;
@@ -559,19 +559,15 @@ function stepOnce(): void {
 
 function frame(now: number): void {
   if (stopped) return;
-  const frameMs = Math.min(250, now - last);
-  accumulator += frameMs;
+  const frameMs = now - last;
   last = now;
 
   let logicMs = 0;
-  while (accumulator >= STEP_MS) {
-    if (!paused) {
-      const logicStartedAt = performance.now();
-      stepOnce();
-      logicMs += performance.now() - logicStartedAt;
-    }
-    accumulator -= STEP_MS;
-  }
+  const fixedStep = fixedStepClock.consume(frameMs, paused, () => {
+    const logicStartedAt = performance.now();
+    stepOnce();
+    logicMs += performance.now() - logicStartedAt;
+  });
 
   const renderStartedAt = performance.now();
   if (touchRoot) {
@@ -592,7 +588,7 @@ function frame(now: number): void {
   validationPanel?.draw(canvas.getContext('2d')!, canvas.width, canvas.height);
   performanceHud?.classList.toggle('validation-hidden', validationPanel?.open ?? false);
   const renderMs = performance.now() - renderStartedAt;
-  performanceProbe?.record(frameMs, logicMs, renderMs);
+  performanceProbe?.record(fixedStep.clampedFrameMs, logicMs, renderMs);
   if (performanceHud && performanceHudCooldown-- <= 0) {
     const report = performanceProbe?.report(run.world.entities.length);
     if (report) {

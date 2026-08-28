@@ -5,3 +5,9 @@ __pycache__/
 .vite/
 *.local
 .DS_Store
+native/cocos-poc/library/
+native/cocos-poc/temp/
+native/cocos-poc/local/
+native/cocos-poc/build/
+native/cocos-poc/assets/generated/
+native/cocos-poc/profiles/
