@@ -8,7 +8,7 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "check": "tsc --noEmit",
-    "validate": "npm run validate:professions && npm run validate:equipment && npm run validate:economy && npm run validate:save && npm run validate:audio && npm run validate:touch && npm run validate:fixed-step && npm run validate:loop && npm run validate:difficulty && npm run validate:tutorial && npm run build && node tools/validate_release.mjs",
+    "validate": "npm run validate:professions && npm run validate:equipment && npm run validate:economy && npm run validate:save && npm run validate:audio && npm run validate:touch && npm run validate:fixed-step && npm run check:cocos && npm run validate:loop && npm run validate:difficulty && npm run validate:tutorial && npm run build && node tools/validate_release.mjs",
     "validate:professions": "node tools/validate_professions.mjs",
     "validate:equipment": "node tools/validate_equipment.mjs",
     "validate:economy": "node tools/validate_economy.mjs",
@@ -24,6 +24,7 @@
     "benchmark:50": "node tools/benchmark_50_units.mjs",
     "simulate:validation": "node tools/simulate_validation.mjs",
     "build:cocos-core": "node tools/build_cocos_core.mjs",
+    "check:cocos": "npm run build:cocos-core && tsc -p native/cocos-poc/tsconfig.check.json --noEmit",
     "sync:cocos-art": "node tools/sync_cocos_art.mjs",
     "build:cocos-android": "node tools/build_cocos_android.mjs"
   },

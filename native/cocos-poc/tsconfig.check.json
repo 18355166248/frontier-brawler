@@ -1,0 +1,17 @@
+{
+  "extends": "../../tsconfig.json",
+  "compilerOptions": {
+    "baseUrl": ".",
+    "experimentalDecorators": true,
+    "isolatedModules": false,
+    "paths": {
+      "cc": ["types/cc.d.ts"]
+    },
+    "verbatimModuleSyntax": false
+  },
+  "include": [
+    "assets/scripts/**/*.ts",
+    "assets/generated/frontier-core.ts",
+    "types/**/*.d.ts"
+  ]
+}

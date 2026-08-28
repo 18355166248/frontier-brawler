@@ -2,6 +2,7 @@ import {
   Color,
   Component,
   EventTouch,
+  Game,
   Graphics,
   Node,
   Rect,
@@ -11,8 +12,8 @@ import {
   Texture2D,
   UITransform,
   Vec2,
-  Vec3,
   _decorator,
+  game,
   resources,
   view,
 } from 'cc';
@@ -24,7 +25,7 @@ import {
   TICK_RATE,
   createProfile,
   resolveAction,
-} from '../generated/frontier-core';
+} from './FrontierCoreAdapter';
 
 const { ccclass } = _decorator;
 const DESIGN_WIDTH = 540;
@@ -34,6 +35,13 @@ const CELL_SIZE = 96;
 const SPRITE_BASELINE = 90;
 const HERO_ROWS = ['idle', 'move', 'slash', 'slash2', 'dash', 'hit'] as const;
 const GRUNT_ROWS = ['idle', 'move', 'slash', 'hit'] as const;
+const BACKGROUND_COLOR = new Color(9, 13, 16, 255);
+const ARENA_COLOR = new Color(20, 27, 31, 255);
+const PLAYER_COLOR = new Color(72, 205, 175, 255);
+const ENEMY_COLOR = new Color(224, 83, 74, 255);
+const CONTROL_BORDER_COLOR = new Color(120, 136, 143, 200);
+
+type ActionKey = 'attack' | 'dash' | 'skill' | 'execute' | 'jump';
 
 // 共享逻辑通过本地 npm 包进入 Creator，避免维护一份会逐渐分叉的 core 副本。
 
@@ -49,9 +57,14 @@ export class FrontierPoc extends Component {
   private graphics: Graphics | null = null;
   private joystickTouchId: number | null = null;
   private joystickOrigin = new Vec2();
+  private readonly actionTouches = new Map<number, ActionKey>();
   private readonly spriteFrames = new Map<string, SpriteFrame[]>();
+  private readonly textures = new Map<string, Texture2D>();
   private readonly spriteNodes = new Map<number, Node>();
+  private readonly warnedActions = new Set<string>();
   private artReady = false;
+  private paused = false;
+  private disposed = false;
 
   onLoad(): void {
     view.setDesignResolutionSize(DESIGN_WIDTH, DESIGN_HEIGHT, ResolutionPolicy.SHOW_ALL);
@@ -64,6 +77,8 @@ export class FrontierPoc extends Component {
     this.node.on(Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
     this.node.on(Node.EventType.TOUCH_END, this.onTouchEnd, this);
     this.node.on(Node.EventType.TOUCH_CANCEL, this.onTouchEnd, this);
+    game.on(Game.EVENT_HIDE, this.onGameHide, this);
+    game.on(Game.EVENT_SHOW, this.onGameShow, this);
   }
 
   onDestroy(): void {
@@ -72,15 +87,26 @@ export class FrontierPoc extends Component {
     this.node.off(Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
     this.node.off(Node.EventType.TOUCH_END, this.onTouchEnd, this);
     this.node.off(Node.EventType.TOUCH_CANCEL, this.onTouchEnd, this);
+    game.off(Game.EVENT_HIDE, this.onGameHide, this);
+    game.off(Game.EVENT_SHOW, this.onGameShow, this);
+    this.disposed = true;
+    for (const node of this.spriteNodes.values()) node.destroy();
     this.spriteNodes.clear();
+    for (const frames of this.spriteFrames.values()) {
+      for (const frame of frames) frame.destroy();
+    }
+    this.spriteFrames.clear();
+    for (const texture of this.textures.values()) texture.decRef();
+    this.textures.clear();
   }
 
   update(deltaTime: number): void {
-    this.clock.consume(deltaTime * 1000, false, () => {
+    // attackHeld 是跨帧电平；只有 attack 等动作触发字段是单次按下沿。
+    this.input.attackHeld = [...this.actionTouches.values()].includes('attack');
+    this.clock.consume(deltaTime * 1000, this.paused, () => {
       this.run.step(this.input);
       // 动作键是按下沿；每个渲染帧最多只允许逻辑层消费一次。
       this.input.attack = false;
-      this.input.attackHeld = false;
       this.input.dash = false;
       this.input.skill = false;
       this.input.execute = false;
@@ -104,7 +130,7 @@ export class FrontierPoc extends Component {
       this.joystickOrigin.set(point.x, point.y);
       return;
     }
-    this.pressAction(point.x, point.y);
+    this.pressAction(event.getID(), point.x, point.y);
   }
 
   private onTouchMove(event: EventTouch): void {
@@ -119,50 +145,54 @@ export class FrontierPoc extends Component {
   }
 
   private onTouchEnd(event: EventTouch): void {
-    if (event.getID() !== this.joystickTouchId) return;
-    this.joystickTouchId = null;
-    this.input.moveX = 0;
-    this.input.moveY = 0;
+    const touchId = event.getID();
+    if (touchId === this.joystickTouchId) {
+      this.joystickTouchId = null;
+      this.input.moveX = 0;
+      this.input.moveY = 0;
+    }
+    this.actionTouches.delete(touchId);
+    this.input.attackHeld = [...this.actionTouches.values()].includes('attack');
   }
 
-  private pressAction(x: number, y: number): void {
+  private pressAction(touchId: number, x: number, y: number): void {
     const column = Math.max(0, Math.min(2, Math.floor((x - DESIGN_WIDTH * 0.48) / 94)));
     const upper = y > CONTROL_HEIGHT / 2;
-    if (upper && column === 0) this.input.jump = true;
-    else if (upper && column === 1) this.input.skill = true;
-    else if (upper) this.input.execute = true;
-    else if (column === 0) this.input.dash = true;
-    else {
-      this.input.attack = true;
-      this.input.attackHeld = true;
-    }
+    let action: ActionKey;
+    if (upper && column === 0) action = 'jump';
+    else if (upper && column === 1) action = 'skill';
+    else if (upper) action = 'execute';
+    else if (column === 0) action = 'dash';
+    else action = 'attack';
+    this.actionTouches.set(touchId, action);
+    this.input[action] = true;
+    this.input.attackHeld = [...this.actionTouches.values()].includes('attack');
   }
 
   private drawDebugWorld(): void {
     const graphics = this.graphics;
     if (!graphics) return;
     graphics.clear();
-    graphics.fillColor = new Color(9, 13, 16, 255);
+    graphics.fillColor = BACKGROUND_COLOR;
     graphics.rect(-DESIGN_WIDTH / 2, -DESIGN_HEIGHT / 2, DESIGN_WIDTH, DESIGN_HEIGHT);
     graphics.fill();
-    graphics.fillColor = new Color(20, 27, 31, 255);
+    graphics.fillColor = ARENA_COLOR;
     graphics.rect(-DESIGN_WIDTH / 2 + 16, -DESIGN_HEIGHT / 2 + CONTROL_HEIGHT, DESIGN_WIDTH - 32, DESIGN_HEIGHT - CONTROL_HEIGHT - 16);
     graphics.fill();
 
-    const arena = this.run.world.arena;
     if (!this.artReady) {
       for (const entity of this.run.world.entities) {
         if (entity.dead) continue;
         const { x, y } = this.worldToScreen(entity.pos.x, entity.pos.y);
         graphics.fillColor = entity.team === 'player'
-          ? new Color(72, 205, 175, 255)
-          : new Color(224, 83, 74, 255);
+          ? PLAYER_COLOR
+          : ENEMY_COLOR;
         graphics.circle(x, y, entity.team === 'player' ? 18 : 14);
         graphics.fill();
       }
     }
 
-    graphics.strokeColor = new Color(120, 136, 143, 200);
+    graphics.strokeColor = CONTROL_BORDER_COLOR;
     graphics.lineWidth = 2;
     graphics.rect(-DESIGN_WIDTH / 2, -DESIGN_HEIGHT / 2, DESIGN_WIDTH, CONTROL_HEIGHT);
     graphics.stroke();
@@ -174,6 +204,11 @@ export class FrontierPoc extends Component {
         this.loadTexture('generated-art/hero-v2/texture'),
         this.loadTexture('generated-art/enemy-grunt-v2/texture'),
       ]);
+      if (this.disposed || !this.isValid) return;
+      hero.addRef();
+      grunt.addRef();
+      this.textures.set('hero', hero);
+      this.textures.set('grunt', grunt);
       this.cacheFrames('hero', hero, HERO_ROWS.length);
       this.cacheFrames('grunt', grunt, GRUNT_ROWS.length);
       this.artReady = true;
@@ -208,6 +243,7 @@ export class FrontierPoc extends Component {
   private syncEntitySprites(): void {
     if (!this.artReady) return;
     const alive = new Set<number>();
+    const renderOrder: Array<{ node: Node; depth: number }> = [];
     for (const entity of this.run.world.entities) {
       if (entity.dead || (entity.team === 'enemy' && entity.kind !== 'grunt')) continue;
       alive.add(entity.id);
@@ -224,11 +260,18 @@ export class FrontierPoc extends Component {
       const column = Math.min(3, Math.floor(progress * 4));
       if (sprite) sprite.spriteFrame = this.spriteFrames.get(key)?.[row * 4 + column] ?? null;
       const point = this.worldToScreen(entity.pos.x, entity.pos.y);
-      node.setPosition(new Vec3(point.x, point.y, 0));
-      node.setScale(new Vec3(entity.facing * 1.15, 1.15, 1));
+      node.setPosition(point.x, point.y, 0);
+      node.setScale(entity.facing * 1.15, 1.15, 1);
       node.active = true;
+      renderOrder.push({ node, depth: entity.pos.y });
     }
-    for (const [id, node] of this.spriteNodes) node.active = alive.has(id);
+    for (const [id, node] of this.spriteNodes) {
+      if (alive.has(id)) continue;
+      node.destroy();
+      this.spriteNodes.delete(id);
+    }
+    renderOrder.sort((left, right) => left.depth - right.depth);
+    renderOrder.forEach(({ node }, index) => node.setSiblingIndex(index));
   }
 
   private createSpriteNode(id: number, key: string): Node {
@@ -247,9 +290,38 @@ export class FrontierPoc extends Component {
   private resolveSpriteAction(key: string, action: string): string {
     const rows = key === 'hero' ? HERO_ROWS : GRUNT_ROWS;
     if ((rows as readonly string[]).includes(action)) return action;
-    if (key === 'hero' && (action === 'skill' || action === 'execute')) return 'slash2';
+    if (key === 'hero' && action === 'heavyCharge') return 'slash';
+    if (
+      key === 'hero'
+      && ['slash3', 'heavyCharged', 'arcanePulse', 'skill', 'execute', 'airSlash'].includes(action)
+    ) return 'slash2';
     if (action === 'jump') return 'move';
+    const warningKey = `${key}:${action}`;
+    if (!this.warnedActions.has(warningKey)) {
+      this.warnedActions.add(warningKey);
+      console.warn(`[FrontierPoc] unmapped sprite action ${warningKey}, using idle`);
+    }
     return 'idle';
+  }
+
+  private onGameHide(): void {
+    this.paused = true;
+    this.joystickTouchId = null;
+    this.actionTouches.clear();
+    this.input.moveX = 0;
+    this.input.moveY = 0;
+    this.input.attack = false;
+    this.input.attackHeld = false;
+    this.input.dash = false;
+    this.input.skill = false;
+    this.input.execute = false;
+    this.input.jump = false;
+  }
+
+  private onGameShow(): void {
+    // 后台停留时间不能进入模拟；恢复时从一帧干净的时钟重新开始。
+    this.clock.reset();
+    this.paused = false;
   }
 
   private worldToScreen(x: number, y: number): { x: number; y: number } {
