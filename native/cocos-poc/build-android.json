@@ -1,0 +1,28 @@
+{
+  "name": "frontier-brawler",
+  "platform": "android",
+  "buildPath": "project://build",
+  "debug": true,
+  "startScene": "bbb6a796-569f-4172-9ccf-3f1a5c31546c",
+  "scenes": [
+    {
+      "url": "db://assets/scenes/poc.scene",
+      "uuid": "bbb6a796-569f-4172-9ccf-3f1a5c31546c"
+    }
+  ],
+  "packages": {
+    "android": {
+      "__version__": "1.0.1",
+      "packageName": "com.swell.frontierbrawler",
+      "orientation": {
+        "portrait": true,
+        "upsideDown": false,
+        "landscapeRight": false,
+        "landscapeLeft": false
+      },
+      "apiLevel": 26,
+      "appABIs": ["arm64-v8a"],
+      "useDebugKeystore": true
+    }
+  }
+}

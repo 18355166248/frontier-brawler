@@ -23,17 +23,19 @@
 5. 现有动作表可按脚底基准线和朝向正确显示。
 6. Android/HarmonyOS 调试包可安装，50 单位压力场景接近稳定 60fps。
 
-POC 项目位于 `native/cocos-poc/`。初始组件用几何图元验证核心和时序，等 Creator
-完成脚本导入并跑通场景后再接正式精灵，避免同时调试资源导入与逻辑接线。
+POC 项目位于 `native/cocos-poc/`。当前已完成英雄与 grunt 正式动作表接入；未迁移的
+敌人类型继续使用几何兜底，避免渲染迁移阻塞战斗逻辑验证。
 
 首次打开或核心逻辑变更后先执行：
 
 ```bash
 npm ci
 npm run build:cocos-core
+npm run sync:cocos-art
 ```
 
-`assets/generated/` 是可重建产物，不提交源码库；Creator 项目不能跳过上面的同步步骤。
+`assets/generated/` 与 `assets/resources/generated-art/` 都是可重建产物，不提交源码库；
+Creator 项目不能跳过上面的同步步骤。`npm run build:cocos-android` 会自动执行二者。
 
 ## 竖屏布局
 
@@ -54,6 +56,17 @@ npm run build:cocos-core
 高风险改造绑在同一次迁移里。
 
 ## 门禁
+
+本机安装 Cocos Creator 3.8.8、Android Studio SDK/NDK 后，可直接生成竖屏 Android 调试包：
+
+```bash
+npm run build:cocos-android
+```
+
+脚本优先读取 `ANDROID_SDK_ROOT` / `ANDROID_HOME`、`ANDROID_NDK_HOME`、`JAVA_HOME`，
+未设置时使用 macOS 与 Android Studio 的标准安装位置。本机工具链路径只写入临时配置，
+不会进入仓库。APK 输出到
+`native/cocos-poc/build/android/proj/build/frontier-brawler/outputs/apk/debug/frontier-brawler-debug.apk`。
 
 - `npm run validate` 必须保持全绿。
 - Web 与 Cocos 使用同一个固定步长实现。

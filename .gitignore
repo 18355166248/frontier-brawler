@@ -9,5 +9,7 @@ native/cocos-poc/library/
 native/cocos-poc/temp/
 native/cocos-poc/local/
 native/cocos-poc/build/
+native/cocos-poc/native/
 native/cocos-poc/assets/generated/
+native/cocos-poc/assets/resources/generated-art/
 native/cocos-poc/profiles/
