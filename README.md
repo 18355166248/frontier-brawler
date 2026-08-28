@@ -7,7 +7,8 @@
 
 关卡设计见 [docs/LEVEL_DESIGN.md](docs/LEVEL_DESIGN.md)。
 
-技术栈 Vite + TypeScript + Canvas 2D，没有引擎。
+当前 Web 版使用 Vite + TypeScript + Canvas 2D；原生竖屏版正迁移到 Cocos Creator
+3.8.8，两端复用同一套纯 TypeScript 战斗核心。
 
 ## 文档
 
@@ -15,6 +16,7 @@
 - [路线图](docs/ROADMAP.md) —— 里程碑与可判定的验收标准
 - [素材交付规范](docs/ASSET_DELIVERY.md) —— Codex 生图、确定性处理与游戏内验收的交接规则
 - [0.1.0 版本说明](docs/RELEASE_NOTES.md) —— 已包含能力、已知边界与发布验证
+- [Cocos 原生竖屏迁移](docs/COCOS_MIGRATION.md) —— 架构边界、POC 范围与 Android 构建
 
 两份文档里 `[已验证]` 与 `[待验证]` 是严格区分的：
 前者来自原型实测，后者是设计假设，做出来玩过才能确认。
@@ -58,21 +60,21 @@ npm run preview -- --host 127.0.0.1 --port 5180
 难度、新手引导和生产包门禁。通过后部署 `dist/` 即可；Vite 使用相对资源路径，
 支持静态站点子目录。本仓库不会自动向外网发布。
 
-## 为什么不用 Cocos
+## 为什么现在迁移到 Cocos
 
 逻辑层本来就该是引擎无关的 TS —— 这是从 `xianxia-roguelike` 学到的：
 它的 32 个战斗系统文件**零 Cocos 依赖**，5300 行逻辑随时能搬，
 而耦合全压在一个 9800 行的编排层里。
 
-所以这里从第一行就把线画清楚：
+原型阶段选择 Canvas，是因为机制迭代和浏览器验证更快；现在目标变成“不依赖浏览器、
+手机竖屏原生运行”，因此由 Cocos 接管渲染、触控、资源和原生生命周期。早期划清的
+边界让迁移不需要重写玩法：
 
 ```text
 src/core/     纯逻辑，不引用任何渲染 API。换引擎时一行不动。
-src/render/   Canvas 渲染层。换 Cocos 只重写这里。
+src/render/   原 Web Canvas 渲染层，迁移期间保留作回归基线。
+native/cocos-poc/   Cocos 原生适配层，不复制战斗规则。
 ```
-
-原型阶段用 Canvas 是因为迭代和验证都快得多；
-将来要发微信小游戏，再补一层 Cocos 渲染层即可，`core/` 直接复用。
 
 ## 手感设计
 

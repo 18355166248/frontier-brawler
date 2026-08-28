@@ -21,6 +21,10 @@ export interface PocEntity {
   facing: -1 | 1;
   action: string;
   actionFrame: number;
+  hp: number;
+  maxHp: number;
+  energy: number;
+  maxEnergy: number;
   dead: boolean;
 }
 
@@ -29,6 +33,8 @@ export interface PocRun {
     arena: { minX: number; maxX: number; minY: number; maxY: number };
     entities: PocEntity[];
   };
+  room: { id: string; kind: string };
+  readonly phase: string;
   setProfession(profession: string): void;
   enterRoom(roomId: string, entrance: unknown): void;
   step(input: PocInputState): void;

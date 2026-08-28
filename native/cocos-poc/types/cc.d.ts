@@ -62,6 +62,13 @@ declare module 'cc' {
     stroke(): void;
   }
 
+  export class Label extends Component {
+    string: string;
+    fontSize: number;
+    lineHeight: number;
+    color: Color;
+  }
+
   export class Texture2D {
     addRef(): this;
     decRef(): this;

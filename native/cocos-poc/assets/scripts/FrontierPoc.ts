@@ -4,6 +4,7 @@ import {
   EventTouch,
   Game,
   Graphics,
+  Label,
   Node,
   Rect,
   ResolutionPolicy,
@@ -40,6 +41,10 @@ const ARENA_COLOR = new Color(20, 27, 31, 255);
 const PLAYER_COLOR = new Color(72, 205, 175, 255);
 const ENEMY_COLOR = new Color(224, 83, 74, 255);
 const CONTROL_BORDER_COLOR = new Color(120, 136, 143, 200);
+const HUD_TRACK_COLOR = new Color(35, 45, 50, 235);
+const HP_COLOR = new Color(221, 77, 68, 255);
+const ENERGY_COLOR = new Color(63, 180, 217, 255);
+const UI_TEXT_COLOR = new Color(231, 238, 239, 255);
 
 type ActionKey = 'attack' | 'dash' | 'skill' | 'execute' | 'jump';
 
@@ -55,6 +60,8 @@ export class FrontierPoc extends Component {
   private readonly run = new Run(STAGES[0], createProfile());
   private input = { ...EMPTY_INPUT };
   private graphics: Graphics | null = null;
+  private statusLabel: Label | null = null;
+  private hintLabel: Label | null = null;
   private joystickTouchId: number | null = null;
   private joystickOrigin = new Vec2();
   private readonly actionTouches = new Map<number, ActionKey>();
@@ -72,6 +79,7 @@ export class FrontierPoc extends Component {
     // 起始房是无敌人的出发点；POC 直接进入 v1，确保验证到实体更新与敌人 AI。
     this.run.enterRoom('v1', null);
     this.graphics = this.getOrCreateGraphics();
+    this.createHud();
     void this.loadActionSheets();
     this.node.on(Node.EventType.TOUCH_START, this.onTouchStart, this);
     this.node.on(Node.EventType.TOUCH_MOVE, this.onTouchMove, this);
@@ -113,6 +121,7 @@ export class FrontierPoc extends Component {
       this.input.jump = false;
     });
     this.drawDebugWorld();
+    this.updateHud();
     this.syncEntitySprites();
   }
 
@@ -196,6 +205,81 @@ export class FrontierPoc extends Component {
     graphics.lineWidth = 2;
     graphics.rect(-DESIGN_WIDTH / 2, -DESIGN_HEIGHT / 2, DESIGN_WIDTH, CONTROL_HEIGHT);
     graphics.stroke();
+
+    // 控件轮廓与真实触摸热区使用同一组常量，避免“看得到却按不到”。
+    graphics.circle(-140, -355, 72);
+    graphics.stroke();
+    graphics.circle(-140 + this.input.moveX * 38, -355 + this.input.moveY * 38, 30);
+    graphics.stroke();
+    for (const x of [36, 130, 224]) {
+      graphics.circle(x, -292, 38);
+      graphics.stroke();
+    }
+    graphics.circle(36, -417, 38);
+    graphics.stroke();
+    graphics.rect(83, -455, 181, 76);
+    graphics.stroke();
+
+    const player = this.run.world.entities.find((entity) => entity.team === 'player');
+    if (player) {
+      this.drawBar(graphics, -250, 426, 300, 18, player.hp / player.maxHp, HP_COLOR);
+      this.drawBar(graphics, -250, 400, 220, 12, player.energy / player.maxEnergy, ENERGY_COLOR);
+    }
+  }
+
+  private drawBar(
+    graphics: Graphics,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    ratio: number,
+    color: Color,
+  ): void {
+    graphics.fillColor = HUD_TRACK_COLOR;
+    graphics.rect(x, y, width, height);
+    graphics.fill();
+    graphics.fillColor = color;
+    graphics.rect(x, y, width * Math.max(0, Math.min(1, ratio)), height);
+    graphics.fill();
+  }
+
+  private createHud(): void {
+    this.statusLabel = this.createLabel('status', -250, 452, 20);
+    this.hintLabel = this.createLabel('hint', 70, 425, 18);
+    this.createLabel('jump', 18, -300, 18).string = '跃';
+    this.createLabel('skill', 112, -300, 18).string = '技';
+    this.createLabel('execute', 206, -300, 18).string = '决';
+    this.createLabel('dash', 18, -425, 18).string = '闪';
+    this.createLabel('attack', 145, -425, 20).string = '攻击';
+  }
+
+  private createLabel(name: string, x: number, y: number, fontSize: number): Label {
+    const node = new Node(name);
+    const transform = node.addComponent(UITransform);
+    transform.setContentSize(name === 'status' ? 330 : 100, 32);
+    transform.setAnchorPoint(0, 0.5);
+    const label = node.addComponent(Label);
+    label.fontSize = fontSize;
+    label.lineHeight = fontSize + 4;
+    label.color = UI_TEXT_COLOR;
+    node.setPosition(x, y, 0);
+    this.node.addChild(node);
+    return label;
+  }
+
+  private updateHud(): void {
+    const player = this.run.world.entities.find((entity) => entity.team === 'player');
+    const enemies = this.run.world.entities.filter(
+      (entity) => entity.team === 'enemy' && !entity.dead,
+    ).length;
+    if (this.statusLabel && player) {
+      this.statusLabel.string = `生命 ${Math.ceil(player.hp)}/${Math.ceil(player.maxHp)}  ·  能量 ${Math.floor(player.energy)}`;
+    }
+    if (this.hintLabel) {
+      const phaseText = this.run.phase === 'cleared' ? '向右进入下一房' : `${enemies} 名敌人`;
+      this.hintLabel.string = `${this.run.room.id}  ${phaseText}`;
+    }
   }
 
   private async loadActionSheets(): Promise<void> {

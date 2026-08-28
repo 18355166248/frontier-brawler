@@ -23,8 +23,10 @@
 5. 现有动作表可按脚底基准线和朝向正确显示。
 6. Android/HarmonyOS 调试包可安装，50 单位压力场景接近稳定 60fps。
 
-POC 项目位于 `native/cocos-poc/`。当前已完成英雄与 grunt 正式动作表接入；未迁移的
-敌人类型继续使用几何兜底，避免渲染迁移阻塞战斗逻辑验证。
+POC 项目位于 `native/cocos-poc/`。当前已完成英雄与 grunt 正式动作表、纵深排序、
+生命/能量 HUD 和五键触控提示接入；未迁移的敌人类型继续使用几何兜底，避免渲染
+迁移阻塞战斗逻辑验证。持续按住攻击会以电平传入共享 core，重击蓄力不再被误当成
+单帧脉冲；切后台会清空输入并重锚定固定步长时钟。
 
 首次打开或核心逻辑变更后先执行：
 
@@ -69,6 +71,8 @@ npm run build:cocos-android
 `native/cocos-poc/build/android/proj/build/frontier-brawler/outputs/apk/debug/frontier-brawler-debug.apk`。
 
 - `npm run validate` 必须保持全绿。
+- `npm run check:cocos` 对 Cocos 适配层做独立 TypeScript 门禁，生成模块的静态契约集中
+  在 `FrontierCoreAdapter.ts`，不得在适配层复制玩法实现。
 - Web 与 Cocos 使用同一个固定步长实现。
 - POC 不修改伤害、帧数、判定窗口、敌人 AI 和关卡编成。
 - Creator 预览只算开发检查；原生调试包真机通过才算 POC 完成。
