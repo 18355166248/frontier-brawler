@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /** 生产包门禁：保证可部署到子目录，并阻止开发验收入口被带进正式产物。 */
-import { readFile, readdir } from 'node:fs/promises';
+import { access, readFile, readdir } from 'node:fs/promises';
 import { join } from 'node:path';
 
 const distRoot = join(process.cwd(), 'dist');
@@ -19,4 +19,20 @@ for (const marker of ['__game', '验收面板', 'professionReport', 'validationP
   if (source.includes(marker)) throw new Error(`[validate_release] 开发入口泄漏到生产包：${marker}`);
 }
 
-console.log('[validate_release] PASS: relative assets, production bundle, dev-hook stripping');
+// public/ 素材由运行时字符串加载，不会经过 Vite import 图；只看 JS 构建成功无法
+// 发现漏拷贝。直接从最终脚本提取所有 PNG 路径，再逐一核对发布目录。
+const runtimeArt = [...new Set(source.match(/art\/[a-z0-9_./-]+\.png/gi) ?? [])];
+if (!runtimeArt.length) throw new Error('[validate_release] 生产脚本没有引用任何正式素材');
+for (const relativePath of runtimeArt) {
+  await access(join(distRoot, relativePath)).catch(() => {
+    throw new Error(`[validate_release] 运行时素材未进入生产包：${relativePath}`);
+  });
+  const signature = await readFile(join(distRoot, relativePath));
+  if (signature.subarray(0, 8).toString('hex') !== '89504e470d0a1a0a') {
+    throw new Error(`[validate_release] 运行时素材不是有效 PNG：${relativePath}`);
+  }
+}
+
+console.log(
+  `[validate_release] PASS: relative assets, ${runtimeArt.length} runtime PNGs, production bundle, dev-hook stripping`,
+);
