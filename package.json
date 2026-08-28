@@ -8,6 +8,7 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "check": "tsc --noEmit",
+    "validate": "npm run validate:professions && npm run validate:equipment && npm run validate:economy && npm run validate:save && npm run validate:audio && npm run validate:touch && npm run validate:loop && npm run validate:difficulty && npm run validate:tutorial && npm run build && node tools/validate_release.mjs",
     "validate:professions": "node tools/validate_professions.mjs",
     "validate:equipment": "node tools/validate_equipment.mjs",
     "validate:economy": "node tools/validate_economy.mjs",
@@ -17,6 +18,7 @@
     "validate:loop": "node tools/validate_loop.mjs",
     "validate:difficulty": "node tools/validate_difficulty.mjs",
     "validate:tutorial": "node tools/validate_tutorial.mjs",
+    "validate:release": "npm run build && node tools/validate_release.mjs",
     "build:building-art": "python3 tools/build_building_atlas.py --all",
     "benchmark:50": "node tools/benchmark_50_units.mjs",
     "simulate:validation": "node tools/simulate_validation.mjs"
