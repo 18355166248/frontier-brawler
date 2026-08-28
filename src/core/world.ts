@@ -149,7 +149,13 @@ export function createEntity(team: Team, pos: Vec2, overrides: Partial<Entity> =
     damageTakenMultiplier: 1,
     perfectCancelPending: false,
     telegraph: null,
-    ai: { turnCooldown: 0, repositionFrames: 0, bossPhase: 1, bossSummoned: false },
+    ai: {
+      turnCooldown: 0,
+      repositionFrames: 0,
+      bossPhase: 1,
+      bossSummoned: false,
+      bossMode: 'standard',
+    },
     dead: false,
     deadFrames: 0,
     ...overrides,
@@ -157,12 +163,18 @@ export function createEntity(team: Team, pos: Vec2, overrides: Partial<Entity> =
 }
 
 /** 按类型建敌人。数值全部来自 ENEMY_PROFILES，避免散落在关卡代码里。 */
-export function createEnemy(kind: EnemyKind, pos: Vec2): Entity {
+export function createEnemy(
+  kind: EnemyKind,
+  pos: Vec2,
+  options: { bossMode?: 'tutorial' | 'standard' } = {},
+): Entity {
   const p = ENEMY_PROFILES[kind];
-  return createEntity('enemy', pos, {
+  const tutorialBoss = kind === 'boss' && options.bossMode === 'tutorial';
+  const enemy = createEntity('enemy', pos, {
     kind,
-    hp: p.hp,
-    maxHp: p.hp,
+    // 首关把击败所需的有效输出压到约 2/3；后续首领仍使用完整 420 血考试规格。
+    hp: tutorialBoss ? 280 : p.hp,
+    maxHp: tutorialBoss ? 280 : p.hp,
     speed: p.speed,
     radius: p.radius,
     frontalGuard: p.frontalGuard,
@@ -174,6 +186,8 @@ export function createEnemy(kind: EnemyKind, pos: Vec2): Entity {
       height: 60,
     },
   });
+  enemy.ai.bossMode = options.bossMode ?? 'standard';
+  return enemy;
 }
 
 export class World {
@@ -985,6 +999,9 @@ export class World {
    */
   private triggerBossPhaseTwo(boss: Entity): void {
     boss.ai.bossPhase = 2;
+    // 教学首领保留阶段切换演出和 50 帧安全输出窗，但不生成尚未教过的杂兵压力。
+    // 预先置为 true 会让 stepEntity 的召唤帧自然走既有幂等门禁，无需另开分支。
+    if (boss.ai.bossMode === 'tutorial') boss.ai.bossSummoned = true;
     this.setAction(boss, 'bossSummon');
     this.events.bossPhaseShifts.push({ at: { x: boss.pos.x, y: boss.pos.y }, phase: 2 });
   }

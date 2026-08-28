@@ -189,6 +189,14 @@ export function think(
         break;
 
       case 'boss': {
+        // 第一关只考最基础的“看圆形前摇、离开判定、回来输出”。突进、范围技和
+        // 召唤分别要到后续关卡学过对应解法后，才由 standard 首领纳入综合考试。
+        if (e.ai.bossMode === 'tutorial') {
+          if (dist <= profile.reach) {
+            return { moveX: 0, moveY: 0, attack: true, dash: false, action: 'bossSlam' };
+          }
+          break;
+        }
         // 太远：先靠近，不在这个距离浪费一次突进——那样冲到一半就落空了
         if (dist > 230) break;
         // 中距离：突进拉近，逼玩家读预警侧移，和冲锋的道理一样但覆盖范围更大。

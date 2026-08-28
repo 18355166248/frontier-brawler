@@ -531,6 +531,10 @@ export class Run {
       return empty;
     }
 
+    // 终局画面仍由渲染循环持续刷新，但战斗时钟和 World 必须冻结；否则玩家
+    // 停在结算/战败页阅读数据时，“用时”等统计会继续增长。
+    if (this.stageCleared || this.world.stats.died) return empty;
+
     const events = this.world.step(input);
     this.syncProfile();
     this.stats.frames += 1;
@@ -787,7 +791,11 @@ export class Run {
     // 避免几个敌人叠成一条线设计的，唯一的敌人没有这个问题，
     // 直接站纵深正中央，首领登场才够稳重。
     if (n === 1) {
-      w.spawn(createEnemy(room.encounter[0], { x: arena.maxX - 130, y: midY }));
+      const kind = room.encounter[0];
+      // 第一关前面只教授杂兵与基础连段，因此关底使用教学首领；从第二关开始
+      // 恢复完整招式组，防止一次局部可用性修正把整条难度曲线一起削平。
+      const bossMode = kind === 'boss' && this.stage.index === 1 ? 'tutorial' : 'standard';
+      w.spawn(createEnemy(kind, { x: arena.maxX - 130, y: midY }, { bossMode }));
       return;
     }
 

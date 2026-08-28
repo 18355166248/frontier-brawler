@@ -356,6 +356,9 @@ for (const entity of run.world.entities) {
 }
 for (let frame = 0; frame < 30; frame += 1) run.step(EMPTY_INPUT);
 if (run.profile.base.completedStageRuns !== 1) fail('Boss 首次清空没有准确记录一次通关');
+const completedFrames = run.stats.frames;
+for (let frame = 0; frame < 120; frame += 1) run.step(EMPTY_INPUT);
+if (run.stats.frames !== completedFrames) fail('通关结算页仍在累计战斗用时');
 const firstBossResources = { ...run.profile.base.resources };
 const expectedBossReward = roomResourceReward(STAGES[0].index, 'boss');
 if (
@@ -402,7 +405,7 @@ if (!run.canSelectProfession('heavy') || !run.canSelectProfession('arcane')) {
   fail('演武场建成后没有同时开放重击与术法');
 }
 if (!run.toggleBaseMenu(6_000) || run.phase !== 'stageComplete') {
-  fail('基地菜单无法返回通关结算');
+  fail(`基地菜单无法返回通关结算（当前阶段 ${run.phase}）`);
 }
 run.profile.base.completedBuildings.push('archive');
 if (!run.toggleBaseMenu(6_000) || !run.cycleArchiveTrack()) {

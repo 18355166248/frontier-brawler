@@ -9,10 +9,9 @@
  * 难度旋钮按 LEVEL_DESIGN 的优先级用：先动 maxAttackers 和敌人组合，
  * 最后才考虑数值缩放——改血量和伤害是最钝的手段。
  *
- * 每关终点房都是一个分阶段首领（EnemyKind 'boss'），血量降到 50% 触发
- * 阶段二：解锁范围技并召唤两个杂兵。首领不逼玩家学新东西，而是把前面
- * 学到的绕位、躲预警、拉开、处决收进一场综合考——第六关额外不引入
- * 新敌人类型，纯粹靠首领和已学过的杂兵组合收尾。
+ * 每关终点房都是一个分阶段首领（EnemyKind 'boss'）。第一关是教学变体：
+ * 只用长前摇重击且阶段二不召唤，避免在新玩家只学过杂兵时提前考突进、
+ * 范围技和多目标压力；第二关起恢复完整招式组，逐步成为综合考试。
  */
 import type { EnemyKind } from './types';
 import type { Direction, RoomDef, RoomKind, RoomSize, StageDef } from './level';

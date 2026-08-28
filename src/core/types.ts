@@ -318,6 +318,11 @@ export interface Entity {
     bossPhase: 1 | 2;
     /** 阶段二的召唤只该触发一次——不然每次判定都召唤会没完没了地刷杂兵 */
     bossSummoned: boolean;
+    /**
+     * 首关首领只承担基础闪避教学，不提前考后续关卡才会教授的突进、范围技与召唤。
+     * standard 保留完整招式组；该标记只由关卡生成层设置，避免污染全局首领数值。
+     */
+    bossMode: 'tutorial' | 'standard';
   };
 
   dead: boolean;
