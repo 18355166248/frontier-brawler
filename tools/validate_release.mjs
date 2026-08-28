@@ -21,7 +21,14 @@ for (const marker of ['__game', '验收面板', 'professionReport', 'validationP
 
 // public/ 素材由运行时字符串加载，不会经过 Vite import 图；只看 JS 构建成功无法
 // 发现漏拷贝。直接从最终脚本提取所有 PNG 路径，再逐一核对发布目录。
-const runtimeArt = [...new Set(source.match(/art\/[a-z0-9_./-]+\.png/gi) ?? [])];
+// 敌人地址在正式代码里由模板字符串拼出，打包后仍不是完整字面量，正则看不到；
+// 把有限兵种表补入门禁，防止只漏一类敌人却仍然通过发布检查。
+const dynamicEnemyArt = ['grunt', 'shield', 'ranged', 'charger', 'elite', 'boss'].map(
+  (kind) => `art/enemy-${kind}-v2.png`,
+);
+const runtimeArt = [
+  ...new Set([...(source.match(/art\/[a-z0-9_./-]+\.png/gi) ?? []), ...dynamicEnemyArt]),
+];
 if (!runtimeArt.length) throw new Error('[validate_release] 生产脚本没有引用任何正式素材');
 for (const relativePath of runtimeArt) {
   await access(join(distRoot, relativePath)).catch(() => {
