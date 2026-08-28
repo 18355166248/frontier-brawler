@@ -18,6 +18,7 @@ import {
   HEAVY_FULL_CHARGE_FRAMES,
   isActionAirborne,
   resolveAction,
+  resolveExecuteRange,
   resolveSkillCost,
 } from '../core/actions';
 import { ENEMY_PROFILES } from '../core/enemies';
@@ -48,6 +49,7 @@ import type { BuildingArt, BuildingArtState } from './building-art';
 import { Minimap } from './minimap';
 import type { EquipmentIcons } from './equipment-icons';
 import type { SpriteSheet } from './sprites';
+import { selectFirstRunTutorialHint } from './tutorial';
 
 /** 跳跃的视觉离地高度峰值（像素）。纯渲染表现，逻辑层不知道"高度"这个概念。 */
 const JUMP_PEAK_HEIGHT = 44;
@@ -1195,6 +1197,8 @@ export class Renderer {
       return;
     }
 
+    this.drawFirstRunTutorial(run, player);
+
     const w = 168;
     ctx.fillStyle = PALETTE.hpBack;
     ctx.fillRect(13, 33, w + 2, 12);
@@ -1241,6 +1245,60 @@ export class Renderer {
         96,
       );
     }
+  }
+
+  /** 首次引导是一条短提示条，不抢输入、不暂停战斗，手机横屏也不会遮住操作区。 */
+  private drawFirstRunTutorial(run: Run, player: Entity): void {
+    const depthMoved = run.stats.moveY + run.world.stats.moveY;
+    const dashUses = run.stats.actions.dash + run.world.stats.actions.dash;
+    const executeUses = run.stats.actions.execute + run.world.stats.actions.execute;
+    const executeRange = resolveExecuteRange(player.profession);
+    const executableInRange = run.world.entities.some(
+      (enemy) =>
+        enemy.team === 'enemy' &&
+        !enemy.dead &&
+        enemy.hp / enemy.maxHp < EXECUTE_THRESHOLD &&
+        Math.hypot(enemy.pos.x - player.pos.x, enemy.pos.y - player.pos.y) <= executeRange,
+    );
+    const telegraphActive = run.world.entities.some(
+      (enemy) => enemy.team === 'enemy' && !enemy.dead && enemy.telegraph !== null,
+    );
+    const hint = selectFirstRunTutorialHint({
+      stageIndex: run.stage.index,
+      completedStageRuns: run.profile.base.completedStageRuns,
+      roomId: run.room.id,
+      phase: run.phase,
+      touchMode: this.touchMode,
+      depthMoved,
+      dashUses,
+      executeUses,
+      dashReady: player.dashCooldown <= 0,
+      telegraphActive,
+      executableInRange,
+    });
+    if (!hint) return;
+
+    const colors = {
+      movement: '#7fe8ff',
+      dash: '#ffd479',
+      execute: '#ff9f68',
+    } as const;
+    const { ctx, canvas } = this;
+    ctx.save();
+    ctx.font = 'bold 14px system-ui, sans-serif';
+    const width = Math.min(canvas.width - 32, ctx.measureText(hint.text).width + 34);
+    const x = (canvas.width - width) / 2;
+    const y = 80;
+    ctx.fillStyle = 'rgba(10,14,18,0.82)';
+    ctx.strokeStyle = colors[hint.kind];
+    ctx.lineWidth = 1.5;
+    this.roundRect(ctx, x, y, width, 34, 10);
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = colors[hint.kind];
+    ctx.textAlign = 'center';
+    ctx.fillText(hint.text, canvas.width / 2, y + 22);
+    ctx.restore();
   }
 
   /** 出击前职业选择沿用三选一的遮罩和卡片语言，避免再造一套菜单视觉。 */
