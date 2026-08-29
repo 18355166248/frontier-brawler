@@ -1,0 +1,16 @@
+{
+  "name": "frontier-brawler-web",
+  "platform": "web-mobile",
+  "buildPath": "project://build",
+  "debug": false,
+  "startScene": "bbb6a796-569f-4172-9ccf-3f1a5c31546c",
+  "scenes": [
+    {
+      "url": "db://assets/scenes/poc.scene",
+      "uuid": "bbb6a796-569f-4172-9ccf-3f1a5c31546c"
+    }
+  ],
+  "packages": {
+    "web-mobile": {}
+  }
+}

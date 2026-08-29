@@ -77,7 +77,7 @@ const ENEMY_SHEET_ROWS: Record<string, ActionState[]> = {
   ranged: ['idle', 'move', 'aim', 'shoot', 'hit'],
   charger: ['idle', 'move', 'charge', 'rush', 'hit'],
   elite: ['idle', 'move', 'heavy', 'hit'],
-  boss: ['bossSlam', 'bossCharge', 'bossRush', 'bossNova', 'bossSummon'],
+  boss: ['idle', 'move', 'hit', 'bossSlam', 'bossCharge', 'bossRush', 'bossNova', 'bossSummon'],
 };
 
 const canvas = document.getElementById('game') as HTMLCanvasElement;

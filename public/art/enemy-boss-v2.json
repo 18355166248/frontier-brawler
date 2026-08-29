@@ -1,8 +1,11 @@
 {
   "sheet": "enemy-boss-v2.png",
   "columns": 4,
-  "rows": 5,
+  "rows": 8,
   "rowOrder": [
+    "idle",
+    "move",
+    "hit",
     "bossSlam",
     "bossCharge",
     "bossRush",
@@ -21,6 +24,150 @@
   "sourceKind": "chroma-grids",
   "mirrored": false,
   "frames": [
+    {
+      "action": "idle",
+      "frame": 1,
+      "bbox": [
+        15,
+        25,
+        91,
+        90
+      ],
+      "height": 66,
+      "yOffset": 13
+    },
+    {
+      "action": "idle",
+      "frame": 2,
+      "bbox": [
+        8,
+        25,
+        85,
+        90
+      ],
+      "height": 66,
+      "yOffset": 13
+    },
+    {
+      "action": "idle",
+      "frame": 3,
+      "bbox": [
+        14,
+        25,
+        91,
+        90
+      ],
+      "height": 66,
+      "yOffset": 18
+    },
+    {
+      "action": "idle",
+      "frame": 4,
+      "bbox": [
+        8,
+        25,
+        85,
+        90
+      ],
+      "height": 66,
+      "yOffset": 18
+    },
+    {
+      "action": "move",
+      "frame": 1,
+      "bbox": [
+        13,
+        24,
+        91,
+        90
+      ],
+      "height": 67,
+      "yOffset": 13
+    },
+    {
+      "action": "move",
+      "frame": 2,
+      "bbox": [
+        10,
+        24,
+        87,
+        90
+      ],
+      "height": 67,
+      "yOffset": 13
+    },
+    {
+      "action": "move",
+      "frame": 3,
+      "bbox": [
+        14,
+        25,
+        91,
+        90
+      ],
+      "height": 66,
+      "yOffset": 18
+    },
+    {
+      "action": "move",
+      "frame": 4,
+      "bbox": [
+        4,
+        23,
+        88,
+        90
+      ],
+      "height": 68,
+      "yOffset": 17
+    },
+    {
+      "action": "hit",
+      "frame": 1,
+      "bbox": [
+        13,
+        24,
+        90,
+        90
+      ],
+      "height": 67,
+      "yOffset": 11
+    },
+    {
+      "action": "hit",
+      "frame": 2,
+      "bbox": [
+        8,
+        23,
+        83,
+        90
+      ],
+      "height": 68,
+      "yOffset": 11
+    },
+    {
+      "action": "hit",
+      "frame": 3,
+      "bbox": [
+        14,
+        28,
+        91,
+        90
+      ],
+      "height": 63,
+      "yOffset": 19
+    },
+    {
+      "action": "hit",
+      "frame": 4,
+      "bbox": [
+        11,
+        26,
+        86,
+        90
+      ],
+      "height": 65,
+      "yOffset": 20
+    },
     {
       "action": "bossSlam",
       "frame": 1,

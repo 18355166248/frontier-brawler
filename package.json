@@ -8,7 +8,7 @@
     "build": "tsc --noEmit && vite build",
     "preview": "vite preview",
     "check": "tsc --noEmit",
-    "validate": "npm run validate:professions && npm run validate:equipment && npm run validate:economy && npm run validate:save && npm run validate:audio && npm run validate:touch && npm run validate:fixed-step && npm run check:cocos && npm run validate:loop && npm run validate:difficulty && npm run validate:tutorial && npm run build && node tools/validate_release.mjs",
+    "validate": "npm run validate:professions && npm run validate:equipment && npm run validate:economy && npm run validate:save && npm run validate:audio && npm run validate:touch && npm run validate:fixed-step && npm run check:cocos && npm run validate:cocos-sprites && npm run validate:cocos-camera && npm run validate:native-stage && npm run validate:loop && npm run validate:difficulty && npm run validate:tutorial && npm run build && node tools/validate_release.mjs",
     "validate:professions": "node tools/validate_professions.mjs",
     "validate:equipment": "node tools/validate_equipment.mjs",
     "validate:economy": "node tools/validate_economy.mjs",
@@ -16,6 +16,9 @@
     "validate:audio": "node tools/validate_audio.mjs",
     "validate:touch": "node tools/validate_touch.mjs",
     "validate:fixed-step": "node tools/validate_fixed_step.mjs",
+    "validate:native-stage": "node tools/validate_native_stage.mjs",
+    "validate:cocos-sprites": "node tools/validate_cocos_sprite_map.mjs",
+    "validate:cocos-camera": "node tools/validate_cocos_camera.mjs",
     "validate:loop": "node tools/validate_loop.mjs",
     "validate:difficulty": "node tools/validate_difficulty.mjs",
     "validate:tutorial": "node tools/validate_tutorial.mjs",
@@ -26,6 +29,8 @@
     "build:cocos-core": "node tools/build_cocos_core.mjs",
     "check:cocos": "npm run build:cocos-core && tsc -p native/cocos-poc/tsconfig.check.json --noEmit",
     "sync:cocos-art": "node tools/sync_cocos_art.mjs",
+    "build:cocos-web": "node tools/build_cocos_web.mjs",
+    "preview:cocos-web": "vite native/cocos-poc/build/web-mobile --host 127.0.0.1 --port 5190",
     "build:cocos-android": "node tools/build_cocos_android.mjs"
   },
   "devDependencies": {

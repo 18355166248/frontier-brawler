@@ -61,6 +61,8 @@ await writeFile(generatedConfig, `${JSON.stringify(config, null, 2)}\n`);
 
 // 原生包必须先刷新共享核心，避免 APK 悄悄携带旧战斗逻辑。
 run(process.execPath, [join(root, "tools/build_cocos_core.mjs")], root);
+run(process.execPath, [join(root, "tools/validate_cocos_sprite_map.mjs")], root);
+run(process.execPath, [join(root, "tools/validate_cocos_camera.mjs")], root);
 run(process.execPath, [join(root, "tools/sync_cocos_art.mjs")], root);
 
 run(

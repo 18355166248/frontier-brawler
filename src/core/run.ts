@@ -340,7 +340,6 @@ export class Run {
       !this.professionConfirmed ||
       this.world.stats.died ||
       this.transition > 0 ||
-      this.pendingChoice ||
       this.pendingEquipment ||
       this.stageCleared ||
       !hasBuilding(this.profile.base, 'forge') ||
@@ -530,6 +529,10 @@ export class Run {
       this.transition -= 1;
       return empty;
     }
+
+    // 奖励房是在 enterRoom 时立即生成选项的；必须先让房间过场倒计时走完，
+    // 再冻结背后的 World，否则 phase 永远停在 transition，选择层无法出现。
+    if (this.pendingChoice) return empty;
 
     // 终局画面仍由渲染循环持续刷新，但战斗时钟和 World 必须冻结；否则玩家
     // 停在结算/战败页阅读数据时，“用时”等统计会继续增长。

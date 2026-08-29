@@ -13,7 +13,7 @@
 | ranged | idle / move / aim / shoot / hit | 20 | `public/art/enemy-ranged-v2.png` |
 | charger | idle / move / charge / rush / hit | 20 | `public/art/enemy-charger-v2.png` |
 | elite | idle / move / heavy / hit | 16 | `public/art/enemy-elite-v2.png` |
-| boss | bossSlam / bossCharge / bossRush / bossNova / bossSummon | 20 | `public/art/enemy-boss-v2.png` |
+| boss | idle / move / hit / bossSlam / bossCharge / bossRush / bossNova / bossSummon | 32 | `public/art/enemy-boss-v2.png` |
 
 每个 PNG 旁边的同名 JSON 是逐帧验收报告，记录行序、统一缩放倍率、脚底线、
 最终 bbox 和 y 偏移。源网格保存在 `<kind>/action-grids/`，可直接重跑打包器。
@@ -41,7 +41,9 @@ python3 tools/build_ai_action_sheet.py \
   -o public/art/enemy-grunt-v2.png --actions idle move slash hit --mirror
 ```
 
-其余兵种只替换目录、输出名和上表行序；boss 原生朝右，不带 `--mirror`。
+其余兵种只替换目录、输出名和上表行序；boss 原生朝右，不带 `--mirror`。Boss 的
+完整命令为 `--actions idle move hit bossSlam bossCharge bossRush bossNova bossSummon
+--remove-components-under 4`。
 本轮重出的 elite 和 boss 分别带 `--remove-components-under 17` 与
 `--remove-components-under 4`，用于移除色键后确认是背景残留的孤岛。ranged 的
 箭杆属于有意义的独立细件，不使用该参数。该清理默认关闭，不会波及其他动作表。

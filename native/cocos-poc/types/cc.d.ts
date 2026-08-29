@@ -14,6 +14,10 @@ declare module 'cc' {
 
   export class Rect {
     constructor(x?: number, y?: number, width?: number, height?: number);
+    x: number;
+    y: number;
+    width: number;
+    height: number;
   }
 
   export class Component {
@@ -24,6 +28,46 @@ declare module 'cc' {
   export class EventTouch {
     getID(): number;
     getUILocation(): Vec2;
+  }
+
+  export enum KeyCode {
+    SHIFT_LEFT = 16,
+    SPACE = 32,
+    ARROW_LEFT = 37,
+    ARROW_UP = 38,
+    ARROW_RIGHT = 39,
+    ARROW_DOWN = 40,
+    DIGIT_1 = 49,
+    DIGIT_2 = 50,
+    DIGIT_3 = 51,
+    KEY_A = 65,
+    KEY_D = 68,
+    KEY_E = 69,
+    KEY_F = 70,
+    KEY_I = 73,
+    KEY_J = 74,
+    KEY_K = 75,
+    KEY_L = 76,
+    KEY_Q = 81,
+    KEY_R = 82,
+    KEY_S = 83,
+    KEY_U = 85,
+    KEY_W = 87,
+    NUM_1 = 97,
+    NUM_2 = 98,
+    NUM_3 = 99,
+  }
+
+  export class EventKeyboard {
+    keyCode: KeyCode;
+    readonly isPressed: boolean;
+  }
+
+  export class Input {
+    static readonly EventType: {
+      readonly KEY_DOWN: string;
+      readonly KEY_UP: string;
+    };
   }
 
   export class Node {
@@ -83,6 +127,7 @@ declare module 'cc' {
   export class Sprite extends Component {
     spriteFrame: SpriteFrame | null;
     sizeMode: Sprite.SizeMode;
+    color: Color;
   }
 
   export namespace Sprite {
@@ -105,6 +150,11 @@ declare module 'cc' {
     off(type: string, callback: (...args: never[]) => void, target?: unknown): void;
   };
 
+  export const input: {
+    on(type: string, callback: (...args: never[]) => void, target?: unknown): void;
+    off(type: string, callback: (...args: never[]) => void, target?: unknown): void;
+  };
+
   export const resources: {
     load<T>(
       path: string,
@@ -113,8 +163,13 @@ declare module 'cc' {
     ): void;
   };
 
+  export const sys: {
+    getSafeAreaRect(symmetric?: boolean): Rect;
+  };
+
   export const view: {
     setDesignResolutionSize(width: number, height: number, policy: number): void;
+    getVisibleSize(): { width: number; height: number };
   };
 
   export const _decorator: {

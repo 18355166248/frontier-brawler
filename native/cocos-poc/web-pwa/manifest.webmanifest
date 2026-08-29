@@ -1,0 +1,19 @@
+{
+  "name": "边境乱斗",
+  "short_name": "边境乱斗",
+  "description": "竖屏动作闯关游戏",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#090d10",
+  "theme_color": "#090d10",
+  "icons": [
+    {
+      "src": "./frontier-icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ]
+}

@@ -472,6 +472,12 @@ M2 `resolveAction` 查表链再叠一层：`WEAPON_ACTIONS[weapon]?.[action] ?? 
 - [x] 发布检查：README 已对齐当前功能与已知边界，补充 0.1.0 版本说明、统一
       `npm run validate` 门禁和生产包泄漏检查；Vite 生产资源改为相对路径，可部署
       到任意静态站点子目录，但不在仓库内配置未经确认的自动外网发布
+- [ ] Cocos 原生竖屏迁移：共享 core、固定步长、Android 构建、英雄/grunt/boss
+      完整动作表、1:1 横向跟随相机、键盘/触控、职业选择、竖屏 HUD/安全区与
+      完整第一关垂直切片已完成；Web 构建已具备 PWA 独立窗口与离线壳。
+      后续按 Web 主迭代路径迁移后五关、基地、存档与音频，Android 保留为阶段性
+      原生验收门禁。迁移细节见
+      `docs/COCOS_MIGRATION.md`
 
 ---
 
