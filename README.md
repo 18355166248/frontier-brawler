@@ -10,6 +10,12 @@
 当前 Web 版使用 Vite + TypeScript + Canvas 2D；原生竖屏版正迁移到 Cocos Creator
 3.8.8，两端复用同一套纯 TypeScript 战斗核心。
 
+## Godot 重构试玩
+
+新增独立 Godot 首关，入口为 `native/godot/project.godot`，macOS 可双击
+`native/godot/开始游戏.command`。已打通疾锋荒村首关；完整内容迁移尚未完成。
+启动、操作和验证见 [Godot 首关说明](native/godot/README.md)。
+
 ## 文档
 
 - [玩法设计](docs/GAME_DESIGN.md) —— 核心循环、战斗设计、职业与装备、经营层、数值框架

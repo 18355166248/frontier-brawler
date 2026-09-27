@@ -1,0 +1,210 @@
+[gd_scene load_steps=18 format=3]
+
+[ext_resource type="Script" path="res://scripts/main.gd" id="1"]
+[ext_resource type="PackedScene" path="res://scenes/room.tscn" id="2"]
+[ext_resource type="Script" path="res://scripts/run_controller.gd" id="3"]
+[ext_resource type="Script" path="res://scripts/input_router.gd" id="4"]
+[ext_resource type="Script" path="res://scripts/hud.gd" id="5"]
+[ext_resource type="Script" path="res://scripts/hit_effects.gd" id="6"]
+[ext_resource type="Script" path="res://scripts/audio.gd" id="7"]
+
+[sub_resource type="SystemFont" id="Font"]
+font_names = PackedStringArray("PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", "sans-serif")
+[sub_resource type="StyleBoxFlat" id="Panel"]
+bg_color = Color(0.055, 0.105, 0.115, 1)
+border_width_left = 1
+border_width_top = 1
+border_width_right = 1
+border_width_bottom = 1
+border_color = Color(0.34, 0.47, 0.39, 1)
+corner_radius_top_left = 16
+corner_radius_top_right = 16
+corner_radius_bottom_left = 16
+corner_radius_bottom_right = 16
+[sub_resource type="StyleBoxFlat" id="Button"]
+bg_color = Color(0.16, 0.28, 0.25, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_left = 8
+corner_radius_bottom_right = 8
+content_margin_left = 12.0
+content_margin_right = 12.0
+[sub_resource type="StyleBoxFlat" id="Hover"]
+bg_color = Color(0.25, 0.41, 0.33, 1)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_left = 8
+corner_radius_bottom_right = 8
+[sub_resource type="StyleBoxFlat" id="Focus"]
+bg_color = Color(0, 0, 0, 0)
+border_width_left = 2
+border_width_top = 2
+border_width_right = 2
+border_width_bottom = 2
+border_color = Color(0.8, 0.83, 0.58, 1)
+[sub_resource type="StyleBoxFlat" id="Track"]
+bg_color = Color(0.12, 0.2, 0.21, 1)
+corner_radius_top_left = 3
+corner_radius_bottom_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+[sub_resource type="StyleBoxFlat" id="HP"]
+bg_color = Color(0.8, 0.48, 0.32, 1)
+corner_radius_top_left = 3
+corner_radius_bottom_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+[sub_resource type="StyleBoxFlat" id="Energy"]
+bg_color = Color(0.37, 0.7, 0.59, 1)
+corner_radius_top_left = 3
+corner_radius_bottom_left = 3
+corner_radius_top_right = 3
+corner_radius_bottom_right = 3
+[sub_resource type="Theme" id="Theme"]
+default_font = SubResource("Font")
+default_font_size = 18
+Button/styles/normal = SubResource("Button")
+Button/styles/hover = SubResource("Hover")
+Button/styles/pressed = SubResource("Hover")
+Button/styles/focus = SubResource("Focus")
+PanelContainer/styles/panel = SubResource("Panel")
+ProgressBar/styles/background = SubResource("Track")
+ProgressBar/styles/fill = SubResource("HP")
+[sub_resource type="StyleBoxEmpty" id="Empty"]
+
+[node name="Frontier" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+theme = SubResource("Theme")
+script = ExtResource("1")
+
+[node name="WorldContainer" type="SubViewportContainer" parent="."]
+layout_mode = 0
+offset_top = 100.0
+offset_right = 540.0
+offset_bottom = 730.0
+stretch = true
+mouse_filter = 2
+[node name="World" type="SubViewport" parent="WorldContainer"]
+handle_input_locally = false
+size = Vector2i(540, 630)
+render_target_update_mode = 4
+[node name="Room" parent="WorldContainer/World" instance=ExtResource("2")]
+[node name="Effects" type="Node2D" parent="WorldContainer/World"]
+z_index = 10
+script = ExtResource("6")
+[node name="Run" type="Node" parent="."]
+script = ExtResource("3")
+[node name="Audio" type="Node" parent="."]
+script = ExtResource("7")
+[node name="Controls" type="Control" parent="."]
+layout_mode = 0
+offset_top = 730.0
+offset_right = 540.0
+offset_bottom = 960.0
+mouse_filter = 2
+script = ExtResource("4")
+[node name="HUD" type="Control" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+script = ExtResource("5")
+[node name="Top" type="Control" parent="HUD"]
+layout_mode = 0
+offset_right = 540.0
+offset_bottom = 100.0
+mouse_filter = 2
+[node name="Background" type="ColorRect" parent="HUD/Top"]
+layout_mode = 0
+offset_right = 540.0
+offset_bottom = 100.0
+mouse_filter = 2
+color = Color(0.045, 0.085, 0.1, 1)
+[node name="Title" type="Label" parent="HUD/Top"]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 10.0
+offset_right = 270.0
+offset_bottom = 39.0
+text = "荒村"
+theme_override_colors/font_color = Color(0.93, 0.88, 0.71, 1)
+theme_override_font_sizes/font_size = 23
+[node name="Mute" type="Button" parent="HUD/Top"]
+layout_mode = 0
+offset_left = 370.0
+offset_top = 10.0
+offset_right = 438.0
+offset_bottom = 44.0
+text = "静音"
+toggle_mode = true
+[node name="Pause" type="Button" parent="HUD/Top"]
+layout_mode = 0
+offset_left = 450.0
+offset_top = 10.0
+offset_right = 516.0
+offset_bottom = 44.0
+text = "暂停"
+[node name="Health" type="ProgressBar" parent="HUD/Top"]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 49.0
+offset_right = 324.0
+offset_bottom = 59.0
+value = 100.0
+show_percentage = false
+[node name="Energy" type="ProgressBar" parent="HUD/Top"]
+layout_mode = 0
+offset_left = 334.0
+offset_top = 49.0
+offset_right = 516.0
+offset_bottom = 59.0
+show_percentage = false
+theme_override_styles/fill = SubResource("Energy")
+[node name="Status" type="Label" parent="HUD/Top"]
+layout_mode = 0
+offset_left = 24.0
+offset_top = 64.0
+offset_right = 516.0
+offset_bottom = 92.0
+text = "生命 160 / 160"
+theme_override_font_sizes/font_size = 14
+theme_override_colors/font_color = Color(0.6, 0.73, 0.67, 1)
+[node name="Hint" type="Label" parent="HUD"]
+layout_mode = 0
+offset_left = 12.0
+offset_top = 105.0
+offset_right = 528.0
+offset_bottom = 140.0
+horizontal_alignment = 1
+theme_override_font_sizes/font_size = 15
+theme_override_colors/font_color = Color(0.9, 0.88, 0.7, 1)
+[node name="Overlay" type="ColorRect" parent="HUD"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.025, 0.05, 0.06, 0.9)
+[node name="Center" type="CenterContainer" parent="HUD/Overlay"]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+[node name="Panel" type="PanelContainer" parent="HUD/Overlay/Center"]
+custom_minimum_size = Vector2(460, 0)
+layout_mode = 2
+[node name="Margin" type="MarginContainer" parent="HUD/Overlay/Center/Panel"]
+layout_mode = 2
+theme_override_constants/margin_left = 24
+theme_override_constants/margin_right = 24
+theme_override_constants/margin_top = 32
+theme_override_constants/margin_bottom = 32
+[node name="Content" type="VBoxContainer" parent="HUD/Overlay/Center/Panel/Margin"]
+layout_mode = 2
+theme_override_constants/separation = 18

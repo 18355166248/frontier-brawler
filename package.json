@@ -31,7 +31,10 @@
     "sync:cocos-art": "node tools/sync_cocos_art.mjs",
     "build:cocos-web": "node tools/build_cocos_web.mjs",
     "preview:cocos-web": "vite native/cocos-poc/build/web-mobile --host 127.0.0.1 --port 5190",
-    "build:cocos-android": "node tools/build_cocos_android.mjs"
+    "build:cocos-android": "node tools/build_cocos_android.mjs",
+    "sync:godot": "node tools/export_godot_data.mjs",
+    "validate:godot": "node tools/validate_godot.mjs",
+    "dev:godot": "godot --path native/godot"
   },
   "devDependencies": {
     "typescript": "^5.6.0",
