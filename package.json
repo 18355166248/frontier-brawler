@@ -34,7 +34,9 @@
     "build:cocos-android": "node tools/build_cocos_android.mjs",
     "sync:godot": "node tools/export_godot_data.mjs",
     "validate:godot": "node tools/validate_godot.mjs",
-    "dev:godot": "godot --path native/godot"
+    "dev:godot": "godot --path native/godot",
+    "dev:motion-lab": "godot --path native/godot scenes/motion_lab.tscn",
+    "export:motion-review": "godot --headless --path native/godot --script tests/export_motion_review.gd"
   },
   "devDependencies": {
     "typescript": "^5.6.0",

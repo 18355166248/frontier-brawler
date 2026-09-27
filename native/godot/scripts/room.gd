@@ -1,6 +1,8 @@
 class_name FBRoom
 extends Node2D
 
+signal populated
+
 const ACTOR := preload("res://scenes/actor.tscn")
 var actors: Array[FBActor] = []
 var hero: FBActor
@@ -32,6 +34,7 @@ func populate(definition: Dictionary, profile: Dictionary, stress_count := 0) ->
 	camera.position = Vector2(hero.position.x + 70, 315)
 	camera.reset_smoothing()
 	queue_redraw()
+	populated.emit()
 
 func spawn(kind: String, point: Vector2) -> FBActor:
 	var actor: FBActor = ACTOR.instantiate()

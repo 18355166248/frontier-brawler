@@ -26,12 +26,40 @@ func pair() -> Array[FBActor]:
 	enemy.position = Vector2(240, 400)
 	return [hero, enemy]
 
+func validate_animation() -> void:
+	var slash := FBData.action("slash", true)
+	for frame in range(8, 12):
+		check(FBAnimationPose.sample("slash", frame, slash).column == 2, "visual strike stays aligned with active hitbox")
+	check(FBAnimationPose.sample("slash", 23, slash).column == 0, "recovery returns to ready pose")
+	check(FBAnimationPose.sample("slash", 23, slash, true).column == 3, "comparison preserves old held recovery")
+	check(is_equal_approx(FBAnimationPose.walk_bob(12, 48), 2.0), "walk has a lift between contacts")
+	check(is_zero_approx(FBAnimationPose.walk_bob(24, 48)), "walk second contact has no extra bounce")
+	check(is_zero_approx(FBAnimationPose.jump_height(27, FBData.action("jump", true))), "jump lands when airborne immunity ends")
+	var hero: FBActor = actor_scene.instantiate()
+	root.add_child(hero)
+	hero.tick({"jump": true})
+	for i in 16:
+		hero.tick({})
+	var height := hero.visual_height
+	hero.tick({"attack": true})
+	check(hero.state.id == "airSlash" and hero.visual_height > height * 0.9 and hero.visual_height <= height, "jump cancel inherits height without ground snap")
+	var held := hero.visual_height
+	for i in 20:
+		hero.get_node("Visual")._process(1.0 / 60)
+	check(hero.visual_height == held, "rendering alone cannot advance jump during hitstop")
+	while hero.state.frame < 16:
+		hero.tick({})
+	check(is_zero_approx(hero.visual_height) and hero.state.can_interrupt(), "air slash is grounded at ground-combo cancel window")
+	hero.free()
+
 func validate() -> void:
 	game = load("res://scenes/main.tscn").instantiate()
 	root.add_child(game)
 	game.set_physics_process(false)
 	run = game.get_node("Run")
 	room = run.room
+	validate_animation()
+	load("res://tests/animation_checks.gd").run(root, Callable(self, "check"), game)
 	check(run.phase == "home", "cold start stays on home")
 	var actors := pair()
 	var hero := actors[0]

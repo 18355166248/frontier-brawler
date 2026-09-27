@@ -23,6 +23,10 @@ var skill_multiplier := 1.0
 var skill_cost_multiplier := 1.0
 var heal_bonus := 0.0
 var perfect_count := 0
+# 只供表现层读取，由同一逻辑 tick 推进；暂停/命中定格时不会继续下落。
+var visual_height := 0.0
+var air_slash_start_height := 0.0
+var visual_weight := Vector3.ZERO
 
 func _ready() -> void:
 	state.hero = kind == "hero"
@@ -40,7 +44,9 @@ func is_dead() -> bool:
 func tick(input: Dictionary, execute_target: FBActor = null) -> void:
 	if is_dead():
 		dead_frames += 1
+		visual_height = move_toward(visual_height, 0, 5)
 		return
+	var previous_action := state.id
 	dash_cooldown = maxi(0, dash_cooldown - 1)
 	jump_cooldown = maxi(0, jump_cooldown - 1)
 	attack_cooldown = maxi(0, attack_cooldown - 1)
@@ -52,6 +58,8 @@ func tick(input: Dictionary, execute_target: FBActor = null) -> void:
 	if stun > 0:
 		stun -= 1
 		state.advance()
+		update_visual_height(previous_action)
+		update_visual_weight()
 		return
 	var movement: Vector2 = input.get("move", Vector2.ZERO)
 	if kind == "hero":
@@ -59,7 +67,7 @@ func tick(input: Dictionary, execute_target: FBActor = null) -> void:
 		if state.can_interrupt():
 			apply_player_intent(movement, execute_target)
 		state.decay()
-	elif input.get("attack", false) and state.can_interrupt():
+	elif input.get("attack", false) and state.id in ["idle", "move"]:
 		state.change("bossSlam" if kind == "boss" else "slash")
 	var motion: Array = state.definition().get("motion", [])
 	if state.frame < motion.size() and motion[state.frame] != 0:
@@ -76,6 +84,26 @@ func tick(input: Dictionary, execute_target: FBActor = null) -> void:
 			state.change("idle")
 	# 与原版相同：推进动作后再统一判定命中；所有角色只有一个逻辑时间源。
 	state.advance()
+	update_visual_height(previous_action)
+	update_visual_weight()
+
+func update_visual_weight() -> void:
+	# 仅平滑表现重心，姿态列号和碰撞不做延迟。换动作后约 3 帧收敛，避免重心瞬跳。
+	var target := FBAnimationPose.weight(state.id, state.frame, state.definition())
+	visual_weight = visual_weight.lerp(target, 0.65)
+
+func update_visual_height(previous_action: String) -> void:
+	if state.id == "jump":
+		visual_height = FBAnimationPose.jump_height(state.frame, state.definition())
+	elif state.id == "airSlash":
+		if previous_action != "airSlash":
+			air_slash_start_height = visual_height
+		visual_height = FBAnimationPose.landing_height(state.frame, state.definition(), air_slash_start_height)
+	elif state.id == "hit":
+		# 可命中空中的招式打断跳跃后，只让表现落回地面，不把人物一帧拉到脚底。
+		visual_height = move_toward(visual_height, 0, 5)
+	else:
+		visual_height = 0.0
 
 func apply_player_intent(movement: Vector2, target: FBActor) -> void:
 	var airborne := state.in_window("airborne")

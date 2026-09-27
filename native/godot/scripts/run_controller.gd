@@ -59,7 +59,18 @@ func enter_room(profile: Dictionary) -> void:
 	phase_changed.emit(phase)
 
 func step(input: Dictionary) -> void:
-	if paused or phase not in ["fighting", "cleared"]:
+	if paused:
+		return
+	if phase == "dead":
+		# 失败后只收尾死亡表现，不能继续伤害判定、AI 或移动玩家。
+		if combat.freeze_frames > 0:
+			combat.freeze_frames -= 1
+		else:
+			for actor in room.actors:
+				if actor.is_dead():
+					actor.tick({})
+		return
+	if phase not in ["fighting", "cleared"]:
 		return
 	elapsed_frames += 1
 	if combat.freeze_frames > 0:

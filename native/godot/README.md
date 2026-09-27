@@ -13,6 +13,7 @@ macOS 双击本目录的 **开始游戏.command**。启动器先导入资源，�
 ```bash
 npm run dev:godot
 npm run validate:godot
+npm run dev:motion-lab
 ```
 
 全新检出先运行 `godot --headless --editor --path native/godot --import`，或使用双击启动器。
@@ -45,6 +46,7 @@ npm run validate:godot
   `enemy_director.gd`：敌人进攻名额、首关 AI 和单位分离。
 - `scripts/run_controller.gd`：首关流程与局内成长。
 - `scripts/input_router.gd`：InputMap 与多指输入归一化；`hud.gd`：界面命令与显示。
+- `scripts/animation_pose.gd`：姿态采样、跳跃/跳劈高度和移动起伏；由战斗逻辑帧驱动。
 - `scripts/actor_visual.gd`、`hit_effects.gd`、`room.gd`：角色、命中特效、场景装饰。
 
 地面位置用 Node2D 管理并保留旧版的确定性推挤；没有使用刚体解算代替战斗判定。
@@ -65,12 +67,13 @@ Node 或 TypeScript。GDScript 控制逻辑由本工程维护，JSON 不是第�
 
 三张 PNG 来自 `public/art/`，共约 464 KiB，96×96 单格，四列，脚底 y=90。
 缺失的 slash3/skill/execute/airSlash 复用 slash2，jump 复用 move；复用表集中于
-`actor_visual.gd`。跳跃高度、预警和剑弧独立呈现，后续可替换专属帧。
+`animation_pose.gd`。跳跃固定屈膝姿态，跳劈继承接招前高度并在腾空窗口结束时落地。
+普攻末段回到起手姿态；预警和剑弧独立呈现，后续可替换专属帧。
 中文使用系统字体，未复制或分发 macOS 字体；目标移动系统上的字体表现待真机检查。
 
 ## 验证
 
-`npm run validate:godot` 会先导入工程，再运行 42 项行为检查；同时检查 Godot 错误日志，
+`npm run validate:godot` 会先导入工程，再运行 109 项行为检查；同时检查 Godot 错误日志，
 防止脚本报错却以退出码 0 误报通过。机器人通过正式伤害和敌人 AI 打到结算，
 不直接清怪，样本不能替代真人手感或平衡结论。
 
@@ -82,3 +85,15 @@ godot --path native/godot --script tests/visual_check.gd
 `output/`（不入 Git）。验证记录见 `docs/validation.md`。
 
 尚未构建 Android/iOS/HarmonyOS/Web 导出包；桌面结果不代表这些平台可发布。
+
+## 动作对照与素材工具试点
+
+`npm run dev:motion-lab` 打开独立对照场：左侧重构初版播放，右侧当前表现，可选择主角、杂兵、Boss 的 24 个场景，
+并暂停、逐帧或慢放。正式主场景始终使用当前表现。
+`npm run export:motion-review` 从实际姿态采样器导出 Aseprite 兼容 JSON，供
+`ai-asset-pipeline` 打包；该预览只含姿态和时长，不含游戏位移、腾空和命中反馈。
+
+问题分析、验证截图和下一版原画设计见
+[动作试点记录](../../docs/experiments/hero-motion-2026-09-27/README.md)。
+
+全角色第二轮优化与影响范围见 [全动作审计](../../docs/experiments/hero-motion-2026-09-27/ALL_ANIMATIONS.md)。

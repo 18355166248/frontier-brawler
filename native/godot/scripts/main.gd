@@ -15,6 +15,7 @@ func _ready() -> void:
 	run.boss_changed.connect(func(_actor: FBActor): hud.hint.text = "首领进入第二阶段 · 抓住输出机会")
 	controls.pause_requested.connect(toggle_pause)
 	hud.command.connect(_command)
+	room.populated.connect(effects.reset)
 	room.populate(FBData.all().stage.rooms[0], {})
 	hud.show_phase(run)
 	var args := OS.get_cmdline_user_args()
@@ -26,6 +27,8 @@ func _ready() -> void:
 	get_viewport().size_changed.connect(apply_safe_area)
 
 func _physics_process(_delta: float) -> void:
+	if not run.paused and run.phase != "home":
+		effects.advance(1.0 / 60.0)
 	# 命中停顿不消费按下沿，玩家在打击定格中提前按的连招应在恢复后送入缓冲。
 	run.step({} if run.combat.freeze_frames > 0 else controls.sample())
 	hud.refresh(run)
@@ -88,7 +91,7 @@ func _notification(what: int) -> void:
 			toggle_pause()
 
 func _impact(actor: FBActor, damage: float, killed: bool, perfect: bool) -> void:
-	effects.hit(actor.position, damage, killed, perfect)
+	effects.hit(actor.position - Vector2(0, actor.visual_height), damage, killed, perfect)
 	audio.play("kill" if killed else "hit")
 
 func apply_safe_area() -> void:

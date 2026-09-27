@@ -27,7 +27,8 @@ func update(actors: Array[FBActor], hero: FBActor) -> void:
 		tokens.append(actor)
 
 func intent(actor: FBActor, hero: FBActor) -> Dictionary:
-	if not actor.state.can_interrupt():
+	# 玩家取消窗口不等于 AI 可以重复起手；敌人先完成收招再归还名额和进入冷却。
+	if actor.state.id not in ["idle", "move"]:
 		return {}
 	var delta := hero.position - actor.position
 	var distance := maxf(0.001, delta.length())

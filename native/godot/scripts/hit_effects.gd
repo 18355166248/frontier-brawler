@@ -7,20 +7,22 @@ var font := ThemeDB.fallback_font
 func hit(at: Vector2, amount: float, killed: bool, perfect: bool) -> void:
 	labels.append({"at": at + Vector2(0, -80), "text": str(roundi(amount)), "life": 0.75, "perfect": perfect})
 	for i in (12 if killed else 7):
-		var angle := i * TAU / 7.0
+		var angle := i * TAU / (12.0 if killed else 7.0)
 		particles.append({"at": at + Vector2(0, -35), "velocity": Vector2.from_angle(angle) * (90 + i * 12), "life": 0.35})
 
 func reset() -> void:
 	particles.clear()
 	labels.clear()
 
-func _process(delta: float) -> void:
+func advance(delta: float) -> void:
+	# 由主场景统一推进：暂停冻结；命中短暂停顿仍播放火花，保持碰撞瞬间可读。
 	for p in particles:
 		p.life -= delta
 		p.at += p.velocity * delta
+		p.velocity *= exp(-delta * 5)
 	for label in labels:
 		label.life -= delta
-		label.at.y -= delta * 40
+		label.at.y -= delta * 60 * clampf(label.life / 0.75, 0, 1)
 	particles = particles.filter(func(p: Dictionary): return p.life > 0)
 	labels = labels.filter(func(p: Dictionary): return p.life > 0)
 	queue_redraw()
