@@ -27,8 +27,17 @@ var perfect_count := 0
 var visual_height := 0.0
 var air_slash_start_height := 0.0
 var visual_weight := Vector3.ZERO
+# 速度单位与旧动作表一致：每个 60 Hz 逻辑帧的世界位移。表现层可按真实速度驱动步幅。
+const INPUT_DEADZONE := 0.08
+const DEPTH_SCALE := 0.62
+var locomotion_velocity := Vector2.ZERO
+var visual_tick := 0
+var previous_position := Vector2.ZERO
+var previous_visual_height := 0.0
+var previous_visual_weight := Vector3.ZERO
 
 func _ready() -> void:
+	previous_position = position
 	state.hero = kind == "hero"
 	if kind != "hero":
 		var p: Dictionary = FBData.all().enemies[kind]
@@ -42,11 +51,20 @@ func is_dead() -> bool:
 	return hp <= 0
 
 func tick(input: Dictionary, execute_target: FBActor = null) -> void:
+	# 渲染只在相邻已完成逻辑帧之间插值；暂停、命中定格不调用 tick，也就不会偷偷走动画。
+	previous_position = position
+	previous_visual_height = visual_height
+	previous_visual_weight = visual_weight
+	visual_tick += 1
 	if is_dead():
 		dead_frames += 1
+		locomotion_velocity = Vector2.ZERO
 		visual_height = move_toward(visual_height, 0, 5)
 		return
 	var previous_action := state.id
+	if kind == "hero":
+		# 受击末段也允许提前输入；仍按同一逻辑时钟衰减，不能在硬直里无限保存旧按键。
+		state.capture(input)
 	dash_cooldown = maxi(0, dash_cooldown - 1)
 	jump_cooldown = maxi(0, jump_cooldown - 1)
 	attack_cooldown = maxi(0, attack_cooldown - 1)
@@ -57,13 +75,14 @@ func tick(input: Dictionary, execute_target: FBActor = null) -> void:
 		knockback = Vector2.ZERO
 	if stun > 0:
 		stun -= 1
+		locomotion_velocity = locomotion_velocity.move_toward(Vector2.ZERO, speed * 0.4)
+		state.decay()
 		state.advance()
 		update_visual_height(previous_action)
 		update_visual_weight()
 		return
-	var movement: Vector2 = input.get("move", Vector2.ZERO)
+	var movement := shape_movement(input.get("move", Vector2.ZERO))
 	if kind == "hero":
-		state.capture(input)
 		if state.can_interrupt():
 			apply_player_intent(movement, execute_target)
 		state.decay()
@@ -72,20 +91,42 @@ func tick(input: Dictionary, execute_target: FBActor = null) -> void:
 	var motion: Array = state.definition().get("motion", [])
 	if state.frame < motion.size() and motion[state.frame] != 0:
 		var direction := locked_direction if state.id in ["dash", "jump"] else Vector2(facing, 0)
-		position += Vector2(direction.x, direction.y * 0.62) * float(motion[state.frame])
+		position += Vector2(direction.x, direction.y * DEPTH_SCALE) * float(motion[state.frame])
+		locomotion_velocity = locomotion_velocity.move_toward(Vector2.ZERO, speed * 0.3)
 	elif state.can_interrupt():
-		movement = movement.normalized()
-		position += Vector2(movement.x, movement.y * 0.62) * speed
-		if absf(movement.x) > 0.05 and state.id in ["idle", "move", "hit"]:
+		update_locomotion(movement)
+		if absf(movement.x) > INPUT_DEADZONE and state.id in ["idle", "move", "hit"]:
 			facing = 1 if movement.x > 0 else -1
-		if movement.length() > 0.01 and state.id == "idle":
+		if locomotion_velocity.length() > 0.02 and state.id == "idle":
 			state.change("move")
-		elif movement.length() < 0.01 and state.id == "move":
+		elif locomotion_velocity.length() <= 0.02 and state.id == "move":
 			state.change("idle")
+	else:
+		# 攻击前摇允许极短的惯性收脚，主动位移始终由动作表独占，避免冲刺叠加跑速。
+		locomotion_velocity = locomotion_velocity.move_toward(Vector2.ZERO, speed * 0.4)
+		if state.id in ["slash", "slash2", "slash3", "skill", "execute"] and state.frame < 3:
+			position += locomotion_velocity
 	# 与原版相同：推进动作后再统一判定命中；所有角色只有一个逻辑时间源。
 	state.advance()
 	update_visual_height(previous_action)
 	update_visual_weight()
+
+static func shape_movement(raw: Vector2) -> Vector2:
+	# 摇杆小幅度对应慢走，不能把任何非零值 normalized 成满速；圆形限幅防止斜走更快。
+	if not raw.is_finite() or raw.length() < INPUT_DEADZONE:
+		return Vector2.ZERO
+	return raw.limit_length(1.0)
+
+func update_locomotion(movement: Vector2) -> void:
+	var target := Vector2(movement.x, movement.y * DEPTH_SCALE) * speed
+	var rate := speed * 0.24
+	if target.is_zero_approx():
+		rate = speed * 0.30
+	elif locomotion_velocity.dot(target) < 0:
+		# 转向比从静止起步更快，但仍经过零速，避免按反方向时整个人瞬间弹回。
+		rate = speed * 0.43
+	locomotion_velocity = locomotion_velocity.move_toward(target, rate)
+	position += locomotion_velocity
 
 func update_visual_weight() -> void:
 	# 仅平滑表现重心，姿态列号和碰撞不做延迟。换动作后约 3 帧收敛，避免重心瞬跳。
@@ -112,29 +153,37 @@ func apply_player_intent(movement: Vector2, target: FBActor) -> void:
 			facing = 1 if target.position.x > position.x else -1
 		state.change("execute")
 		state.consume("execute")
+	elif state.has_buffer("dash") and not airborne and state.id != "dash" and dash_cooldown == 0:
+		# 防御动作优先于同一窗口里的旧普攻缓冲，玩家在收招点按闪避能及时脱离。
+		lock_direction(movement)
+		state.change("dash")
+		locomotion_velocity = Vector2.ZERO
+		dash_cooldown = 30
+		state.consume("dash")
+	elif state.has_buffer("jump") and state.id not in ["jump", "airSlash"] and jump_cooldown == 0:
+		lock_direction(movement)
+		state.change("jump")
+		locomotion_velocity = Vector2.ZERO
+		jump_cooldown = 40
+		state.consume("jump")
 	elif state.has_buffer("skill") and not airborne and energy >= 50 * skill_cost_multiplier:
+		face_movement(movement)
 		energy -= 50 * skill_cost_multiplier
 		state.change("skill")
 		state.consume("skill")
 	elif state.has_buffer("attack"):
-		if state.id not in ["slash", "slash2", "slash3"] and absf(movement.x) > 0.2:
-			facing = 1 if movement.x > 0 else -1
+		# 连段起手可重新瞄准，生效帧内保持面向锁定，视觉转身不改变正在结算的命中盒。
+		face_movement(movement)
 		var chain: Array = state.definition().get("cancelInto", [])
 		if not chain.is_empty() and state.in_window("perfectCancelWindow"):
 			state.perfect_pending = true
 			perfect_count += 1
 		state.change(str(chain[0]) if not chain.is_empty() else "slash")
 		state.consume("attack")
-	elif state.has_buffer("jump") and state.id not in ["jump", "airSlash"] and jump_cooldown == 0:
-		lock_direction(movement)
-		state.change("jump")
-		jump_cooldown = 40
-		state.consume("jump")
-	elif state.has_buffer("dash") and not airborne and state.id != "dash" and dash_cooldown == 0:
-		lock_direction(movement)
-		state.change("dash")
-		dash_cooldown = 30
-		state.consume("dash")
+
+func face_movement(movement: Vector2) -> void:
+	if absf(movement.x) >= INPUT_DEADZONE:
+		facing = 1 if movement.x > 0 else -1
 
 func lock_direction(movement: Vector2) -> void:
 	locked_direction = movement.normalized() if movement.length() > 0.01 else Vector2(facing, 0)

@@ -60,6 +60,7 @@ func validate() -> void:
 	room = run.room
 	validate_animation()
 	load("res://tests/animation_checks.gd").run(root, Callable(self, "check"), game)
+	load("res://tests/fluid_motion_checks.gd").run(root, Callable(self, "check"))
 	check(run.phase == "home", "cold start stays on home")
 	var actors := pair()
 	var hero := actors[0]
@@ -251,7 +252,8 @@ func play_stage() -> bool:
 					distance = actor.position.distance_squared_to(hero.position)
 			if target:
 				var offset := target.position - hero.position
-				input.move = offset.normalized() if absf(offset.x) > 42 or absf(offset.y) > 12 else Vector2(signf(offset.x), 0) * 0.01
+				# 近身用真实可操作的轻推摇杆瞄准，不再依赖旧版把 0.01 放大成满速的归一化缺陷。
+				input.move = offset.normalized() if absf(offset.x) > 42 or absf(offset.y) > 12 else Vector2(signf(offset.x), 0) * 0.12
 				input.attack = tick % 10 == 0
 				input.skill = hero.energy >= 50 and tick % 35 == 0
 				input.execute = target.hp / target.max_hp < 0.25

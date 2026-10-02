@@ -7,6 +7,7 @@ var frame := 0
 var hit_targets: Dictionary = {}
 var buffers: Dictionary = {}
 var perfect_pending := false
+const BUFFER_FRAMES := 8
 
 func definition() -> Dictionary:
 	return FBData.action(id, hero)
@@ -32,7 +33,7 @@ func in_window(key: String) -> bool:
 func capture(input: Dictionary) -> void:
 	for key in ["attack", "dash", "jump", "skill", "execute"]:
 		if input.get(key, false):
-			buffers[key] = 8
+			buffers[key] = BUFFER_FRAMES
 
 func has_buffer(key: String) -> bool:
 	return buffers.get(key, 0) > 0
