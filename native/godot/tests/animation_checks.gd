@@ -49,7 +49,7 @@ static func run(root: Window, check: Callable, game: Control) -> void:
 		enemy.tick({})
 		check.call(enemy.visual_height == 33, kind + " aerial hit descends instead of snapping")
 		enemy.hp = 0
-		for i in 31:
+		for i in 44:
 			enemy.tick({})
 		enemy.get_node("Visual")._process(0)
 		check.call(is_zero_approx(enemy.get_node("Visual").modulate.a) and enemy.visual_height == 0, kind + " death settles and fully fades")
@@ -58,20 +58,20 @@ static func run(root: Window, check: Callable, game: Control) -> void:
 	game._command("start")
 	game.effects.hit(Vector2.ZERO, 12, false, false)
 	game.run.paused = true
-	var life: float = game.effects.labels[0].life
+	var age: float = game.effects.labels[0].age
 	game._physics_process(1.0 / 60)
-	check.call(game.effects.labels[0].life == life, "pause freezes hit labels and particles")
+	check.call(game.effects.labels[0].age == age, "pause freezes hit labels and particles")
 	game.run.paused = false
 	game.run.combat.freeze_frames = 3
 	game._physics_process(1.0 / 60)
-	check.call(game.effects.labels[0].life < life, "sparks can settle during brief hitstop")
+	check.call(game.effects.labels[0].age > age, "sparks can settle during brief hitstop")
 	game.run.advance_room()
 	check.call(game.effects.labels.is_empty() and game.effects.particles.is_empty(), "changing rooms clears old hit effects")
 	game.room.hero.hp = 0
 	game.run.combat.freeze_frames = 0
 	game.run.step({})
 	var at: Vector2 = game.room.hero.position
-	for i in 31:
+	for i in 44:
 		game.run.step({"move": Vector2.RIGHT, "attack": true})
 	check.call(game.run.phase == "dead" and game.room.hero.dead_frames >= 30 and game.room.hero.position == at, "defeat finishes death visuals without restarting gameplay")
 	game._command("home")

@@ -13,7 +13,7 @@ func shot(name: String) -> void:
 
 func capture() -> void:
 	DirAccess.make_dir_recursive_absolute("res://output")
-	root.size = Vector2i(540, 960)
+	root.size = Vector2i(1280, 720)
 	game = load("res://scenes/main.tscn").instantiate()
 	root.add_child(game)
 	await create_timer(0.6).timeout

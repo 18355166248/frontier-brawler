@@ -24,7 +24,7 @@ func _ready() -> void:
 	background.set_anchors_and_offsets_preset(Control.PRESET_FULL_RECT)
 	add_child(background)
 	label("全角色动作 · 节奏与衔接对照", Vector2(32, 22), 28)
-	label("左：重构初版播放    右：当前优化    |    两侧使用同一套原画与逻辑帧", Vector2(32, 67), 16)
+	label("左：历史四帧图集    右：连续关节骨架    |    共用同一套战斗逻辑帧", Vector2(32, 67), 16)
 	var kinds := OptionButton.new()
 	kinds.position = Vector2(32, 104)
 	kinds.size = Vector2(130, 42)
@@ -78,7 +78,7 @@ func select_kind(next: String) -> void:
 		actor.queue_free()
 	actors.clear()
 	for i in 2:
-		var actor: FBActor = load("res://scenes/actor.tscn").instantiate()
+		var actor: FBActor = load("res://scenes/legacy_actor.tscn" if i == 0 else "res://scenes/actor.tscn").instantiate()
 		actor.kind = kind
 		actor.scale = Vector2.ONE * (2.0 if kind == "boss" else 2.5)
 		add_child(actor)

@@ -1,6 +1,6 @@
 class_name FBMistwardRoom
 extends FBRoom
-## 横屏关卡草稿：独立保存视觉方案，主入口在 HUD/相机集成完成前仍使用 room.gd。
+## 横屏首关：环境与镜头只负责表现，伤害和出入口仍由固定步长战斗流程决定。
 
 var scene_time := 0.0
 var presentation_paused := false
@@ -40,8 +40,9 @@ func populate(definition: Dictionary, profile: Dictionary, stress_count := 0) ->
 	queue_redraw()
 
 func _process(delta: float) -> void:
-	if not presentation_paused:
-		scene_time += delta
+	if presentation_paused:
+		return
+	scene_time += delta
 	if is_instance_valid(hero):
 		# 镜头看向行进方向，限制在关卡边缘；焦点切换不直接拉动角色或战斗坐标。
 		look_ahead = lerpf(look_ahead, hero.facing * 62.0, 1 - exp(-delta * 3.5))
@@ -56,10 +57,10 @@ func _draw() -> void:
 	draw_rect(Rect2(cam - 1100, -600, 2200, 1600), Color("132c38"))
 	if backdrop:
 		# 背景仅缓慢视差移动，地面和可交互对象仍保持世界坐标，避免脚滑。
-		var x := cam - 690 - (cam - 470) * 0.13
-		draw_texture_rect(backdrop, Rect2(x, -56, 1380, 790), false, Color(0.78, 0.88, 0.9))
+		var x := cam - 530 - (cam - 470) * 0.04
+		draw_texture_rect(backdrop, Rect2(x, -3, 1060, 596), false, Color(0.78, 0.88, 0.9))
 	_draw_ground(cam)
-	for x in [70.0, 465.0, 1060.0, arena.end.x - 55]:
+	for x in [arena.end.x - 115]:
 		_draw_lantern(Vector2(x, 369), x * 0.1)
 	_draw_gate(Vector2(arena.end.x - 25, arena.get_center().y))
 	# 低对比雾带与落叶保留运动感，叶片不遮挡角色轮廓和敌人预警。
@@ -86,8 +87,8 @@ func _draw_ground(cam: float) -> void:
 			var tint := 0.03 + fposmod(sin(column * 42.1 + row * 2.1) * 14.5, 0.035)
 			draw_rect(Rect2(x + 3, y + 2, 92, 23), Color(0.42, 0.57, 0.55, tint))
 			draw_line(Vector2(x + 2, y + 26), Vector2(x + 96, y + 26), Color(0.03, 0.05, 0.06, 0.19), 1, true)
-	for i in range(-3, 25):
-		var x := i * 75.0
+	for i in range(-1, 11):
+		var x := i * 178.0
 		var y := 393 + sin(i * 3.2) * 7
 		for blade in 5:
 			draw_line(Vector2(x + blade * 3, y + 6), Vector2(x + blade * 5 - 6, y - 5 - blade * 2), Color(0.17, 0.31, 0.28, 0.8), 1.5, true)

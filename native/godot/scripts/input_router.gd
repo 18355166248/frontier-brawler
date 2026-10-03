@@ -9,9 +9,22 @@ var fingers: Dictionary = {}
 var joystick_id := -999
 var joystick := Vector2(105, 114)
 var stick := Vector2.ZERO
-const BUTTONS := {"attack": Vector2(428, 108), "dash": Vector2(330, 153), "jump": Vector2(240, 115), "skill": Vector2(350, 57), "execute": Vector2(448, 31)}
+var buttons: Dictionary = {}
+var touch_visible := OS.has_feature("mobile")
+var safe_insets := Vector4.ZERO
 const TITLES := {"attack": "攻击 J", "dash": "闪避 K", "jump": "跳跃 L", "skill": "技能 U", "execute": "处决 I"}
 var unavailable: Dictionary = {}
+
+func _ready() -> void:
+	layout_controls()
+	resized.connect(layout_controls)
+
+func layout_controls() -> void:
+	joystick = Vector2(114 + safe_insets.x, size.y - 108 - safe_insets.w)
+	var right := size.x - safe_insets.z
+	var bottom := size.y - safe_insets.w
+	buttons = {"attack": Vector2(right - 105, bottom - 120), "dash": Vector2(right - 222, bottom - 82), "jump": Vector2(right - 318, bottom - 95), "skill": Vector2(right - 202, bottom - 192), "execute": Vector2(right - 93, bottom - 231)}
+	queue_redraw()
 
 func clear() -> void:
 	for action in ["move_left", "move_right", "move_up", "move_down", "attack", "dash", "jump", "skill", "execute"]:
@@ -29,17 +42,18 @@ func _input(event: InputEvent) -> void:
 		return
 	if not enabled:
 		return
-	for action in BUTTONS:
+	for action in buttons:
 		if event.is_action_pressed(action) and not event.is_echo():
 			pending[action] = true
 	if event is InputEventScreenTouch:
+		touch_visible = true
 		if event.pressed and not event.canceled:
 			press(event.index, get_global_transform_with_canvas().affine_inverse() * event.position)
 		else:
 			release(event.index)
 	elif event is InputEventScreenDrag:
 		drag(event.index, get_global_transform_with_canvas().affine_inverse() * event.position)
-	elif event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
+	elif touch_visible and event is InputEventMouseButton and event.button_index == MOUSE_BUTTON_LEFT:
 		if event.pressed:
 			press(-1, get_local_mouse_position())
 		else:
@@ -55,8 +69,8 @@ func press(id: int, point: Vector2) -> void:
 		fingers[id] = "move"
 		drag(id, point)
 		return
-	for action in BUTTONS:
-		if point.distance_to(BUTTONS[action]) <= (43 if action == "attack" else 36):
+	for action in buttons:
+		if point.distance_to(buttons[action]) <= (43 if action == "attack" else 36):
 			fingers[id] = action
 			pending[action] = true
 			queue_redraw()
@@ -86,21 +100,20 @@ func sample() -> Dictionary:
 	return result
 
 func _draw() -> void:
+	if not touch_visible or not enabled:
+		return
 	var font := get_theme_font("font")
-	draw_rect(Rect2(Vector2.ZERO, size), Color("0c181d"))
-	draw_line(Vector2(24, 0), Vector2(size.x - 24, 0), Color("3e514e"), 1)
-	draw_circle(joystick, 67, Color("162b30"))
+	draw_circle(joystick, 67, Color(0.04, 0.09, 0.11, 0.55))
 	draw_arc(joystick, 67, 0, TAU, 48, Color("46645e"), 1.5)
-	draw_circle(joystick + stick, 28, Color("496e65"))
+	draw_circle(joystick + stick, 28, Color(0.30, 0.44, 0.41, 0.7))
 	draw_circle(joystick + stick, 21, Color("739b83"))
-	for action in BUTTONS:
-		var point: Vector2 = BUTTONS[action]
+	for action in buttons:
+		var point: Vector2 = buttons[action]
 		var radius := 43.0 if action == "attack" else 33.0
 		var active: bool = action in fingers.values()
-		var color := Color("87c5a3") if active else Color("2a4746")
+		var color := Color("87c5a3") if active else Color(0.10, 0.20, 0.22, 0.68)
 		if unavailable.get(action, false):
 			color = Color("18282d")
 		draw_circle(point, radius, color)
 		draw_arc(point, radius, 0, TAU, 40, Color("759383"), 1)
 		draw_string(font, point + Vector2(-30, 5), TITLES[action], HORIZONTAL_ALIGNMENT_CENTER, 60, 13, Color("e2e3c9"))
-	draw_string(font, Vector2(40, 207), "WASD 移动 · 连按 J 连招 · 红色区域为敌人预警", HORIZONTAL_ALIGNMENT_CENTER, 460, 13, Color("819e96"))

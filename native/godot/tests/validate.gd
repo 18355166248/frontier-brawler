@@ -62,6 +62,9 @@ func validate() -> void:
 	load("res://tests/animation_checks.gd").run(root, Callable(self, "check"), game)
 	load("res://tests/fluid_motion_checks.gd").run(root, Callable(self, "check"))
 	check(run.phase == "home", "cold start stays on home")
+	check(game.room is FBMistwardRoom and game.room.hero.get_node("Visual") is FBIllustratedActor, "landscape main uses new environment and illustrated character")
+	check(not game.room.hero.get_node("Visual/Sprite").visible, "old sprite does not overlap illustrated rig")
+	check(game.get_node("WorldContainer/World").size == Vector2i(1280, 720), "landscape world fills 1280 by 720 viewport")
 	var actors := pair()
 	var hero := actors[0]
 	var enemy := actors[1]
@@ -168,7 +171,7 @@ func validate() -> void:
 	var touch := InputEventScreenTouch.new()
 	touch.index = 7
 	touch.pressed = true
-	touch.position = game.controls.get_global_transform_with_canvas() * Vector2(130, 120)
+	touch.position = game.controls.get_global_transform_with_canvas() * (game.controls.joystick + Vector2(25, 6))
 	game.controls._input(touch)
 	check(game.controls.joystick_id == 7, "touch screen coordinates reach joystick")
 	touch.pressed = false
@@ -181,8 +184,8 @@ func validate() -> void:
 	check(game.controls.pending.has("attack"), "hitstop preserves pending attack edge")
 	run.combat.freeze_frames = 0
 	game.controls.clear()
-	game.controls.press(1, Vector2(110, 110))
-	game.controls.press(2, Vector2(428, 108))
+	game.controls.press(1, game.controls.joystick + Vector2(5, 0))
+	game.controls.press(2, game.controls.buttons.attack)
 	check(game.controls.sample().get("attack", false), "multitouch attack")
 	game.controls.release(1)
 	check(game.controls.movement == Vector2.ZERO and game.controls.fingers.has(2), "independent fingers")
@@ -225,8 +228,10 @@ func validate() -> void:
 	print("HEADLESS_50_UNITS_MS_PER_TICK ", (Time.get_ticks_usec() - start) / 600000.0)
 	check(room.alive_enemies() == 49, "sustained stress")
 	print("GODOT_VALIDATION_PASS checks=", checks)
+	game.audio.stop()
 	game.queue_free()
 	await process_frame
+	await create_timer(0.3).timeout
 	quit()
 
 func play_stage() -> bool:

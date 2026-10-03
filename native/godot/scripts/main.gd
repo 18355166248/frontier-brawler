@@ -1,23 +1,28 @@
 extends Control
 
-@onready var room: FBRoom = $WorldContainer/World/Room
+@onready var room: FBMistwardRoom = $WorldContainer/World/Room
 @onready var run: FBRun = $Run
 @onready var controls: FBInput = $Controls
 @onready var hud: Control = $HUD
 @onready var effects: Node2D = $WorldContainer/World/Effects
 @onready var audio: Node = $Audio
 var frame_samples: Array[float] = []
+var shake_time := 0.0
+var foot_distance := 0.0
 
 func _ready() -> void:
 	run.room = room
 	run.phase_changed.connect(_phase_changed)
 	run.impact.connect(_impact)
-	run.boss_changed.connect(func(_actor: FBActor): hud.hint.text = "首领进入第二阶段 · 抓住输出机会")
+	run.boss_changed.connect(func(_actor: FBActor):
+		hud.announce("守卫破阵 · 留意连续攻击")
+		audio.play("boss"))
 	controls.pause_requested.connect(toggle_pause)
 	hud.command.connect(_command)
-	room.populated.connect(effects.reset)
-	room.populate(FBData.all().stage.rooms[0], {})
-	hud.show_phase(run)
+	room.populated.connect(func():
+		effects.reset()
+		foot_distance = 0.0)
+	show_home()
 	var args := OS.get_cmdline_user_args()
 	if "--stress" in args:
 		_command("stress")
@@ -26,17 +31,53 @@ func _ready() -> void:
 	apply_safe_area()
 	get_viewport().size_changed.connect(apply_safe_area)
 
+func show_home() -> void:
+	room.populate(FBData.all().stage.rooms[0], {})
+	room.hero.position = Vector2(740, 472)
+	room.hero.previous_position = room.hero.position
+	room.camera.position = Vector2(650, 290)
+	run.paused = false
+	run.set_phase("home")
+	_phase_changed("home")
+
 func _physics_process(_delta: float) -> void:
 	if not run.paused and run.phase != "home":
 		effects.advance(1.0 / 60.0)
-	# 命中停顿不消费按下沿，玩家在打击定格中提前按的连招应在恢复后送入缓冲。
+	var hero := room.hero
+	var old_action := hero.state.id
+	var old_frame := hero.state.frame
+	var old_lift := hero.visual_height
+	var old_position := hero.position
+	# 定格不消费按下沿；缓冲会在战斗恢复后进入角色状态机。
 	run.step({} if run.combat.freeze_frames > 0 else controls.sample())
+	if run.phase == "home":
+		hero.tick({})
+	elif hero == room.hero and not run.paused and run.phase in ["fighting", "cleared"]:
+		_play_motion_audio(hero, old_action, old_frame, old_lift, old_position)
 	hud.refresh(run)
 	if is_instance_valid(room.hero):
 		controls.unavailable = {"skill": room.hero.energy < 50 * room.hero.skill_cost_multiplier, "dash": room.hero.dash_cooldown > 0, "jump": room.hero.jump_cooldown > 0, "execute": run.combat.execute_target(room.hero, room.actors) == null}
 		controls.queue_redraw()
 
+func _play_motion_audio(hero: FBActor, old_action: String, old_frame: int, old_lift: float, old_position: Vector2) -> void:
+	if hero.state.id == "dash" and old_action != "dash":
+		audio.play("dash")
+	var boxes: Array = hero.state.definition().get("hitboxes", [])
+	if not boxes.is_empty() and hero.state.frame == int(boxes[0].activeFrom) and (old_action != hero.state.id or old_frame != hero.state.frame):
+		audio.play("swing")
+	if old_lift > 0 and hero.visual_height == 0:
+		audio.play("land")
+	if hero.state.id == "move":
+		foot_distance += hero.position.distance_to(old_position)
+		if foot_distance >= 40:
+			foot_distance = fmod(foot_distance, 40)
+			audio.play("step")
+
 func _process(delta: float) -> void:
+	room.presentation_paused = run.paused
+	if not run.paused:
+		shake_time += delta * 39
+	room.camera_shake = Vector2(sin(shake_time * 1.37), cos(shake_time * 1.93) * 0.55) * effects.shake_amount
 	if run.stress and not run.paused:
 		frame_samples.append(delta * 1000)
 		if frame_samples.size() > 3600:
@@ -46,6 +87,10 @@ func _phase_changed(_phase: String) -> void:
 	controls.clear()
 	controls.enabled = not run.paused and run.phase in ["fighting", "cleared"]
 	hud.show_phase(run)
+	audio.set_combat_active(controls.enabled)
+	if not controls.enabled:
+		audio.stop()
+	room.presentation_paused = run.paused
 
 func _command(id: String) -> void:
 	match id:
@@ -58,14 +103,11 @@ func _command(id: String) -> void:
 		"pause":
 			toggle_pause()
 		"home":
-			run.paused = false
 			audio.stop()
 			effects.reset()
-			run.set_phase("home")
+			show_home()
 		"mute", "unmute":
 			audio.muted = id == "mute"
-			if audio.muted:
-				audio.stop()
 		"offense", "arcane", "guardian":
 			run.choose_upgrade(id)
 		_:
@@ -74,7 +116,7 @@ func _command(id: String) -> void:
 		audio.play("confirm")
 
 func toggle_pause() -> void:
-	if run.phase == "home" or run.phase in ["dead", "complete"]:
+	if run.phase in ["home", "dead", "complete"]:
 		return
 	run.paused = not run.paused
 	controls.clear()
@@ -85,7 +127,7 @@ func _notification(what: int) -> void:
 	if not is_node_ready():
 		return
 	if what in [NOTIFICATION_APPLICATION_FOCUS_OUT, NOTIFICATION_APPLICATION_PAUSED]:
-		# 恢复焦点后仍停在暂停页，需要明确继续，避免后台累积输入或自动开战。
+		# 回到前台仍由玩家明确继续，后台不积累移动或自动出招。
 		controls.clear()
 		if run.phase not in ["home", "dead", "complete"] and not run.paused:
 			toggle_pause()
@@ -93,21 +135,20 @@ func _notification(what: int) -> void:
 func _impact(actor: FBActor, damage: float, killed: bool, perfect: bool) -> void:
 	effects.hit(actor.position - Vector2(0, actor.visual_height), damage, killed, perfect)
 	audio.play("kill" if killed else "hit")
+	if perfect and not killed:
+		hud.announce("连势 · 完美衔接", 0.8)
 
 func apply_safe_area() -> void:
 	if not OS.has_feature("mobile"):
 		return
 	var safe := DisplayServer.get_display_safe_area()
 	var screen := DisplayServer.screen_get_size()
-	if safe.size == Vector2i.ZERO or screen.y == 0:
+	if safe.size == Vector2i.ZERO or screen.x == 0 or screen.y == 0:
 		return
-	var scale_y := 960.0 / screen.y
-	var top := safe.position.y * scale_y
-	var bottom := (screen.y - safe.end.y) * scale_y
-	$HUD/Top.offset_top = top
-	$WorldContainer.offset_top = 100 + top
-	$WorldContainer.offset_bottom = 730 - bottom
-	$HUD/Hint.offset_top = 105 + top
-	$HUD/Hint.offset_bottom = 140 + top
-	controls.offset_top = 730 - bottom
-	controls.offset_bottom = 960 - bottom
+	# keep 模式先去除两侧或上下留白，再把物理安全区换算到 1280×720 逻辑画布。
+	var scale_factor := minf(screen.x / 1280.0, screen.y / 720.0)
+	var letterbox := (Vector2(screen) - Vector2(1280, 720) * scale_factor) * 0.5
+	var insets := Vector4(maxf(0, safe.position.x - letterbox.x), maxf(0, safe.position.y - letterbox.y), maxf(0, screen.x - safe.end.x - letterbox.x), maxf(0, screen.y - safe.end.y - letterbox.y)) / scale_factor
+	hud.apply_safe_insets(insets)
+	controls.safe_insets = insets
+	controls.layout_controls()

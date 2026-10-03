@@ -8,6 +8,7 @@ for (const [args, marker] of [
   [['--headless', '--path', project, '--script', 'tests/illustrated_pose_checks.gd'], 'ILLUSTRATED_POSE_PASS'],
   [['--headless', '--path', project, '--script', 'tests/illustrated_interpolation_checks.gd'], 'ILLUSTRATED_INTERPOLATION_PASS'],
   [['--headless', '--path', project, '--script', 'tests/feedback_checks.gd'], 'FEEDBACK_CHECKS_PASS'],
+  [['--headless', '--path', project, '--script', 'tests/landscape_ui_checks.gd'], 'LANDSCAPE_UI_PASS'],
 ]) {
   const result = spawnSync(binary, args, { encoding: 'utf8', timeout: 120000, maxBuffer: 8 * 1024 * 1024 });
   const output = (result.stdout || '') + (result.stderr || '');

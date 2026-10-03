@@ -1,103 +1,63 @@
-# Frontier Brawler · Godot 首关
+# 雾渡 · MISTWARD
 
-Godot 4.7.2 / GDScript / Compatibility 渲染，540×960 竖屏。
-目前是独立可玩的荒村首关，旧 Web 与 Cocos 入口仍可使用。
-
-2026-10-02 横屏重构进行中：本次先落地移动/输入改造，并保存新角色骨架、环境、
-命中反馈和音色模块；新表现尚未接入主场景。当前启动仍为上述竖屏首关。
-阶段范围及待办见 [雾渡重构记录](docs/redesign-2026-10-02/BRIEF.md)。
+Godot 4.7.2 / GDScript / Compatibility，1280×720 横屏动作首关「雾隐古道」。
+目前主入口已经使用新环境、连续关节角色、横屏 HUD、命中反馈和程序音效。
 
 ## 启动
 
-macOS 双击本目录的 **开始游戏.command**。启动器先导入资源，再打开游戏。
-也可用 Godot 打开 `project.godot` 后按 F6/F5（主场景为 `scenes/main.tscn`）。
-
-在仓库根目录：
+macOS 双击 **开始游戏.command**；或用 Godot 打开 `project.godot`，按 F5。
+启动器先导入资源再进入游戏，全新检出不需要手动复制 `.godot` 缓存。
 
 ```bash
+# 仓库根目录
 npm run dev:godot
 npm run validate:godot
-npm run dev:motion-lab
 ```
 
-全新检出先运行 `godot --headless --editor --path native/godot --import`，或使用双击启动器。
-命令行需将 Godot 加入 PATH；测试可通过 `GODOT_BIN` 指定路径。
+命令行需将 Godot 加入 PATH，也可通过 `GODOT_BIN` 指定验证器使用的引擎。
 
-- WASD / 方向键：移动；J / 空格：攻击，连续按下可衔接三段连招。
-- K / Shift：闪避；L / Q：跳跃，腾空时攻击接跳劈。
-- U / E：技能，初始消耗 50 能量；I / F：处决近身、低于 25% 血量的敌人。
-- Esc / P：暂停。鼠标可以拖动摇杆或点击动作键；原生触摸支持独立多指。
-- 清房后走向右侧发光出口。顶部可静音，返回焦点后需手动继续。
-- 首页「训练场」开启 50 单位持续负载。训练场血量提高，不结算正式战果。
+- WASD / 方向键：行走；J / 空格：出刀，连续按下衔接三段连招。
+- K / Shift：闪避；L / Q：跳跃，腾空时出刀接跳劈。
+- U / E：剑气，初始消耗 50 剑意；I / F：处决近身、低于 25% 生命的敌人。
+- Esc / P：暂停；失去焦点后暂停，回到窗口需要主动继续。
+- 清场后走向右侧山门；途中选择一份成长，击败铜面守卫、领取遗物、结算或重开。
 
-## 已包含
+桌面使用键盘与原生菜单按钮；触屏自动显示独立多指控件。触屏代码已有引擎级测试，
+Android/iOS/HarmonyOS 导出与真实设备输入、音频、字体、安全区尚未验证。
 
-首页 → 起点 → 两间战斗房 → 三选一成长 → 教学 Boss → 战利品选择 → 结算 → 重开。
-疾锋三段连招、完美取消、八帧输入缓冲、命中停顿、闪避无敌、跳跃/跳劈、技能、
-处决回血、Boss 半血阶段转换、暂停、静音和触控。
+## 当前内容与结构
 
-当前仅前进，不开放回走旧房间。战利品是本次结算记录，尚未接入装备效果和跨局库存。
-后五关、重装/术法、其余敌人、基地、周目、小地图和持久化存档待全量迁移。
-音效是独立生成的临时采样，不是旧 Web Audio 的逐音色还原。
+完整一关：山门起步 → 两处战斗 → 三选一成长 → 铜面守卫 → 遗物 → 结算 → 重开。
+遗物是本次旅程的通关纪念，尚无跨局装备/存档。本轮只制作这一关。
 
-## 结构
+- `scenes/main.tscn`：全屏世界视口、输入、HUD、流程、音频。
+- `scripts/actor.gd` / `action_state.gd` / `combat.gd`：固定 60 Hz 的移动、缓冲、取消窗口和伤害权威。
+- `scripts/illustrated_actor.gd`：连续关节、双腿交替支撑、实测位移步幅、转身、动作衔接和衣摆。
+  子节点插值不修改碰撞/Y 排序；暂停和命中定格不会继续推进动作。
+- `scripts/mistward_room.gd`：雾林背景、地面、灯火、落叶、山门、跟随镜头；继承基础房间。
+- `scripts/hud.gd` / `input_router.gd`：原生可点击 UI、InputMap、键盘和多指摇杆；等比画布与安全区。
+- `scripts/impact_feedback.gd` / `soundscape.gd`：刀光、火花、小号伤害字、有限屏震、脚步/挥刀/命中/环境声音。
+- `data/first_stage.json`：独立规则快照，Godot 运行不需要 TS/Node。需要同步原 TS 规则时运行 `npm run sync:godot` 后重新验证。
+- `assets/environment/README.md`：环境素材来源、Prompt、尺寸和预算；中文使用系统字体回退，不分发系统字体。
 
-- `scenes/main.tscn`：视口、UI、输入区、流程与音频的组合入口。
-- `scenes/room.tscn`：可编辑相机和 Y 排序角色容器。
-- `scenes/actor.tscn`：可复用角色与 Sprite2D 表现。
-- `scripts/action_state.gd`：动作时间、取消窗口、输入缓冲。
-- `scripts/actor.gd`：角色状态与移动；`combat.gd`：统一命中/伤害；
-  `enemy_director.gd`：敌人进攻名额、首关 AI 和单位分离。
-- `scripts/run_controller.gd`：首关流程与局内成长。
-- `scripts/input_router.gd`：InputMap 与多指输入归一化；`hud.gd`：界面命令与显示。
-- `scripts/animation_pose.gd`：姿态采样、跳跃/跳劈高度和移动起伏；由战斗逻辑帧驱动。
-- `scripts/actor_visual.gd`、`hit_effects.gd`、`room.gd`：角色、命中特效、场景装饰。
+旧 Web/Cocos 项目仍保留；原四帧角色仅用于历史对照：`npm run dev:motion-lab`。
+`--stress` 是开发负载测试入口（50 单位），没有放进普通玩家菜单。
 
-地面位置用 Node2D 管理并保留旧版的确定性推挤；没有使用刚体解算代替战斗判定。
-角色高度只影响 Sprite2D 偏移，排序仍用脚底 Y。动画取帧由动作逻辑驱动，
-没有第二套动画计时器。房间生成与重开通过显式流程清理节点。
+## 验证与演示
 
-## 数据与素材
-
-`data/first_stage.json` 是迁移基准快照。修改旧 TS 规则后如需同步：
+`npm run validate:godot` 检查工程导入、完整通关、动作、951 项插值/落脚/转身、
+6336 个姿态样本、反馈/音频边界及视口级鼠标键盘交互。验证器同时检查退出码、错误日志和完成标志。
 
 ```bash
-npm run sync:godot
-npm run validate:godot
+# 真正的主场景画面与动作；截图输出到被 Git 忽略的 output/
+godot --path native/godot --script tests/landscape_review.gd
+# 实时 60 Hz 主循环，四单位同屏 12 秒性能记录
+godot --path native/godot --script tests/landscape_performance.gd
+# 正常速度动作录像，包含引擎混音
+mkdir -p native/godot/output
+godot --path native/godot --script tests/landscape_review.gd \
+  --write-movie "$PWD/native/godot/output/mistward-motion.avi" --fixed-fps 60 --disable-vsync -- --capture-movie
 ```
 
-同步工具从旧版解析疾锋动作、敌人动作、首关、成长和素材元数据。Godot 启动不需要
-Node 或 TypeScript。GDScript 控制逻辑由本工程维护，JSON 不是第二套 JS 运行时。
-
-三张 PNG 来自 `public/art/`，共约 464 KiB，96×96 单格，四列，脚底 y=90。
-缺失的 slash3/skill/execute/airSlash 复用 slash2，jump 复用 move；复用表集中于
-`animation_pose.gd`。跳跃固定屈膝姿态，跳劈继承接招前高度并在腾空窗口结束时落地。
-普攻末段回到起手姿态；预警和剑弧独立呈现，后续可替换专属帧。
-中文使用系统字体，未复制或分发 macOS 字体；目标移动系统上的字体表现待真机检查。
-
-## 验证
-
-`npm run validate:godot` 会先导入工程，再运行行为、移动输入、独立角色姿态与反馈检查；同时检查 Godot 错误日志，
-防止脚本报错却以退出码 0 误报通过。机器人通过正式伤害和敌人 AI 打到结算，
-不直接清怪，样本不能替代真人手感或平衡结论。
-
-```bash
-godot --path native/godot --script tests/visual_check.gd
-```
-
-上述命令打开真实渲染窗口，产出首页、战斗、奖励、Boss、压力截图和 12 秒性能数据到
-`output/`（不入 Git）。验证记录见 `docs/validation.md`。
-
-尚未构建 Android/iOS/HarmonyOS/Web 导出包；桌面结果不代表这些平台可发布。
-
-## 动作对照与素材工具试点
-
-`npm run dev:motion-lab` 打开独立对照场：左侧重构初版播放，右侧当前表现，可选择主角、杂兵、Boss 的 24 个场景，
-并暂停、逐帧或慢放。正式主场景始终使用当前表现。
-`npm run export:motion-review` 从实际姿态采样器导出 Aseprite 兼容 JSON，供
-`ai-asset-pipeline` 打包；该预览只含姿态和时长，不含游戏位移、腾空和命中反馈。
-
-问题分析、验证截图和下一版原画设计见
-[动作试点记录](../../docs/experiments/hero-motion-2026-09-27/README.md)。
-
-全角色第二轮优化与影响范围见 [全动作审计](../../docs/experiments/hero-motion-2026-09-27/ALL_ANIMATIONS.md)。
+录像是离线帧输出，只用于检查动作；其编码耗时不能当成游戏帧率。
+最新画面、验证数据和完整边界见 [首关验证](docs/redesign-2026-10-02/VALIDATION.md)。

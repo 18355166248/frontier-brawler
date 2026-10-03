@@ -24,6 +24,8 @@ var gait_time := 0.0
 var previous_gait_time := 0.0
 var gait_weight := 0.0
 var facing_visual := 1.0
+var turn_pose: Dictionary = {}
+var turn_age := 1.0
 var render_lift := 0.0
 var last_lift := 0.0
 var last_position := Vector2.ZERO
@@ -33,7 +35,7 @@ func _ready() -> void:
 	if old_sprite:
 		old_sprite.hide()
 	last_position = actor.position
-	facing_visual = actor.facing
+	facing_visual = -1.0 if actor.kind != "hero" else actor.facing
 	action = actor.state.id
 	pose = sample_pose(action, 0.0, actor.state.definition(), 0.0, actor.kind)
 	set_process(true)
@@ -51,9 +53,18 @@ func _process(delta: float) -> void:
 		# 步幅绑定真实位移，慢走不会高速踏步；非行走位移（受击/突进）不推进步态。
 		var distance := actor.position.distance_to(last_position)
 		if actor.state.id == "move":
-			gait_time += minf(distance, 8.0) / (70.0 if actor.kind == "boss" else 83.0) * TAU
+			gait_time += minf(distance, 8.0) / stride_distance(actor.kind) * TAU
 		last_position = actor.position
 		animation_time += 1.0 / 60.0
+	# 转身先把旧关节换算到新朝向坐标，再插值到新姿态，避免整副骨架过零时突然镜像跳位。
+	if actor.facing != int(facing_visual):
+		turn_pose = pose.duplicate(true)
+		for key in turn_pose:
+			if turn_pose[key] is Vector2:
+				turn_pose[key].x *= -1
+		turn_pose.blade = PI - float(turn_pose.blade)
+		turn_age = 0.0
+		facing_visual = actor.facing
 	var old_fraction := tick_fraction
 	tick_fraction = minf(1.0, tick_fraction + delta * 60.0)
 	var visual_delta := (tick_fraction - old_fraction) / 60.0
@@ -70,12 +81,22 @@ func _process(delta: float) -> void:
 	var desired := sample_pose(action, render_frame, actor.state.definition(), rendered_stride, actor.kind)
 	desired["cloth_time"] = animation_time + tick_fraction / 60.0
 	if blend_age < 0.08 and not transition_pose.is_empty():
-		pose = blend_pose(transition_pose, desired, smoothstep(0.0, 0.08, blend_age))
+		var transition_weight := smoothstep(0.0, 0.08, blend_age)
+		pose = blend_pose(transition_pose, desired, transition_weight)
+		# 动作内仍遵循完整挥刀曲线；跨动作接招只走最短角度，避免 2π 表示差导致反向绕圈。
+		pose.blade = lerp_angle(transition_pose.blade, desired.blade, transition_weight)
 	else:
 		pose = desired
-	facing_visual = move_toward(facing_visual, float(actor.facing), visual_delta * 22.0)
-	render_lift = lerpf(last_lift, actor.visual_height, tick_fraction)
-	modulate.a = 1.0 - smoothstep(18, 42, actor.dead_frames) if actor.is_dead() else 1.0
+	turn_age += visual_delta
+	if turn_age < 0.075 and not turn_pose.is_empty():
+		var turn_weight := smoothstep(0.0, 0.075, turn_age)
+		var target_blade: float = pose.blade
+		pose = blend_pose(turn_pose, pose, turn_weight)
+		pose.blade = lerp_angle(turn_pose.blade, target_blade, turn_weight)
+	# 只平滑子节点，碰撞和 Y 排序仍使用权威脚底坐标；出生或切场不从原点插入。
+	position = actor.previous_position.lerp(actor.position, tick_fraction) - actor.position if actor.visual_tick > 0 else Vector2.ZERO
+	render_lift = lerpf(actor.previous_visual_height, actor.visual_height, tick_fraction)
+	modulate.a = 1.0 - smoothstep(18, 42, maxf(0, actor.dead_frames - 1 + tick_fraction)) if actor.is_dead() else 1.0
 	queue_redraw()
 
 static func blend_pose(from: Dictionary, to: Dictionary, weight: float) -> Dictionary:
@@ -166,6 +187,10 @@ static func sample_pose(id: String, frame: float, definition: Dictionary, stride
 			p.blade = -1.16
 	return p
 
+static func stride_distance(kind: String) -> float:
+	# 支撑期占 60%，脚后移距离必须抵消这段世界位移；包含角色缩放才能真正锁住落脚点。
+	return (26.0 * 1.42 if kind == "boss" else 39.0 * (0.96 if kind == "grunt" else 1.0)) / 0.6
+
 static func stride_foot(phase: float, stride_size: float) -> Vector2:
 	# 前半周期支撑脚向后匀速滚动；后半周期抬脚收腿回摆，脚尖不会划地或同时漂浮。
 	if phase < 0.6:
@@ -231,9 +256,9 @@ func _draw() -> void:
 	var turn := signf(facing_visual)
 	if turn == 0:
 		turn = actor.facing
-	# 换向时只短暂压缩横截面；所有关节一起转身，不让脚、刀与身体各自翻面。
-	var width := lerpf(0.73, 1.0, absf(facing_visual))
-	var fall := smoothstep(0, 22, actor.dead_frames) if actor.is_dead() else 0.0
+	# 换向由关节过渡承担，保持人物厚度，不把身体压成纸片。
+	var width := 1.0
+	var fall := smoothstep(0, 22, maxf(0, actor.dead_frames - 1 + tick_fraction)) if actor.is_dead() else 0.0
 	var root_offset := Vector2(-8 * actor.facing * fall, -render_lift - 12 * fall)
 	draw_set_transform(root_offset, -1.42 * actor.facing * fall, Vector2(turn * width * rig_scale, rig_scale))
 	_draw_character()
