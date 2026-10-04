@@ -111,6 +111,8 @@ static func blend_pose(from: Dictionary, to: Dictionary, weight: float) -> Dicti
 	return result
 
 static func sample_pose(id: String, frame: float, definition: Dictionary, stride: float, kind: String = "hero") -> Dictionary:
+	if kind == "hero":
+		id = str(definition.get("visual", id))
 	var t := frame / maxf(1.0, float(definition.get("frames", 48)))
 	var breathe := sin(t * TAU) * 0.65
 	var p := {"hip": Vector2(0, -43 + breathe), "chest": Vector2(0, -73 + breathe),

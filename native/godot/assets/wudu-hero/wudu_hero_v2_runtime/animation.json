@@ -1,0 +1,1289 @@
+{
+  "pack": "雾渡 — crimson veiled dual swordsman v2",
+  "version": "2.0-prototype",
+  "art_style": "pixel-art-styled raster, not strict pixel-grid animation",
+  "canvas_px": [
+    640,
+    640
+  ],
+  "pivot_px": [
+    288,
+    560
+  ],
+  "pivot_normalized": [
+    0.45,
+    0.875
+  ],
+  "facing": "right",
+  "mirroring_note": "Horizontal mirroring is supported visually but swaps apparent weapon handedness. Mirror the visual node about the world pivot, not a centered bitmap.",
+  "timing_units": "integer milliseconds; user durations retained exactly, 60Hz is logic tick rate, not raster frame count",
+  "hit_markers_status": "proposed visual suggestions only; no verified code, hitbox, interrupt, physics or balance changes",
+  "root_motion": "in_place; world movement belongs to game code. Jump visual lift is art-only, avoid double-applying with game height.",
+  "animations": {
+    "idle": {
+      "loop": true,
+      "duration_ms": 800,
+      "frame_count": 4,
+      "sheet": "sheets/idle.png",
+      "frames": [
+        {
+          "index": 0,
+          "rect_px": [
+            0,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 200,
+          "start_ms": 0,
+          "phase": "breath_in",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 1,
+          "rect_px": [
+            640,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 200,
+          "start_ms": 200,
+          "phase": "breath_peak",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 2,
+          "rect_px": [
+            1280,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 200,
+          "start_ms": 400,
+          "phase": "breath_out",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 3,
+          "rect_px": [
+            1920,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 200,
+          "start_ms": 600,
+          "phase": "settle",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        }
+      ]
+    },
+    "move": {
+      "loop": true,
+      "duration_ms": 600,
+      "frame_count": 6,
+      "sheet": "sheets/move.png",
+      "frames": [
+        {
+          "index": 0,
+          "rect_px": [
+            0,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 90,
+          "start_ms": 0,
+          "phase": "near_contact",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 1,
+          "rect_px": [
+            640,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 110,
+          "start_ms": 90,
+          "phase": "low_pass",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 2,
+          "rect_px": [
+            1280,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 90,
+          "start_ms": 200,
+          "phase": "near_push",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 3,
+          "rect_px": [
+            1920,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 110,
+          "start_ms": 290,
+          "phase": "far_contact",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 4,
+          "rect_px": [
+            2560,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 90,
+          "start_ms": 400,
+          "phase": "high_pass",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 5,
+          "rect_px": [
+            3200,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 110,
+          "start_ms": 490,
+          "phase": "far_push",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        }
+      ],
+      "nominal_speed_cycle_ms": 600,
+      "speed_driven": true,
+      "speed_scale_guidance": "Playback speed_scale may track abs(move_speed)/reference_speed. Choose reference_speed in the game; no pixel-per-second value assumed."
+    },
+    "slash": {
+      "loop": false,
+      "duration_ms": 400,
+      "frame_count": 6,
+      "sheet": "sheets/slash.png",
+      "frames": [
+        {
+          "index": 0,
+          "rect_px": [
+            0,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 70,
+          "start_ms": 0,
+          "phase": "coil",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 1,
+          "rect_px": [
+            640,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 60,
+          "start_ms": 70,
+          "phase": "load",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 2,
+          "rect_px": [
+            1280,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 40,
+          "start_ms": 130,
+          "phase": "cut",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 3,
+          "rect_px": [
+            1920,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 50,
+          "start_ms": 170,
+          "phase": "follow_through",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 4,
+          "rect_px": [
+            2560,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 80,
+          "start_ms": 220,
+          "phase": "recover",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 5,
+          "rect_px": [
+            3200,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 100,
+          "start_ms": 300,
+          "phase": "guard",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        }
+      ],
+      "proposed_hit_window_ms": {
+        "start": 130,
+        "end_exclusive": 220,
+        "status": "suggestion_only"
+      }
+    },
+    "slash2": {
+      "loop": false,
+      "duration_ms": 430,
+      "frame_count": 6,
+      "sheet": "sheets/slash2.png",
+      "frames": [
+        {
+          "index": 0,
+          "rect_px": [
+            0,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 70,
+          "start_ms": 0,
+          "phase": "lower_guard",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 1,
+          "rect_px": [
+            640,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 70,
+          "start_ms": 70,
+          "phase": "compress",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 2,
+          "rect_px": [
+            1280,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 50,
+          "start_ms": 140,
+          "phase": "rising_cut",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 3,
+          "rect_px": [
+            1920,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 60,
+          "start_ms": 190,
+          "phase": "high_follow",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 4,
+          "rect_px": [
+            2560,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 80,
+          "start_ms": 250,
+          "phase": "recover",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 5,
+          "rect_px": [
+            3200,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 100,
+          "start_ms": 330,
+          "phase": "guard",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        }
+      ],
+      "proposed_hit_window_ms": {
+        "start": 140,
+        "end_exclusive": 250,
+        "status": "suggestion_only"
+      }
+    },
+    "slash3": {
+      "loop": false,
+      "duration_ms": 400,
+      "frame_count": 6,
+      "sheet": "sheets/slash3.png",
+      "frames": [
+        {
+          "index": 0,
+          "rect_px": [
+            0,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 60,
+          "start_ms": 0,
+          "phase": "brace",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 1,
+          "rect_px": [
+            640,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 80,
+          "start_ms": 60,
+          "phase": "two_hand_raise",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 2,
+          "rect_px": [
+            1280,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 40,
+          "start_ms": 140,
+          "phase": "heavy_downcut",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 3,
+          "rect_px": [
+            1920,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 60,
+          "start_ms": 180,
+          "phase": "low_follow",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 4,
+          "rect_px": [
+            2560,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 70,
+          "start_ms": 240,
+          "phase": "recoil",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 5,
+          "rect_px": [
+            3200,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 90,
+          "start_ms": 310,
+          "phase": "two_hand_guard",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        }
+      ],
+      "proposed_hit_window_ms": {
+        "start": 140,
+        "end_exclusive": 240,
+        "status": "suggestion_only"
+      }
+    },
+    "dash": {
+      "loop": false,
+      "duration_ms": 370,
+      "frame_count": 5,
+      "sheet": "sheets/dash.png",
+      "frames": [
+        {
+          "index": 0,
+          "rect_px": [
+            0,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 60,
+          "start_ms": 0,
+          "phase": "lower",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 1,
+          "rect_px": [
+            640,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 50,
+          "start_ms": 60,
+          "phase": "push_off",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 2,
+          "rect_px": [
+            1280,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 100,
+          "start_ms": 110,
+          "phase": "slide",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 3,
+          "rect_px": [
+            1920,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 70,
+          "start_ms": 210,
+          "phase": "brake",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 4,
+          "rect_px": [
+            2560,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 90,
+          "start_ms": 280,
+          "phase": "settle",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        }
+      ]
+    },
+    "jump": {
+      "loop": false,
+      "duration_ms": 570,
+      "frame_count": 6,
+      "sheet": "sheets/jump.png",
+      "frames": [
+        {
+          "index": 0,
+          "rect_px": [
+            0,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 80,
+          "start_ms": 0,
+          "phase": "crouch",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 1,
+          "rect_px": [
+            640,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 80,
+          "start_ms": 80,
+          "phase": "takeoff",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 40
+        },
+        {
+          "index": 2,
+          "rect_px": [
+            1280,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 100,
+          "start_ms": 160,
+          "phase": "tuck",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 105
+        },
+        {
+          "index": 3,
+          "rect_px": [
+            1920,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 110,
+          "start_ms": 260,
+          "phase": "apex",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 115
+        },
+        {
+          "index": 4,
+          "rect_px": [
+            2560,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 80,
+          "start_ms": 370,
+          "phase": "fall",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 40
+        },
+        {
+          "index": 5,
+          "rect_px": [
+            3200,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 120,
+          "start_ms": 450,
+          "phase": "land",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        }
+      ]
+    },
+    "airSlash": {
+      "loop": false,
+      "duration_ms": 430,
+      "frame_count": 6,
+      "sheet": "sheets/airSlash.png",
+      "frames": [
+        {
+          "index": 0,
+          "rect_px": [
+            0,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 70,
+          "start_ms": 0,
+          "phase": "air_load",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 70
+        },
+        {
+          "index": 1,
+          "rect_px": [
+            640,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 60,
+          "start_ms": 70,
+          "phase": "air_apex",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 70
+        },
+        {
+          "index": 2,
+          "rect_px": [
+            1280,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 50,
+          "start_ms": 130,
+          "phase": "downcut",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 40
+        },
+        {
+          "index": 3,
+          "rect_px": [
+            1920,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 60,
+          "start_ms": 180,
+          "phase": "impact",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 4,
+          "rect_px": [
+            2560,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 80,
+          "start_ms": 240,
+          "phase": "landing_settle",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 5,
+          "rect_px": [
+            3200,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 110,
+          "start_ms": 320,
+          "phase": "guard",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        }
+      ],
+      "proposed_hit_window_ms": {
+        "start": 130,
+        "end_exclusive": 240,
+        "status": "suggestion_only"
+      }
+    },
+    "skill": {
+      "loop": false,
+      "duration_ms": 670,
+      "frame_count": 6,
+      "sheet": "sheets/skill.png",
+      "frames": [
+        {
+          "index": 0,
+          "rect_px": [
+            0,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 120,
+          "start_ms": 0,
+          "phase": "charge",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 1,
+          "rect_px": [
+            640,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 130,
+          "start_ms": 120,
+          "phase": "coil",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 2,
+          "rect_px": [
+            1280,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 60,
+          "start_ms": 250,
+          "phase": "horizontal_cut",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 3,
+          "rect_px": [
+            1920,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 80,
+          "start_ms": 310,
+          "phase": "full_extension",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 4,
+          "rect_px": [
+            2560,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 120,
+          "start_ms": 390,
+          "phase": "follow_through",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 5,
+          "rect_px": [
+            3200,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 160,
+          "start_ms": 510,
+          "phase": "guard",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        }
+      ],
+      "proposed_hit_window_ms": {
+        "start": 250,
+        "end_exclusive": 390,
+        "status": "suggestion_only"
+      }
+    },
+    "execute": {
+      "loop": false,
+      "duration_ms": 500,
+      "frame_count": 6,
+      "sheet": "sheets/execute.png",
+      "frames": [
+        {
+          "index": 0,
+          "rect_px": [
+            0,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 80,
+          "start_ms": 0,
+          "phase": "cross_load",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 1,
+          "rect_px": [
+            640,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 70,
+          "start_ms": 80,
+          "phase": "coil_low",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 2,
+          "rect_px": [
+            1280,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 50,
+          "start_ms": 150,
+          "phase": "cross_cut",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 3,
+          "rect_px": [
+            1920,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 60,
+          "start_ms": 200,
+          "phase": "double_extension",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 4,
+          "rect_px": [
+            2560,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 100,
+          "start_ms": 260,
+          "phase": "recover",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 5,
+          "rect_px": [
+            3200,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 140,
+          "start_ms": 360,
+          "phase": "guard",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        }
+      ],
+      "proposed_hit_window_ms": {
+        "start": 150,
+        "end_exclusive": 260,
+        "status": "suggestion_only"
+      }
+    },
+    "hit": {
+      "loop": false,
+      "duration_ms": 330,
+      "frame_count": 4,
+      "sheet": "sheets/hit.png",
+      "frames": [
+        {
+          "index": 0,
+          "rect_px": [
+            0,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 50,
+          "start_ms": 0,
+          "phase": "impact",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 1,
+          "rect_px": [
+            640,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 80,
+          "start_ms": 50,
+          "phase": "back_recoil",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 2,
+          "rect_px": [
+            1280,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 90,
+          "start_ms": 130,
+          "phase": "brace",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 3,
+          "rect_px": [
+            1920,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 110,
+          "start_ms": 220,
+          "phase": "recover",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        }
+      ]
+    },
+    "death": {
+      "loop": false,
+      "duration_ms": 700,
+      "frame_count": 5,
+      "sheet": "sheets/death.png",
+      "frames": [
+        {
+          "index": 0,
+          "rect_px": [
+            0,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 100,
+          "start_ms": 0,
+          "phase": "stagger",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 1,
+          "rect_px": [
+            640,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 120,
+          "start_ms": 100,
+          "phase": "kneel",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 2,
+          "rect_px": [
+            1280,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 140,
+          "start_ms": 220,
+          "phase": "fall",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 3,
+          "rect_px": [
+            1920,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 140,
+          "start_ms": 360,
+          "phase": "collapse",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        },
+        {
+          "index": 4,
+          "rect_px": [
+            2560,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 200,
+          "start_ms": 500,
+          "phase": "prone_fade",
+          "pivot_px": [
+            288,
+            560
+          ],
+          "art_lift_px": 0
+        }
+      ],
+      "fade": {
+        "start_ms": 500,
+        "end_ms": 700,
+        "alpha_start": 1.0,
+        "alpha_end": 0.0,
+        "implementation": "modulate alpha only on final prone pose; transparent frames are not baked"
+      },
+      "state_note": "Asset name death exists; user game currently has no separate death state."
+    }
+  },
+  "source_reference_urls": [
+    "https://www.leagueoflegends.com/en-us/champions/yone/",
+    "https://www.leagueoflegends.com/en-us/news/dev/champion-insights-yone/",
+    "https://ddragon.leagueoflegends.com/cdn/img/champion/splash/Yone_0.jpg"
+  ],
+  "distribution": "lossless lightweight runtime package: per-action atlases only"
+}

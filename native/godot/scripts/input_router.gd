@@ -27,7 +27,7 @@ func layout_controls() -> void:
 	queue_redraw()
 
 func clear() -> void:
-	for action in ["move_left", "move_right", "move_up", "move_down", "attack", "dash", "jump", "skill", "execute"]:
+	for action in ["move_left", "move_right", "move_up", "move_down", "attack", "dash", "jump", "skill", "execute"] + FBYoneSkills.INPUTS:
 		Input.action_release(action)
 	pending.clear()
 	fingers.clear()
@@ -42,7 +42,7 @@ func _input(event: InputEvent) -> void:
 		return
 	if not enabled:
 		return
-	for action in buttons:
+	for action in buttons.keys() + FBYoneSkills.INPUTS:
 		if event.is_action_pressed(action) and not event.is_echo():
 			pending[action] = true
 	if event is InputEventScreenTouch:

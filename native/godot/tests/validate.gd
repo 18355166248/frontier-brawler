@@ -62,8 +62,8 @@ func validate() -> void:
 	load("res://tests/animation_checks.gd").run(root, Callable(self, "check"), game)
 	load("res://tests/fluid_motion_checks.gd").run(root, Callable(self, "check"))
 	check(run.phase == "home", "cold start stays on home")
-	check(game.room is FBMistwardRoom and game.room.hero.get_node("Visual") is FBIllustratedActor, "landscape main uses new environment and illustrated character")
-	check(not game.room.hero.get_node("Visual/Sprite").visible, "old sprite does not overlap illustrated rig")
+	check(game.room is FBMistwardRoom and game.room.hero.get_node("Visual") is FBWuduHeroVisual and game.room.hero.get_node("Visual").uses_pack, "landscape main uses new environment and imported hero")
+	check(not game.room.hero.get_node("Visual/Sprite").visible, "old sprite does not overlap imported hero")
 	check(game.get_node("WorldContainer/World").size == Vector2i(1280, 720), "landscape world fills 1280 by 720 viewport")
 	var actors := pair()
 	var hero := actors[0]

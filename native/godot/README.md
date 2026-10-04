@@ -1,7 +1,7 @@
 # 雾渡 · MISTWARD
 
 Godot 4.7.2 / GDScript / Compatibility，1280×720 横屏动作首关「雾隐古道」。
-目前主入口已经使用新环境、连续关节角色、横屏 HUD、命中反馈和程序音效。
+目前主入口使用新环境、导入的十二动作英雄、连续关节敌人、横屏 HUD、命中反馈和程序音效。
 
 ## 启动
 
@@ -19,6 +19,7 @@ npm run validate:godot
 - WASD / 方向键：行走；J / 空格：出刀，连续按下衔接三段连招。
 - K / Shift：闪避；L / Q：跳跃，腾空时出刀接跳劈。
 - U / E：剑气，初始消耗 50 剑意；I / F：处决近身、低于 25% 生命的敌人。
+- 1 蓄风刺击；2 护盾横扫；3 灵体出击/再次回归；4 封命斩。下方显示冷却、蓄层、护盾和离体期限，按钮可点击。
 - Esc / P：暂停；失去焦点后暂停，回到窗口需要主动继续。
 - 清场后走向右侧山门；途中选择一份成长，击败铜面守卫、领取遗物、结算或重开。
 
@@ -34,6 +35,8 @@ Android/iOS/HarmonyOS 导出与真实设备输入、音频、字体、安全区�
 - `scripts/actor.gd` / `action_state.gd` / `combat.gd`：固定 60 Hz 的移动、缓冲、取消窗口和伤害权威。
 - `scripts/illustrated_actor.gd`：连续关节、双腿交替支撑、实测位移步幅、转身、动作衔接和衣摆。
   子节点插值不修改碰撞/Y 排序；暂停和命中定格不会继续推进动作。
+- `scripts/wudu_hero_visual.gd`：只读原动作状态，播放 `assets/wudu-hero/` 的十二动作英雄。
+  敌人继续使用原关节绘制；坏包自动回退。接入规格与验证见 [英雄接入说明](assets/wudu-hero/INTEGRATION.md)。
 - `scripts/mistward_room.gd`：雾林背景、地面、灯火、落叶、山门、跟随镜头；继承基础房间。
 - `scripts/hud.gd` / `input_router.gd`：原生可点击 UI、InputMap、键盘和多指摇杆；等比画布与安全区。
 - `scripts/impact_feedback.gd` / `soundscape.gd`：刀光、火花、小号伤害字、有限屏震、脚步/挥刀/命中/环境声音。
@@ -46,7 +49,11 @@ Android/iOS/HarmonyOS 导出与真实设备输入、音频、字体、安全区�
 ## 验证与演示
 
 `npm run validate:godot` 检查工程导入、完整通关、动作、951 项插值/落脚/转身、
-6336 个姿态样本、反馈/音频边界及视口级鼠标键盘交互。验证器同时检查退出码、错误日志和完成标志。
+6336 个原骨架姿态样本、反馈/音频边界、视口级鼠标键盘交互和98项新英雄资源/定格/中断/死亡/损坏包回退检查。
+验证器同时检查退出码、错误日志和完成标志。旧骨架检查不能代替新美术视觉验收。
+还包含四技能专门的命中、去重、回响、期限、缓冲和重启边界检查。
+四技能操作、合法连招时序、改动范围与验证方法见 [四技能接入说明](docs/yone-mvp-integration-2026-10-04.md)。
+击飞期间可稍候接 2；原 J/跳劈需等敌人落地后命中。
 
 ```bash
 # 真正的主场景画面与动作；截图输出到被 Git 忽略的 output/
@@ -61,3 +68,8 @@ godot --path native/godot --script tests/landscape_review.gd \
 
 录像是离线帧输出，只用于检查动作；其编码耗时不能当成游戏帧率。
 最新画面、验证数据和完整边界见 [首关验证](docs/redesign-2026-10-02/VALIDATION.md)。
+
+英雄素材已经接入，无需再复制压缩包。macOS 仍双击 `开始游戏.command`。
+临时回到旧英雄表现：`godot --path native/godot -- --illustrated-hero`。
+新英雄主场景截图：`godot --path native/godot --script tests/wudu_hero_review.gd`，
+输出在 `native/godot/output/wudu-import/`；包含测试前置目标，不能当成手动通关录像。

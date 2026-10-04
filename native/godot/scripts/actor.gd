@@ -35,10 +35,16 @@ var visual_tick := 0
 var previous_position := Vector2.ZERO
 var previous_visual_height := 0.0
 var previous_visual_weight := Vector3.ZERO
+var skills := FBYoneSkills.new()
+var arena_bounds := Rect2(0, 300, 2000, 300)
+var launch_remaining := 0
+var launch_duration := 0
+var launch_height := 0.0
 
 func _ready() -> void:
 	previous_position = position
 	state.hero = kind == "hero"
+	skills.attach(self)
 	if kind != "hero":
 		var p: Dictionary = FBData.all().enemies[kind]
 		max_hp = 280.0 if kind == "boss" else float(p.hp)
@@ -56,6 +62,8 @@ func tick(input: Dictionary, execute_target: FBActor = null) -> void:
 	previous_visual_height = visual_height
 	previous_visual_weight = visual_weight
 	visual_tick += 1
+	if kind == "hero":
+		skills.tick()
 	if is_dead():
 		dead_frames += 1
 		locomotion_velocity = Vector2.ZERO
@@ -69,6 +77,7 @@ func tick(input: Dictionary, execute_target: FBActor = null) -> void:
 	jump_cooldown = maxi(0, jump_cooldown - 1)
 	attack_cooldown = maxi(0, attack_cooldown - 1)
 	invulnerability = maxi(0, invulnerability - 1)
+	launch_remaining = maxi(0, launch_remaining - 1)
 	position += knockback
 	knockback *= 0.82
 	if knockback.length() < 0.05:
@@ -91,7 +100,12 @@ func tick(input: Dictionary, execute_target: FBActor = null) -> void:
 	var motion: Array = state.definition().get("motion", [])
 	if state.frame < motion.size() and motion[state.frame] != 0:
 		var direction := locked_direction if state.id in ["dash", "jump"] else Vector2(facing, 0)
-		position += Vector2(direction.x, direction.y * DEPTH_SCALE) * float(motion[state.frame])
+		var ground_direction := Vector2(direction.x, direction.y * DEPTH_SCALE)
+		if state.id in ["windRush", "spiritStart"]:
+			ground_direction = skills.cast_direction
+		position += ground_direction * float(motion[state.frame])
+		if state.id in ["windRush", "spiritStart"]:
+			position = position.clamp(arena_bounds.position, arena_bounds.end)
 		locomotion_velocity = locomotion_velocity.move_toward(Vector2.ZERO, speed * 0.3)
 	elif state.can_interrupt():
 		update_locomotion(movement)
@@ -134,7 +148,9 @@ func update_visual_weight() -> void:
 	visual_weight = visual_weight.lerp(target, 0.65)
 
 func update_visual_height(previous_action: String) -> void:
-	if state.id == "jump":
+	if launch_remaining > 0:
+		visual_height = sin(PI * (1.0 - float(launch_remaining) / launch_duration)) * launch_height
+	elif state.id == "jump":
 		visual_height = FBAnimationPose.jump_height(state.frame, state.definition())
 	elif state.id == "airSlash":
 		if previous_action != "airSlash":
@@ -166,6 +182,8 @@ func apply_player_intent(movement: Vector2, target: FBActor) -> void:
 		locomotion_velocity = Vector2.ZERO
 		jump_cooldown = 40
 		state.consume("jump")
+	elif skills.try_intent(movement):
+		pass
 	elif state.has_buffer("skill") and not airborne and energy >= 50 * skill_cost_multiplier:
 		face_movement(movement)
 		energy -= 50 * skill_cost_multiplier
@@ -189,3 +207,12 @@ func lock_direction(movement: Vector2) -> void:
 	locked_direction = movement.normalized() if movement.length() > 0.01 else Vector2(facing, 0)
 	if absf(locked_direction.x) > 0.2:
 		facing = 1 if locked_direction.x > 0 else -1
+
+func launch(frames: int, height: float) -> void:
+	if is_dead():
+		return
+	launch_duration = frames
+	launch_remaining = frames
+	launch_height = height
+	stun = maxi(stun, frames)
+	state.change("hit")

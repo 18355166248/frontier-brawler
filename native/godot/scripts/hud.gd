@@ -20,6 +20,8 @@ var notice := ""
 var notice_time := 0.0
 var _run: FBRun
 var _transition: Tween
+var skill_buttons: Dictionary = {}
+var skill_status: Label
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -43,10 +45,25 @@ func _ready() -> void:
 	boss_name = label_at(top, "BossName", "铜面守卫", Vector2(438, 28), Vector2(404, 25), 16, PAPER)
 	boss_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	boss_bar = bar_at(top, "BossHealth", Rect2(438, 63, 404, 5), Color("b87e60"))
-	hint = label_at(self, "Hint", "", Vector2(330, 629), Vector2(620, 34), 17, PAPER)
+	hint = label_at(self, "Hint", "", Vector2(330, 646), Vector2(620, 24), 15, PAPER)
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	footer = label_at(self, "Keys", "WASD 移动     J 出刀     K 闪避     L 跳跃     U 剑气     I 处决", Vector2(40, 678), Vector2(1200, 24), 14, MUTED)
 	footer.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+	for i in 4:
+		var key: String = ["q", "w", "e", "r"][i]
+		var button := button_at(top, "Ability" + key, "", Rect2(400 + i * 124, 571, 116, 44), "yone_" + key)
+		button.focus_mode = Control.FOCUS_NONE
+		button.add_theme_font_size_override("font_size", 13)
+		for mode in ["normal", "hover", "pressed", "focus", "disabled"]:
+			var style := button.get_theme_stylebox(mode).duplicate() as StyleBox
+			style.content_margin_top = 3
+			style.content_margin_bottom = 3
+			style.content_margin_left = 4
+			style.content_margin_right = 4
+			button.add_theme_stylebox_override(mode, style)
+		skill_buttons[key] = button
+	skill_status = label_at(top, "AbilityStatus", "", Vector2(370, 620), Vector2(540, 22), 13, MUTED)
+	skill_status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	overlay = ColorRect.new()
 	overlay.name = "Overlay"
 	add_child(overlay)
@@ -71,6 +88,13 @@ func refresh(run: FBRun) -> void:
 	energy.value = h.energy
 	title.text = "行 者   /   雾隐古道"
 	status.text = "生命 %d / %d     剑意 %d" % [h.hp, h.max_hp, h.energy]
+	var names := {"q": "1 蓄风刺击", "w": "2 护盾横扫", "e": "3 灵体出击", "r": "4 封命斩"}
+	for key in skill_buttons:
+		var cd: int = h.skills.cooldowns[key]
+		var button: Button = skill_buttons[key]
+		button.text = names[key] + ("\n再按回归" if key == "e" and h.skills.e_active else ("\n%.1f 秒" % (cd / 60.0) if cd > 0 else "\n就绪"))
+		button.disabled = not h.skills.can_use(key)
+	skill_status.text = "蓄风 %d/2%s   护盾 %d%s" % [h.skills.q_stacks, " · %.1fs" % (h.skills.q_remaining / 60.0) if h.skills.q_stacks > 0 else "", h.skills.shield, "   灵体 %.1fs" % (h.skills.e_remaining / 60.0) if h.skills.e_active else ""]
 	var boss: FBActor
 	for actor in run.room.actors:
 		if actor.kind == "boss" and not actor.is_dead():
@@ -83,6 +107,11 @@ func refresh(run: FBRun) -> void:
 		boss_name.text = "铜 面 守 卫" + ("  ·  破阵" if boss.boss_phase == 2 else "")
 	var hints := ["向前踏入雾中  →", "连按 J 衔接出刀，K 闪避", "上下走位绕到敌人身侧", "片刻休整，选择一份馈赠", "留意守卫举刃，离开地面预警"]
 	hint.text = notice if notice_time > 0 else ("前路已开  ·  继续向右 →" if run.phase == "cleared" and run.room_index > 0 else hints[run.room_index])
+	if notice_time <= 0:
+		for actor in run.room.actors:
+			if actor.kind != "hero" and actor.launch_remaining > 0:
+				hint.text = "稍候接 2 横扫  ·  J / 跳劈等敌人落地"
+				break
 	if run.stress:
 		hint.text = "演武场  ·  五十人同屏"
 	var in_game := not run.paused and run.phase in ["fighting", "cleared"]
@@ -118,7 +147,7 @@ func show_phase(run: FBRun) -> void:
 		add_label("第一章   /   雾隐古道", 23, PAPER, false)
 		add_label("松风入夜，长路无声。\n执剑穿过古道，叩开山门。", 17, MUTED, false)
 		add_button("踏入雾中    →", "start", true)
-		add_label("WASD 移动 · J 出刀 · K 闪避\nL 跳跃 · U 剑气 · I 处决", 14, MUTED, false)
+		add_label("WASD 移动 · J 出刀 · K 闪避\nL 跳跃 · U 剑气 · I 处决\n1 蓄风 · 2 护盾 · 3 灵体/回归 · 4 封命", 14, MUTED, false)
 	else:
 		var center := CenterContainer.new()
 		overlay.add_child(center)
@@ -283,7 +312,10 @@ func apply_safe_insets(insets: Vector4) -> void:
 	$Top/Pause.position.x = 1172 - insets.z - insets.x
 	$Top/Mute.position.x = 1090 - insets.z - insets.x
 	footer.position.y = 678 - insets.w
-	hint.position.y = 629 - insets.w
+	hint.position.y = 646 - insets.w
+	for button in skill_buttons.values():
+		button.position.y = 571 - insets.w - insets.y
+	skill_status.position.y = 620 - insets.w - insets.y
 
 func _draw() -> void:
 	if _run == null or _run.phase == "home" or overlay.visible:

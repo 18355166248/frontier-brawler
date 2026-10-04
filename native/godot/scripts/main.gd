@@ -57,6 +57,8 @@ func _physics_process(_delta: float) -> void:
 	hud.refresh(run)
 	if is_instance_valid(room.hero):
 		controls.unavailable = {"skill": room.hero.energy < 50 * room.hero.skill_cost_multiplier, "dash": room.hero.dash_cooldown > 0, "jump": room.hero.jump_cooldown > 0, "execute": run.combat.execute_target(room.hero, room.actors) == null}
+		for key in ["q", "w", "e", "r"]:
+			controls.unavailable["yone_" + key] = not room.hero.skills.can_use(key)
 		controls.queue_redraw()
 
 func _play_motion_audio(hero: FBActor, old_action: String, old_frame: int, old_lift: float, old_position: Vector2) -> void:
@@ -93,6 +95,10 @@ func _phase_changed(_phase: String) -> void:
 	room.presentation_paused = run.paused
 
 func _command(id: String) -> void:
+	if id in FBYoneSkills.INPUTS:
+		if controls.enabled:
+			controls.pending[id] = true
+		return
 	match id:
 		"start", "stress":
 			effects.reset()

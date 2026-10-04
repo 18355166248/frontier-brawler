@@ -31,7 +31,7 @@ func in_window(key: String) -> bool:
 	return not w.is_empty() and frame >= w.from and frame < w.to
 
 func capture(input: Dictionary) -> void:
-	for key in ["attack", "dash", "jump", "skill", "execute"]:
+	for key in ["attack", "dash", "jump", "skill", "execute"] + FBYoneSkills.INPUTS:
 		if input.get(key, false):
 			buffers[key] = BUFFER_FRAMES
 

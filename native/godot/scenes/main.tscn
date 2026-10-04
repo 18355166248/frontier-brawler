@@ -1,4 +1,4 @@
-[gd_scene load_steps=10 format=3]
+[gd_scene load_steps=11 format=3]
 [ext_resource type="Script" path="res://scripts/main.gd" id="1"]
 [ext_resource type="PackedScene" path="res://scenes/room.tscn" id="2"]
 [ext_resource type="Script" path="res://scripts/run_controller.gd" id="3"]
@@ -6,6 +6,7 @@
 [ext_resource type="Script" path="res://scripts/hud.gd" id="5"]
 [ext_resource type="Script" path="res://scripts/impact_feedback.gd" id="6"]
 [ext_resource type="Script" path="res://scripts/soundscape.gd" id="7"]
+[ext_resource type="Script" path="res://scripts/yone_effects.gd" id="8"]
 [sub_resource type="SystemFont" id="Font"]
 font_names = PackedStringArray("PingFang SC", "Noto Sans CJK SC", "Microsoft YaHei", "sans-serif")
 [sub_resource type="Theme" id="Theme"]
@@ -35,6 +36,9 @@ render_target_update_mode = 4
 [node name="Effects" type="Node2D" parent="WorldContainer/World"]
 z_index = 10
 script = ExtResource("6")
+[node name="YoneEffects" type="Node2D" parent="WorldContainer/World"]
+z_index = 9
+script = ExtResource("8")
 [node name="Run" type="Node" parent="."]
 script = ExtResource("3")
 [node name="Audio" type="Node" parent="."]

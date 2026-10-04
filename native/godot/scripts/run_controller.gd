@@ -101,7 +101,7 @@ func advance_room() -> void:
 	if phase != "cleared" or room_index >= 4:
 		return
 	var h := room.hero
-	var profile := {"hp": h.hp, "max_hp": h.max_hp, "energy": h.energy}
+	var profile := {"hp": h.hp, "max_hp": h.max_hp, "energy": h.energy, "yone_cooldowns": h.skills.cooldowns.duplicate()}
 	total_perfect += h.perfect_count
 	room_index += 1
 	enter_room(profile)

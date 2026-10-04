@@ -27,6 +27,7 @@ func populate(definition: Dictionary, profile: Dictionary, stress_count := 0) ->
 	hero.hp = profile.get("hp", 160.0)
 	hero.max_hp = profile.get("max_hp", 160.0)
 	hero.energy = profile.get("energy", 0.0)
+	hero.skills.cooldowns = profile.get("yone_cooldowns", hero.skills.cooldowns).duplicate()
 	var count: int = definition.encounter.size() if stress_count == 0 else stress_count - 1
 	for i in count:
 		var kind: String = definition.encounter[i] if stress_count == 0 else "grunt"

@@ -1,0 +1,273 @@
+{
+  "effects": [
+    {
+      "name": "slash_trail",
+      "file": "effects/slash_trail.png",
+      "canvas_px": [
+        640,
+        640
+      ],
+      "pivot_px": [
+        288,
+        560
+      ],
+      "proposed_binding": {
+        "animation": "slash",
+        "start_ms": 130,
+        "duration_ms": 90,
+        "opacity_curve": [
+          [
+            0,
+            1
+          ],
+          [
+            90,
+            0
+          ]
+        ],
+        "status": "visual suggestion; adjust placement and sync in engine"
+      },
+      "source_crop_xyxy": [
+        128,
+        129,
+        454,
+        419
+      ]
+    },
+    {
+      "name": "slash2_trail",
+      "file": "effects/slash2_trail.png",
+      "canvas_px": [
+        640,
+        640
+      ],
+      "pivot_px": [
+        288,
+        560
+      ],
+      "proposed_binding": {
+        "animation": "slash2",
+        "start_ms": 140,
+        "duration_ms": 110,
+        "opacity_curve": [
+          [
+            0,
+            1
+          ],
+          [
+            110,
+            0
+          ]
+        ],
+        "status": "visual suggestion; adjust placement and sync in engine"
+      },
+      "source_crop_xyxy": [
+        592,
+        120,
+        948,
+        450
+      ]
+    },
+    {
+      "name": "slash3_trail",
+      "file": "effects/slash3_trail.png",
+      "canvas_px": [
+        640,
+        640
+      ],
+      "pivot_px": [
+        288,
+        560
+      ],
+      "proposed_binding": {
+        "animation": "slash3",
+        "start_ms": 140,
+        "duration_ms": 100,
+        "opacity_curve": [
+          [
+            0,
+            1
+          ],
+          [
+            100,
+            0
+          ]
+        ],
+        "status": "visual suggestion; adjust placement and sync in engine"
+      },
+      "source_crop_xyxy": [
+        1128,
+        111,
+        1423,
+        459
+      ]
+    },
+    {
+      "name": "airSlash_trail",
+      "file": "effects/airSlash_trail.png",
+      "canvas_px": [
+        640,
+        640
+      ],
+      "pivot_px": [
+        288,
+        560
+      ],
+      "proposed_binding": {
+        "animation": "airSlash",
+        "start_ms": 130,
+        "duration_ms": 110,
+        "opacity_curve": [
+          [
+            0,
+            1
+          ],
+          [
+            110,
+            0
+          ]
+        ],
+        "status": "visual suggestion; adjust placement and sync in engine"
+      },
+      "source_crop_xyxy": [
+        109,
+        621,
+        388,
+        910
+      ]
+    },
+    {
+      "name": "skill_trail",
+      "file": "effects/skill_trail.png",
+      "canvas_px": [
+        640,
+        640
+      ],
+      "pivot_px": [
+        288,
+        560
+      ],
+      "proposed_binding": {
+        "animation": "skill",
+        "start_ms": 250,
+        "duration_ms": 140,
+        "opacity_curve": [
+          [
+            0,
+            1
+          ],
+          [
+            140,
+            0
+          ]
+        ],
+        "status": "visual suggestion; adjust placement and sync in engine"
+      },
+      "source_crop_xyxy": [
+        587,
+        656,
+        994,
+        863
+      ]
+    },
+    {
+      "name": "execute_trail",
+      "file": "effects/execute_trail.png",
+      "canvas_px": [
+        640,
+        640
+      ],
+      "pivot_px": [
+        288,
+        560
+      ],
+      "proposed_binding": {
+        "animation": "execute",
+        "start_ms": 150,
+        "duration_ms": 110,
+        "opacity_curve": [
+          [
+            0,
+            1
+          ],
+          [
+            110,
+            0
+          ]
+        ],
+        "status": "visual suggestion; adjust placement and sync in engine"
+      },
+      "source_crop_xyxy": [
+        1114,
+        577,
+        1438,
+        911
+      ]
+    },
+    {
+      "name": "dust",
+      "sheet": "effects/dust_sheet.png",
+      "canvas_px": [
+        640,
+        640
+      ],
+      "pivot_px": [
+        288,
+        560
+      ],
+      "frames": [
+        {
+          "file": "effects/dust_00.png",
+          "rect_px": [
+            0,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 40
+        },
+        {
+          "file": "effects/dust_01.png",
+          "rect_px": [
+            640,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 50
+        },
+        {
+          "file": "effects/dust_02.png",
+          "rect_px": [
+            1280,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 60
+        },
+        {
+          "file": "effects/dust_03.png",
+          "rect_px": [
+            1920,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 70
+        }
+      ],
+      "duration_ms": 220,
+      "loop": false,
+      "proposed_use": [
+        "dash push/brake",
+        "jump landing",
+        "airSlash landing"
+      ],
+      "status": "Optional visual layer; do not infer hitbox or physics timing."
+    }
+  ],
+  "separate_from_body": true,
+  "blend": "Normal alpha by default. Optional additive material is artistic choice, not required.",
+  "note": "Trails are one raster key shape each; engine opacity curve supplies brief fade. Dust has four generated shapes. Layer alignment is provisional."
+}
