@@ -12,3 +12,17 @@
 ## 原始 Prompt
 
 Use case: stylized-concept. Production game background for an original cinematic horizontal 2D sword action game titled Mistward (no lettering). Paint a stunning wide 16:9 panoramic background, high-end hand painted animated-film environment art with restrained ink brush textures and crisp layered silhouettes. Ancient East Asian misty mountain monastery at blue twilight: enormous desaturated teal pine trees framing edges, distant pale blue mountains and a warm ivory full moon upper right, a small red vermilion shrine bridge in the middle distance, old stone shrine and golden hanging lanterns mostly at right. Moody, elegant, richly detailed yet gameplay-readable, no people or creatures. Composition specifically for side scrolling gameplay: horizon about 55% height; lower 35% is quiet dark desaturated blue-green stone garden ground fading into mist, completely empty space for actors. Dark navy framing, dusty jade foliage, silver blue volumetric fog, small restrained warm amber accents. Camera is side-on, very slightly looking down, broad lateral stage, not a path receding into the center. Strong depth layers; far layers soft, nearer architecture crisp. No UI, no HUD, no text, no letters, no watermark, no character artwork, no animated motion blur. Widescreen landscape, as large as possible. This is an atmospheric backdrop only; real interactive characters and ground will be rendered separately.
+# 地面边缘补充（2026-10-04）
+
+`stone-edge.png` 是低矮苔石装饰，仅疏放在可走地面的远近边缘，无碰撞。
+来源为当前任务中 OpenAI 内置 image_gen 的真实透明PNG；Library运行包
+`libfile_2f6ffde155ac8191ab92aee4e2fd6166` / `wudu-stone-accent-v1.zip`，717,303字节，
+SHA256 `bcc3585936b33f34764de2a4786f246a09459c498fdccf9bb37e18b4702bb931`。
+原图及预览留在来源包，不重复导入工程。运行PNG字节未编辑，SHA256
+`38117bce5353f028dab00b402fe95fe71486df0bad6891e4581936c0998ad161`。
+768×192 RGBA，pivot(384,160)，scale0.2；主要可见轮廓约134×18世界单位，
+不得铺满战斗地面或作为碰撞障碍。精确契约见 [stone-edge-contract.json](stone-edge-contract.json)。
+
+分层山门另见 [gates/README.md](gates/README.md)。旧远景图未改动。
+
+当前默认关卡门已换为[checkpoint-v3](checkpoint/README.md)：真实斜侧面石木门与0.38秒栅门解封。旧gates目录保留供--previous-gate或资源降级使用。

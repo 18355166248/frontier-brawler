@@ -1,0 +1,316 @@
+{
+  "version": "checkpoint-v3",
+  "frame_canvas": [
+    768,
+    1024
+  ],
+  "pivot": [
+    384,
+    810
+  ],
+  "world_scale": 0.2,
+  "aperture_quad_pixels": [
+    [
+      234,
+      260
+    ],
+    [
+      500,
+      332
+    ],
+    [
+      500,
+      823
+    ],
+    [
+      234,
+      751
+    ]
+  ],
+  "opaque_hull_pixels": [
+    [
+      34,
+      123
+    ],
+    [
+      35,
+      121
+    ],
+    [
+      36,
+      120
+    ],
+    [
+      153,
+      36
+    ],
+    [
+      156,
+      34
+    ],
+    [
+      160,
+      33
+    ],
+    [
+      165,
+      32
+    ],
+    [
+      172,
+      32
+    ],
+    [
+      610,
+      139
+    ],
+    [
+      616,
+      141
+    ],
+    [
+      618,
+      143
+    ],
+    [
+      710,
+      238
+    ],
+    [
+      733,
+      593
+    ],
+    [
+      733,
+      599
+    ],
+    [
+      730,
+      816
+    ],
+    [
+      729,
+      823
+    ],
+    [
+      728,
+      825
+    ],
+    [
+      671,
+      894
+    ],
+    [
+      670,
+      895
+    ],
+    [
+      664,
+      898
+    ],
+    [
+      581,
+      930
+    ],
+    [
+      578,
+      931
+    ],
+    [
+      573,
+      931
+    ],
+    [
+      156,
+      800
+    ],
+    [
+      150,
+      798
+    ],
+    [
+      142,
+      795
+    ],
+    [
+      47,
+      757
+    ],
+    [
+      40,
+      754
+    ],
+    [
+      38,
+      753
+    ],
+    [
+      36,
+      751
+    ],
+    [
+      34,
+      747
+    ]
+  ],
+  "opening_seconds": 0.38,
+  "opening": "Cosmetic portcullis UV lift within fixed aperture; gameplay original clear/cross predicates unchanged; can cut immediately on room change",
+  "files": {
+    "gate-frame.png": {
+      "canvas": [
+        768,
+        1024
+      ],
+      "mode": "RGBA",
+      "bytes": 792148,
+      "sha256": "b2770b54d9217a0be88a934fe153f5294d9566a61607e624cb2c3ca382a23b28",
+      "alpha_minmax": [
+        0,
+        255
+      ],
+      "visible_bbox_alpha_gt8": [
+        34,
+        32,
+        734,
+        932
+      ],
+      "edge_alpha_max": 0
+    },
+    "portcullis.png": {
+      "canvas": [
+        512,
+        1024
+      ],
+      "mode": "RGBA",
+      "bytes": 649179,
+      "sha256": "4db297304d635f5384938b576545ec1624ead2f97a42c4d87ed158c0f63c65a3",
+      "alpha_minmax": [
+        0,
+        255
+      ],
+      "visible_bbox_alpha_gt8": [
+        24,
+        50,
+        488,
+        974
+      ],
+      "edge_alpha_max": 0
+    },
+    "boss-pennant.png": {
+      "canvas": [
+        256,
+        512
+      ],
+      "mode": "RGBA",
+      "bytes": 97872,
+      "sha256": "24e95dd3282d23d0ad129ef7ff97e526bdbe56f50508c7fa5f30877cc31214b1",
+      "alpha_minmax": [
+        0,
+        255
+      ],
+      "visible_bbox_alpha_gt8": [
+        48,
+        12,
+        208,
+        500
+      ],
+      "edge_alpha_max": 0
+    }
+  },
+  "sources": {
+    "portcullis.png": {
+      "source": "/Users/xmly/Swell/code/game-workspace/frontier-brawler/generated_images/exec-ac3fecba-926b-48cf-967e-a23c1c3c840d.png",
+      "source_sha256": "4ae7dbe6470bbce085afec0b59dc5bbe7e2068005494a3a6e17239720f4347c4",
+      "source_size": [
+        887,
+        1774
+      ],
+      "crop_bbox": [
+        17,
+        36,
+        870,
+        1734
+      ],
+      "uniform_resize": [
+        464,
+        924
+      ],
+      "paste_offset": [
+        24,
+        50
+      ],
+      "tool": "OpenAI built-in image_gen; genuine transparent output; crop/resize/pad only"
+    },
+    "boss-pennant.png": {
+      "source": "/Users/xmly/Swell/code/game-workspace/frontier-brawler/generated_images/exec-8958c2a1-401a-4875-9cff-13ecb53e13fb.png",
+      "source_sha256": "55a130771e46b6a88d3495f81ce08f223a9f7866a2d55af8cf13323b376465d4",
+      "source_size": [
+        887,
+        1774
+      ],
+      "crop_bbox": [
+        181,
+        92,
+        707,
+        1699
+      ],
+      "uniform_resize": [
+        160,
+        488
+      ],
+      "paste_offset": [
+        48,
+        12
+      ],
+      "tool": "OpenAI built-in image_gen; genuine transparent output; crop/resize/pad only"
+    },
+    "gate-frame.png": {
+      "source": "/Users/xmly/Swell/code/game-workspace/frontier-brawler/generated_images/exec-a98f6aec-6b8a-4072-b434-d721f2732391.png",
+      "source_sha256": "3db4af901b52a6968ae5ad773ec63a1b757195b315ec20bca6e996b41513a806",
+      "source_size": [
+        1086,
+        1448
+      ],
+      "crop_bbox": [
+        60,
+        106,
+        1072,
+        1408
+      ],
+      "uniform_scale": 0.6912442396313364,
+      "resized_size": [
+        700,
+        900
+      ],
+      "paste_offset": [
+        34,
+        32
+      ],
+      "canvas": [
+        768,
+        1024
+      ],
+      "pivot": [
+        384,
+        810
+      ],
+      "world_scale": 0.2,
+      "runtime_sha256": "b2770b54d9217a0be88a934fe153f5294d9566a61607e624cb2c3ca382a23b28",
+      "alpha_extrema": [
+        0,
+        255
+      ],
+      "hole_alpha_samples": [
+        0,
+        0,
+        0
+      ],
+      "scope": "temporary open-gate visual preview only; no production files changed"
+    }
+  },
+  "limitations": [
+    "Painted architectural side faces; 2D sprite, not a 3D mesh.",
+    "No new gate collision or added crossing delay.",
+    "Raw generation may differ from requested dimensions; normalized exports validated."
+  ]
+}

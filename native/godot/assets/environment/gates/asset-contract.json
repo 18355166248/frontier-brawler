@@ -1,0 +1,141 @@
+{
+  "asset_version": "wudu-gate-v1",
+  "canvas": [
+    640,
+    1024
+  ],
+  "pivot": [
+    320,
+    960
+  ],
+  "recommended_scale": 0.2,
+  "world_canvas": [
+    128,
+    204.8
+  ],
+  "aperture_clear_rect_pixels": [
+    208,
+    380,
+    224,
+    560
+  ],
+  "aperture_nominal_rect_pixels": [
+    202,
+    340,
+    239,
+    618
+  ],
+  "ground_y_pixels": 960,
+  "layer_order_back_to_front": [
+    "gate-open-mist.png (open state only, alpha 0.28 recommended)",
+    "gate-closed-panels.png (locked state only)",
+    "gate-frame.png (always)",
+    "gate-boss-accent.png (boss room only)"
+  ],
+  "godot_sprite2d": {
+    "centered": false,
+    "offset_pixels": [
+      -320,
+      -960
+    ],
+    "position": [
+      0,
+      0
+    ],
+    "scale": [
+      0.2,
+      0.2
+    ],
+    "note": "For direct child Sprite2D nodes use offset=Vector2(-320,-960), position=Vector2.ZERO, scale=Vector2(0.2,0.2). If scaling a common gate parent to 0.2 instead, child scale must be Vector2.ONE and same offset. Do not use -320,-960 as child position unless inherited parent scale applies."
+  },
+  "mist_alpha": {
+    "recommended": 0.28,
+    "range": [
+      0.18,
+      0.4
+    ],
+    "note": "Alpha preserved in texture. Apply runtime modulate alpha; no luminous additive blend required."
+  },
+  "source_generation": "OpenAI built-in image_gen, real RGBA transparent raster, screenshot used as style reference",
+  "normalization": "Raw originals preserved. Deterministic crop/resize/pad only. Frame uniform resize600x959 offset20,39. Shutters uniform fit height640 centered at y320, partially hidden behind frame pillars. Mist resized into aperture246x455 at197,500. Boss halves uniformly fit height290 at pillar centers153,486 y405. No procedural painted artwork.",
+  "limitations": [
+    "Generated raw canvas differs from requested dimensions; normalized exports satisfy contract.",
+    "Closed shutter physical opening animation is not included; toggle or fade the blocking layer.",
+    "Gate collision/navigation remains implementation responsibility.",
+    "Frame contains extremely faint raw alpha1 pixels inherited from imagegen; outer padding remains transparent."
+  ],
+  "files": {
+    "gate-boss-accent.png": {
+      "size": [
+        640,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_zero_fraction": 0.9728866577148437,
+      "visible_bbox_alpha_gt_8": [
+        114,
+        405,
+        517,
+        695
+      ],
+      "sha256": "14324ec88a0b6b120daa0bbefcb8eae6330ec5a1391db73a7b26437e28215336",
+      "size_bytes": 57186
+    },
+    "gate-closed-panels.png": {
+      "size": [
+        640,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_zero_fraction": 0.6734939575195312,
+      "visible_bbox_alpha_gt_8": [
+        152,
+        320,
+        488,
+        960
+      ],
+      "sha256": "9e9994504e7eaefb2f36507063077eeb16a6b29828494d2c69e168743d384370",
+      "size_bytes": 490011
+    },
+    "gate-frame.png": {
+      "size": [
+        640,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha_min": 0,
+      "alpha_max": 255,
+      "alpha_zero_fraction": 0.6545700073242188,
+      "visible_bbox_alpha_gt_8": [
+        27,
+        89,
+        613,
+        959
+      ],
+      "sha256": "045631765960bd7bae546ecef6a2b78d2f844cd09052607956ce4590cec74edf",
+      "size_bytes": 533237
+    },
+    "gate-open-mist.png": {
+      "size": [
+        640,
+        1024
+      ],
+      "mode": "RGBA",
+      "alpha_min": 0,
+      "alpha_max": 253,
+      "alpha_zero_fraction": 0.9180908203125,
+      "visible_bbox_alpha_gt_8": [
+        197,
+        501,
+        443,
+        955
+      ],
+      "sha256": "56568a46c91f7e684463c83fbbe124bc5b0262b16b5dd17686d221990952526e",
+      "size_bytes": 118742
+    }
+  }
+}

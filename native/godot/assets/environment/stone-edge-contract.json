@@ -1,0 +1,41 @@
+{
+  "canvas": [
+    768,
+    192
+  ],
+  "pivot": [
+    384,
+    160
+  ],
+  "recommended_scale": 0.2,
+  "world_canvas": [
+    153.6,
+    38.4
+  ],
+  "visible_width_approx_game_units": 134.4,
+  "visible_height_approx_game_units": 17.8,
+  "source_raw_size": [
+    1942,
+    809
+  ],
+  "source_crop_bbox_alpha_gt_8": [
+    173,
+    372,
+    1772,
+    583
+  ],
+  "normalization": "Crop to substantial alpha bbox, uniform downscale width672, transparent pad to768x192. Raw source preserved.",
+  "placement": "Sparse decorative foreground/background lane-edge accent; avoid covering combat silhouettes. No collision implied.",
+  "godot_sprite2d": {
+    "centered": false,
+    "offset_pixels": [
+      -384,
+      -160
+    ],
+    "scale": [
+      0.2,
+      0.2
+    ]
+  },
+  "source": "OpenAI built-in image_gen with real transparent_background=true using current gameplay screenshot plus gate as references."
+}

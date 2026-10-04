@@ -19,7 +19,7 @@ npm run validate:godot
 - WASD / 方向键：行走；J / 空格：出刀，连续按下衔接三段连招。
 - K / Shift：闪避；L / Q：跳跃，腾空时出刀接跳劈。
 - U / E：剑气，初始消耗 50 剑意；I / F：处决近身、低于 25% 生命的敌人。
-- 1 蓄风刺击；2 护盾横扫；3 灵体出击/再次回归；4 封命斩。下方显示冷却、蓄层、护盾和离体期限，按钮可点击。
+- 1 蓄风刺击；2 护盾横扫；3 灵体出击/再次回归；4 封命斩。上方显示冷却、蓄层、护盾和离体期限，按钮可点击。
 - Esc / P：暂停；失去焦点后暂停，回到窗口需要主动继续。
 - 清场后走向右侧山门；途中选择一份成长，击败铜面守卫、领取遗物、结算或重开。
 
@@ -69,7 +69,14 @@ godot --path native/godot --script tests/landscape_review.gd \
 录像是离线帧输出，只用于检查动作；其编码耗时不能当成游戏帧率。
 最新画面、验证数据和完整边界见 [首关验证](docs/redesign-2026-10-02/VALIDATION.md)。
 
+本轮保留原远景、五房战斗与过门规则，加入分层山门、低密度苔石边缘、分房雾色/灯火和无遮挡HUD。
+门锁定/开启与Boss前红帘各有可见状态，Boss房无东出口不画出口门。
+素材来源、回退开关和验证范围见 [环境视觉接入说明](docs/environment-redesign-2026-10-04.md)。
+`npm run validate:godot` 还运行针对出口真实性、资源回退、原触发边界、暂停与HUD安全区的环境检查。
+
 英雄素材已经接入，无需再复制压缩包。macOS 仍双击 `开始游戏.command`。
 临时回到旧英雄表现：`godot --path native/godot -- --illustrated-hero`。
 新英雄主场景截图：`godot --path native/godot --script tests/wudu_hero_review.gd`，
 输出在 `native/godot/output/wudu-import/`；包含测试前置目标，不能当成手动通关录像。
+
+关卡门当前为checkpoint-v3石木关隘，清场时栅门在0.38秒内升起；原过门规则不等待动画。重启游戏生效。`--previous-gate`可回退前一门表现，详见[环境与门说明](docs/environment-redesign-2026-10-04.md)。

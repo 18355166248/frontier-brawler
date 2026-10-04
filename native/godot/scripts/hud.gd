@@ -25,6 +25,7 @@ var skill_status: Label
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
+	var modern := "--classic-environment" not in OS.get_cmdline_user_args()
 	top = Control.new()
 	top.name = "Top"
 	add_child(top)
@@ -45,13 +46,13 @@ func _ready() -> void:
 	boss_name = label_at(top, "BossName", "铜面守卫", Vector2(438, 28), Vector2(404, 25), 16, PAPER)
 	boss_name.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	boss_bar = bar_at(top, "BossHealth", Rect2(438, 63, 404, 5), Color("b87e60"))
-	hint = label_at(self, "Hint", "", Vector2(330, 646), Vector2(620, 24), 15, PAPER)
+	hint = label_at(self, "Hint", "", Vector2(330, 194 if modern else 646), Vector2(620, 24), 15, PAPER)
 	hint.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
-	footer = label_at(self, "Keys", "WASD 移动     J 出刀     K 闪避     L 跳跃     U 剑气     I 处决", Vector2(40, 678), Vector2(1200, 24), 14, MUTED)
+	footer = label_at(self, "Keys", "WASD 移动     J 出刀     K 闪避     L 跳跃     U 剑气     I 处决", Vector2(40, 697 if modern else 678), Vector2(1200, 20 if modern else 24), 12 if modern else 14, MUTED)
 	footer.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	for i in 4:
 		var key: String = ["q", "w", "e", "r"][i]
-		var button := button_at(top, "Ability" + key, "", Rect2(400 + i * 124, 571, 116, 44), "yone_" + key)
+		var button := button_at(top, "Ability" + key, "", Rect2(400 + i * 124, 116 if modern else 571, 116, 44), "yone_" + key)
 		button.focus_mode = Control.FOCUS_NONE
 		button.add_theme_font_size_override("font_size", 13)
 		for mode in ["normal", "hover", "pressed", "focus", "disabled"]:
@@ -62,7 +63,7 @@ func _ready() -> void:
 			style.content_margin_right = 4
 			button.add_theme_stylebox_override(mode, style)
 		skill_buttons[key] = button
-	skill_status = label_at(top, "AbilityStatus", "", Vector2(370, 620), Vector2(540, 22), 13, MUTED)
+	skill_status = label_at(top, "AbilityStatus", "", Vector2(370, 164 if modern else 620), Vector2(540, 22), 13, MUTED)
 	skill_status.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
 	overlay = ColorRect.new()
 	overlay.name = "Overlay"
@@ -86,7 +87,7 @@ func refresh(run: FBRun) -> void:
 	health.max_value = h.max_hp
 	health.value = h.hp
 	energy.value = h.energy
-	title.text = "行 者   /   雾隐古道"
+	title.text = "行 者   /   " + run.room.presentation_title()
 	status.text = "生命 %d / %d     剑意 %d" % [h.hp, h.max_hp, h.energy]
 	var names := {"q": "1 蓄风刺击", "w": "2 护盾横扫", "e": "3 灵体出击", "r": "4 封命斩"}
 	for key in skill_buttons:
@@ -106,8 +107,9 @@ func refresh(run: FBRun) -> void:
 		boss_bar.value = boss.hp
 		boss_name.text = "铜 面 守 卫" + ("  ·  破阵" if boss.boss_phase == 2 else "")
 	var hints := ["向前踏入雾中  →", "连按 J 衔接出刀，K 闪避", "上下走位绕到敌人身侧", "片刻休整，选择一份馈赠", "留意守卫举刃，离开地面预警"]
-	hint.text = notice if notice_time > 0 else ("前路已开  ·  继续向右 →" if run.phase == "cleared" and run.room_index > 0 else hints[run.room_index])
-	if notice_time <= 0:
+	# 清场提示优先于刚结束的连招通知，避免门已开却仍显示战斗指示。
+	hint.text = run.room.exit_cue() if run.phase == "cleared" and run.room.redesigned() else (notice if notice_time > 0 else ("前路已开  ·  继续向右 →" if run.phase == "cleared" and run.room_index > 0 else hints[run.room_index]))
+	if notice_time <= 0 and (run.phase != "cleared" or not run.room.redesigned()):
 		for actor in run.room.actors:
 			if actor.kind != "hero" and actor.launch_remaining > 0:
 				hint.text = "稍候接 2 横扫  ·  J / 跳劈等敌人落地"
@@ -117,7 +119,8 @@ func refresh(run: FBRun) -> void:
 	var in_game := not run.paused and run.phase in ["fighting", "cleared"]
 	top.visible = in_game
 	hint.visible = in_game
-	footer.visible = in_game
+	var controls := get_node_or_null("../Controls") as FBInput
+	footer.visible = in_game and (not run.room.redesigned() or controls == null or not controls.touch_visible)
 
 func show_phase(run: FBRun) -> void:
 	_run = run
@@ -311,11 +314,12 @@ func apply_safe_insets(insets: Vector4) -> void:
 	top.position = Vector2(insets.x, insets.y)
 	$Top/Pause.position.x = 1172 - insets.z - insets.x
 	$Top/Mute.position.x = 1090 - insets.z - insets.x
-	footer.position.y = 678 - insets.w
-	hint.position.y = 646 - insets.w
+	var modern := "--classic-environment" not in OS.get_cmdline_user_args()
+	footer.position.y = (697 if modern else 678) - insets.w
+	hint.position.y = 194 + insets.y if modern else 646 - insets.w
 	for button in skill_buttons.values():
-		button.position.y = 571 - insets.w - insets.y
-	skill_status.position.y = 620 - insets.w - insets.y
+		button.position.y = 116 if modern else 571 - insets.w - insets.y
+	skill_status.position.y = 164 if modern else 620 - insets.w - insets.y
 
 func _draw() -> void:
 	if _run == null or _run.phase == "home" or overlay.visible:

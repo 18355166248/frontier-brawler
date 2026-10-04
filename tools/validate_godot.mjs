@@ -11,6 +11,7 @@ for (const [args, marker] of [
   [['--headless', '--path', project, '--script', 'tests/landscape_ui_checks.gd'], 'LANDSCAPE_UI_PASS'],
   [['--headless', '--path', project, '--script', 'tests/wudu_hero_checks.gd'], 'WUDU_HERO_CHECKS_PASS'],
   [['--headless', '--path', project, '--script', 'tests/yone_mvp_checks.gd'], 'YONE_MVP_CHECKS_PASS'],
+  [['--headless', '--path', project, '--script', 'tests/environment_checks.gd'], 'ENVIRONMENT_CHECKS_PASS'],
 ]) {
   const result = spawnSync(binary, args, { encoding: 'utf8', timeout: 120000, maxBuffer: 8 * 1024 * 1024 });
   const output = (result.stdout || '') + (result.stderr || '');

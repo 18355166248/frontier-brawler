@@ -24,6 +24,9 @@ func layout_controls() -> void:
 	var right := size.x - safe_insets.z
 	var bottom := size.y - safe_insets.w
 	buttons = {"attack": Vector2(right - 105, bottom - 120), "dash": Vector2(right - 222, bottom - 82), "jump": Vector2(right - 318, bottom - 95), "skill": Vector2(right - 202, bottom - 192), "execute": Vector2(right - 93, bottom - 231)}
+	if "--classic-environment" not in OS.get_cmdline_user_args():
+		# 同样的命中半径与动作，只把触控圈移出右侧山门立面。
+		buttons = {"attack": Vector2(right - 105, bottom - 64), "dash": Vector2(right - 210, bottom - 64), "jump": Vector2(right - 310, bottom - 64), "skill": Vector2(right - 310, bottom - 160), "execute": Vector2(right - 410, bottom - 64)}
 	queue_redraw()
 
 func clear() -> void:
