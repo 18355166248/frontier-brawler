@@ -1,0 +1,1868 @@
+{
+  "version": 1,
+  "baseline": "ff14256b394d9ed06f4790b2f7d27545c856a0b6",
+  "files": [
+    {
+      "path": ".claude/launch.json",
+      "sha256": "ec9e668d2451d6aad07393c00ee53fd18e8eb3790f0f77629adea83be839aced"
+    },
+    {
+      "path": ".gitignore",
+      "sha256": "5f3194e0bd3ff18b50f25e90cb7e256a76114537aeba3a406f1eca3b620b16d0"
+    },
+    {
+      "path": "README.md",
+      "sha256": "e2b274ff3d9ee0868eba1613955468ccacee595fd7f9ebf1c98b39b6a59a5ae7"
+    },
+    {
+      "path": "art-source/copper-guard-v2/generations.json",
+      "sha256": "93c3e927619b6036940bd08fbe0b1680af7565d1499ad7af269b14019d0af9ed"
+    },
+    {
+      "path": "art-source/copper-guard-v2/recipe.json",
+      "sha256": "21d9df5a105e2e40d322f944cfb2697f3c8333750127a3147b45602059873304"
+    },
+    {
+      "path": "docs/ASSET_DELIVERY.md",
+      "sha256": "dc37842b067ddbe5bb2c25efef1df7d83de8648452892183a750d15a0e234d1a"
+    },
+    {
+      "path": "docs/CLAUDE_ENEMY_ART_REVIEW_PROMPT.md",
+      "sha256": "12540febcbc692ed73809309a786ea0edebc1a42e3b8156161bf96a487b28e99"
+    },
+    {
+      "path": "docs/COCOS_MIGRATION.md",
+      "sha256": "c6ddc318179a95a214b1cfecdc8cf630a3be58ae27c943efe3e245c3c6cfa3f0"
+    },
+    {
+      "path": "docs/COPPER_GUARD_V2.md",
+      "sha256": "a44efa69bc77d31d4c5f54570a211bd461e01caf33b63ef5f28615b1fb71fe08"
+    },
+    {
+      "path": "docs/GAME_DESIGN.md",
+      "sha256": "7b196f8d7b443d378fc629e1c9dd87942f5b7dd09c96b64bea4bf2785dce1d8d"
+    },
+    {
+      "path": "docs/GODOT_MIGRATION.md",
+      "sha256": "d8e477284779853ceeb4dc99bbc6784e860b7629e02cd5d0dfdd011b6dc39d40"
+    },
+    {
+      "path": "docs/LEVEL_DESIGN.md",
+      "sha256": "f7243b39a12ef0d7899c1ceb6d6bc83dc387d3a5a2d37c4ac68e73908afd08f7"
+    },
+    {
+      "path": "docs/RELEASE_NOTES.md",
+      "sha256": "16a45f7efd649e5ab8970408a97cb9bd78798597cd2324f1273a6ae3d0124cd2"
+    },
+    {
+      "path": "docs/ROADMAP.md",
+      "sha256": "92a256a4b36af217acb9f8e19d324b502515dc60a9c937f604815037966b0c9b"
+    },
+    {
+      "path": "docs/experiments/ai-sprite-consistency-2026-08-25/PROMPTS.md",
+      "sha256": "ea8ad74666a2fb1f6673fc8e58bf4d5becb87757cdaf743546a74fe4a3f93b00"
+    },
+    {
+      "path": "docs/experiments/ai-sprite-consistency-2026-08-25/README.md",
+      "sha256": "b67d6ab47180a2b1777285371110dd4a1cc2fe7e27b4a70c2f5d7cd1349dd75e"
+    },
+    {
+      "path": "docs/experiments/ai-sprite-consistency-2026-08-25/action-grids/dash.png",
+      "sha256": "229435338cf2d7fa13ac2586c053e34dcd1130334e4741be69a3709ba95c6bf6"
+    },
+    {
+      "path": "docs/experiments/ai-sprite-consistency-2026-08-25/action-grids/hit.png",
+      "sha256": "cd82db536d2fda8865ba1fb601dd169ca84cd56d38bdbee91be78b2fecdacae8"
+    },
+    {
+      "path": "docs/experiments/ai-sprite-consistency-2026-08-25/action-grids/idle.png",
+      "sha256": "e3d53adfb174e43e214681f189fdd2c2e7af8826a2d6105dff090f7c32feeeaa"
+    },
+    {
+      "path": "docs/experiments/ai-sprite-consistency-2026-08-25/action-grids/move.png",
+      "sha256": "4a778074346d8e7a29a31ad7ecba249bc0fa787232d0233ec51d5183bc66c5c0"
+    },
+    {
+      "path": "docs/experiments/ai-sprite-consistency-2026-08-25/action-grids/slash.png",
+      "sha256": "55e1fdb0da8eb58b8d7f0294e7ea28e016078018557a9df624e2f8e64c3c326d"
+    },
+    {
+      "path": "docs/experiments/ai-sprite-consistency-2026-08-25/action-grids/slash2-rejected-1.png",
+      "sha256": "9f9dd0bb59b67926e245f6169a893c1e966d6f732b3f5172a29c29d92c5c8a2c"
+    },
+    {
+      "path": "docs/experiments/ai-sprite-consistency-2026-08-25/action-grids/slash2.png",
+      "sha256": "d57caeac77f25bc739011b82ea2d2eda301e0dddebde2b060479fda5d21be857"
+    },
+    {
+      "path": "docs/experiments/ai-sprite-consistency-2026-08-25/hero-actions-v2-final.json",
+      "sha256": "16610a8aa9dd771e91bf70a68361b68b86f77a2aba32d03d49c06c36db4d6220"
+    },
+    {
+      "path": "docs/experiments/ai-sprite-consistency-2026-08-25/hero-actions-v2-final.png",
+      "sha256": "52bbfe2d3292b5672b4e9585ec7a7af1a07b2a51a8b510ca15fd2255c6102ae3"
+    },
+    {
+      "path": "docs/experiments/ai-sprite-consistency-2026-08-25/walk-4f-attempt-1.png",
+      "sha256": "21a67156ba2f376b28d7c830d8b21a78af8df858275bd7d81009aa31f0a2b99c"
+    },
+    {
+      "path": "docs/experiments/ai-sprite-consistency-2026-08-25/walk-4f-attempt-2.png",
+      "sha256": "2c81db068a016dae36be36138769efe1f14bd6cb6e15d7ea539d51c464acf70a"
+    },
+    {
+      "path": "docs/experiments/ai-sprite-consistency-2026-08-25/walk-4f-attempt-3-chroma-grid.png",
+      "sha256": "f48711cbeca299b63a46a2495d948d8b3d37dabe2df07912f0b15edd57c77fdc"
+    },
+    {
+      "path": "docs/experiments/base-buildings-2026-08-27/README.md",
+      "sha256": "f0470d57e59971d75c139de69312dbdcb7769706994093dee280708e37e6c712"
+    },
+    {
+      "path": "docs/experiments/base-buildings-2026-08-27/alchemy-lab-grid.png",
+      "sha256": "074c27f8526746a4b9dfb9abcd21d77cd8675fb3c35c79db99d71eb41dea1a26"
+    },
+    {
+      "path": "docs/experiments/base-buildings-2026-08-27/archive-grid.png",
+      "sha256": "5fb46fa938e5aa71f6612d80379f61b3e487a217209e9b4dd00f995a020d27c4"
+    },
+    {
+      "path": "docs/experiments/base-buildings-2026-08-27/forge-grid.png",
+      "sha256": "fafe9744f0830bbc9eef85f91f331607fba0b4d345ab8d287eeaeab05cbcbb78"
+    },
+    {
+      "path": "docs/experiments/base-buildings-2026-08-27/resource-field-grid.png",
+      "sha256": "56a22d9540ecd55cd6a3dc67152f382a59c0933f667f58c3c4c18b5dd9b91952"
+    },
+    {
+      "path": "docs/experiments/base-buildings-2026-08-27/training-ground-grid.png",
+      "sha256": "22d278d9303fb12d961eb15ee1e39adbdd08171898369181ab09c52ff98f7a6b"
+    },
+    {
+      "path": "docs/experiments/enemy-actions-2026-08-25/README.md",
+      "sha256": "85ac1e820629a45208d3d2f133198bfcc377204a75db2fb876e7aa20ad8ea714"
+    },
+    {
+      "path": "docs/experiments/enemy-actions-2026-08-25/REGEN-PROMPTS.md",
+      "sha256": "51f8bca9d5ee3eb468890a003fd8adeac04f38703c14e74e07ccd431cb58a1f5"
+    },
+    {
+      "path": "docs/experiments/enemy-actions-2026-08-25/boss/action-grids/bossCharge.png",
+      "sha256": "7c5ed6a701750e59e815e0c66d8419e08fcba1fedc024c5e899c8b15958c7df0"
+    },
+    {
+      "path": "docs/experiments/enemy-actions-2026-08-25/boss/action-grids/bossNova.png",
+      "sha256": "7d2e6594c10ae90afc070c39bde455cbbf439af00a673d6cf1311df66bf89e1a"
+    },
+    {
+      "path": "docs/experiments/enemy-actions-2026-08-25/boss/action-grids/bossRush.png",
+      "sha256": "c2f30fefb4695eeada533edb4455b37c1bbeed77056331856662ad663130f32a"
+    },
+    {
+      "path": "docs/experiments/enemy-actions-2026-08-25/boss/action-grids/bossSlam.png",
+      "sha256": "f949d5716346870e598cddddf0828ab7fc0cf8e39a9b15989be1be943930f6e2"
+    },
+    {
+      "path": "docs/experiments/enemy-actions-2026-08-25/boss/action-grids/bossSummon.png",
+      "sha256": "419feb81796c55f2ff1afad3f7634117f0763bad15f72183fc20bb053f3ca1e5"
+    },
+    {
+      "path": "docs/experiments/enemy-actions-2026-08-25/boss/action-grids/hit.png",
+      "sha256": "e038738869b4ef66ff0e4c9b7558c01025ef864170400fb8d7ed81e29b852be8"
+    },
+    {
+      "path": "docs/experiments/enemy-actions-2026-08-25/boss/action-grids/idle.png",
+      "sha256": "6415dff74266b73a236663272af5e74cd31b9f73af64499a585a88bb242bc9ac"
+    },
+    {
+      "path": "docs/experiments/enemy-actions-2026-08-25/boss/action-grids/move.png",
+      "sha256": "f6d2486b18250586fc18d4373e8c7f048fc3c5d218367c7020f67618ee35e65c"
+    },
+    {
+      "path": "docs/experiments/enemy-actions-2026-08-25/boss/identity-reference-right.png",
+      "sha256": "d7e4ff4fcea373949df080f8df1efda126cee8c73715fabdfa442ce7ad106500"
+    },
+    {
+      "path": "docs/experiments/enemy-actions-2026-08-25/charger/action-grids/charge.png",
+      "sha256": "8fb136f0b235d9a0cdc738a42469b9ff209197acd4bc81251037155a900b83bb"
+    },
+    {
+      "path": "docs/experiments/enemy-actions-2026-08-25/charger/action-grids/hit.png",
+      "sha256": "853cb2da1705673819aaa8aefaa312efbde8f597ee65e77c8990b857275216e1"
+    },
+    {
+      "path": "docs/experiments/enemy-actions-2026-08-25/charger/action-grids/idle.png",
+      "sha256": "8558aa61909f91fdfd22a40d8716e9e2b6999899f583b44324c92f648d1f95d4"
+    },
+    {
+      "path": "docs/experiments/enemy-actions-2026-08-25/charger/action-grids/move.png",
+      "sha256": "a8123a018dd842dca0f19843e54c341894c815113e9b81d85fe5416953653d2d"
+    },
+    {
+      "path": "docs/experiments/enemy-actions-2026-08-25/charger/action-grids/rush.png",
+      "sha256": "291f424b84a047ce781c6270a1995927d1c85aa94176ee744b843e7622873aad"
+    },
+    {
+      "path": "docs/experiments/enemy-actions-2026-08-25/elite/action-grids/heavy.png",
+      "sha256": "31cdc5a135aa71f27b949375b4f8ae75bbcb1b01d44c40fa0bd53818eb26fcba"
+    },
+    {
+      "path": "docs/experiments/enemy-actions-2026-08-25/elite/action-grids/hit.png",
+      "sha256": "393d53f67f35356c52b961e6231054b3d916a8a042467ab36de82838d3e37bfd"
+    },
+    {
+      "path": "docs/experiments/enemy-actions-2026-08-25/elite/action-grids/idle.png",
+      "sha256": "513620597db03e12c3413d600cab8dbaf03dabfae93bce45b98525365feab0bf"
+    },
+    {
+      "path": "docs/experiments/enemy-actions-2026-08-25/elite/action-grids/move.png",
+      "sha256": "ea8d190e5665277635a7d304880700f9f3002f87aa39b8f00191f9d1a0a209c0"
+    },
+    {
+      "path": "docs/experiments/enemy-actions-2026-08-25/elite/identity-reference-right.png",
+      "sha256": "d6e9e855326cdf29ad164f093e8059495300408da3972530ce42015e163542c4"
+    },
+    {
+      "path": "docs/experiments/enemy-actions-2026-08-25/grunt/action-grids/hit.png",
+      "sha256": "a127915a7e36a67622ce2dcf1b802960475a70de9024da8f8d5dbdb6fa81444c"
+    },
+    {
+      "path": "docs/experiments/enemy-actions-2026-08-25/grunt/action-grids/idle.png",
+      "sha256": "ffecb718dfa53f84bd9be50cff8971eba5f6fe6d82c70f9a2528e18e38f80e87"
+    },
+    {
+      "path": "docs/experiments/enemy-actions-2026-08-25/grunt/action-grids/move.png",
+      "sha256": "48eb477b630fbb7889f1ecd34b228e442a9e74eb3d576d7cde5bd9887c918fb6"
+    },
+    {
+      "path": "docs/experiments/enemy-actions-2026-08-25/grunt/action-grids/slash.png",
+      "sha256": "3e0d96f18ada1beb9cc5edf03cc6fb06744ae84af86baffbd69c856785055d7f"
+    },
+    {
+      "path": "docs/experiments/enemy-actions-2026-08-25/ranged/action-grids/aim.png",
+      "sha256": "e618eda51eb2dbbc73f65739079749a203fc7ac81de0b52a142cb52629d6d302"
+    },
+    {
+      "path": "docs/experiments/enemy-actions-2026-08-25/ranged/action-grids/hit.png",
+      "sha256": "568ab17843e33dfed8df5c6908a003a8e88ac49832f7d3a602d132165a8a05a5"
+    },
+    {
+      "path": "docs/experiments/enemy-actions-2026-08-25/ranged/action-grids/idle.png",
+      "sha256": "2484daf169766700ba7304cdf83a794aaa64b31030bb6eb444861ba013fd56a0"
+    },
+    {
+      "path": "docs/experiments/enemy-actions-2026-08-25/ranged/action-grids/move.png",
+      "sha256": "28890a209b738b9bf64676dc0bbed9de9c131576ce1124c04a279046fea0bd0e"
+    },
+    {
+      "path": "docs/experiments/enemy-actions-2026-08-25/ranged/action-grids/shoot.png",
+      "sha256": "76566ffa27f52081c343d225a8fc599539fbfa48d64f651690bfa15d02122006"
+    },
+    {
+      "path": "docs/experiments/enemy-actions-2026-08-25/shield/action-grids/hit.png",
+      "sha256": "8f850831dadd0afaab95e2af7361fadfe0e3e3eed184f4cc414672546294706b"
+    },
+    {
+      "path": "docs/experiments/enemy-actions-2026-08-25/shield/action-grids/idle.png",
+      "sha256": "5c52eab9e1df23d66152c3d534f4b0515e84127161e693808da467df48b6f18e"
+    },
+    {
+      "path": "docs/experiments/enemy-actions-2026-08-25/shield/action-grids/move.png",
+      "sha256": "dba727caba468baf564f1fe0a3337b799f43ddcd207d91db1f868a6c5fce737f"
+    },
+    {
+      "path": "docs/experiments/enemy-actions-2026-08-25/shield/action-grids/slash.png",
+      "sha256": "a43e1da44f78383ad4f5df692c7b60cfb1e29f7d86812fb472fecc5f8a42e448"
+    },
+    {
+      "path": "docs/experiments/enemy-roster-2026-08-25/README.md",
+      "sha256": "c8d1be9d562d8240a8924a2293393c48758a0c0bdcc58c1c7fbd7f9d20b4c1d3"
+    },
+    {
+      "path": "docs/experiments/enemy-roster-2026-08-25/characters/charger.png",
+      "sha256": "95ad5bf14b448781b50273b17a91e5d4d0097c1b71eccf1ec9cee56e5b5ebee1"
+    },
+    {
+      "path": "docs/experiments/enemy-roster-2026-08-25/characters/elite.png",
+      "sha256": "33cf9164807fe1b4da0b7c11a991605f9ff0e9d9c74e19b480fac92c943df79f"
+    },
+    {
+      "path": "docs/experiments/enemy-roster-2026-08-25/characters/grunt.png",
+      "sha256": "05f167816d0ee2accc88045c07bd971711f302caca1165443aab43583d451a56"
+    },
+    {
+      "path": "docs/experiments/enemy-roster-2026-08-25/characters/ranged.png",
+      "sha256": "88f15754423c89a4d127a5bcfdc7cff4c31000ad57b6d7d38afc046d42fd675e"
+    },
+    {
+      "path": "docs/experiments/enemy-roster-2026-08-25/characters/shield.png",
+      "sha256": "d0f30d3b3ca9b06fa75b425d39b51487bdb3d036607a71e3675150e567a57be6"
+    },
+    {
+      "path": "docs/experiments/enemy-roster-2026-08-25/enemy-roster-96px-color.png",
+      "sha256": "6004194f721a3282abc7d8ee8031287bcc0f3ff1f2ae96086521fa08e076c69b"
+    },
+    {
+      "path": "docs/experiments/enemy-roster-2026-08-25/enemy-roster-96px-silhouette.png",
+      "sha256": "74e1c9399b904c7f538fb69378a55fdae60691a92541d3ad192fd7736aaa4af1"
+    },
+    {
+      "path": "docs/experiments/enemy-roster-2026-08-25/enemy-roster-source.png",
+      "sha256": "e93f919bb93d0f46f03fc6f54368c183a150f2317bee72f82eb9796cd322e02c"
+    },
+    {
+      "path": "docs/experiments/hero-motion-2026-09-27/ALL_ANIMATIONS.md",
+      "sha256": "ac18e32382adf10fdb0fa1ce9f123c12ea9cd0b905a9493781460b97f679e9e6"
+    },
+    {
+      "path": "docs/experiments/hero-motion-2026-09-27/PROMPTS.md",
+      "sha256": "271c43f9686d02d44b8520239ebf75be5513240f7c0e8ba8b80b84d2846244f7"
+    },
+    {
+      "path": "docs/experiments/hero-motion-2026-09-27/README.md",
+      "sha256": "9f3dcc6c92d81057f24d75f1aa477e1503a2076c4c7f9cc9362767c7ff9b0b55"
+    },
+    {
+      "path": "docs/experiments/hero-motion-2026-09-27/all-boss-death.png",
+      "sha256": "529d174d35369b1db3980ddda42dfe82769ec521f6e6bc4ec64f9ce6a86ae4bb"
+    },
+    {
+      "path": "docs/experiments/hero-motion-2026-09-27/all-boss-summon.png",
+      "sha256": "fea4f832d0c10fc761628a36d3c4947f23c08a992d7e0c99a9fa67704f6f80a8"
+    },
+    {
+      "path": "docs/experiments/hero-motion-2026-09-27/all-grunt-slash.png",
+      "sha256": "a72b140312486847c52bfaafab83cd6b2e288998d0191517f5b10f1132a57c03"
+    },
+    {
+      "path": "docs/experiments/hero-motion-2026-09-27/all-hero-dash.png",
+      "sha256": "e19b71789f403774c0e87bc97be12ff174d920a46df3903e24777e90af7e036f"
+    },
+    {
+      "path": "docs/experiments/hero-motion-2026-09-27/jump-cancel.png",
+      "sha256": "05705842f83d03d4557ab18a3ecc500cf6960d0c7457bf954dc87a455c0e50ce"
+    },
+    {
+      "path": "docs/experiments/hero-motion-2026-09-27/landing.png",
+      "sha256": "df737ccbb02bb1ff643edfb4d2ace27f4fee33e44bf428c71f71e27ee332b0ff"
+    },
+    {
+      "path": "docs/experiments/hero-motion-2026-09-27/move-rejected-1.png",
+      "sha256": "beb0abb4f2cc4f1b1dd229120dee4db052ae13c35bb12d4defeb8926c3fa9001"
+    },
+    {
+      "path": "docs/experiments/hero-motion-2026-09-27/move-rejected-2.png",
+      "sha256": "a6dbde647d797661502cc834917dbc53774a64914f8a5a69272afae55c094e8a"
+    },
+    {
+      "path": "docs/experiments/hero-motion-2026-09-27/recovery.png",
+      "sha256": "58f12b1b95b55128cd6c180fc10a84cfc33a43bd9dc0cf6278349d5c8b79a9f1"
+    },
+    {
+      "path": "docs/experiments/simulated-validation-2026-08-26.json",
+      "sha256": "f4c8c74c9b2cbbc498638a4456f9ac0a3db53b2108356bd26a93954308275e74"
+    },
+    {
+      "path": "generated_images/exec-067c22d9-f03c-4e72-bc8d-92fd325e0351.png",
+      "sha256": "08b6544148fd3cf042e7676ea4a85a4ed9c127cbb56bb2c758f97bb49f7e9e7a"
+    },
+    {
+      "path": "generated_images/exec-08f0fee6-5235-41a2-9a90-c810b3d3f87c.png",
+      "sha256": "42443148e48dd1163f7a733704d4ebba4eeec30fb9b08495084d459f80ef41f9"
+    },
+    {
+      "path": "generated_images/exec-1ae74f05-d78d-44ef-90f1-6022c201e246.png",
+      "sha256": "9aafdf710cbbda1554dfb5d79f4fb0a37211030f06f41235c6bcc80c38a93601"
+    },
+    {
+      "path": "generated_images/exec-3eda8888-d6c6-4fce-bd42-19b9e60251fe.png",
+      "sha256": "65cf0fb5b985e9f2483db73f43eca2d958a2b1a45d3a97dc9e479b4980e8ad34"
+    },
+    {
+      "path": "generated_images/exec-42f0ad14-5983-4197-99a1-f34f0360af1a.png",
+      "sha256": "829d65c6dbc09de2df313bc998aa4f68aa734dc1be40c1a963fefdec5c7f19d5"
+    },
+    {
+      "path": "generated_images/exec-497f0fc0-4468-4c2d-8516-f4d794e5c922.png",
+      "sha256": "7d35ff6088861aac575c36e0d25e22e535eea39c3e181b92fdb1ec35c386ff7f"
+    },
+    {
+      "path": "generated_images/exec-554b714c-41ff-4b9c-8318-b753969fa83f.png",
+      "sha256": "a595cd8bb201a3a13224183f217d7ea306af0dab041db92fbd24b618edfdbeeb"
+    },
+    {
+      "path": "generated_images/exec-5cbc2624-8fb1-4e12-a32b-2cf63ec33911.png",
+      "sha256": "cff3312a2428a3c0819df96539800df97ceb8ff3c9947cca90fd019641a006a8"
+    },
+    {
+      "path": "generated_images/exec-8958c2a1-401a-4875-9cff-13ecb53e13fb.png",
+      "sha256": "55a130771e46b6a88d3495f81ce08f223a9f7866a2d55af8cf13323b376465d4"
+    },
+    {
+      "path": "generated_images/exec-9499b47e-c384-457c-9ed2-531ad0549492.png",
+      "sha256": "129e0a8c39361ccc5326a0e5646d0e8de08ca65105e13e907b722415dc1b4187"
+    },
+    {
+      "path": "generated_images/exec-9cd519bc-9930-4df4-bb8e-9c3deccba164.png",
+      "sha256": "49030e87b9f13fc3c55346fefc60210d93b941c3e15e87d483a53364551b410e"
+    },
+    {
+      "path": "generated_images/exec-9f8e83e8-a804-4f5b-9e46-b5b79c929fd2.png",
+      "sha256": "920f608012b9e3ed20c5cfa7c565893d2147ff5d00693e23b89bdd512761bdeb"
+    },
+    {
+      "path": "generated_images/exec-a98f6aec-6b8a-4072-b434-d721f2732391.png",
+      "sha256": "3db4af901b52a6968ae5ad773ec63a1b757195b315ec20bca6e996b41513a806"
+    },
+    {
+      "path": "generated_images/exec-aaed61a6-1a9a-4b69-bca7-506d725d4779.png",
+      "sha256": "c0957a9d465aeae951fbaa39b73d2a53509000a27c8de36e37b0d4f577030d75"
+    },
+    {
+      "path": "generated_images/exec-ac3fecba-926b-48cf-967e-a23c1c3c840d.png",
+      "sha256": "4ae7dbe6470bbce085afec0b59dc5bbe7e2068005494a3a6e17239720f4347c4"
+    },
+    {
+      "path": "generated_images/exec-bf7cc2ca-0351-484e-8c84-896a6e05480e.png",
+      "sha256": "a664669971e9d99114a48507ffefcc16adba68c3c0fa0cd2ecac53717c46cd71"
+    },
+    {
+      "path": "generated_images/exec-d346b401-0e2b-4167-bb33-f4dc95f35993.png",
+      "sha256": "fc529a45878aabc6f06806a7acb81b1e56750ecf77d6a9f816179cee122dcb95"
+    },
+    {
+      "path": "generated_images/exec-ef04d072-bd48-498a-b07d-46f0b21edcc8.png",
+      "sha256": "94e8635a851463e91b0e6de088f5a2f97383b5ef68a83c4bf15aed03e38c9e22"
+    },
+    {
+      "path": "generated_images/exec-f726180b-4c12-4c46-8707-38d2469d0b1c.png",
+      "sha256": "558ca0f7924d453e4d05806f97f6a202a0633023399feec2b72df2a456846e44"
+    },
+    {
+      "path": "index.html",
+      "sha256": "f10131dd6a4456c4e530d57f66eeffb16427aceb68ff5c34e2b827e15d1b3de8"
+    },
+    {
+      "path": "native/cocos-poc/.creator/default-meta.json",
+      "sha256": "b52800a6063e26378a7ed6610800cbec4261614c507e7b5a1afc0c0b696605f3"
+    },
+    {
+      "path": "native/cocos-poc/assets/generated.meta",
+      "sha256": "88d7602bb9c6233920925f4e6dda806381ee9f887454a018ecaeb097bc3a1bd1"
+    },
+    {
+      "path": "native/cocos-poc/assets/resources.meta",
+      "sha256": "e8c19718f2493e7dfc4fbfb14c873bb90f70f605a265ea41d2b61d2957864045"
+    },
+    {
+      "path": "native/cocos-poc/assets/resources/generated-art.meta",
+      "sha256": "da8c30db28aca59c6f6616e432a5100a74473b219de69fe95df1b31ea3d2c25d"
+    },
+    {
+      "path": "native/cocos-poc/assets/resources/generated-art/enemy-boss-v2.png",
+      "sha256": "a08052935da2ab73199ff561a9341bffdebc85a8b6d01ba0edebe907f757d47b"
+    },
+    {
+      "path": "native/cocos-poc/assets/resources/generated-art/enemy-boss-v2.png.meta",
+      "sha256": "775e2321b710d15b6b4a10f7aaa1dc1005b6a71dfd5134124850e4882300edfb"
+    },
+    {
+      "path": "native/cocos-poc/assets/resources/generated-art/enemy-grunt-v2.png",
+      "sha256": "a1f27f73977421db43e39cf97e17ac5e97de9e112c1039277f782d0d1c22fd2b"
+    },
+    {
+      "path": "native/cocos-poc/assets/resources/generated-art/enemy-grunt-v2.png.meta",
+      "sha256": "3852bbbd40a257a996c1c3d32512cf2d80e84472577c8cb5ec3d1c0e34fbd408"
+    },
+    {
+      "path": "native/cocos-poc/assets/resources/generated-art/hero-v2.png",
+      "sha256": "9d00dcb2cf8a693bb66531fdead3859f5151d99f83ed41df96156733bbdcc5d9"
+    },
+    {
+      "path": "native/cocos-poc/assets/resources/generated-art/hero-v2.png.meta",
+      "sha256": "664e90838a0a26f8c3f46c024874a5af11e9af84d69c2456e46d46d77494c1d4"
+    },
+    {
+      "path": "native/cocos-poc/assets/scenes.meta",
+      "sha256": "fe336a1d9838e8afa3d9a8060208a076d9d6a614d24395606f3d00493495be11"
+    },
+    {
+      "path": "native/cocos-poc/assets/scenes/poc.scene",
+      "sha256": "503bd3b3a70bd6ec3608772d6109b72db71bb6a00aac4d8697287eb5dbd0493d"
+    },
+    {
+      "path": "native/cocos-poc/assets/scenes/poc.scene.meta",
+      "sha256": "a048f083052f4baf5209a65c4c6b46866e96fb3df8086c468aac27e59e317e61"
+    },
+    {
+      "path": "native/cocos-poc/assets/scripts.meta",
+      "sha256": "5b21ad10bf564eac643a3da059978da273e7fe3ef40568005cc6fbda270169a5"
+    },
+    {
+      "path": "native/cocos-poc/assets/scripts/FrontierCoreAdapter.ts",
+      "sha256": "37d09345874c9bfbb46aa24fad96f1f0733cf74039c0f0b72772276f85ad3198"
+    },
+    {
+      "path": "native/cocos-poc/assets/scripts/FrontierCoreAdapter.ts.meta",
+      "sha256": "561e35a8d9cf0d78272b41710c5e8cd48099be8dc7570ea50200df0458e116fc"
+    },
+    {
+      "path": "native/cocos-poc/assets/scripts/FrontierPoc.ts",
+      "sha256": "12bfd09b8709116f142c0a0c7c536e573d63ee22b15ba29bfe2fef1b41895f16"
+    },
+    {
+      "path": "native/cocos-poc/assets/scripts/FrontierPoc.ts.meta",
+      "sha256": "2545218bf0dc16757688c5da28a716d1ab27ee2d780987676c2714734dda6cbe"
+    },
+    {
+      "path": "native/cocos-poc/build-android.json",
+      "sha256": "2e8f62ae6d1ba8c7a7a191f37365152fc79e829c42f00c5066e69da529a095d7"
+    },
+    {
+      "path": "native/cocos-poc/build-web-mobile.json",
+      "sha256": "4869e533ec77ed16224e51b21b7e0d49be78106d96a3ac9e22fcd1df0b8e6154"
+    },
+    {
+      "path": "native/cocos-poc/package.json",
+      "sha256": "a1b9f372fa480ec353b288a473747585a3fa96063cbceaa661b5b8590ddd8196"
+    },
+    {
+      "path": "native/cocos-poc/settings/v2/packages/builder.json",
+      "sha256": "a3e1a8df580b6ebec15ad16c9bbef785806567bfbc093821852bb3606028e702"
+    },
+    {
+      "path": "native/cocos-poc/settings/v2/packages/cocos-service.json",
+      "sha256": "3e20b17721cd3240e5d4d2c43266abd7df1964514fd9d9dbe4eab28c0a2af2cf"
+    },
+    {
+      "path": "native/cocos-poc/settings/v2/packages/device.json",
+      "sha256": "93af91e0b90038cedc84d08651f845e1c2e2ae460321c19f083c27a178e451f8"
+    },
+    {
+      "path": "native/cocos-poc/settings/v2/packages/engine.json",
+      "sha256": "4f3ab4457fee5624da55da063d3e3025a58fb590309833155e1d28b891157121"
+    },
+    {
+      "path": "native/cocos-poc/settings/v2/packages/information.json",
+      "sha256": "454a5cfc57fc506f7240ce3c1cb1285b9dc0c29ea791749ecfb6e802dcac831b"
+    },
+    {
+      "path": "native/cocos-poc/settings/v2/packages/program.json",
+      "sha256": "d914f9f19ffe02724337936d8c7907798c8666566902b78243eb1aa8da0baedd"
+    },
+    {
+      "path": "native/cocos-poc/settings/v2/packages/project.json",
+      "sha256": "86e60258fc615fe023aef88ff8d66f6e8cf0c784fcef5c02d75b08a42b204241"
+    },
+    {
+      "path": "native/cocos-poc/tsconfig.check.json",
+      "sha256": "9623cc9c5399c46b671e3f4bf7d6a49b301a75a75f59331c056448f3faf429b9"
+    },
+    {
+      "path": "native/cocos-poc/tsconfig.json",
+      "sha256": "1e2c80be878021cb3687c01d095f01baef98f471270ccf0cea92a8cf5770155e"
+    },
+    {
+      "path": "native/cocos-poc/types/cc.d.ts",
+      "sha256": "432b01afb285b951c4a7c2522a8a2122cc59719d0d9ff1dffd1e5f6ede732c39"
+    },
+    {
+      "path": "native/cocos-poc/web-pwa/frontier-icon.svg",
+      "sha256": "c069b2c749eb52a4081010d9280e71a8240997b62de39b5d51dae5e6de0b2890"
+    },
+    {
+      "path": "native/cocos-poc/web-pwa/manifest.webmanifest",
+      "sha256": "ae33ff51955cf1e18285787c464cbb839786f36c15cb9df93fb28228599cd1f3"
+    },
+    {
+      "path": "native/cocos-poc/web-pwa/service-worker.js",
+      "sha256": "51dd875cf3ed76b4d5868a9659711d9bf4ca21ca1ff059bd9d1b06ab912a013d"
+    },
+    {
+      "path": "native/godot/README.md",
+      "sha256": "38923c3e41b6d3796bf74891a673a75287e7f3e407e68710c2b9abd974b45b2d"
+    },
+    {
+      "path": "native/godot/assets/art/enemy-boss-v2.png",
+      "sha256": "a08052935da2ab73199ff561a9341bffdebc85a8b6d01ba0edebe907f757d47b"
+    },
+    {
+      "path": "native/godot/assets/art/enemy-boss-v2.png.import",
+      "sha256": "e47f20b3d6f910de1b583b8e076724f50b6dd1bcb661010cb12939c11fd852d2"
+    },
+    {
+      "path": "native/godot/assets/art/enemy-grunt-v2.png",
+      "sha256": "a1f27f73977421db43e39cf97e17ac5e97de9e112c1039277f782d0d1c22fd2b"
+    },
+    {
+      "path": "native/godot/assets/art/enemy-grunt-v2.png.import",
+      "sha256": "f05723e068077f3b8722d175883f61541ed7688240dca0a5630cc9e3f0325a1c"
+    },
+    {
+      "path": "native/godot/assets/art/hero-v2.png",
+      "sha256": "9d00dcb2cf8a693bb66531fdead3859f5151d99f83ed41df96156733bbdcc5d9"
+    },
+    {
+      "path": "native/godot/assets/art/hero-v2.png.import",
+      "sha256": "443db3e13366c515491fdc608c14ca9e324cffc5db0de61638fc6e01f2f234e3"
+    },
+    {
+      "path": "native/godot/assets/copper-guard-v2/animation.json",
+      "sha256": "c43afdb1f954708c530803d80014027fd6ccb81660a880dfc017b85cb2999e83"
+    },
+    {
+      "path": "native/godot/assets/copper-guard-v2/charge.png",
+      "sha256": "220f161bf1d48a65472fd3dc20357860229d5b67c7c11907716950af33780d1b"
+    },
+    {
+      "path": "native/godot/assets/copper-guard-v2/charge.png.import",
+      "sha256": "c1a639e4d7eedf0f200143df6569f8f5c1e40804466726b52e754cc8c7bdabc6"
+    },
+    {
+      "path": "native/godot/assets/copper-guard-v2/death.png",
+      "sha256": "ab0a70f030e72ad7f840fd2cd5b7709024010df9f109b22f5570590da2dd5d7c"
+    },
+    {
+      "path": "native/godot/assets/copper-guard-v2/death.png.import",
+      "sha256": "ba8d43306eecf83026d5ff091b6cca9dbf705f046edd984d72da35b8af764285"
+    },
+    {
+      "path": "native/godot/assets/copper-guard-v2/hit.png",
+      "sha256": "3ba61d3c210604782c757e9f7400638f06787118ba330cec7b6932fa6a5337cc"
+    },
+    {
+      "path": "native/godot/assets/copper-guard-v2/hit.png.import",
+      "sha256": "9e6cc6b22012ba394e0cfc6526ecd9c7a955ee80244e03d310830f8f7636c579"
+    },
+    {
+      "path": "native/godot/assets/copper-guard-v2/idle.png",
+      "sha256": "a988f5e77524e0ed0a04136e62cfe35d1515dc0e65a2589a12a428388eed0e72"
+    },
+    {
+      "path": "native/godot/assets/copper-guard-v2/idle.png.import",
+      "sha256": "9355670cedb2acee0815e7f89ead3c1f4c89d1b5087b73557da19c8c20577984"
+    },
+    {
+      "path": "native/godot/assets/copper-guard-v2/move.png",
+      "sha256": "c7433837f0aa7b6ddd7fd52d0ef168533e333c847174702bb061b435ff3b16e0"
+    },
+    {
+      "path": "native/godot/assets/copper-guard-v2/move.png.import",
+      "sha256": "732893ce48f3846cfb058cd1cd4dc0de1baaf89c8ffc23a00b9c8ffeaaae9f20"
+    },
+    {
+      "path": "native/godot/assets/copper-guard-v2/nova.png",
+      "sha256": "ebcf1413c88c3a9c28d3563da5d73099373fd9207f7f76c2d6714078708b51ee"
+    },
+    {
+      "path": "native/godot/assets/copper-guard-v2/nova.png.import",
+      "sha256": "2916d62db5d8ae05cd7aec48088da41e655e0b593b9ff3e1907ccdab6f3f5d0e"
+    },
+    {
+      "path": "native/godot/assets/copper-guard-v2/provenance.json",
+      "sha256": "ed859eef13f77864a6738a0d29fae1c884b27a9913b62df6ab6919c92123b8b3"
+    },
+    {
+      "path": "native/godot/assets/copper-guard-v2/registration.json",
+      "sha256": "8052a91eb149ce26c57cc9c469be1a7da76a59f038b4334f9f993773e2e1f270"
+    },
+    {
+      "path": "native/godot/assets/copper-guard-v2/rush.png",
+      "sha256": "f957255aef0d2faf49f0ca94e02802979550a822cc7d24111cb02d79c8cdcbc0"
+    },
+    {
+      "path": "native/godot/assets/copper-guard-v2/rush.png.import",
+      "sha256": "0525d3b8700005d71c2f9e462521c778d00555feb6bd0eb4a018a35800e483a3"
+    },
+    {
+      "path": "native/godot/assets/copper-guard-v2/slam.png",
+      "sha256": "84a09a20eca3ae31afbde17c85461fbff2aadd5ba7084b62e1bc3f5e2995b41a"
+    },
+    {
+      "path": "native/godot/assets/copper-guard-v2/slam.png.import",
+      "sha256": "704db65312cc20d461aa3b9bbd0dcc37069548422aeae05f608c324738956b46"
+    },
+    {
+      "path": "native/godot/assets/copper-guard-v2/summon.png",
+      "sha256": "3cc42ff6f7da752a2c43789f69ba8251a4b2ff3aa784902be49a76c5a3ad5c22"
+    },
+    {
+      "path": "native/godot/assets/copper-guard-v2/summon.png.import",
+      "sha256": "be5c4ba055dbdec4d15e65ddd76eea1b4e190f94e62030c279b045f1d6c0a4d0"
+    },
+    {
+      "path": "native/godot/assets/copper-guard-v2/sweep.png",
+      "sha256": "7612044df433669033b4dad2f634671a2a7c2e377e0a6f919147d1a2355018fb"
+    },
+    {
+      "path": "native/godot/assets/copper-guard-v2/sweep.png.import",
+      "sha256": "09a41df911826472a8756ed639f269cf782d0a167defd5dba54c07151046af93"
+    },
+    {
+      "path": "native/godot/assets/environment/README.md",
+      "sha256": "353fd18cfc5e916c3f5412c95b8581a444c7790bda719ebc8e0e527c219b1784"
+    },
+    {
+      "path": "native/godot/assets/environment/checkpoint/README.md",
+      "sha256": "3c2e74a454b39738df500903b31531be08b2b5a9ef13921fb6088845ec53749c"
+    },
+    {
+      "path": "native/godot/assets/environment/checkpoint/asset-contract.json",
+      "sha256": "7ed494c14a8e7fa67ee084aef6ebfe262b6ce0f1fbee25263b8b9252584b07fe"
+    },
+    {
+      "path": "native/godot/assets/environment/checkpoint/boss-pennant.png",
+      "sha256": "24e95dd3282d23d0ad129ef7ff97e526bdbe56f50508c7fa5f30877cc31214b1"
+    },
+    {
+      "path": "native/godot/assets/environment/checkpoint/boss-pennant.png.import",
+      "sha256": "29672758f69787ffe183994cbab1e053e5fb967ab68f5558c8b92e6c940d930d"
+    },
+    {
+      "path": "native/godot/assets/environment/checkpoint/gate-frame.png",
+      "sha256": "b2770b54d9217a0be88a934fe153f5294d9566a61607e624cb2c3ca382a23b28"
+    },
+    {
+      "path": "native/godot/assets/environment/checkpoint/gate-frame.png.import",
+      "sha256": "248c319f77947dc3311b60808846e4c33a47ef9f9263f327661011f25775b1be"
+    },
+    {
+      "path": "native/godot/assets/environment/checkpoint/portcullis.png",
+      "sha256": "4db297304d635f5384938b576545ec1624ead2f97a42c4d87ed158c0f63c65a3"
+    },
+    {
+      "path": "native/godot/assets/environment/checkpoint/portcullis.png.import",
+      "sha256": "323b90f9a88801c5db73d0755774456c313c0f5f64a7586ccfea8c8a09682f1b"
+    },
+    {
+      "path": "native/godot/assets/environment/gates/README.md",
+      "sha256": "d834b76c80daeae5bd51d1d6a088739508121c8dc134016ba501d830c4298362"
+    },
+    {
+      "path": "native/godot/assets/environment/gates/asset-contract.json",
+      "sha256": "0d0bfcd891df1cba806af87c088d0fa762a5cfba60d3ae5902c172f033c852d8"
+    },
+    {
+      "path": "native/godot/assets/environment/gates/gate-boss-accent.png",
+      "sha256": "14324ec88a0b6b120daa0bbefcb8eae6330ec5a1391db73a7b26437e28215336"
+    },
+    {
+      "path": "native/godot/assets/environment/gates/gate-boss-accent.png.import",
+      "sha256": "5926ab8f6abea699181bb3b6e952152f683a7cd73694b88d59fc2dbe636f7c1d"
+    },
+    {
+      "path": "native/godot/assets/environment/gates/gate-closed-panels.png",
+      "sha256": "9e9994504e7eaefb2f36507063077eeb16a6b29828494d2c69e168743d384370"
+    },
+    {
+      "path": "native/godot/assets/environment/gates/gate-closed-panels.png.import",
+      "sha256": "7ddb3a40424342feaf12e6d68642ca545f7b066d42fc2324bb28a2079eb02090"
+    },
+    {
+      "path": "native/godot/assets/environment/gates/gate-frame.png",
+      "sha256": "045631765960bd7bae546ecef6a2b78d2f844cd09052607956ce4590cec74edf"
+    },
+    {
+      "path": "native/godot/assets/environment/gates/gate-frame.png.import",
+      "sha256": "40326de72be670f23d36236b8a14f065aa35029c96710a12264b1d0b514b9f49"
+    },
+    {
+      "path": "native/godot/assets/environment/gates/gate-open-mist.png",
+      "sha256": "56568a46c91f7e684463c83fbbe124bc5b0262b16b5dd17686d221990952526e"
+    },
+    {
+      "path": "native/godot/assets/environment/gates/gate-open-mist.png.import",
+      "sha256": "c69770149d3b2e84777bc07689203a9c6e357d8cfb08b051e60c26fa2c13efea"
+    },
+    {
+      "path": "native/godot/assets/environment/mistward-backdrop.png",
+      "sha256": "da2372ce5f0323d9ff244022e203eabdf73a5fd445fefaba73c221b12d8c7605"
+    },
+    {
+      "path": "native/godot/assets/environment/mistward-backdrop.png.import",
+      "sha256": "0c08af670fc3f76d1ff0b9b743b0abcd4edd6b69753e79e5b22541e2a73820e5"
+    },
+    {
+      "path": "native/godot/assets/environment/stone-edge-contract.json",
+      "sha256": "4c758867db9e9224eba89708d9b031c5443718fd2fe36591aff3653822b2f428"
+    },
+    {
+      "path": "native/godot/assets/environment/stone-edge.png",
+      "sha256": "38117bce5353f028dab00b402fe95fe71486df0bad6891e4581936c0998ad161"
+    },
+    {
+      "path": "native/godot/assets/environment/stone-edge.png.import",
+      "sha256": "073b0561fab03e4fd0aab5281448d6aa2c5689a7f9c4f94a25b1774bc31778c4"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/INTEGRATION.md",
+      "sha256": "eb9dc282a9c67d929d842a1cfcf977820ff2778a6ddaadbd02ae4e62a5d05b53"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/animation.json",
+      "sha256": "5a6ed5793a77bfae5d7e5414c9931d5dcfcb8c87cc8670d475a794583446b63b"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/effects.json",
+      "sha256": "cbc0afe5d0ec31230bded327050ef854a95eff4f1e520c4524b45e1105f08a29"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/effects/airSlash_trail.png",
+      "sha256": "b36906798465bcbdb6efd64ee5523bbf60ed6cda7af1df952b546871a5329c7c"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/effects/airSlash_trail.png.import",
+      "sha256": "15860d56aeb89190a39d6681b68e7b250b49c50024109d5121ca2ef150495099"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/effects/dust_00.png",
+      "sha256": "2ec647db1b3102a67330aa2e43672de682390e7039498100b9cb493437d69bd8"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/effects/dust_00.png.import",
+      "sha256": "9d205f14fe50481f66a632c93583b83c4df0093314f5e87e92be9108df079277"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/effects/dust_01.png",
+      "sha256": "df088bb1390878439aef0539cc907d40b288f6aaa7d274d62df66b776522feca"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/effects/dust_01.png.import",
+      "sha256": "fe1557cbcad2986afbc5d384d6f942dc447c95e2bc8400bbe44d1f3dd7f52ed6"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/effects/dust_02.png",
+      "sha256": "96903eb4101d10d93cec3e46a32053a706d6ac2653ec7095471df24946d9da80"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/effects/dust_02.png.import",
+      "sha256": "35031f91f122cdf7fdbfa2c0e6d3a4fff42305a095d1af16e6ba65ddee50b775"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/effects/dust_03.png",
+      "sha256": "61b663e2aa46b32fb6a14f3348f60ad70b55d3cd7a46f1baf9f93df2f116b45d"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/effects/dust_03.png.import",
+      "sha256": "f09a590c94077a68a70e7e00434dd2253140f5dd82e1556eb0994a71473a4ec7"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/effects/dust_sheet.png",
+      "sha256": "01e93a82668df0d8c730de2fc4fe0978b6b34fb50e9ba8bd99ebb552ff3ed0a0"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/effects/dust_sheet.png.import",
+      "sha256": "845d4b92b9c3b96b5c7962258d7ec91468a7d25ef5e132e982ce1786fbea84ae"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/effects/execute_trail.png",
+      "sha256": "dde39f7887b28be6dd1d4d5872685c141d2f835b28c4e0bca52290ae9b3c5535"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/effects/execute_trail.png.import",
+      "sha256": "cb6627bd9aa62f0f402561ebfa787d236ceec2db884fb5ee7cec43a493ff0f8d"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/effects/skill_trail.png",
+      "sha256": "d8714e41cc50fd8b387df4ae85c5b1380f26c68c2c6b59979f2cb4b6d8c9aef5"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/effects/skill_trail.png.import",
+      "sha256": "c77c7b5cddcb99640d5ba6feabe2feb29995f1b3801fbc4e9c3f161efbefddfe"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/effects/slash2_trail.png",
+      "sha256": "b774c821769291449e77fd64190308a9dda915b572fe7c7e9f1ed2e844c024ee"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/effects/slash2_trail.png.import",
+      "sha256": "15beaceb0264906669b19ab0cfd5d3a124f65385dbcc55134fa6c6fa27c1f519"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/effects/slash3_trail.png",
+      "sha256": "abe4e74c5a3458d0cbeca6bf5291401f5bc2e01f29e1ef2b45d62795b09b6c25"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/effects/slash3_trail.png.import",
+      "sha256": "36620dd820f38e541f0e2a570196807f376cce7f59c4ee4f60b00a792304c457"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/effects/slash_trail.png",
+      "sha256": "aa0fae2fb4d4ac5f15aaa13956730345723c8260f35090d793345b905239878c"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/effects/slash_trail.png.import",
+      "sha256": "8bdd2ff64956454949746ad89bbaca582db7fffa9dd17575039febabca6660f1"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/sheets/airSlash.png",
+      "sha256": "9df3029a7079ed81f4cd78a5ded31e4b4199bf355d8b870e6bee4f45a18f663d"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/sheets/airSlash.png.import",
+      "sha256": "29421bd7b87ee784230d3e0f6ff8a8826982d6ec18d0e97971834102b3466de0"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/sheets/dash.png",
+      "sha256": "ab05b152ba315b08946e65c340594265d1e8913d4eda7f7d7e1de04d297bb16e"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/sheets/dash.png.import",
+      "sha256": "aa063744b2e05e1a02d8b7d087f52b5bb880946e8aea9e2b715d60f9791bce06"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/sheets/death.png",
+      "sha256": "f66142f2774abc34072c7860abf0c7cc885ed73ac1b093d06320f3698c9cbedf"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/sheets/death.png.import",
+      "sha256": "a51c14c0e53f804f51459894c6758e13a7a077cded2a3acd72d4a3df7369efb8"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/sheets/execute.png",
+      "sha256": "c49c9c58e6534af0363206e7f95b8fa1d0de06531f08c90e72f24c14aaeda1f4"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/sheets/execute.png.import",
+      "sha256": "8cb12b75fe803971dc127e481a293727bd1fbb0a8df47134af07058d84183ce6"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/sheets/hit.png",
+      "sha256": "d77790bd6c0d288c687d194ea14eb993c44113ededdd3a6ed8d73245f3361385"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/sheets/hit.png.import",
+      "sha256": "9d73ba6afca521e9f8de5cdebb663d4605702b0ce6ffaa8f85bff41bed51beca"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/sheets/idle.png",
+      "sha256": "d74c57b88f9e5bf3820cb1ad8c8262a2e3c7a4babf54657cf1f4099069b0cade"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/sheets/idle.png.import",
+      "sha256": "ed6d579a55c9acce9da9ee2bf0ba6519c410c66a66d4e2bf5ddd7df2ca3d799a"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/sheets/jump.png",
+      "sha256": "70819f2aeaf4f564913f2e34db1e377a616a2caa8e462bb8885b65e907214ffa"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/sheets/jump.png.import",
+      "sha256": "2fc5738d4ea12104867803a847e6160c363ad5e137f17ae27d55008198c9a37f"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/sheets/move.png",
+      "sha256": "1fd6ad857a3f7c8218d45500a8087a5e9c42f973691823d78cf585abf710bb7c"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/sheets/move.png.import",
+      "sha256": "812e27d0c1df296c240a777c052906e710f97c4dd8c5a33b4a2b09d84df366de"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/sheets/skill.png",
+      "sha256": "ee95c9ff843941c749245146e5a7698b7af27a55e8306c422b1052e68e2dbde1"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/sheets/skill.png.import",
+      "sha256": "ac9f0efeb14d88ec700b0116fd942913a44b4492d69dc136420ee723d0a0f5f3"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/sheets/slash.png",
+      "sha256": "2aa3ac8d4e9751b03d83601d6ef4239fb751b607f868c84d9cbef25c6b891418"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/sheets/slash.png.import",
+      "sha256": "cd1862ef02aa0ae76365badbefe9ad7179fc9cd3ff747fd2346806bebe46b8e0"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/sheets/slash2.png",
+      "sha256": "e286b74a36918430a87422ae4cb4b50fefbf945464afb3040719640c9f1240f8"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/sheets/slash2.png.import",
+      "sha256": "69240226f9d5cecc17c9025f433dfe6272a3f7ca4bc0b6884c7d917ea42eb87a"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/sheets/slash3.png",
+      "sha256": "996807cb528f58be0aca364a4966915c6e7680187331b1aa8e81791286898c46"
+    },
+    {
+      "path": "native/godot/assets/wudu-hero/wudu_hero_v2_runtime/sheets/slash3.png.import",
+      "sha256": "6acb2228de485273376181cf5d1225d947f8eabea55ad31149ab12d6342f94bf"
+    },
+    {
+      "path": "native/godot/data/first_stage.json",
+      "sha256": "eb03ae3f8f9c4def35625022b57f98f230a1ab656792510a938351b3c050e962"
+    },
+    {
+      "path": "native/godot/data/yone_mvp.json",
+      "sha256": "b22dfce7ed74751f0e8166ea46b64a09ae80b71a006dfbcb585191c7e13f21bd"
+    },
+    {
+      "path": "native/godot/docs/environment-redesign-2026-10-04.md",
+      "sha256": "5339ed5ecfe6678e27105f7928d914e191df5aa25d4c9710414203df9d03c06f"
+    },
+    {
+      "path": "native/godot/docs/redesign-2026-10-02/BRIEF.md",
+      "sha256": "1d2942ad675002efcbd5a29ce6168d27c22035f692d50ef7ea9e61db2d6c7686"
+    },
+    {
+      "path": "native/godot/docs/redesign-2026-10-02/VALIDATION.md",
+      "sha256": "633b430bdbfdbc3d54b9156e1c3d1ad0b9a90946d13553393867bab072f2dd45"
+    },
+    {
+      "path": "native/godot/docs/validation.md",
+      "sha256": "a3dac3cbce0b218e3b9b4920dfe25dbc2d51c1e0609e67ce8582276a3a7c8e03"
+    },
+    {
+      "path": "native/godot/docs/yone-mechanics-feasibility-2026-10-04.md",
+      "sha256": "6d2b277e7bb65601d32cb991068a5a538c52ff0754326192a6cfc41d3b0227aa"
+    },
+    {
+      "path": "native/godot/docs/yone-mvp-integration-2026-10-04.md",
+      "sha256": "f0be70238a4394702c5bb9b9262137cadc26d659ff23ff51576569d21eb0e06d"
+    },
+    {
+      "path": "native/godot/project.godot",
+      "sha256": "82e904de6263d4fabb190c3f1f1a4f5b826795b3f23d04187f1ff85e2e6994b8"
+    },
+    {
+      "path": "native/godot/scenes/actor.tscn",
+      "sha256": "83e7c8ba8a6ff53f85ab802a1998c76aa766d5326b769d817aebf2597e047b45"
+    },
+    {
+      "path": "native/godot/scenes/legacy_actor.tscn",
+      "sha256": "83b9f610dd6044a0d54b70bab015eb2deeb3210747fd37776b53f26566123c1b"
+    },
+    {
+      "path": "native/godot/scenes/main.tscn",
+      "sha256": "5cbf979fd2bee774399806fe10a092454d1dbdf71d2c4c972e43bef461ac9921"
+    },
+    {
+      "path": "native/godot/scenes/motion_lab.tscn",
+      "sha256": "838cb26e45472e3d1e44075560d93c7810bfa4e747adf76dd4eaf92baaf6fe7c"
+    },
+    {
+      "path": "native/godot/scenes/room.tscn",
+      "sha256": "dfd0fc5834238f8275f391e712a6790e4680758ebbf00a3584489c45ae3078b6"
+    },
+    {
+      "path": "native/godot/scripts/action_state.gd",
+      "sha256": "c0ac7e918fe203ef5c450a99d66975d4f83a0d71ad5bfd72502f2cb9a4ecb780"
+    },
+    {
+      "path": "native/godot/scripts/action_state.gd.uid",
+      "sha256": "0bdc3de5131dc5e8fa72a3aeaff4d944812b76ba3ae510b0aeb1a77cb84dbc34"
+    },
+    {
+      "path": "native/godot/scripts/actor.gd",
+      "sha256": "e25f9230fd37878442026c2317cd846c03b1e59ebe807ff33952ff89ba0478cc"
+    },
+    {
+      "path": "native/godot/scripts/actor.gd.uid",
+      "sha256": "5713e8fe5e203a8df6cdf789d2ef823b41980069ba41bdfc00a76e686a607729"
+    },
+    {
+      "path": "native/godot/scripts/actor_visual.gd",
+      "sha256": "2d677db05322bca9f7780131bc5a012c6c8ad7347452648e705e1eafa7b7e287"
+    },
+    {
+      "path": "native/godot/scripts/actor_visual.gd.uid",
+      "sha256": "9ace259732a0cedbb2d173066ea863271568a0f33ecae13da76b697c14c19aab"
+    },
+    {
+      "path": "native/godot/scripts/animation_pose.gd",
+      "sha256": "7b7c49da49e71b04a1b119beb2cc73b956900c3a190d5f899fd6d312250c3fca"
+    },
+    {
+      "path": "native/godot/scripts/animation_pose.gd.uid",
+      "sha256": "a57d9861c261d14d6887e38b4cb340a19b1755b9a52dc8aacac465623d4264dd"
+    },
+    {
+      "path": "native/godot/scripts/audio.gd",
+      "sha256": "38979073fc737292055ae6236db63296e3b347f0a619d338a396866a85b2d8e0"
+    },
+    {
+      "path": "native/godot/scripts/audio.gd.uid",
+      "sha256": "cb88714c3016f0c25805c03a88c31cd131ef3c0d2d094719373d763b0427bfdc"
+    },
+    {
+      "path": "native/godot/scripts/checkpoint_gate.gd",
+      "sha256": "89ba99bad92db7582fd74ffa86fecc43f2cbe1a986ecf349671a66538efe2440"
+    },
+    {
+      "path": "native/godot/scripts/checkpoint_gate.gd.uid",
+      "sha256": "f83b26aca7d33f843515e5d3246a9dd6aff97af973663b07e3b4666a226401d4"
+    },
+    {
+      "path": "native/godot/scripts/combat.gd",
+      "sha256": "a65fd815c7add8a5e9608364964a536b30d955a1697669b3158a78b076589072"
+    },
+    {
+      "path": "native/godot/scripts/combat.gd.uid",
+      "sha256": "aeaa231eb5aa3ece841808a76a67713eaea4e9821284453aad651946270d60b3"
+    },
+    {
+      "path": "native/godot/scripts/copper_guard_visual.gd",
+      "sha256": "3e632b008f08c631d2b24d1c9494f33aea246d510dccff203adac8b54dac381f"
+    },
+    {
+      "path": "native/godot/scripts/copper_guard_visual.gd.uid",
+      "sha256": "00ca17b4d4a2d0da922dddd35069538def5099a5de6ccb6a492d483d636fa570"
+    },
+    {
+      "path": "native/godot/scripts/enemy_director.gd",
+      "sha256": "70f9c20f161d219b6993fdeaaf50fd2ab10436f20b2e79c07a1ee3b05e6b8a60"
+    },
+    {
+      "path": "native/godot/scripts/enemy_director.gd.uid",
+      "sha256": "2e207ab371d566638f89c79f45cdb52d4b89f3d051d282f208cbe0d5694cec3e"
+    },
+    {
+      "path": "native/godot/scripts/game_data.gd",
+      "sha256": "fa83c64050d63cc6d65bc68f6ec9fc39fb1bd4f4db46ba5e1ba20504e619e92c"
+    },
+    {
+      "path": "native/godot/scripts/game_data.gd.uid",
+      "sha256": "a2f405f4799477dad8854db00cd4776a8a29c524cdeb1aef855da5a0aa4baeae"
+    },
+    {
+      "path": "native/godot/scripts/hit_effects.gd",
+      "sha256": "7932e6592a8ff3007b9c7af8f56c455d159ddeb9eea958979f206be4f9400288"
+    },
+    {
+      "path": "native/godot/scripts/hit_effects.gd.uid",
+      "sha256": "d33c601ee35eb27a1e985b28037349e18048a45607b1bd8958f2f9401f73fa62"
+    },
+    {
+      "path": "native/godot/scripts/hud.gd",
+      "sha256": "79fc076902120efb376b83687106cb8c7e334d1f5879f69d59808dad3a0089be"
+    },
+    {
+      "path": "native/godot/scripts/hud.gd.uid",
+      "sha256": "5ff0791ac536497bb8fba534462a4af50bf21921f290a191829b0204e473793b"
+    },
+    {
+      "path": "native/godot/scripts/illustrated_actor.gd",
+      "sha256": "d4b50cd290d5d874048ef1b38be04c0097bd02dbeba39dbabe18b3b93d8a92cc"
+    },
+    {
+      "path": "native/godot/scripts/illustrated_actor.gd.uid",
+      "sha256": "dbe801bddd1955fd686116c4b408e47a1860be586de5a25427a3ff4fbf1b44b3"
+    },
+    {
+      "path": "native/godot/scripts/impact_feedback.gd",
+      "sha256": "afb74802226845dd590f880294e2580e0ce43f496077849074c35d0a8e704a6f"
+    },
+    {
+      "path": "native/godot/scripts/impact_feedback.gd.uid",
+      "sha256": "a5f6933c5e75609807694833c73edc1f922017ac003bdd101fbafed8d2d5be40"
+    },
+    {
+      "path": "native/godot/scripts/input_router.gd",
+      "sha256": "d5200ce596c5dc658f8e083e591c83859c797d3e7d01cd851e0e541dae842e6c"
+    },
+    {
+      "path": "native/godot/scripts/input_router.gd.uid",
+      "sha256": "b77856aafd358bdccc15c1bca80e7e0ed96e39174e7649cca75542bc4eb0a5ae"
+    },
+    {
+      "path": "native/godot/scripts/main.gd",
+      "sha256": "eae13cd473a6ab7f6f60acec99dea13cfca60708a94f9dc3e234ca46134c0232"
+    },
+    {
+      "path": "native/godot/scripts/main.gd.uid",
+      "sha256": "0227ea2b7c21ad046e92a5370aa1b04970a962758357873781f1d2769bb4f65a"
+    },
+    {
+      "path": "native/godot/scripts/mistward_room.gd",
+      "sha256": "1a47e9cdb3ac5c3b874dc3bd8fb42827b8b936d569f465298f8dc3ef4f981c5f"
+    },
+    {
+      "path": "native/godot/scripts/mistward_room.gd.uid",
+      "sha256": "ee0f0d30a44f59db682c2b7de140ce8c65e550f0fcd0a7e8772f83f4c4fcf2cf"
+    },
+    {
+      "path": "native/godot/scripts/motion_lab.gd",
+      "sha256": "4a43463c45bb70a13258f95a387362248e353852bcb1be0be10a8c7644721e07"
+    },
+    {
+      "path": "native/godot/scripts/motion_lab.gd.uid",
+      "sha256": "b3974af7d5afe5211698d1f0b82bf0562ccc84597a31a1a88c4803852b3868f2"
+    },
+    {
+      "path": "native/godot/scripts/room.gd",
+      "sha256": "b03791075fdb6cba1d6022e87b566f9937d24b1543a017ec1bf6e45a37667f92"
+    },
+    {
+      "path": "native/godot/scripts/room.gd.uid",
+      "sha256": "d656b0420b5cf150e66ea5b55ce93d82d9484f2b39c1e92b66b405337f4bb6df"
+    },
+    {
+      "path": "native/godot/scripts/run_controller.gd",
+      "sha256": "c785c4b3f06494bc47a5b19517df790015b166c22c79cfe3c29dc1db762213ec"
+    },
+    {
+      "path": "native/godot/scripts/run_controller.gd.uid",
+      "sha256": "9966b7f9297973e4d55ae71716eda0b9129a80f6c37aa1afcbebd72e5d7fab0b"
+    },
+    {
+      "path": "native/godot/scripts/soundscape.gd",
+      "sha256": "59a40fa2ed5df3bb1fcd9c009501839f7d11a1037f8aa72f6cc9b44c46eeb533"
+    },
+    {
+      "path": "native/godot/scripts/soundscape.gd.uid",
+      "sha256": "d87795e16f09ec566b3af66ec908302ae4d99892498c99bac0b76fd1be21ca99"
+    },
+    {
+      "path": "native/godot/scripts/wudu_hero_visual.gd",
+      "sha256": "b256daf918d088e3ae41f8cf3e2c95336f13e82f121f7f49f26f1dfebe5f5155"
+    },
+    {
+      "path": "native/godot/scripts/wudu_hero_visual.gd.uid",
+      "sha256": "db277fb24c26ffce957f1c7cce697e1f61d53dff35d6ad16d3bec2e82501c6e1"
+    },
+    {
+      "path": "native/godot/scripts/yone_effects.gd",
+      "sha256": "64807390cd1bc9a4ea50ddfb3412b2b6a662fbc1241df894442ec3214f0b394b"
+    },
+    {
+      "path": "native/godot/scripts/yone_effects.gd.uid",
+      "sha256": "da03f1e6c1e2ba65ecb5c1ee6a766a16ad0fec145ded9d890014a9187292b350"
+    },
+    {
+      "path": "native/godot/scripts/yone_skills.gd",
+      "sha256": "6939f55120f7c30c725ebb5ab3baca359493aace83d33a9337ddd72cd0d63a8e"
+    },
+    {
+      "path": "native/godot/scripts/yone_skills.gd.uid",
+      "sha256": "9dee9cb0fe98f91f850c7e22ea3d15e2350ae936b3d7dade174559d1aba67e54"
+    },
+    {
+      "path": "native/godot/shaders/gate_shutter.gdshader",
+      "sha256": "b2ee243cefeef62149f723aac4f8dadab76d5e752c6e22ebad74605e3b0c1738"
+    },
+    {
+      "path": "native/godot/shaders/gate_shutter.gdshader.uid",
+      "sha256": "83c33ffd0b8e07a3e259fb873537d660f6556dea9c1e499b1496973c1f9478b7"
+    },
+    {
+      "path": "native/godot/tests/all_motion_visual_check.gd",
+      "sha256": "7c51c4db2f8ce48f5b49c7361daeff3b71a14d494d3317d805b2c88927b3d877"
+    },
+    {
+      "path": "native/godot/tests/all_motion_visual_check.gd.uid",
+      "sha256": "0213029ad799dc5ee55ce75ddc846cab833638470f8133b6db4b812a5b322e9d"
+    },
+    {
+      "path": "native/godot/tests/animation_checks.gd",
+      "sha256": "22811cefdc64cf63a16a96a05f4b5ed09b0f9b6079b755a30332eeee637c4672"
+    },
+    {
+      "path": "native/godot/tests/animation_checks.gd.uid",
+      "sha256": "375b06c92df9d3b1092389e1c0492c851377d76ed9103c1d4fe5c3d232c9c68f"
+    },
+    {
+      "path": "native/godot/tests/copper_guard_checks.gd",
+      "sha256": "489b0ad8dcab585407e7581fc6e4adb8fcf0db51a348465593c4dd681699775b"
+    },
+    {
+      "path": "native/godot/tests/copper_guard_checks.gd.uid",
+      "sha256": "059252d4b09a04b5b7e798f5b204eaa1dc55f7a9a772c2f6f14f4c030aa73db2"
+    },
+    {
+      "path": "native/godot/tests/environment_checks.gd",
+      "sha256": "60fa7c2483c018097e1546a7566d4957d6b65c90f5a3fbe57b358d8911a4d2a0"
+    },
+    {
+      "path": "native/godot/tests/environment_checks.gd.uid",
+      "sha256": "7f3dffda6b9d2a88c7b565a20278b6a1fd9212106afdfe0058a5a5dd26f96c0a"
+    },
+    {
+      "path": "native/godot/tests/export_copper_guard_review.gd",
+      "sha256": "c441d6c651948e0fec0ee61aefb6b397d2d77e95b1fd57dfe9c36240b8a6a928"
+    },
+    {
+      "path": "native/godot/tests/export_copper_guard_review.gd.uid",
+      "sha256": "85984c9e74f07710556c874707b78ed5ba5cbefe2572ddd25eb06d646575031f"
+    },
+    {
+      "path": "native/godot/tests/export_motion_review.gd",
+      "sha256": "d7c7106dacf403eea927177c893391dc51d42dc3c13d3030cd21a10ba60149cd"
+    },
+    {
+      "path": "native/godot/tests/export_motion_review.gd.uid",
+      "sha256": "6f147839646916635c87cd9e3a39c2b91b1b147c8038ee6ce93892111f48d9ba"
+    },
+    {
+      "path": "native/godot/tests/feedback_checks.gd",
+      "sha256": "1eb49e1991d94ef1123e114c2b47ecf3e7a0f3f0a84c5f048b0541e1e9293517"
+    },
+    {
+      "path": "native/godot/tests/feedback_checks.gd.uid",
+      "sha256": "224eca9baa575f143c0ca765ba9ed41ffa7669b4e6c8f2e2f544942bee902a44"
+    },
+    {
+      "path": "native/godot/tests/fluid_motion_checks.gd",
+      "sha256": "207eb48262ee258111e490f9c826423f916ab7e0d70b9701e8001dd343d250a6"
+    },
+    {
+      "path": "native/godot/tests/fluid_motion_checks.gd.uid",
+      "sha256": "561fb08c309155c03b16ec5a966965c9babbe24f0923dd6779e2078e07752f19"
+    },
+    {
+      "path": "native/godot/tests/illustrated_interpolation_checks.gd",
+      "sha256": "04ecbef0451c28e790a78fa87cd98f03768c16a19ec726805ed24d4e82a20681"
+    },
+    {
+      "path": "native/godot/tests/illustrated_interpolation_checks.gd.uid",
+      "sha256": "66b1ecdf7598dd4a7d9e4d4183e02393ff16d50fea754735ca71788fe2f9263e"
+    },
+    {
+      "path": "native/godot/tests/illustrated_pose_checks.gd",
+      "sha256": "3be110f5134c27e2cd1eba7de2716080276df114c1692ce49efd1bb2bcdd9ead"
+    },
+    {
+      "path": "native/godot/tests/illustrated_pose_checks.gd.uid",
+      "sha256": "961b65fe60b9b4575fa428c1c55ac0f5742b859c963fd8d7d5bb2c3f80d11e9f"
+    },
+    {
+      "path": "native/godot/tests/illustrated_rig_sheet.gd",
+      "sha256": "5fc6e160f3870544825dc7e8b53ca76d19e1b71e21fab90f3c030517c28c9dee"
+    },
+    {
+      "path": "native/godot/tests/illustrated_rig_sheet.gd.uid",
+      "sha256": "db4180a86a7a245c940a22af5f24f6deddf3427c1ea7c6b7963eacbaca360de3"
+    },
+    {
+      "path": "native/godot/tests/landscape_performance.gd",
+      "sha256": "999e2e8d29fa71e39ab0cfb087f3fc555ea1167ee4d85f7466cdd62559e26367"
+    },
+    {
+      "path": "native/godot/tests/landscape_performance.gd.uid",
+      "sha256": "f9c0cff084836d85533f583ee2ab8c72772fa52677ecdcf1ba9e5c6e1268b20d"
+    },
+    {
+      "path": "native/godot/tests/landscape_review.gd",
+      "sha256": "b8668af9204e7e6f32a6a5ab2dbfcdcd6fde865ffab0c47e905c99eeabb740e5"
+    },
+    {
+      "path": "native/godot/tests/landscape_review.gd.uid",
+      "sha256": "c37f4d307dadd8ccd4463e4743bb7a2e75694f7417bfc2393c4a30b212999a0d"
+    },
+    {
+      "path": "native/godot/tests/landscape_ui_checks.gd",
+      "sha256": "d61a7810b72195e289bccc8f1c612f8e656ed5e2de7f02c4938d2ca69d7974c7"
+    },
+    {
+      "path": "native/godot/tests/landscape_ui_checks.gd.uid",
+      "sha256": "ec66947523cf12f65c6b19192ce4cb5f3f80bee9b68939ba4efee4732b47c7fc"
+    },
+    {
+      "path": "native/godot/tests/motion_visual_check.gd",
+      "sha256": "fc34ded6ca66b844d2e2f9a16b2022c11c3c133e23e84c7d420bdd59eb2ed880"
+    },
+    {
+      "path": "native/godot/tests/motion_visual_check.gd.uid",
+      "sha256": "1fac449e519faee86ae99c5287074afdf3e347cdc6ff1435ec0162e45631e728"
+    },
+    {
+      "path": "native/godot/tests/validate.gd",
+      "sha256": "41a581617515dd744adb39434f5f2f9b6925d73591143b2250a8bfa9365bb205"
+    },
+    {
+      "path": "native/godot/tests/validate.gd.uid",
+      "sha256": "afb0d22c7c268da6a0d9b9d6940054e0cb919bc367ee126b2868e845c46e23eb"
+    },
+    {
+      "path": "native/godot/tests/visual_check.gd",
+      "sha256": "c25daa8e50919cab25452a4d37077fb45703bfc7ba0654bbbce65d06a4bca3c2"
+    },
+    {
+      "path": "native/godot/tests/visual_check.gd.uid",
+      "sha256": "e8b51ca7891f2ac664b47286de51aaf889ac2dd45cfe8360723bc4302b265be2"
+    },
+    {
+      "path": "native/godot/tests/wudu_hero_checks.gd",
+      "sha256": "807f888e0a07a6b1a0aab60abf47edc74d3410711b70beda866ea6c43311447f"
+    },
+    {
+      "path": "native/godot/tests/wudu_hero_checks.gd.uid",
+      "sha256": "5ea3726db3fb4484e932f2929c5456e6ce3f1b855bb587205cbba6ef672c4b4c"
+    },
+    {
+      "path": "native/godot/tests/wudu_hero_review.gd",
+      "sha256": "1b51d4f6d9b3e2c0afc25487dc23f66f42f81601344e272d862da0e1ec553f16"
+    },
+    {
+      "path": "native/godot/tests/wudu_hero_review.gd.uid",
+      "sha256": "f66ea614ac0a82084282a4bacc4c8a1b2c050667c4782a0af7fb50491ea382dc"
+    },
+    {
+      "path": "native/godot/tests/yone_gui_probe.gd",
+      "sha256": "a26b461f3b1adaf24b2b4cbe692e0415d82e4d5b3c5332b77ed7f21492f9c007"
+    },
+    {
+      "path": "native/godot/tests/yone_gui_probe.gd.uid",
+      "sha256": "f788cc5dd4780cfd3e097157bb6da83950a66b86bf12edd7132dbacabdf2b78d"
+    },
+    {
+      "path": "native/godot/tests/yone_mvp_checks.gd",
+      "sha256": "8e0088ca0cca8907c95d3da1c2da1f25e56b8c268126865ced4ce745c2465de5"
+    },
+    {
+      "path": "native/godot/tests/yone_mvp_checks.gd.uid",
+      "sha256": "8c330be673893212672f438072dd961adad2ed19d3b5a5171522f81e98ea4ad1"
+    },
+    {
+      "path": "native/godot/tests/yone_mvp_review.gd",
+      "sha256": "d9cb191dac15443d85a7b0c9d0860e9300091304fcffda2459425cb4c673fd85"
+    },
+    {
+      "path": "native/godot/tests/yone_mvp_review.gd.uid",
+      "sha256": "de3424451b7d9c1c87134d42693e1c55427710e6facf901aa889e958089a4e5e"
+    },
+    {
+      "path": "package-lock.json",
+      "sha256": "d1dd82c21904c35e4681ed94c52a34172ccc42858c9b0b925c566c5a56bd8939"
+    },
+    {
+      "path": "package.json",
+      "sha256": "41657fafa0fa32ab55d8925a72069c79744f6a6ab0f8fcc1aae06f7fce21b000"
+    },
+    {
+      "path": "public/art/buildings/alchemy-lab-v1.png",
+      "sha256": "3fce1bd17a0479813eaffb4df6e8022fa55563aaad0bc16258a479a6682e48d9"
+    },
+    {
+      "path": "public/art/buildings/archive-v1.png",
+      "sha256": "2223ef19923330cf05b1339804247174cb339d3362788b655c9d0c5b14428af1"
+    },
+    {
+      "path": "public/art/buildings/forge-v1.png",
+      "sha256": "514c9d5cbadeb9173f3029c59ef688f31904fb5944bc339594272c7cd76f4746"
+    },
+    {
+      "path": "public/art/buildings/resource-field-v1.png",
+      "sha256": "7ab199bb3af2b31cba0449d8cac9dac8faf8b14f3c3c8b0f9d65e1ca90642535"
+    },
+    {
+      "path": "public/art/buildings/training-ground-v1.png",
+      "sha256": "e252f680bdaea4a7c331ac4469990f305b2fb58bf63701a05f80b7fb5dd331b6"
+    },
+    {
+      "path": "public/art/enemy-boss-v2.json",
+      "sha256": "ef5e9eefa6c5e4a367a5f50ce12204d17896fc0bdf022239b20f88d6c205cbc3"
+    },
+    {
+      "path": "public/art/enemy-boss-v2.png",
+      "sha256": "a08052935da2ab73199ff561a9341bffdebc85a8b6d01ba0edebe907f757d47b"
+    },
+    {
+      "path": "public/art/enemy-charger-v2.json",
+      "sha256": "b9bd9805a12e116f4d7182555a6c8c0a13e958f0034b80ed93c6eef16a412d42"
+    },
+    {
+      "path": "public/art/enemy-charger-v2.png",
+      "sha256": "f0d0e3af2d42c6e62d8ef6968a6118a413d77779f3921d72d137a8db2d7d4306"
+    },
+    {
+      "path": "public/art/enemy-elite-v2.json",
+      "sha256": "03c2b4bff2f144d37d7882e4048cd36219eaeddeb92ab0e9e9a622399c0477b7"
+    },
+    {
+      "path": "public/art/enemy-elite-v2.png",
+      "sha256": "164965d7e4c4d19e578dc18d87c7729be0f8513eb87645931617c4d99fdf50b2"
+    },
+    {
+      "path": "public/art/enemy-grunt-v2.json",
+      "sha256": "4c24e41d49337d5430506213af4a0cce99d670ee489c637ea8dae6c729192b0b"
+    },
+    {
+      "path": "public/art/enemy-grunt-v2.png",
+      "sha256": "a1f27f73977421db43e39cf97e17ac5e97de9e112c1039277f782d0d1c22fd2b"
+    },
+    {
+      "path": "public/art/enemy-ranged-v2.json",
+      "sha256": "847b57a2958f62bd819046b4595e7a949c96f5cb66c9f72e4c90dfba9d992377"
+    },
+    {
+      "path": "public/art/enemy-ranged-v2.png",
+      "sha256": "2c81a226a2a34cb376660bf032fffd4737d80302b23a0ceb96ad4e881ec03f0d"
+    },
+    {
+      "path": "public/art/enemy-shield-v2.json",
+      "sha256": "330869c91f384b08e00b38754dbb62ab3de1769ab9f44fc3c1420dab86dc62e8"
+    },
+    {
+      "path": "public/art/enemy-shield-v2.png",
+      "sha256": "511d24a516ce25a87361d9df47bab449410129d6f09bea1c9fd2fb33ce1def0c"
+    },
+    {
+      "path": "public/art/enemy.png",
+      "sha256": "a19bd775e830d68850b97d0704f0f9bf416dd351e52c286ca9a43a87df35c13a"
+    },
+    {
+      "path": "public/art/equipment/breaker-maul.png",
+      "sha256": "756e29d3c7647254ee3d496b2ef01e202fa01c6b67e4a566d404554ea18f31c5"
+    },
+    {
+      "path": "public/art/equipment/ember-focus.png",
+      "sha256": "9bd6b905cc2b399c3c70691c7b7c2d468283cf3112cca86340ce818b7affb7ec"
+    },
+    {
+      "path": "public/art/equipment/execution-charm.png",
+      "sha256": "b6b67893790e0306d7695a0242c9a11ec6d009c3cd1cc732ce58961c80768ad8"
+    },
+    {
+      "path": "public/art/equipment/field-armor.png",
+      "sha256": "ff9019b02818280367284130f03f18cd337c700b659b68faf4a70a3019596af4"
+    },
+    {
+      "path": "public/art/equipment/focus-bead.png",
+      "sha256": "d660996286e8c6ad1c630bdd19ea1866a64b64bcadae03d3ac91506add86e03b"
+    },
+    {
+      "path": "public/art/equipment/hook-blades.png",
+      "sha256": "f8808ba1edd5fe31b4dcaa748c5a390fce2262df2e7c9f8d279a7fe07ed63f09"
+    },
+    {
+      "path": "public/art/equipment/iron-maul.png",
+      "sha256": "c61d25e9f939d663cc05fb7e390660468c53fd48a5b94f99ca2e4191f89ba73c"
+    },
+    {
+      "path": "public/art/equipment/ritual-robe.png",
+      "sha256": "7726cda42abd559251a84378ae16f0dddcd9c15e400054d1c0c93457e521416c"
+    },
+    {
+      "path": "public/art/equipment/scout-coat.png",
+      "sha256": "23676e2cfecaabb5db0d6a7d8fb31e955df1724fa6c8d5cd767ebd6fdc724f27"
+    },
+    {
+      "path": "public/art/equipment/spirit-focus.png",
+      "sha256": "0dd8687126b80e7ce8bfb27a1e5bb3f56b723f1e228a02623ccab28ea1621abb"
+    },
+    {
+      "path": "public/art/equipment/war-sigil.png",
+      "sha256": "35eed99c7a7e0b1450753a1ae506a9749da6f791689c7c58add470b708c5665a"
+    },
+    {
+      "path": "public/art/equipment/wind-sabers.png",
+      "sha256": "c10d637b930bd41d72b01dfda803c5b2c918781c41a8753f64677dd78a0cea76"
+    },
+    {
+      "path": "public/art/hero-v2.json",
+      "sha256": "923f72f8e5a66a9f7c05fc828c68a74cbb7fa3ab8c6812621c824ce23a8b62b4"
+    },
+    {
+      "path": "public/art/hero-v2.png",
+      "sha256": "9d00dcb2cf8a693bb66531fdead3859f5151d99f83ed41df96156733bbdcc5d9"
+    },
+    {
+      "path": "public/art/hero.json",
+      "sha256": "5da57eecc026b7f513fe6ebbe5004ce79fabdc484a2c3ef8a1315e67e3656f6c"
+    },
+    {
+      "path": "public/art/hero.png",
+      "sha256": "a19bd775e830d68850b97d0704f0f9bf416dd351e52c286ca9a43a87df35c13a"
+    },
+    {
+      "path": "src/audio/game-audio.ts",
+      "sha256": "35673e1f65c07aa1d8cc5960b3fd95d92bac803835bdcda1c7155f3a5cf70ef5"
+    },
+    {
+      "path": "src/core/actions.ts",
+      "sha256": "1820c97cc1c388dc253d2729659699015a9c03cf6bcad528e593f06c57bfa84a"
+    },
+    {
+      "path": "src/core/economy.ts",
+      "sha256": "a83bf1a2a384111dc0a2cf4de7da8b5dfcde22ec674c77ed75ca3870ddae4b8b"
+    },
+    {
+      "path": "src/core/enemies.ts",
+      "sha256": "644670caf87891768f9086bac16366d94c42c2d71ddb6f2ca92cd96af72d0d6a"
+    },
+    {
+      "path": "src/core/equipment.ts",
+      "sha256": "dd41223a53d45404ccff8c85b96064133f3c8960b268df4eaa9a468c60a6f1a8"
+    },
+    {
+      "path": "src/core/level.ts",
+      "sha256": "01be552a6da3528d77db44155d5e90f8c313ef4656b4143dc7999c233dcd34ce"
+    },
+    {
+      "path": "src/core/run.ts",
+      "sha256": "8ed5d453f4de8bdec1c2724406bb574ff19cb588ddf37d21e2e7b967f12c597b"
+    },
+    {
+      "path": "src/core/save.ts",
+      "sha256": "93eb0cb8e94c231096dfb795a15a2d3b495a75b1edb02d6a69c1a7956e361aac"
+    },
+    {
+      "path": "src/core/stages.ts",
+      "sha256": "ddf99a37fafcd84fee13459d37c79cd0c345007a822dff1f7ca1489024f1325e"
+    },
+    {
+      "path": "src/core/stats.ts",
+      "sha256": "53339551f908f025b023340c0ba799b18d65e25f8f351b4a9eb1a1806431b47a"
+    },
+    {
+      "path": "src/core/types.ts",
+      "sha256": "4773eca2943059931e46a013426b1a76d95dfff740f33d3f64fa164992364d5b"
+    },
+    {
+      "path": "src/core/upgrades.ts",
+      "sha256": "ccbca2057b950fa8c4f3b677149aa419abbe4b6080d11080716ebd50ba85c3dc"
+    },
+    {
+      "path": "src/core/world.ts",
+      "sha256": "06d7c2c7706a5b6e8b09e57d17aefe039ab014c6d2f15abd9ceb053026646c9a"
+    },
+    {
+      "path": "src/dev/loop-validation.ts",
+      "sha256": "0da94c855dce7646dd00c7416eb6288307d0e8ba263f9827ac4a224725de6b2d"
+    },
+    {
+      "path": "src/dev/performance-probe.ts",
+      "sha256": "379686271e23fac9ab33174c87605c3ebb67f8b807b61ec42f8c414408434990"
+    },
+    {
+      "path": "src/dev/profession-validation.ts",
+      "sha256": "ef571c7076ae19700c6838711d66b451da10de85a393cd3df3077d4ba9d79ee5"
+    },
+    {
+      "path": "src/dev/validation-panel.ts",
+      "sha256": "e0d8feef98a95f1d8c7736996f08cc2ecf179de9e833dc7f1df4d5a1df05de76"
+    },
+    {
+      "path": "src/input/touch-controls.ts",
+      "sha256": "6fcc9519eb48c78b270185d291e7bf63a94f9e31dd11681f2e3dc3d7f7f409b6"
+    },
+    {
+      "path": "src/main.ts",
+      "sha256": "4f8e2d860edd230e9bf00ed476fe4a68bbfefc9eb64fd87793ec3d9b5d634731"
+    },
+    {
+      "path": "src/render/building-art.ts",
+      "sha256": "3b2c40be03630c36722bb69c3f8290391681893e1a17df048adeb5f9347c0375"
+    },
+    {
+      "path": "src/render/equipment-icons.ts",
+      "sha256": "8ff2fedd7c74c13c2288e999da076f3c4aa944e9c4a23ed694288dea59675558"
+    },
+    {
+      "path": "src/render/minimap.ts",
+      "sha256": "f7703cbdddc46cdcba7a064727274a14ea035bafceb1bc4d36137f4201dfff3f"
+    },
+    {
+      "path": "src/render/renderer.ts",
+      "sha256": "7fdcde628e7f578593180139b3fcd73d830a5e2d328e4364f7029dc46870c50e"
+    },
+    {
+      "path": "src/render/sprites.ts",
+      "sha256": "01c6cbf781c4cb211a22eca06f41fe37c1d1561055e5229b1785a06eacdbea0b"
+    },
+    {
+      "path": "src/render/tutorial.ts",
+      "sha256": "d1d640736d3809af41e5d3f729effa7c48b70b83967ae58fd938cf5c9fd94659"
+    },
+    {
+      "path": "src/runtime/cocos-camera.ts",
+      "sha256": "7cbf18687d159acea850e9ba9eec39ca8e7abc511122eb6ed3b15c64e73062e0"
+    },
+    {
+      "path": "src/runtime/cocos-core.ts",
+      "sha256": "b90ac178a8314e8402411c9ff66dfcc5686550738118bba34cab60eae6880028"
+    },
+    {
+      "path": "src/runtime/cocos-sprite-map.ts",
+      "sha256": "53fd30b7f143196a2c0ebcf7a67d866c5f66dc0f08d8dcdf98e526397a4e7c67"
+    },
+    {
+      "path": "src/runtime/fixed-step-clock.ts",
+      "sha256": "267762daf54b2ffd838041121c61b991c1c26b82992ca86bc6e01989c8be9393"
+    },
+    {
+      "path": "src/vite-env.d.ts",
+      "sha256": "65996936fbb042915f7b74a200fcdde7e410f32a669b1ab9597cfaa4b0faddb5"
+    },
+    {
+      "path": "tools/benchmark_50_units.mjs",
+      "sha256": "1781bf04d202ed753f069b7cf1594001568f7e94e209b61d4766e2118131c88b"
+    },
+    {
+      "path": "tools/build_ai_action_sheet.py",
+      "sha256": "ea3c5947c7d247069943689cb809b81653d95acbfdcdc8740665fb0fdfde370f"
+    },
+    {
+      "path": "tools/build_building_atlas.py",
+      "sha256": "37252926245078ff5547f81a5bdffa8999ee2c8188f48ea9fbec3d661de478e7"
+    },
+    {
+      "path": "tools/build_cocos_android.mjs",
+      "sha256": "c3cee7130f0b061d7d9309adea729a10864eb3387e4dfa9591ed7879168a1f1c"
+    },
+    {
+      "path": "tools/build_cocos_core.mjs",
+      "sha256": "cb49dccda7a897b72e6178c73b54acf25ee70a61397eda513d14284bcd97ea83"
+    },
+    {
+      "path": "tools/build_cocos_web.mjs",
+      "sha256": "939ab5726509157d11e2a613ee712eeeaa510a3faaf6aeba26b319e5eacb6b53"
+    },
+    {
+      "path": "tools/build_copper_guard.py",
+      "sha256": "ca81fa845161a91b7193339028a19021d4667280f2df10b665140307894c2838"
+    },
+    {
+      "path": "tools/export_godot_data.mjs",
+      "sha256": "741ccc1b2400a029ce4ed262fe48e80020d02d95767acfc25325a59e1462e3e9"
+    },
+    {
+      "path": "tools/simulate_validation.mjs",
+      "sha256": "d0c0a5653882e0b2714b8b5bcdaf20f9a04a530f613a4130abc338411080abfa"
+    },
+    {
+      "path": "tools/sync_cocos_art.mjs",
+      "sha256": "d79e3e34f9b8cd53631f032b80003e28f427f5ba817a7e14e6e7854de9e8b74e"
+    },
+    {
+      "path": "tools/validate_action_sheets.py",
+      "sha256": "878e6d6f7ca6c3bf266fe1f87b2a657c96c0f3577a9413376369f0c7c0b0631e"
+    },
+    {
+      "path": "tools/validate_audio.mjs",
+      "sha256": "1c1859d937fa0d75801db384528744520784b3111d15aac44717cd9547d551cd"
+    },
+    {
+      "path": "tools/validate_cocos_camera.mjs",
+      "sha256": "80962404e7d55d73975ee948ab5aad71163572a773752f5fba48f9604e973fdc"
+    },
+    {
+      "path": "tools/validate_cocos_sprite_map.mjs",
+      "sha256": "ae25a39cdf71d47823f16c578170f3f802fbfc73fea29261e6fc1f2e04fdb118"
+    },
+    {
+      "path": "tools/validate_difficulty.mjs",
+      "sha256": "43bd4f69a3db465c40c1bdad7f34b3108ffacf8a0178817b307f67e6a76490de"
+    },
+    {
+      "path": "tools/validate_economy.mjs",
+      "sha256": "3773bdb6d42fb664e4b14a2538b383121b3f7128772d34b004cda52695eba126"
+    },
+    {
+      "path": "tools/validate_equipment.mjs",
+      "sha256": "eea40e0115fb922758d7b66a74a3bfca1870bb7cec7d11c50c3a443b389e703a"
+    },
+    {
+      "path": "tools/validate_fixed_step.mjs",
+      "sha256": "d79a0fae4bc18ceb972472ba9ae677ac4e11f3cdf21f7e04f20e5ff6b68a6f6c"
+    },
+    {
+      "path": "tools/validate_godot.mjs",
+      "sha256": "6510c16bf596296653260a4c9ac007222bfc74e111990aba36ed3329e561066a"
+    },
+    {
+      "path": "tools/validate_loop.mjs",
+      "sha256": "784e1ebf3ca55e2bf9f731bca7e94abb9950a4e4148b0ae4583da4c5219d4e62"
+    },
+    {
+      "path": "tools/validate_native_stage.mjs",
+      "sha256": "39219bfcb71c86d54b97e2e5ca217baed2ee64e15d468073f08825d62e3b4a73"
+    },
+    {
+      "path": "tools/validate_professions.mjs",
+      "sha256": "1872c179218a83555598e89233b396c8f504895429f87199839d17ac56fbe113"
+    },
+    {
+      "path": "tools/validate_release.mjs",
+      "sha256": "26f789a8ae3cdd0305767ac3006f232dc42b2c7028e4d6517b56a782605fbf3a"
+    },
+    {
+      "path": "tools/validate_save.mjs",
+      "sha256": "8697e46a58841d09ef3a0a376bdf632446317bf605c98626444bf78389e8d589"
+    },
+    {
+      "path": "tools/validate_touch.mjs",
+      "sha256": "9b1c65b8ac881c73f1adb208d2ee4448aebd12999f54a9db4ae63b171020a228"
+    },
+    {
+      "path": "tools/validate_tutorial.mjs",
+      "sha256": "229d6f283ae03da390fd81ceafbf07fdc0e1bd096be66daa6d45bca0003185a3"
+    },
+    {
+      "path": "tsconfig.json",
+      "sha256": "a08b203604cc0cdd29b6897530cfff00dc43822c71f96ae10b59c86085a0a563"
+    },
+    {
+      "path": "vite.config.ts",
+      "sha256": "c4b7cb7ff4b7b44bf0eef9608355811edf6e4144611c60959e9adf220af7ce9a"
+    }
+  ],
+  "core_unchanged": {
+    "native/godot/scripts/actor.gd": true,
+    "native/godot/scripts/action_state.gd": true,
+    "native/godot/scripts/combat.gd": true,
+    "native/godot/scripts/enemy_director.gd": true,
+    "native/godot/scripts/run_controller.gd": true,
+    "native/godot/data/first_stage.json": true,
+    "native/godot/scripts/mistward_room.gd": true
+  },
+  "evidence": [
+    {
+      "path": "native/godot/output/copper-guard-v2/engine/bossCharge-20.png",
+      "sha256": "a97d8a481d2ff44fa33f292312021fb0457368eb6cc65d680beed3fcf8c899d8"
+    },
+    {
+      "path": "native/godot/output/copper-guard-v2/engine/bossNova-24.png",
+      "sha256": "b5a9f190f228734aa3a94d4804b7c10b78332914ff89d7d30ce284de9f9f6ffa"
+    },
+    {
+      "path": "native/godot/output/copper-guard-v2/engine/bossNova-30.png",
+      "sha256": "d868925b9736b817b03a04a8404087516b1908963463364b5c12a983cb600f3b"
+    },
+    {
+      "path": "native/godot/output/copper-guard-v2/engine/bossRush-3.png",
+      "sha256": "b601fbdcd7f4cdc3178e264ce686ac33b37ba19d08c2af6b9d49e90ae91dc6fe"
+    },
+    {
+      "path": "native/godot/output/copper-guard-v2/engine/bossSlam-38.png",
+      "sha256": "7bb1c272d54c777da35a47fbd49161f10e9c8688fb309fa6622ecde8730568e6"
+    },
+    {
+      "path": "native/godot/output/copper-guard-v2/engine/bossSlam-44.png",
+      "sha256": "c6c1963d2bb49043d131ad865a352f05ee4069279e30b919d451d7f7ab25818b"
+    },
+    {
+      "path": "native/godot/output/copper-guard-v2/engine/bossSummon-22.png",
+      "sha256": "5f60e34df1693d4a09182b550e562f86494d72e0cfcaaa8b12b7b34ce8f4152d"
+    },
+    {
+      "path": "native/godot/output/copper-guard-v2/engine/death-40.png",
+      "sha256": "4626b88b2ee05c1515b732f842d6cc5cf9aae94b3d99b4fe5a41cc086ef664ad"
+    },
+    {
+      "path": "native/godot/output/copper-guard-v2/engine/hit-3.png",
+      "sha256": "1be151de4748b74af08b7232d77c13e4dd4db410655dcc9c83a4f985938b374b"
+    },
+    {
+      "path": "native/godot/output/copper-guard-v2/engine/idle-0.png",
+      "sha256": "eb4fe0770a01b1265d6cbe2ca5cb47d52c21e03354518b458272112edc496bd0"
+    },
+    {
+      "path": "native/godot/output/copper-guard-v2/engine/idle-right.png",
+      "sha256": "726e5a065d6032ad165018523652afff13648dbcc78e9f86431840d4b7a853ca"
+    },
+    {
+      "path": "native/godot/output/copper-guard-v2/validation.log",
+      "sha256": "c7f31a64cb9fc903a5ca7b4d226fb93b6f318e8e08da33e03020f82e1c4be30b"
+    },
+    {
+      "path": "native/godot/output/copper-guard-v2/render.log",
+      "sha256": "df8ff44cd8fe22a62d93e1b39a7851ddaa4405d3534d6d00f93d3e21c255a7cb"
+    }
+  ],
+  "art_status": "integrated-candidate; pending user visual review",
+  "video_created": false,
+  "independent_review": "pending parent dispatch"
+}

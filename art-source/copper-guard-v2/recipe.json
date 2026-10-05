@@ -1,0 +1,756 @@
+{
+  "version": 1,
+  "generations": [
+    {
+      "id": "identity",
+      "prompt": "Edit this character into a more striking, boss-tier game sprite while preserving its identity: the ancient bronze full-face mask, dark teal worn armor, broad heavy adult male proportions, layered waist cloth and the SAME one long heavy single-edged poleblade. Facing screen RIGHT, side view with slight three-quarter angle, full body and complete weapon visible.\nStrengthen the silhouette: a severe angular bronze crown with two short swept-back ridges, broad layered bronze-edged shoulder armor, a dark charcoal undersuit, teal segmented skirt panels with rusty muted red lining, thick armored boots, larger bold motifs rather than tiny engraving. Add restrained cold jade eye slits and one small jade seal at the chest; no particles, no flames, no aura. The blade retains a long two-hand black wrapped shaft and broad curved metal cutting edge; sharpen its imposing shape with a clear silver edge and bronze geometric fitting. Exactly two arms, two legs, both hands correctly gripping the same shaft.\nStyle: high-quality stylized painted 2D action-game sprite, clean strong ink silhouette and controlled 3-tone shading, readable at 128px, match the moody hand-painted eastern fantasy game rather than photorealistic cinema.\nPose: stable IDLE, knees slightly bent, both boot soles planted, weapon held diagonally down toward screen right, arms relaxed but imposing. Cloth does not conceal knees or both legs.\nComposition: SINGLE character, ONE pose, square canvas, real transparent alpha background. Whole character including helmet should occupy only about 60% of canvas height; boots on a horizontal line at 82% canvas height, midpoint between soles at 44% canvas width. Leave generous clear space ABOVE for later weapon lift, and RIGHT for attacks. The entire weapon including tip and butt stays inside the canvas with at least 8% edge margin. No floor/shadow, no environment, no text/UI/watermark, no grid, no duplicate character.",
+      "elapsedMs": 82240,
+      "path": "generated_images/exec-1ae74f05-d78d-44ef-90f1-6022c201e246.png",
+      "reference": [
+        "generated_images/exec-f726180b-4c12-4c46-8707-38d2469d0b1c.png"
+      ]
+    },
+    {
+      "id": "move_a",
+      "prompt": "Use the attached image as the EXACT identity reference. Create a transparent 2D game sprite action sheet with exactly FOUR full-body poses in a precise 2 by 2 grid (read top-left, top-right, bottom-left, bottom-right). No grid lines or text. Each cell has its own fixed square canvas, real transparent background, identical scale and orthographic camera, facing RIGHT in side/slight three-quarter view. In EVERY cell the midpoint between boot soles is about 38% across, the boot soles rest on the line 88% down; the upright body from crown to soles occupies ONLY 60% of each cell height, leaving space above and right for the ENTIRE weapon. Do not enlarge any pose to fill its cell.\nSame copper-masked heavy guardian, same two swept-back crown ridges, same dark teal bronze-edged bulky armor, charcoal undersuit, rust-red skirt lining, teal waist ribbons, same tiny jade eye slits and chest seal, EXACT SAME long curved single-edge poleblade with black wrapped shaft. Keep armor design, anatomy, body size, weapon length and two-hand grip consistent with the reference and across all four cells. Exactly two arms and legs, no extra weapon. Crisp strong silhouette, painted 2D game art readable at 128px. Cloth must not cover the knees, near and far boots distinguishable. Full body/weapon completely inside EACH cell with clear edge margin, no floor, no shadows, no particles, no trail, no cinematic blur, no labels, no scenery.\nThe four poses are the FIRST HALF of ONE slow heavy WALK cycle. Weapon stays low to the right, both hands hold the shaft at exactly the same separated grip points, stable head and chest. Pose1 near leg steps forward heel firmly grounded, far boot behind on toe. Pose2 weight loaded onto near boot, near knee bends slightly, far heel lifts. Pose3 far knee/boot passes under pelvis with lifted toe, near boot remains planted behind. Pose4 far boot swings FORWARD almost reaching heel contact, near boot remains planted at the rear. One boot ALWAYS touches the same ground line, no jump, no floating. Distinct leg phases, restrained body bob, weighted weapon, cloth slight delay. Do not copy the same leg arrangement four times.",
+      "elapsedMs": 71697,
+      "path": "generated_images/exec-08f0fee6-5235-41a2-9a90-c810b3d3f87c.png",
+      "reference": [
+        "generated_images/exec-1ae74f05-d78d-44ef-90f1-6022c201e246.png"
+      ]
+    },
+    {
+      "id": "slam",
+      "prompt": "Use the attached image as the EXACT identity reference. Create a transparent 2D game sprite action sheet with exactly FOUR full-body poses in a precise 2 by 2 grid (read top-left, top-right, bottom-left, bottom-right). No grid lines or text. Each cell has its own fixed square canvas, real transparent background, identical scale and orthographic camera, facing RIGHT in side/slight three-quarter view. In EVERY cell the midpoint between boot soles is about 38% across, the boot soles rest on the line 88% down; the upright body from crown to soles occupies ONLY 60% of each cell height, leaving space above and right for the ENTIRE weapon. Do not enlarge any pose to fill its cell.\nSame copper-masked heavy guardian, same two swept-back crown ridges, same dark teal bronze-edged bulky armor, charcoal undersuit, rust-red skirt lining, teal waist ribbons, same tiny jade eye slits and chest seal, EXACT SAME long curved single-edge poleblade with black wrapped shaft. Keep armor design, anatomy, body size, weapon length and two-hand grip consistent with the reference and across all four cells. Exactly two arms and legs, no extra weapon. Crisp strong silhouette, painted 2D game art readable at 128px. Cloth must not cover the knees, near and far boots distinguishable. Full body/weapon completely inside EACH cell with clear edge margin, no floor, no shadows, no particles, no trail, no cinematic blur, no labels, no scenery.\nFour distinct phases of a HEAVY OVERHEAD SLAM. Pose1 low knees, both hands start lifting the same poleblade from the right side. Pose2 obvious high overhead anticipation: BOTH hands above head, shaft diagonal, FULL blade pointing up-forward RIGHT, knees flexed, entire weapon well inside cell. Pose3 decisive IMPACT: full body leans forward low, BOTH hands push shaft down-forward, blade contacts ground just ahead to RIGHT, both knees absorb, feet planted. Pose4 pull weapon up from the ground, torso rises, recover toward the SAME idle pose. CLEAR distinction between overhead Pose2 and ground impact Pose3. No impact effects. Do not change blade shape or length.",
+      "elapsedMs": 152389,
+      "path": "generated_images/exec-bf7cc2ca-0351-484e-8c84-896a6e05480e.png",
+      "reference": [
+        "generated_images/exec-1ae74f05-d78d-44ef-90f1-6022c201e246.png"
+      ]
+    },
+    {
+      "id": "move_b",
+      "prompt": "Use the attached image as the EXACT identity reference. Create a transparent 2D game sprite action sheet with exactly FOUR full-body poses in a precise 2 by 2 grid (read top-left, top-right, bottom-left, bottom-right). No grid lines or text. Each cell has its own fixed square canvas, real transparent background, identical scale and orthographic camera, facing RIGHT in side/slight three-quarter view. In EVERY cell the midpoint between boot soles is about 38% across, the boot soles rest on the line 88% down; the upright body from crown to soles occupies ONLY 60% of each cell height, leaving space above and right for the ENTIRE weapon. Do not enlarge any pose to fill its cell.\nSame copper-masked heavy guardian, same two swept-back crown ridges, same dark teal bronze-edged bulky armor, charcoal undersuit, rust-red skirt lining, teal waist ribbons, same tiny jade eye slits and chest seal, EXACT SAME long curved single-edge poleblade with black wrapped shaft. Keep armor design, anatomy, body size, weapon length and two-hand grip consistent with the reference and across all four cells. Exactly two arms and legs, no extra weapon. Crisp strong silhouette, painted 2D game art readable at 128px. Cloth must not cover the knees, near and far boots distinguishable. Full body/weapon completely inside EACH cell with clear edge margin, no floor, no shadows, no particles, no trail, no cinematic blur, no labels, no scenery.\nThe four poses are the SECOND HALF of ONE slow heavy WALK cycle, exchanging which leg supports compared with the first half. Weapon stays low to right, both hands maintain the same separated grip points. Pose1 FAR leg forward heel firmly grounded, NEAR boot behind on toe. Pose2 weight on FAR forward boot, FAR knee bends, NEAR heel lifts. Pose3 NEAR knee/boot passes under pelvis lifted, FAR boot planted behind. Pose4 NEAR boot swings FORWARD almost reaching heel contact, FAR boot planted at rear. One boot ALWAYS touches the ground line. Same stable head, weighted weapon, restrained bob. Near leg must visibly swing in the final two poses; do not render all four as near-leg-forward contact.",
+      "elapsedMs": 246490,
+      "path": "generated_images/exec-5cbc2624-8fb1-4e12-a32b-2cf63ec33911.png",
+      "reference": [
+        "generated_images/exec-1ae74f05-d78d-44ef-90f1-6022c201e246.png"
+      ]
+    },
+    {
+      "id": "move_b_retry",
+      "prompt": "Use the attached image as the EXACT identity reference. Create a transparent 2D game sprite action sheet with exactly FOUR full-body poses in a precise 2 by 2 grid (read top-left, top-right, bottom-left, bottom-right). No grid lines or text. Each cell has its own fixed square canvas, real transparent background, identical scale and orthographic camera, facing RIGHT in side/slight three-quarter view. In EVERY cell the midpoint between boot soles is about 38% across, the boot soles rest on the line 88% down; the upright body from crown to soles occupies ONLY 60% of each cell height, leaving space above and right for the ENTIRE weapon. Do not enlarge any pose to fill its cell.\nSame copper-masked heavy guardian, same two swept-back crown ridges, same dark teal bronze-edged bulky armor, charcoal undersuit, rust-red skirt lining, teal waist ribbons, same tiny jade eye slits and chest seal, EXACT SAME long curved single-edge poleblade with black wrapped shaft. Keep armor design, anatomy, body size, weapon length and two-hand grip consistent with the reference and across all four cells. Exactly two arms and legs, no extra weapon. Crisp strong silhouette, painted 2D game art readable at 128px. Cloth must not cover the knees, near and far boots distinguishable. Full body/weapon completely inside EACH cell with clear edge margin, no floor, no shadows, no particles, no trail, no cinematic blur, no labels, no scenery.\nThis is the opposite support half of the walk cycle. The visible NEAR leg (on the LEFT in the idle reference) must now be the SWINGING leg in poses 3 and 4, and the boot on the RIGHT must be the planted support foot. Pose1 put NEAR boot BACK LEFT on its toe and FAR boot FORWARD RIGHT on heel. Pose2 plant and load the FAR right boot, lift NEAR left heel. Pose3 lift NEAR LEFT knee with its boot visibly on the LEFT of pelvis, keep FAR RIGHT boot FLAT ON GROUND. Pose4 swing NEAR left leg forward in front of far shin, near boot lifted, FAR right boot stays flat behind. Keep both hands on LOW weapon. DO NOT make the LEFT boot remain planted in poses3/4: that would repeat the wrong half cycle. Same body/camera, clear two separate knees and boots.",
+      "elapsedMs": 77866,
+      "path": "generated_images/exec-d346b401-0e2b-4167-bb33-f4dc95f35993.png",
+      "reference": [
+        "generated_images/exec-1ae74f05-d78d-44ef-90f1-6022c201e246.png"
+      ]
+    },
+    {
+      "id": "charge",
+      "prompt": "Use the attached image as the EXACT identity reference. Create a transparent 2D game sprite action sheet with exactly FOUR full-body poses in a precise 2 by 2 grid (read top-left, top-right, bottom-left, bottom-right). No grid lines or text. Each cell has its own fixed square canvas, real transparent background, identical scale and orthographic camera, facing RIGHT in side/slight three-quarter view. In EVERY cell the midpoint between boot soles is about 38% across, the boot soles rest on the line 88% down; the upright body from crown to soles occupies ONLY 60% of each cell height, leaving space above and right for the ENTIRE weapon. Do not enlarge any pose to fill its cell.\nSame copper-masked heavy guardian, same two swept-back crown ridges, same dark teal bronze-edged bulky armor, charcoal undersuit, rust-red skirt lining, teal waist ribbons, same tiny jade eye slits and chest seal, EXACT SAME long curved single-edge poleblade with black wrapped shaft. Keep armor design, anatomy, body size, weapon length and two-hand grip consistent with the reference and across all four cells. Exactly two arms and legs, no extra weapon. Crisp strong silhouette, painted 2D game art readable at 128px. Cloth must not cover the knees, near and far boots distinguishable. Full body/weapon completely inside EACH cell with clear edge margin, no floor, no shadows, no particles, no trail, no cinematic blur, no labels, no scenery.\nExactly four phases of CHARGE ANTICIPATION, WITHOUT rushing yet. Pose1 stable lowered blade idle. Pose2 one small half-step backward to LEFT, lower hips and turn the shaft closer to side. Pose3 low bent knees, chest leans toward RIGHT, blade points forward RIGHT at chest height with both hands on shaft. Pose4 compact maximum forward launch tension, rear leg loaded, forward boot planted, weapon clear right-facing ready to thrust. Head low, no feet floating, no jump, no effects. Keep weapon FULLY IN EACH CELL.",
+      "elapsedMs": 158034,
+      "path": "generated_images/exec-42f0ad14-5983-4197-99a1-f34f0360af1a.png",
+      "reference": [
+        "generated_images/exec-1ae74f05-d78d-44ef-90f1-6022c201e246.png"
+      ]
+    },
+    {
+      "id": "rush",
+      "prompt": "Use the attached image as the EXACT identity reference. Create a transparent 2D game sprite action sheet with exactly FOUR full-body poses in a precise 2 by 2 grid (read top-left, top-right, bottom-left, bottom-right). No grid lines or text. Each cell has its own fixed square canvas, real transparent background, identical scale and orthographic camera, facing RIGHT in side/slight three-quarter view. In EVERY cell the midpoint between boot soles is about 38% across, the boot soles rest on the line 88% down; the upright body from crown to soles occupies ONLY 60% of each cell height, leaving space above and right for the ENTIRE weapon. Do not enlarge any pose to fill its cell.\nSame copper-masked heavy guardian, same two swept-back crown ridges, same dark teal bronze-edged bulky armor, charcoal undersuit, rust-red skirt lining, teal waist ribbons, same tiny jade eye slits and chest seal, EXACT SAME long curved single-edge poleblade with black wrapped shaft. Keep armor design, anatomy, body size, weapon length and two-hand grip consistent with the reference and across all four cells. Exactly two arms and legs, no extra weapon. Crisp strong silhouette, painted 2D game art readable at 128px. Cloth must not cover the knees, near and far boots distinguishable. Full body/weapon completely inside EACH cell with clear edge margin, no floor, no shadows, no particles, no trail, no cinematic blur, no labels, no scenery.\nFour grounded phases of a FAST HEAVY TWO-STEP RUSH to RIGHT, presented in-place sprite poses without camera movement or root translation. Pose1 strong forward lean, rear boot pushing ground, forward knee lifted, blade pointed FORWARD RIGHT with both hands stable at waist/chest. Pose2 front boot contacts forward ground, rear leg gathers under body, blade still FORWARD RIGHT. Pose3 alternate boot steps forward grounded, torso still leaning RIGHT, blade still threat directed RIGHT. Pose4 planted front boot brakes, torso rises and absorbs momentum, blade lowers back toward idle. Never point the blade backward LEFT. No airborne flying pose. Full weapon in cell, no blur/trails.",
+      "elapsedMs": 249273,
+      "path": "generated_images/exec-9499b47e-c384-457c-9ed2-531ad0549492.png",
+      "reference": [
+        "generated_images/exec-1ae74f05-d78d-44ef-90f1-6022c201e246.png"
+      ]
+    },
+    {
+      "id": "nova",
+      "prompt": "Use the attached image as the EXACT identity reference. Create a transparent 2D game sprite action sheet with exactly FOUR full-body poses in a precise 2 by 2 grid (read top-left, top-right, bottom-left, bottom-right). No grid lines or text. Each cell has its own fixed square canvas, real transparent background, identical scale and orthographic camera, facing RIGHT in side/slight three-quarter view. In EVERY cell the midpoint between boot soles is about 38% across, the boot soles rest on the line 88% down; the upright body from crown to soles occupies ONLY 60% of each cell height, leaving space above and right for the ENTIRE weapon. Do not enlarge any pose to fill its cell.\nSame copper-masked heavy guardian, same two swept-back crown ridges, same dark teal bronze-edged bulky armor, charcoal undersuit, rust-red skirt lining, teal waist ribbons, same tiny jade eye slits and chest seal, EXACT SAME long curved single-edge poleblade with black wrapped shaft. Keep armor design, anatomy, body size, weapon length and two-hand grip consistent with the reference and across all four cells. Exactly two arms and legs, no extra weapon. Crisp strong silhouette, painted 2D game art readable at 128px. Cloth must not cover the knees, near and far boots distinguishable. Full body/weapon completely inside EACH cell with clear edge margin, no floor, no shadows, no particles, no trail, no cinematic blur, no labels, no scenery.\nFour phases of a powerful GROUND-QUAKE skill, body alone with no effects. Pose1 deep preparatory bend, weapon in both hands. Pose2 fully extend body and raise BOTH hands and ENTIRE weapon high above head, clearly distinct tall authoritative anticipation; full blade inside the cell. Pose3 strong vertical ground strike just ahead of feet to RIGHT: blade touches ground, both knees bend deeply, arms lowered, spine folds forward. Pose4 slowly pull weapon from ground and rise toward idle. Both boot soles remain on one ground line. No shockwave/smoke/flash/magic circles.",
+      "elapsedMs": 330334,
+      "path": "generated_images/exec-aaed61a6-1a9a-4b69-bca7-506d725d4779.png",
+      "reference": [
+        "generated_images/exec-1ae74f05-d78d-44ef-90f1-6022c201e246.png"
+      ]
+    },
+    {
+      "id": "sweep",
+      "prompt": "Use the attached image as the EXACT identity reference. Create a transparent 2D game sprite action sheet with exactly FOUR full-body poses in a precise 2 by 2 grid (read top-left, top-right, bottom-left, bottom-right). No grid lines or text. Each cell has its own fixed square canvas, real transparent background, identical scale and orthographic camera, facing RIGHT in side/slight three-quarter view. In EVERY cell the midpoint between boot soles is about 38% across, the boot soles rest on the line 88% down; the upright body from crown to soles occupies ONLY 60% of each cell height, leaving space above and right for the ENTIRE weapon. Do not enlarge any pose to fill its cell.\nSame copper-masked heavy guardian, same two swept-back crown ridges, same dark teal bronze-edged bulky armor, charcoal undersuit, rust-red skirt lining, teal waist ribbons, same tiny jade eye slits and chest seal, EXACT SAME long curved single-edge poleblade with black wrapped shaft. Keep armor design, anatomy, body size, weapon length and two-hand grip consistent with the reference and across all four cells. Exactly two arms and legs, no extra weapon. Crisp strong silhouette, painted 2D game art readable at 128px. Cloth must not cover the knees, near and far boots distinguishable. Full body/weapon completely inside EACH cell with clear edge margin, no floor, no shadows, no particles, no trail, no cinematic blur, no labels, no scenery.\nFour distinct phases of a FAN-SHAPED HORIZONTAL SWEEP, clearly different from an overhead slam. Pose1 low waist twist, draw blade to the BACK LEFT with both hands, front right boot firmly planted. Pose2 hips unwind and bring blade forward at waist height in a broad HORIZONTAL rightward arc; blade not lifted overhead. Pose3 extend both arms toward RIGHT at chest/waist height, blade full forward RIGHT after passing the target, torso twist follows. Pose4 heavy inertial recovery lowering blade to common idle. Full shaft and blade visible in every cell even when behind LEFT; preserve weapon length. No trails, no effects.",
+      "elapsedMs": 78817,
+      "path": "generated_images/exec-9cd519bc-9930-4df4-bb8e-9c3deccba164.png",
+      "reference": [
+        "generated_images/exec-1ae74f05-d78d-44ef-90f1-6022c201e246.png"
+      ]
+    },
+    {
+      "id": "idle",
+      "prompt": "Use the attached image as the EXACT identity reference. Create a transparent 2D game sprite action sheet with exactly FOUR full-body poses in a precise 2 by 2 grid (read top-left, top-right, bottom-left, bottom-right). No grid lines or text. Each cell has its own fixed square canvas, real transparent background, identical scale and orthographic camera, facing RIGHT in side/slight three-quarter view. In EVERY cell the midpoint between boot soles is about 38% across, the boot soles rest on the line 88% down; the upright body from crown to soles occupies ONLY 60% of each cell height, leaving space above and right for the ENTIRE weapon. Do not enlarge any pose to fill its cell.\nSame copper-masked heavy guardian, same two swept-back crown ridges, same dark teal bronze-edged bulky armor, charcoal undersuit, rust-red skirt lining, teal waist ribbons, same tiny jade eye slits and chest seal, EXACT SAME long curved single-edge poleblade with black wrapped shaft. Keep armor design, anatomy, body size, weapon length and two-hand grip consistent with the reference and across all four cells. Exactly two arms and legs, no extra weapon. Crisp strong silhouette, painted 2D game art readable at 128px. Cloth must not cover the knees, near and far boots distinguishable. Full body/weapon completely inside EACH cell with clear edge margin, no floor, no shadows, no particles, no trail, no cinematic blur, no labels, no scenery.\nFour distinct subtle BREATHING phases of the SAME stable idle pose. Both boot soles stay firmly in exactly the same stance. Pose1 neutral breath; pose2 chest and shoulder armor lift slightly on inhalation; pose3 exhale shoulders settle; pose4 return almost exactly to pose1. Same low weapon diagonal down RIGHT, both hands hold shaft, head very stable. No stepping, no swinging the blade overhead, no big cloth changes. First and fourth poses should match for a quiet seamless loop.",
+      "elapsedMs": 152270,
+      "path": "generated_images/exec-067c22d9-f03c-4e72-bc8d-92fd325e0351.png",
+      "reference": [
+        "generated_images/exec-1ae74f05-d78d-44ef-90f1-6022c201e246.png"
+      ]
+    },
+    {
+      "id": "summon",
+      "prompt": "Use the attached image as the EXACT identity reference. Create a transparent 2D game sprite action sheet with exactly FOUR full-body poses in a precise 2 by 2 grid (read top-left, top-right, bottom-left, bottom-right). No grid lines or text. Each cell has its own fixed square canvas, real transparent background, identical scale and orthographic camera, facing RIGHT in side/slight three-quarter view. In EVERY cell the midpoint between boot soles is about 38% across, the boot soles rest on the line 88% down; the upright body from crown to soles occupies ONLY 60% of each cell height, leaving space above and right for the ENTIRE weapon. Do not enlarge any pose to fill its cell.\nSame copper-masked heavy guardian, same two swept-back crown ridges, same dark teal bronze-edged bulky armor, charcoal undersuit, rust-red skirt lining, teal waist ribbons, same tiny jade eye slits and chest seal, EXACT SAME long curved single-edge poleblade with black wrapped shaft. Keep armor design, anatomy, body size, weapon length and two-hand grip consistent with the reference and across all four cells. Exactly two arms and legs, no extra weapon. Crisp strong silhouette, painted 2D game art readable at 128px. Cloth must not cover the knees, near and far boots distinguishable. Full body/weapon completely inside EACH cell with clear edge margin, no floor, no shadows, no particles, no trail, no cinematic blur, no labels, no scenery.\nFour distinct phases of a solemn SUMMON COMMAND gesture. Pose1 place the same weapon upright at the RIGHT side, blade and shaft fully visible, right hand still gripping it securely. Pose2 keep weapon steady with ONE hand, lift OTHER EMPTY hand forward RIGHT up to chest height. Pose3 authoritative command: EMPTY palm open and extended RIGHT, head and chest follow, weapon held securely upright at side by other hand, exactly TWO hands total. Pose4 lower empty hand and begin returning weapon to common idle. Do not duplicate the weapon or grow extra arms. No summons, particles, sigils or magic circles.",
+      "elapsedMs": 198384,
+      "path": "generated_images/exec-497f0fc0-4468-4c2d-8516-f4d794e5c922.png",
+      "reference": [
+        "generated_images/exec-1ae74f05-d78d-44ef-90f1-6022c201e246.png"
+      ]
+    },
+    {
+      "id": "hit",
+      "prompt": "Use the attached image as the EXACT identity reference. Create a transparent 2D game sprite action sheet with exactly FOUR full-body poses in a precise 2 by 2 grid (read top-left, top-right, bottom-left, bottom-right). No grid lines or text. Each cell has its own fixed square canvas, real transparent background, identical scale and orthographic camera, facing RIGHT in side/slight three-quarter view. In EVERY cell the midpoint between boot soles is about 38% across, the boot soles rest on the line 88% down; the upright body from crown to soles occupies ONLY 60% of each cell height, leaving space above and right for the ENTIRE weapon. Do not enlarge any pose to fill its cell.\nSame copper-masked heavy guardian, same two swept-back crown ridges, same dark teal bronze-edged bulky armor, charcoal undersuit, rust-red skirt lining, teal waist ribbons, same tiny jade eye slits and chest seal, EXACT SAME long curved single-edge poleblade with black wrapped shaft. Keep armor design, anatomy, body size, weapon length and two-hand grip consistent with the reference and across all four cells. Exactly two arms and legs, no extra weapon. Crisp strong silhouette, painted 2D game art readable at 128px. Cloth must not cover the knees, near and far boots distinguishable. Full body/weapon completely inside EACH cell with clear edge margin, no floor, no shadows, no particles, no trail, no cinematic blur, no labels, no scenery.\nFour distinct phases of being HIT FROM RIGHT while remaining heavy and grounded. Pose1 upper torso recoils backward LEFT sharply a small amount, both hands keep holding weapon. Pose2 knees absorb force with a small backward boot adjustment, chest/mask lean LEFT, blade swings from inertia but grip stable. Pose3 torso regains balance and weight shifts between planted boots. Pose4 returns toward stable common idle. Do not leap or fall, no extra legs, no hurt effects, no weapon changes.",
+      "elapsedMs": 267762,
+      "path": "generated_images/exec-554b714c-41ff-4b9c-8318-b753969fa83f.png",
+      "reference": [
+        "generated_images/exec-1ae74f05-d78d-44ef-90f1-6022c201e246.png"
+      ]
+    },
+    {
+      "id": "death",
+      "prompt": "Use the attached image as the EXACT identity reference. Create a transparent 2D game sprite action sheet with exactly FOUR full-body poses in a precise 2 by 2 grid (read top-left, top-right, bottom-left, bottom-right). No grid lines or text. Each cell has its own fixed square canvas, real transparent background, identical scale and orthographic camera, facing RIGHT in side/slight three-quarter view. In EVERY cell the midpoint between boot soles is about 38% across, the boot soles rest on the line 88% down; the upright body from crown to soles occupies ONLY 60% of each cell height, leaving space above and right for the ENTIRE weapon. Do not enlarge any pose to fill its cell.\nSame copper-masked heavy guardian, same two swept-back crown ridges, same dark teal bronze-edged bulky armor, charcoal undersuit, rust-red skirt lining, teal waist ribbons, same tiny jade eye slits and chest seal, EXACT SAME long curved single-edge poleblade with black wrapped shaft. Keep armor design, anatomy, body size, weapon length and two-hand grip consistent with the reference and across all four cells. Exactly two arms and legs, no extra weapon. Crisp strong silhouette, painted 2D game art readable at 128px. Cloth must not cover the knees, near and far boots distinguishable. Full body/weapon completely inside EACH cell with clear edge margin, no floor, no shadows, no particles, no trail, no cinematic blur, no labels, no scenery.\nFour phases of a grounded DEATH, unlike all other actions final pose does NOT return to idle. Pose1 strength drains, knees bend, head bows, same weapon lowers toward ground. Pose2 kneel on ONE knee, other boot grounded, both hands weaken but hold shaft. Pose3 fall sideways LEFT from kneeling, one hand releases, weapon naturally descends WITH the body, entire body and blade visible. Pose4 FINAL CORPSE lying horizontally on its side on the ground, masked head at LEFT and armored boots at RIGHT, same weapon laid beside the body. No standing torso or kneeling final pose; no fade/disappearance. Keep corpse entirely within its cell, using the SAME body/weapon scale, do not enlarge horizontal corpse to fill cell. No gore, no effects.",
+      "elapsedMs": 341792,
+      "path": "generated_images/exec-ef04d072-bd48-498a-b07d-46f0b21edcc8.png",
+      "reference": [
+        "generated_images/exec-1ae74f05-d78d-44ef-90f1-6022c201e246.png"
+      ]
+    },
+    {
+      "id": "command",
+      "prompt": "Create ONE full-body game sprite command pose of the exact copper guardian in the attached identity reference. Same mask/crown, armor, dark teal cloth, jade chest seal, heavy proportions and same long curved single-edge poleblade. Right-facing side/slight three-quarter, square transparent canvas, full character and ENTIRE weapon visible with large margins.\nThis is a SUMMON COMMAND with exactly TWO arms and TWO hands. The arm on the RIGHT side of the body (far arm) stays bent and its hand FIRMLY ENCIRCLES the vertical black pole shaft at waist height, thumb and fingers visibly gripping it. The poleblade stands upright beside the right hip with its butt resting on ground. The arm from the LEFT shoulder (near arm) reaches diagonally ACROSS the chest toward screen RIGHT, and its EMPTY hand opens forward in a commanding gesture. The near arm is NOT hanging down: it is the commanding arm. No third hand or additional fist by the left hip. Keep the gripping hand separate and readable BELOW the empty palm.\nBoth feet planted, head solemn and slightly raised, SAME body/weapon scale as attached full-body reference. Crisp painted 2D action-game sprite, no effects, aura, sigils, summons, shadow, floor, text, extra characters or grid. Never float the weapon or intersect it through an empty forearm; the shaft must clearly be held by the far hand.",
+      "elapsedMs": 73468,
+      "path": "generated_images/exec-3eda8888-d6c6-4fce-bd42-19b9e60251fe.png",
+      "reference": [
+        "generated_images/exec-1ae74f05-d78d-44ef-90f1-6022c201e246.png"
+      ]
+    }
+  ],
+  "layouts": {
+    "identity": {
+      "count": 1,
+      "anchors_x": [
+        464
+      ],
+      "foot_rois": [
+        [
+          170,
+          870,
+          760,
+          1160
+        ]
+      ]
+    },
+    "move_a": {
+      "count": 4,
+      "anchors_x": [
+        285,
+        940,
+        280,
+        935
+      ],
+      "foot_rois": [
+        [
+          70,
+          450,
+          470,
+          675
+        ],
+        [
+          726,
+          450,
+          1126,
+          675
+        ],
+        [
+          70,
+          1029,
+          470,
+          1199
+        ],
+        [
+          726,
+          1029,
+          1126,
+          1199
+        ]
+      ]
+    },
+    "move_b_retry": {
+      "count": 4,
+      "anchors_x": [
+        285,
+        956,
+        277,
+        925
+      ],
+      "foot_rois": [
+        [
+          70,
+          450,
+          470,
+          675
+        ],
+        [
+          736,
+          450,
+          1136,
+          675
+        ],
+        [
+          70,
+          1020,
+          470,
+          1180
+        ],
+        [
+          736,
+          1020,
+          1136,
+          1180
+        ]
+      ]
+    },
+    "slam": {
+      "count": 4,
+      "anchors_x": [
+        267,
+        900,
+        270,
+        905
+      ],
+      "foot_rois": [
+        [
+          70,
+          450,
+          470,
+          675
+        ],
+        [
+          697,
+          450,
+          1097,
+          675
+        ],
+        [
+          70,
+          1057,
+          470,
+          1254
+        ],
+        [
+          697,
+          1057,
+          1097,
+          1254
+        ]
+      ]
+    },
+    "charge": {
+      "count": 4,
+      "anchors_x": [
+        267,
+        900,
+        270,
+        906
+      ],
+      "foot_rois": [
+        [
+          70,
+          450,
+          470,
+          675
+        ],
+        [
+          697,
+          450,
+          1097,
+          675
+        ],
+        [
+          70,
+          1057,
+          470,
+          1254
+        ],
+        [
+          697,
+          1057,
+          1097,
+          1254
+        ]
+      ]
+    },
+    "rush": {
+      "count": 4,
+      "anchors_x": [
+        270,
+        913,
+        300,
+        915
+      ],
+      "foot_rois": [
+        [
+          70,
+          450,
+          470,
+          675
+        ],
+        [
+          697,
+          450,
+          1097,
+          675
+        ],
+        [
+          70,
+          1057,
+          470,
+          1254
+        ],
+        [
+          697,
+          1057,
+          1097,
+          1254
+        ]
+      ]
+    },
+    "nova": {
+      "count": 4,
+      "anchors_x": [
+        270,
+        911,
+        270,
+        914
+      ],
+      "foot_rois": [
+        [
+          70,
+          450,
+          470,
+          675
+        ],
+        [
+          697,
+          450,
+          1097,
+          675
+        ],
+        [
+          70,
+          1057,
+          470,
+          1254
+        ],
+        [
+          697,
+          1057,
+          1097,
+          1254
+        ]
+      ]
+    },
+    "sweep": {
+      "count": 4,
+      "anchors_x": [
+        430,
+        910,
+        272,
+        915
+      ],
+      "foot_rois": [
+        [
+          200,
+          490,
+          621,
+          640
+        ],
+        [
+          697,
+          450,
+          1097,
+          675
+        ],
+        [
+          70,
+          1057,
+          470,
+          1254
+        ],
+        [
+          697,
+          1057,
+          1097,
+          1254
+        ]
+      ]
+    },
+    "idle": {
+      "count": 4,
+      "anchors_x": [
+        265,
+        875,
+        270,
+        881
+      ],
+      "foot_rois": [
+        [
+          70,
+          450,
+          470,
+          675
+        ],
+        [
+          697,
+          450,
+          1097,
+          675
+        ],
+        [
+          70,
+          1057,
+          470,
+          1254
+        ],
+        [
+          697,
+          1057,
+          1097,
+          1254
+        ]
+      ]
+    },
+    "summon": {
+      "count": 4,
+      "anchors_x": [
+        325,
+        886,
+        325,
+        882
+      ],
+      "foot_rois": [
+        [
+          70,
+          450,
+          470,
+          675
+        ],
+        [
+          697,
+          450,
+          1097,
+          675
+        ],
+        [
+          70,
+          1057,
+          470,
+          1254
+        ],
+        [
+          697,
+          1057,
+          1097,
+          1254
+        ]
+      ],
+      "reject_frames": [
+        0,
+        1,
+        2
+      ],
+      "reject_reason": "Frames1/2 have unsupported floating shaft; frame0 raises on opposite side of valid command, so use inspected left-side sweep anticipation instead. No weapon teleport between upright sides."
+    },
+    "hit": {
+      "count": 4,
+      "anchors_x": [
+        265,
+        881,
+        284,
+        888
+      ],
+      "foot_rois": [
+        [
+          70,
+          450,
+          470,
+          675
+        ],
+        [
+          697,
+          450,
+          1097,
+          675
+        ],
+        [
+          70,
+          1057,
+          470,
+          1254
+        ],
+        [
+          697,
+          1057,
+          1097,
+          1254
+        ]
+      ]
+    },
+    "death": {
+      "count": 4,
+      "anchors_x": [
+        267,
+        884,
+        305,
+        925
+      ],
+      "foot_rois": [
+        [
+          70,
+          450,
+          470,
+          675
+        ],
+        [
+          697,
+          450,
+          1097,
+          675
+        ],
+        [
+          40,
+          1070,
+          610,
+          1190
+        ],
+        [
+          635,
+          1030,
+          1230,
+          1170
+        ]
+      ]
+    },
+    "command": {
+      "count": 1,
+      "anchors_x": [
+        659
+      ],
+      "foot_rois": [
+        [
+          340,
+          1060,
+          980,
+          1240
+        ]
+      ]
+    }
+  },
+  "actions": {
+    "idle": {
+      "sources": [
+        "idle:0",
+        "idle:1",
+        "idle:2",
+        "idle:3"
+      ],
+      "durations_ms": [
+        900,
+        900,
+        800,
+        600
+      ]
+    },
+    "move": {
+      "sources": [
+        "move_a:0",
+        "move_a:1",
+        "move_a:2",
+        "move_a:3",
+        "move_b_retry:0",
+        "move_b_retry:1",
+        "move_b_retry:2",
+        "move_b_retry:3"
+      ],
+      "durations_ms": [
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100,
+        100
+      ]
+    },
+    "slam": {
+      "sources": [
+        "idle:0",
+        "slam:0",
+        "slam:1",
+        "slam:2",
+        "slam:3",
+        "idle:0"
+      ],
+      "durations_ms": [
+        60,
+        200,
+        240,
+        110,
+        210,
+        80
+      ],
+      "impact_ms": [
+        500,
+        610
+      ]
+    },
+    "charge": {
+      "sources": [
+        "idle:0",
+        "charge:0",
+        "charge:1",
+        "charge:2",
+        "charge:3"
+      ],
+      "durations_ms": [
+        40,
+        50,
+        80,
+        120,
+        110
+      ]
+    },
+    "rush": {
+      "sources": [
+        "rush:0",
+        "rush:1",
+        "rush:2",
+        "rush:3",
+        "idle:0"
+      ],
+      "durations_ms": [
+        100,
+        80,
+        100,
+        130,
+        123
+      ],
+      "impact_ms": [
+        0,
+        280
+      ]
+    },
+    "nova": {
+      "sources": [
+        "idle:0",
+        "nova:0",
+        "nova:1",
+        "nova:2",
+        "nova:3",
+        "idle:0"
+      ],
+      "durations_ms": [
+        70,
+        180,
+        250,
+        100,
+        200,
+        80
+      ],
+      "impact_ms": [
+        500,
+        600
+      ]
+    },
+    "summon": {
+      "sources": [
+        "idle:0",
+        "sweep:0",
+        "command:0",
+        "summon:3",
+        "idle:0"
+      ],
+      "durations_ms": [
+        60,
+        160,
+        380,
+        170,
+        63
+      ]
+    },
+    "hit": {
+      "sources": [
+        "idle:0",
+        "hit:0",
+        "hit:1",
+        "hit:2",
+        "hit:3",
+        "idle:0"
+      ],
+      "durations_ms": [
+        30,
+        60,
+        70,
+        80,
+        60,
+        30
+      ]
+    },
+    "death": {
+      "sources": [
+        "death:0",
+        "death:1",
+        "death:2",
+        "death:3"
+      ],
+      "durations_ms": [
+        100,
+        160,
+        140,
+        200
+      ]
+    },
+    "sweep": {
+      "sources": [
+        "idle:0",
+        "sweep:0",
+        "sweep:1",
+        "sweep:2",
+        "sweep:3",
+        "idle:0"
+      ],
+      "durations_ms": [
+        60,
+        200,
+        120,
+        90,
+        240,
+        90
+      ]
+    }
+  },
+  "rejectedGenerations": [
+    {
+      "id": "move_b",
+      "reason": "First counterphase grid repeats near-foot support instead of exchanging legs; not used."
+    }
+  ],
+  "nativeMappings": {
+    "bossSlam": "slam",
+    "bossCharge": "charge",
+    "bossRush": "rush",
+    "bossNova": "nova",
+    "bossSummon": "summon",
+    "idle": "idle",
+    "move": "move",
+    "hit": "hit",
+    "death": "death"
+  },
+  "unmappedReferenceOnly": [
+    "sweep"
+  ]
+}

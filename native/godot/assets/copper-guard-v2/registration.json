@@ -1,0 +1,1482 @@
+[
+  {
+    "key": "identity:0",
+    "selected": true,
+    "source_component": 1,
+    "source_bbox": [
+      31,
+      199,
+      1232,
+      1129
+    ],
+    "source_size": [
+      1254,
+      1254
+    ],
+    "foot_roi": [
+      170,
+      870,
+      760,
+      1160
+    ],
+    "anchor_x": 464,
+    "ground_y": 1128,
+    "scale": 0.36,
+    "offset": [
+      141,
+      154
+    ],
+    "bbox": [
+      152,
+      225,
+      585,
+      561
+    ]
+  },
+  {
+    "key": "move_a:0",
+    "selected": true,
+    "source_component": 1,
+    "source_bbox": [
+      60,
+      104,
+      652,
+      577
+    ],
+    "source_size": [
+      1312,
+      1199
+    ],
+    "foot_roi": [
+      70,
+      450,
+      470,
+      675
+    ],
+    "anchor_x": 285,
+    "ground_y": 576,
+    "scale": 0.72,
+    "offset": [
+      103,
+      145
+    ],
+    "bbox": [
+      145,
+      219,
+      573,
+      561
+    ]
+  },
+  {
+    "key": "move_a:1",
+    "selected": true,
+    "source_component": 2,
+    "source_bbox": [
+      701,
+      116,
+      1301,
+      581
+    ],
+    "source_size": [
+      1312,
+      1199
+    ],
+    "foot_roi": [
+      726,
+      450,
+      1126,
+      675
+    ],
+    "anchor_x": 940,
+    "ground_y": 580,
+    "scale": 0.72,
+    "offset": [
+      -369,
+      142
+    ],
+    "bbox": [
+      135,
+      225,
+      568,
+      561
+    ]
+  },
+  {
+    "key": "move_a:2",
+    "selected": true,
+    "source_component": 5,
+    "source_bbox": [
+      59,
+      674,
+      661,
+      1144
+    ],
+    "source_size": [
+      1312,
+      1199
+    ],
+    "foot_roi": [
+      70,
+      1029,
+      470,
+      1199
+    ],
+    "anchor_x": 280,
+    "ground_y": 1143,
+    "scale": 0.72,
+    "offset": [
+      106,
+      -263
+    ],
+    "bbox": [
+      148,
+      221,
+      583,
+      561
+    ]
+  },
+  {
+    "key": "move_a:3",
+    "selected": true,
+    "source_component": 4,
+    "source_bbox": [
+      698,
+      673,
+      1307,
+      1146
+    ],
+    "source_size": [
+      1312,
+      1199
+    ],
+    "foot_roi": [
+      726,
+      1029,
+      1126,
+      1199
+    ],
+    "anchor_x": 935,
+    "ground_y": 1145,
+    "scale": 0.72,
+    "offset": [
+      -365,
+      -264
+    ],
+    "bbox": [
+      137,
+      220,
+      577,
+      561
+    ]
+  },
+  {
+    "key": "slam:0",
+    "selected": true,
+    "source_component": 2,
+    "source_bbox": [
+      31,
+      237,
+      649,
+      640
+    ],
+    "source_size": [
+      1254,
+      1254
+    ],
+    "foot_roi": [
+      70,
+      450,
+      470,
+      675
+    ],
+    "anchor_x": 267,
+    "ground_y": 635,
+    "scale": 0.72,
+    "offset": [
+      116,
+      103
+    ],
+    "bbox": [
+      138,
+      273,
+      584,
+      565
+    ]
+  },
+  {
+    "key": "slam:1",
+    "selected": true,
+    "source_component": 1,
+    "source_bbox": [
+      655,
+      18,
+      1206,
+      636
+    ],
+    "source_size": [
+      1254,
+      1254
+    ],
+    "foot_roi": [
+      697,
+      450,
+      1097,
+      675
+    ],
+    "anchor_x": 900,
+    "ground_y": 635,
+    "scale": 0.72,
+    "offset": [
+      -340,
+      103
+    ],
+    "bbox": [
+      131,
+      116,
+      529,
+      562
+    ]
+  },
+  {
+    "key": "slam:2",
+    "selected": true,
+    "source_component": 4,
+    "source_bbox": [
+      21,
+      771,
+      671,
+      1177
+    ],
+    "source_size": [
+      1254,
+      1254
+    ],
+    "foot_roi": [
+      70,
+      1057,
+      470,
+      1254
+    ],
+    "anchor_x": 270,
+    "ground_y": 1169,
+    "scale": 0.72,
+    "offset": [
+      114,
+      -282
+    ],
+    "bbox": [
+      129,
+      273,
+      597,
+      566
+    ]
+  },
+  {
+    "key": "slam:3",
+    "selected": true,
+    "source_component": 3,
+    "source_bbox": [
+      651,
+      711,
+      1236,
+      1172
+    ],
+    "source_size": [
+      1254,
+      1254
+    ],
+    "foot_roi": [
+      697,
+      1057,
+      1097,
+      1254
+    ],
+    "anchor_x": 905,
+    "ground_y": 1171,
+    "scale": 0.72,
+    "offset": [
+      -344,
+      -283
+    ],
+    "bbox": [
+      124,
+      228,
+      547,
+      561
+    ]
+  },
+  {
+    "key": "move_b_retry:0",
+    "selected": true,
+    "source_component": 1,
+    "source_bbox": [
+      31,
+      67,
+      686,
+      577
+    ],
+    "source_size": [
+      1333,
+      1180
+    ],
+    "foot_roi": [
+      70,
+      450,
+      470,
+      675
+    ],
+    "anchor_x": 285,
+    "ground_y": 576,
+    "scale": 0.72,
+    "offset": [
+      103,
+      145
+    ],
+    "bbox": [
+      124,
+      193,
+      598,
+      561
+    ]
+  },
+  {
+    "key": "move_b_retry:1",
+    "selected": true,
+    "source_component": 2,
+    "source_bbox": [
+      704,
+      81,
+      1325,
+      581
+    ],
+    "source_size": [
+      1333,
+      1180
+    ],
+    "foot_roi": [
+      736,
+      450,
+      1136,
+      675
+    ],
+    "anchor_x": 956,
+    "ground_y": 580,
+    "scale": 0.72,
+    "offset": [
+      -380,
+      142
+    ],
+    "bbox": [
+      126,
+      200,
+      575,
+      561
+    ]
+  },
+  {
+    "key": "move_b_retry:2",
+    "selected": true,
+    "source_component": 5,
+    "source_bbox": [
+      21,
+      628,
+      657,
+      1135
+    ],
+    "source_size": [
+      1333,
+      1180
+    ],
+    "foot_roi": [
+      70,
+      1020,
+      470,
+      1180
+    ],
+    "anchor_x": 277,
+    "ground_y": 1134,
+    "scale": 0.72,
+    "offset": [
+      109,
+      -256
+    ],
+    "bbox": [
+      123,
+      196,
+      583,
+      562
+    ]
+  },
+  {
+    "key": "move_b_retry:3",
+    "selected": true,
+    "source_component": 6,
+    "source_bbox": [
+      674,
+      636,
+      1310,
+      1136
+    ],
+    "source_size": [
+      1333,
+      1180
+    ],
+    "foot_roi": [
+      736,
+      1020,
+      1136,
+      1180
+    ],
+    "anchor_x": 925,
+    "ground_y": 1135,
+    "scale": 0.72,
+    "offset": [
+      -358,
+      -257
+    ],
+    "bbox": [
+      127,
+      201,
+      586,
+      562
+    ]
+  },
+  {
+    "key": "charge:0",
+    "selected": true,
+    "source_component": 1,
+    "source_bbox": [
+      33,
+      113,
+      670,
+      621
+    ],
+    "source_size": [
+      1254,
+      1254
+    ],
+    "foot_roi": [
+      70,
+      450,
+      470,
+      675
+    ],
+    "anchor_x": 267,
+    "ground_y": 620,
+    "scale": 0.72,
+    "offset": [
+      116,
+      114
+    ],
+    "bbox": [
+      139,
+      195,
+      599,
+      562
+    ]
+  },
+  {
+    "key": "charge:1",
+    "selected": true,
+    "source_component": 2,
+    "source_bbox": [
+      644,
+      150,
+      1243,
+      626
+    ],
+    "source_size": [
+      1254,
+      1254
+    ],
+    "foot_roi": [
+      697,
+      450,
+      1097,
+      675
+    ],
+    "anchor_x": 900,
+    "ground_y": 625,
+    "scale": 0.72,
+    "offset": [
+      -340,
+      110
+    ],
+    "bbox": [
+      123,
+      218,
+      556,
+      561
+    ]
+  },
+  {
+    "key": "charge:2",
+    "selected": true,
+    "source_component": 3,
+    "source_bbox": [
+      33,
+      771,
+      710,
+      1162
+    ],
+    "source_size": [
+      1254,
+      1254
+    ],
+    "foot_roi": [
+      70,
+      1057,
+      470,
+      1254
+    ],
+    "anchor_x": 270,
+    "ground_y": 1161,
+    "scale": 0.72,
+    "offset": [
+      114,
+      -276
+    ],
+    "bbox": [
+      137,
+      278,
+      626,
+      561
+    ]
+  },
+  {
+    "key": "charge:3",
+    "selected": true,
+    "source_component": 4,
+    "source_bbox": [
+      644,
+      800,
+      1237,
+      1160
+    ],
+    "source_size": [
+      1254,
+      1254
+    ],
+    "foot_roi": [
+      697,
+      1057,
+      1097,
+      1254
+    ],
+    "anchor_x": 906,
+    "ground_y": 1159,
+    "scale": 0.72,
+    "offset": [
+      -344,
+      -274
+    ],
+    "bbox": [
+      119,
+      302,
+      547,
+      562
+    ]
+  },
+  {
+    "key": "rush:0",
+    "selected": true,
+    "source_component": 1,
+    "source_bbox": [
+      22,
+      170,
+      709,
+      640
+    ],
+    "source_size": [
+      1254,
+      1254
+    ],
+    "foot_roi": [
+      70,
+      450,
+      470,
+      675
+    ],
+    "anchor_x": 270,
+    "ground_y": 639,
+    "scale": 0.72,
+    "offset": [
+      114,
+      100
+    ],
+    "bbox": [
+      130,
+      222,
+      625,
+      562
+    ]
+  },
+  {
+    "key": "rush:1",
+    "selected": true,
+    "source_component": 2,
+    "source_bbox": [
+      632,
+      184,
+      1238,
+      641
+    ],
+    "source_size": [
+      1254,
+      1254
+    ],
+    "foot_roi": [
+      697,
+      450,
+      1097,
+      675
+    ],
+    "anchor_x": 913,
+    "ground_y": 640,
+    "scale": 0.72,
+    "offset": [
+      -349,
+      99
+    ],
+    "bbox": [
+      106,
+      231,
+      543,
+      561
+    ]
+  },
+  {
+    "key": "rush:2",
+    "selected": true,
+    "source_component": 5,
+    "source_bbox": [
+      38,
+      729,
+      708,
+      1185
+    ],
+    "source_size": [
+      1254,
+      1254
+    ],
+    "foot_roi": [
+      70,
+      1057,
+      470,
+      1254
+    ],
+    "anchor_x": 300,
+    "ground_y": 1184,
+    "scale": 0.72,
+    "offset": [
+      92,
+      -292
+    ],
+    "bbox": [
+      119,
+      232,
+      602,
+      562
+    ]
+  },
+  {
+    "key": "rush:3",
+    "selected": true,
+    "source_component": 4,
+    "source_bbox": [
+      672,
+      703,
+      1242,
+      1189
+    ],
+    "source_size": [
+      1254,
+      1254
+    ],
+    "foot_roi": [
+      697,
+      1057,
+      1097,
+      1254
+    ],
+    "anchor_x": 915,
+    "ground_y": 1188,
+    "scale": 0.72,
+    "offset": [
+      -351,
+      -295
+    ],
+    "bbox": [
+      133,
+      210,
+      544,
+      561
+    ]
+  },
+  {
+    "key": "nova:0",
+    "selected": true,
+    "source_component": 2,
+    "source_bbox": [
+      19,
+      224,
+      659,
+      628
+    ],
+    "source_size": [
+      1254,
+      1254
+    ],
+    "foot_roi": [
+      70,
+      450,
+      470,
+      675
+    ],
+    "anchor_x": 270,
+    "ground_y": 625,
+    "scale": 0.72,
+    "offset": [
+      114,
+      110
+    ],
+    "bbox": [
+      127,
+      270,
+      589,
+      563
+    ]
+  },
+  {
+    "key": "nova:1",
+    "selected": true,
+    "source_component": 1,
+    "source_bbox": [
+      653,
+      7,
+      1246,
+      627
+    ],
+    "source_size": [
+      1254,
+      1254
+    ],
+    "foot_roi": [
+      697,
+      450,
+      1097,
+      675
+    ],
+    "anchor_x": 911,
+    "ground_y": 626,
+    "scale": 0.72,
+    "offset": [
+      -348,
+      109
+    ],
+    "bbox": [
+      121,
+      113,
+      550,
+      561
+    ]
+  },
+  {
+    "key": "nova:2",
+    "selected": true,
+    "source_component": 4,
+    "source_bbox": [
+      27,
+      816,
+      638,
+      1189
+    ],
+    "source_size": [
+      1254,
+      1254
+    ],
+    "foot_roi": [
+      70,
+      1057,
+      470,
+      1254
+    ],
+    "anchor_x": 270,
+    "ground_y": 1188,
+    "scale": 0.72,
+    "offset": [
+      114,
+      -295
+    ],
+    "bbox": [
+      133,
+      292,
+      574,
+      562
+    ]
+  },
+  {
+    "key": "nova:3",
+    "selected": true,
+    "source_component": 3,
+    "source_bbox": [
+      669,
+      755,
+      1241,
+      1193
+    ],
+    "source_size": [
+      1254,
+      1254
+    ],
+    "foot_roi": [
+      697,
+      1057,
+      1097,
+      1254
+    ],
+    "anchor_x": 914,
+    "ground_y": 1188,
+    "scale": 0.72,
+    "offset": [
+      -350,
+      -295
+    ],
+    "bbox": [
+      131,
+      248,
+      544,
+      565
+    ]
+  },
+  {
+    "key": "sweep:0",
+    "selected": true,
+    "source_component": 1,
+    "source_bbox": [
+      20,
+      150,
+      621,
+      618
+    ],
+    "source_size": [
+      1254,
+      1254
+    ],
+    "foot_roi": [
+      200,
+      490,
+      621,
+      640
+    ],
+    "anchor_x": 430,
+    "ground_y": 617,
+    "scale": 0.72,
+    "offset": [
+      -2,
+      116
+    ],
+    "bbox": [
+      12,
+      223,
+      446,
+      562
+    ]
+  },
+  {
+    "key": "sweep:1",
+    "selected": true,
+    "source_component": 2,
+    "source_bbox": [
+      630,
+      188,
+      1244,
+      618
+    ],
+    "source_size": [
+      1254,
+      1254
+    ],
+    "foot_roi": [
+      697,
+      450,
+      1097,
+      675
+    ],
+    "anchor_x": 910,
+    "ground_y": 617,
+    "scale": 0.72,
+    "offset": [
+      -347,
+      116
+    ],
+    "bbox": [
+      105,
+      250,
+      550,
+      562
+    ]
+  },
+  {
+    "key": "sweep:2",
+    "selected": true,
+    "source_component": 6,
+    "source_bbox": [
+      32,
+      728,
+      689,
+      1151
+    ],
+    "source_size": [
+      1254,
+      1254
+    ],
+    "foot_roi": [
+      70,
+      1057,
+      470,
+      1254
+    ],
+    "anchor_x": 272,
+    "ground_y": 1150,
+    "scale": 0.72,
+    "offset": [
+      112,
+      -268
+    ],
+    "bbox": [
+      134,
+      255,
+      609,
+      561
+    ]
+  },
+  {
+    "key": "sweep:3",
+    "selected": true,
+    "source_component": 5,
+    "source_bbox": [
+      684,
+      724,
+      1242,
+      1151
+    ],
+    "source_size": [
+      1254,
+      1254
+    ],
+    "foot_roi": [
+      697,
+      1057,
+      1097,
+      1254
+    ],
+    "anchor_x": 915,
+    "ground_y": 1150,
+    "scale": 0.72,
+    "offset": [
+      -351,
+      -268
+    ],
+    "bbox": [
+      141,
+      253,
+      544,
+      562
+    ]
+  },
+  {
+    "key": "idle:0",
+    "selected": true,
+    "source_component": 2,
+    "source_bbox": [
+      27,
+      94,
+      647,
+      616
+    ],
+    "source_size": [
+      1254,
+      1254
+    ],
+    "foot_roi": [
+      70,
+      450,
+      470,
+      675
+    ],
+    "anchor_x": 265,
+    "ground_y": 615,
+    "scale": 0.72,
+    "offset": [
+      117,
+      117
+    ],
+    "bbox": [
+      136,
+      184,
+      583,
+      561
+    ]
+  },
+  {
+    "key": "idle:1",
+    "selected": true,
+    "source_component": 1,
+    "source_bbox": [
+      634,
+      90,
+      1249,
+      617
+    ],
+    "source_size": [
+      1254,
+      1254
+    ],
+    "foot_roi": [
+      697,
+      450,
+      1097,
+      675
+    ],
+    "anchor_x": 875,
+    "ground_y": 616,
+    "scale": 0.72,
+    "offset": [
+      -322,
+      116
+    ],
+    "bbox": [
+      134,
+      180,
+      578,
+      561
+    ]
+  },
+  {
+    "key": "idle:2",
+    "selected": true,
+    "source_component": 4,
+    "source_bbox": [
+      26,
+      676,
+      647,
+      1202
+    ],
+    "source_size": [
+      1254,
+      1254
+    ],
+    "foot_roi": [
+      70,
+      1057,
+      470,
+      1254
+    ],
+    "anchor_x": 270,
+    "ground_y": 1201,
+    "scale": 0.72,
+    "offset": [
+      114,
+      -305
+    ],
+    "bbox": [
+      132,
+      181,
+      580,
+      561
+    ]
+  },
+  {
+    "key": "idle:3",
+    "selected": true,
+    "source_component": 3,
+    "source_bbox": [
+      633,
+      675,
+      1248,
+      1202
+    ],
+    "source_size": [
+      1254,
+      1254
+    ],
+    "foot_roi": [
+      697,
+      1057,
+      1097,
+      1254
+    ],
+    "anchor_x": 881,
+    "ground_y": 1201,
+    "scale": 0.72,
+    "offset": [
+      -326,
+      -305
+    ],
+    "bbox": [
+      130,
+      181,
+      573,
+      561
+    ]
+  },
+  {
+    "key": "summon:0",
+    "selected": false,
+    "reason": "Frames1/2 have unsupported floating shaft; frame0 raises on opposite side of valid command, so use inspected left-side sweep anticipation instead. No weapon teleport between upright sides.",
+    "source_edge": false
+  },
+  {
+    "key": "summon:1",
+    "selected": false,
+    "reason": "Frames1/2 have unsupported floating shaft; frame0 raises on opposite side of valid command, so use inspected left-side sweep anticipation instead. No weapon teleport between upright sides.",
+    "source_edge": false
+  },
+  {
+    "key": "summon:2",
+    "selected": false,
+    "reason": "Frames1/2 have unsupported floating shaft; frame0 raises on opposite side of valid command, so use inspected left-side sweep anticipation instead. No weapon teleport between upright sides.",
+    "source_edge": false
+  },
+  {
+    "key": "summon:3",
+    "selected": true,
+    "source_component": 8,
+    "source_bbox": [
+      642,
+      735,
+      1233,
+      1226
+    ],
+    "source_size": [
+      1254,
+      1254
+    ],
+    "foot_roi": [
+      697,
+      1057,
+      1097,
+      1254
+    ],
+    "anchor_x": 882,
+    "ground_y": 1225,
+    "scale": 0.72,
+    "offset": [
+      -327,
+      -322
+    ],
+    "bbox": [
+      135,
+      206,
+      562,
+      561
+    ]
+  },
+  {
+    "key": "hit:0",
+    "selected": true,
+    "source_component": 1,
+    "source_bbox": [
+      37,
+      113,
+      648,
+      595
+    ],
+    "source_size": [
+      1254,
+      1254
+    ],
+    "foot_roi": [
+      70,
+      450,
+      470,
+      675
+    ],
+    "anchor_x": 265,
+    "ground_y": 594,
+    "scale": 0.72,
+    "offset": [
+      117,
+      132
+    ],
+    "bbox": [
+      143,
+      213,
+      584,
+      561
+    ]
+  },
+  {
+    "key": "hit:1",
+    "selected": true,
+    "source_component": 2,
+    "source_bbox": [
+      656,
+      123,
+      1245,
+      597
+    ],
+    "source_size": [
+      1254,
+      1254
+    ],
+    "foot_roi": [
+      697,
+      450,
+      1097,
+      675
+    ],
+    "anchor_x": 881,
+    "ground_y": 596,
+    "scale": 0.72,
+    "offset": [
+      -326,
+      131
+    ],
+    "bbox": [
+      145,
+      219,
+      571,
+      561
+    ]
+  },
+  {
+    "key": "hit:2",
+    "selected": true,
+    "source_component": 5,
+    "source_bbox": [
+      43,
+      670,
+      655,
+      1190
+    ],
+    "source_size": [
+      1254,
+      1254
+    ],
+    "foot_roi": [
+      70,
+      1057,
+      470,
+      1254
+    ],
+    "anchor_x": 284,
+    "ground_y": 1189,
+    "scale": 0.72,
+    "offset": [
+      104,
+      -296
+    ],
+    "bbox": [
+      135,
+      186,
+      576,
+      562
+    ]
+  },
+  {
+    "key": "hit:3",
+    "selected": true,
+    "source_component": 4,
+    "source_bbox": [
+      652,
+      666,
+      1245,
+      1191
+    ],
+    "source_size": [
+      1254,
+      1254
+    ],
+    "foot_roi": [
+      697,
+      1057,
+      1097,
+      1254
+    ],
+    "anchor_x": 888,
+    "ground_y": 1190,
+    "scale": 0.72,
+    "offset": [
+      -331,
+      -297
+    ],
+    "bbox": [
+      138,
+      182,
+      566,
+      561
+    ]
+  },
+  {
+    "key": "death:0",
+    "selected": true,
+    "source_component": 1,
+    "source_bbox": [
+      44,
+      154,
+      652,
+      638
+    ],
+    "source_size": [
+      1254,
+      1254
+    ],
+    "foot_roi": [
+      70,
+      450,
+      470,
+      675
+    ],
+    "anchor_x": 267,
+    "ground_y": 637,
+    "scale": 0.72,
+    "offset": [
+      116,
+      101
+    ],
+    "bbox": [
+      147,
+      211,
+      586,
+      561
+    ]
+  },
+  {
+    "key": "death:1",
+    "selected": true,
+    "source_component": 2,
+    "source_bbox": [
+      667,
+      268,
+      1238,
+      661
+    ],
+    "source_size": [
+      1254,
+      1254
+    ],
+    "foot_roi": [
+      697,
+      450,
+      1097,
+      675
+    ],
+    "anchor_x": 884,
+    "ground_y": 635,
+    "scale": 0.72,
+    "offset": [
+      -328,
+      103
+    ],
+    "bbox": [
+      152,
+      295,
+      564,
+      580
+    ]
+  },
+  {
+    "key": "death:2",
+    "selected": true,
+    "source_component": 3,
+    "source_bbox": [
+      42,
+      836,
+      613,
+      1157
+    ],
+    "source_size": [
+      1254,
+      1254
+    ],
+    "foot_roi": [
+      40,
+      1070,
+      610,
+      1190
+    ],
+    "anchor_x": 305,
+    "ground_y": 1156,
+    "scale": 0.72,
+    "offset": [
+      88,
+      -272
+    ],
+    "bbox": [
+      118,
+      329,
+      530,
+      561
+    ]
+  },
+  {
+    "key": "death:3",
+    "selected": true,
+    "source_component": 4,
+    "source_bbox": [
+      635,
+      945,
+      1223,
+      1140
+    ],
+    "source_size": [
+      1254,
+      1254
+    ],
+    "foot_roi": [
+      635,
+      1030,
+      1230,
+      1170
+    ],
+    "anchor_x": 925,
+    "ground_y": 1139,
+    "scale": 0.72,
+    "offset": [
+      -358,
+      -260
+    ],
+    "bbox": [
+      99,
+      420,
+      523,
+      561
+    ]
+  },
+  {
+    "key": "command:0",
+    "selected": true,
+    "source_component": 1,
+    "source_bbox": [
+      198,
+      11,
+      1108,
+      1214
+    ],
+    "source_size": [
+      1254,
+      1254
+    ],
+    "foot_roi": [
+      340,
+      1060,
+      980,
+      1240
+    ],
+    "anchor_x": 659,
+    "ground_y": 1213,
+    "scale": 0.36,
+    "offset": [
+      71,
+      123
+    ],
+    "bbox": [
+      142,
+      126,
+      470,
+      560
+    ]
+  }
+]

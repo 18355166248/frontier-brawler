@@ -52,7 +52,11 @@ static func run(root: Window, check: Callable, game: Control) -> void:
 		for i in 44:
 			enemy.tick({})
 		enemy.get_node("Visual")._process(0)
-		check.call(is_zero_approx(enemy.get_node("Visual").modulate.a) and enemy.visual_height == 0, kind + " death settles and fully fades")
+		var visual = enemy.get_node("Visual")
+		if kind == "boss" and visual is FBCopperGuardVisual and visual.uses_boss_pack:
+			check.call(visual.modulate.a == 1.0 and visual.boss_action == "death" and visual.boss_frame == 3 and enemy.visual_height == 0, "copper guard settles into visible final corpse")
+		else:
+			check.call(is_zero_approx(visual.modulate.a) and enemy.visual_height == 0, kind + " death settles and fully fades")
 		hero.free()
 		enemy.free()
 	game._command("start")
