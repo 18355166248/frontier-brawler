@@ -1,0 +1,187 @@
+{
+  "version": 1,
+  "toolVersion": "1.0",
+  "kind": "motion",
+  "title": "怪物动作关键姿态 · 草稿",
+  "source": {
+    "provider": "codex-builtin-imagegen",
+    "calls": 6,
+    "note": "三身份已认可；近战 move 待修；攻击关键姿态待用户验收，缺中间帧和受击死亡；未接入游戏"
+  },
+  "release": {
+    "status": "draft",
+    "runtimeEvidence": null
+  },
+  "atlas": "atlas.png",
+  "anchor": [
+    0.48125,
+    0.875
+  ],
+  "anchorConvention": "normalized-from-top-left; metadata only, no automatic foot alignment",
+  "states": [
+    {
+      "name": "redmane-move",
+      "loop": true,
+      "frames": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 640,
+          "h": 640,
+          "durationMs": 180
+        },
+        {
+          "x": 640,
+          "y": 0,
+          "w": 640,
+          "h": 640,
+          "durationMs": 180
+        },
+        {
+          "x": 1280,
+          "y": 0,
+          "w": 640,
+          "h": 640,
+          "durationMs": 180
+        },
+        {
+          "x": 1920,
+          "y": 0,
+          "w": 640,
+          "h": 640,
+          "durationMs": 180
+        }
+      ],
+      "sourceFrames": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "name": "redmane-slash",
+      "loop": false,
+      "frames": [
+        {
+          "x": 0,
+          "y": 640,
+          "w": 640,
+          "h": 640,
+          "durationMs": 133
+        },
+        {
+          "x": 640,
+          "y": 640,
+          "w": 640,
+          "h": 640,
+          "durationMs": 84
+        },
+        {
+          "x": 1280,
+          "y": 640,
+          "w": 640,
+          "h": 640,
+          "durationMs": 83
+        },
+        {
+          "x": 1920,
+          "y": 640,
+          "w": 640,
+          "h": 640,
+          "durationMs": 100
+        }
+      ],
+      "sourceFrames": [
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "name": "mossfeather-shoot",
+      "loop": false,
+      "frames": [
+        {
+          "x": 0,
+          "y": 1280,
+          "w": 640,
+          "h": 640,
+          "durationMs": 200
+        },
+        {
+          "x": 640,
+          "y": 1280,
+          "w": 640,
+          "h": 640,
+          "durationMs": 500
+        },
+        {
+          "x": 1280,
+          "y": 1280,
+          "w": 640,
+          "h": 640,
+          "durationMs": 80
+        },
+        {
+          "x": 1920,
+          "y": 1280,
+          "w": 640,
+          "h": 640,
+          "durationMs": 420
+        }
+      ],
+      "sourceFrames": [
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "name": "whitemask-cast",
+      "loop": false,
+      "frames": [
+        {
+          "x": 0,
+          "y": 1920,
+          "w": 640,
+          "h": 640,
+          "durationMs": 250
+        },
+        {
+          "x": 640,
+          "y": 1920,
+          "w": 640,
+          "h": 640,
+          "durationMs": 650
+        },
+        {
+          "x": 1280,
+          "y": 1920,
+          "w": 640,
+          "h": 640,
+          "durationMs": 150
+        },
+        {
+          "x": 1920,
+          "y": 1920,
+          "w": 640,
+          "h": 640,
+          "durationMs": 600
+        }
+      ],
+      "sourceFrames": [
+        12,
+        13,
+        14,
+        15
+      ]
+    }
+  ],
+  "exports": [
+    "aseprite.json",
+    "grid.json"
+  ]
+}

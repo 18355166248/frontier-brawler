@@ -71,7 +71,7 @@ func deal(attacker: FBActor, target: FBActor, box: Dictionary) -> void:
 	if target.state.definition().get("superArmor", false):
 		target.invulnerability = maxi(target.invulnerability, 6)
 	else:
-		target.knockback = Vector2(box.knockback * attacker.facing, 0)
+		target.knockback = Vector2(box.knockback * float(box.get("direction_x", attacker.facing)), 0)
 		target.stun = 12
 		target.invulnerability = 20
 		target.state.change("hit")

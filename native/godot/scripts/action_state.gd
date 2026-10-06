@@ -55,4 +55,5 @@ func advance() -> void:
 		if d.get("loop", false):
 			frame = 0
 		else:
-			change("idle")
+			# 瞄准结束接释放；受击提前 change(hit) 会取消这条链，不能靠动画回调出箭。
+			change(str(d.get("next", "idle")))

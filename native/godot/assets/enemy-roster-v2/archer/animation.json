@@ -1,0 +1,201 @@
+{
+  "version": 1,
+  "kind": "archer",
+  "canvas_px": [
+    640,
+    640
+  ],
+  "pivot_px": [
+    308,
+    560
+  ],
+  "art_scale": 0.3,
+  "stride_world_px": 58,
+  "animations": {
+    "idle": {
+      "sheet": "idle.png",
+      "frames": [
+        {
+          "rect_px": [
+            0,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 800,
+          "source": "mossfeather-responses-0",
+          "sha256": "50c7747eb154615dede35e1541cd806a817656f90c39aea29fe86090c3408c65"
+        }
+      ],
+      "duration_ms": 800,
+      "loop": true,
+      "frame_count": 1
+    },
+    "move": {
+      "sheet": "move.png",
+      "frames": [
+        {
+          "rect_px": [
+            0,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 180,
+          "source": "mossfeather-move-0",
+          "sha256": "8c665c87a0cc62c51b3665bbe85cd35cbe22583714e35344f2f38ebcfb5966c1"
+        },
+        {
+          "rect_px": [
+            640,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 180,
+          "source": "mossfeather-move-1",
+          "sha256": "82d20d54b7dad9cfe60f9ee6681c54065ee61d719f89441c06ab5eced44d633e"
+        },
+        {
+          "rect_px": [
+            1280,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 180,
+          "source": "mossfeather-move-2",
+          "sha256": "bcf1d2f54e6d9cda9331150bc4dca9e159c6382d6631796f15f9dcf48802d3ea"
+        },
+        {
+          "rect_px": [
+            1920,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 180,
+          "source": "mossfeather-move-3",
+          "sha256": "e04e60a8d45684f15f2136bbe2571e2fa4352c2c5ddbba1af8971e36a3a6386a"
+        }
+      ],
+      "duration_ms": 720,
+      "loop": true,
+      "frame_count": 4
+    },
+    "hit": {
+      "sheet": "hit.png",
+      "frames": [
+        {
+          "rect_px": [
+            0,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 333,
+          "source": "mossfeather-responses-1",
+          "sha256": "a362971792b30267667546dde39a29e552b862f08ba891fefe3888a1a1b379c3"
+        }
+      ],
+      "duration_ms": 333,
+      "loop": false,
+      "frame_count": 1
+    },
+    "death": {
+      "sheet": "death.png",
+      "frames": [
+        {
+          "rect_px": [
+            0,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 180,
+          "source": "mossfeather-responses-2",
+          "sha256": "2c15b972c85e90b247786530b2fb14030dcdd1ddd993c415936da1adae088561"
+        },
+        {
+          "rect_px": [
+            640,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 220,
+          "source": "mossfeather-responses-3",
+          "sha256": "30149052957f1570a3e074982907daba0628a1f761838cb67ed95fdefe9cf1ca"
+        }
+      ],
+      "duration_ms": 400,
+      "loop": false,
+      "frame_count": 2
+    },
+    "archerAim": {
+      "sheet": "archerAim.png",
+      "frames": [
+        {
+          "rect_px": [
+            0,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 200,
+          "source": "mossfeather-shoot-0",
+          "sha256": "50d6d23e24cc2b852a5632b6cf3897b8a16a75027b017bb068a3db5a91d5e480"
+        },
+        {
+          "rect_px": [
+            640,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 500,
+          "source": "mossfeather-shoot-1",
+          "sha256": "c52b4c7a1effaf1ce0c3cd98c72a8d90f9c1d1ffdf81190ae2d48724d0f4cb35"
+        }
+      ],
+      "duration_ms": 700,
+      "loop": false,
+      "frame_count": 2
+    },
+    "archerShoot": {
+      "sheet": "archerShoot.png",
+      "frames": [
+        {
+          "rect_px": [
+            0,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 80,
+          "source": "mossfeather-shoot-2",
+          "sha256": "192d249c2f498491d85a0bcf6dce242990983c35a65ead0468b690a81ffa90e5"
+        },
+        {
+          "rect_px": [
+            640,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 420,
+          "source": "mossfeather-shoot-3",
+          "sha256": "d303b86d39f0130a0362833df60b8d768ec5428896b0e21c55c699fc2277250d"
+        }
+      ],
+      "duration_ms": 500,
+      "loop": false,
+      "frame_count": 2
+    }
+  },
+  "status": "integrated-candidate",
+  "identity_approval": "user-approved",
+  "attack_approval": "user: 合适 继续",
+  "new_motion_approval": "pending",
+  "idle_note": "single generated guard pose held; not a generated breathing animation"
+}

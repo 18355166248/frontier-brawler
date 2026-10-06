@@ -55,6 +55,8 @@ static func run(root: Window, check: Callable, game: Control) -> void:
 		var visual = enemy.get_node("Visual")
 		if kind == "boss" and visual is FBCopperGuardVisual and visual.uses_boss_pack:
 			check.call(visual.modulate.a == 1.0 and visual.boss_action == "death" and visual.boss_frame == 3 and enemy.visual_height == 0, "copper guard settles into visible final corpse")
+		elif visual is FBEnemyRosterVisual and visual.uses_enemy_pack:
+			check.call(visual.modulate.a == 1.0 and visual.enemy_action == "death" and visual.enemy_frame == 1 and enemy.visual_height == 0, "roster enemy settles into final corpse before room clear")
 		else:
 			check.call(is_zero_approx(visual.modulate.a) and enemy.visual_height == 0, kind + " death settles and fully fades")
 		hero.free()

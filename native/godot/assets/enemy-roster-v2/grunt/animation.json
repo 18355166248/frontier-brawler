@@ -1,0 +1,197 @@
+{
+  "version": 1,
+  "kind": "grunt",
+  "canvas_px": [
+    640,
+    640
+  ],
+  "pivot_px": [
+    308,
+    560
+  ],
+  "art_scale": 0.3,
+  "stride_world_px": 58,
+  "animations": {
+    "idle": {
+      "sheet": "idle.png",
+      "frames": [
+        {
+          "rect_px": [
+            0,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 800,
+          "source": "redmane-responses-0",
+          "sha256": "fa9d752bc07e601f29932200bb05567ef21888ef9680e3f044a87c7a936cb700"
+        }
+      ],
+      "duration_ms": 800,
+      "loop": true,
+      "frame_count": 1
+    },
+    "move": {
+      "sheet": "move.png",
+      "frames": [
+        {
+          "rect_px": [
+            0,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 180,
+          "source": "redmane-move-0",
+          "sha256": "8260ce45e00b0af622b19844bbc221b10f909d04c09b5ad0a33973480655299f"
+        },
+        {
+          "rect_px": [
+            640,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 180,
+          "source": "redmane-move-1",
+          "sha256": "a909081dd353dd2cac18c3329f7d76946654f4550ab73e2d8141b1b45d9de3da"
+        },
+        {
+          "rect_px": [
+            1280,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 180,
+          "source": "redmane-move-2",
+          "sha256": "0af6cf1960be94dff30d5817dd13a0f592c0ff8902ce82e084fac301f54babd6"
+        },
+        {
+          "rect_px": [
+            1920,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 180,
+          "source": "redmane-move-3",
+          "sha256": "96c17c8c7b03440db5554f579e61da912a6da9613478aedeca796c6b8a93d2c3"
+        }
+      ],
+      "duration_ms": 720,
+      "loop": true,
+      "frame_count": 4
+    },
+    "hit": {
+      "sheet": "hit.png",
+      "frames": [
+        {
+          "rect_px": [
+            0,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 333,
+          "source": "redmane-responses-1",
+          "sha256": "8611d39310a17511f4657ced324ad80ab17951c358d23884403e5d854d6f1c47"
+        }
+      ],
+      "duration_ms": 333,
+      "loop": false,
+      "frame_count": 1
+    },
+    "death": {
+      "sheet": "death.png",
+      "frames": [
+        {
+          "rect_px": [
+            0,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 180,
+          "source": "redmane-responses-2",
+          "sha256": "d02f44c40aac13675942ef954391d582a1d8642a46a211f597d5fd55f1b2759d"
+        },
+        {
+          "rect_px": [
+            640,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 220,
+          "source": "redmane-responses-3",
+          "sha256": "98d323b6ba9fd0a0a31c6e2bfe0f1340bd0eeca0e06f86abbbf33f8925044bc2"
+        }
+      ],
+      "duration_ms": 400,
+      "loop": false,
+      "frame_count": 2
+    },
+    "slash": {
+      "sheet": "slash.png",
+      "frames": [
+        {
+          "rect_px": [
+            0,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 133,
+          "source": "redmane-slash-0",
+          "sha256": "6496a609b00ec256e02838b99940aa18bef8ff1e1dbd0b571865bb7106bd875a"
+        },
+        {
+          "rect_px": [
+            640,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 84,
+          "source": "redmane-slash-1",
+          "sha256": "5652402d12ab51c9db88732eb72185635be38a576fd54c99f16e101abcf89bf5"
+        },
+        {
+          "rect_px": [
+            1280,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 83,
+          "source": "redmane-slash-2",
+          "sha256": "a4bf188b5ecf986aae64df45f36cfec89607f91c0fb94ecd87e99fa1c52c7691"
+        },
+        {
+          "rect_px": [
+            1920,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 100,
+          "source": "redmane-slash-3",
+          "sha256": "f0ad6e6c8e3f67b5f934c898834fb901fa7aea81ebd35463f599c153c1f23d9d"
+        }
+      ],
+      "duration_ms": 400,
+      "loop": false,
+      "frame_count": 4,
+      "impact_ms": [
+        133,
+        217
+      ]
+    }
+  },
+  "status": "integrated-candidate",
+  "identity_approval": "user-approved",
+  "attack_approval": "user: 合适 继续",
+  "new_motion_approval": "pending",
+  "idle_note": "single generated guard pose held; not a generated breathing animation"
+}

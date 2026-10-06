@@ -1,0 +1,362 @@
+[
+  {
+    "action": "mossfeather-shoot",
+    "frame": 0,
+    "source": "mossfeather-shot-keyposes-v2.png",
+    "sha256": "27df7890ce742e151136f318c116a18a52506370c30d645e65218f2bd90f70c2",
+    "scale": 0.88,
+    "source_bbox": [
+      145,
+      78,
+      569,
+      612
+    ],
+    "foot_roi": [
+      180,
+      540,
+      510,
+      618
+    ],
+    "ground_y": 611,
+    "offset": [
+      11,
+      22
+    ],
+    "result_bbox": [
+      138,
+      90,
+      513,
+      561
+    ]
+  },
+  {
+    "action": "mossfeather-shoot",
+    "frame": 1,
+    "source": "mossfeather-shot-keyposes-v2.png",
+    "sha256": "27df7890ce742e151136f318c116a18a52506370c30d645e65218f2bd90f70c2",
+    "scale": 0.88,
+    "source_bbox": [
+      692,
+      39,
+      1177,
+      612
+    ],
+    "foot_roi": [
+      735,
+      540,
+      1085,
+      618
+    ],
+    "ground_y": 611,
+    "offset": [
+      -491,
+      22
+    ],
+    "result_bbox": [
+      117,
+      56,
+      546,
+      561
+    ]
+  },
+  {
+    "action": "mossfeather-shoot",
+    "frame": 2,
+    "source": "mossfeather-shot-keyposes-v2.png",
+    "sha256": "27df7890ce742e151136f318c116a18a52506370c30d645e65218f2bd90f70c2",
+    "scale": 0.88,
+    "source_bbox": [
+      152,
+      681,
+      585,
+      1188
+    ],
+    "foot_roi": [
+      185,
+      1110,
+      530,
+      1200
+    ],
+    "ground_y": 1187,
+    "offset": [
+      0,
+      -485
+    ],
+    "result_bbox": [
+      133,
+      114,
+      516,
+      562
+    ]
+  },
+  {
+    "action": "mossfeather-shoot",
+    "frame": 3,
+    "source": "mossfeather-shot-keyposes-v2.png",
+    "sha256": "27df7890ce742e151136f318c116a18a52506370c30d645e65218f2bd90f70c2",
+    "scale": 0.88,
+    "source_bbox": [
+      713,
+      664,
+      1128,
+      1190
+    ],
+    "foot_roi": [
+      750,
+      1110,
+      1090,
+      1200
+    ],
+    "ground_y": 1189,
+    "offset": [
+      -504,
+      -486
+    ],
+    "result_bbox": [
+      123,
+      98,
+      490,
+      562
+    ]
+  },
+  {
+    "action": "mossfeather-move",
+    "frame": 0,
+    "source": "mossfeather-move-v1.png",
+    "sha256": "99476afa3866f5a01b1c145f9ab2f4646937fadb2f68e6e96408d935f6c4b883",
+    "scale": 0.68,
+    "source_bbox": [
+      85,
+      32,
+      637,
+      608
+    ],
+    "foot_roi": [
+      440,
+      540,
+      570,
+      615
+    ],
+    "ground_y": 607,
+    "offset": [
+      70,
+      147
+    ],
+    "result_bbox": [
+      127,
+      168,
+      504,
+      561
+    ]
+  },
+  {
+    "action": "mossfeather-move",
+    "frame": 1,
+    "source": "mossfeather-move-v1.png",
+    "sha256": "99476afa3866f5a01b1c145f9ab2f4646937fadb2f68e6e96408d935f6c4b883",
+    "scale": 0.68,
+    "source_bbox": [
+      674,
+      32,
+      1227,
+      608
+    ],
+    "foot_roi": [
+      810,
+      540,
+      940,
+      615
+    ],
+    "ground_y": 607,
+    "offset": [
+      -328,
+      147
+    ],
+    "result_bbox": [
+      130,
+      168,
+      507,
+      561
+    ]
+  },
+  {
+    "action": "mossfeather-move",
+    "frame": 2,
+    "source": "mossfeather-move-v1.png",
+    "sha256": "99476afa3866f5a01b1c145f9ab2f4646937fadb2f68e6e96408d935f6c4b883",
+    "scale": 0.68,
+    "source_bbox": [
+      89,
+      633,
+      664,
+      1208
+    ],
+    "foot_roi": [
+      450,
+      1140,
+      600,
+      1212
+    ],
+    "ground_y": 1207,
+    "offset": [
+      70,
+      -261
+    ],
+    "result_bbox": [
+      130,
+      169,
+      522,
+      561
+    ]
+  },
+  {
+    "action": "mossfeather-move",
+    "frame": 3,
+    "source": "mossfeather-move-v1.png",
+    "sha256": "99476afa3866f5a01b1c145f9ab2f4646937fadb2f68e6e96408d935f6c4b883",
+    "scale": 0.68,
+    "source_bbox": [
+      684,
+      629,
+      1247,
+      1209
+    ],
+    "foot_roi": [
+      840,
+      1140,
+      975,
+      1213
+    ],
+    "ground_y": 1208,
+    "offset": [
+      -338,
+      -261
+    ],
+    "result_bbox": [
+      127,
+      166,
+      511,
+      562
+    ]
+  },
+  {
+    "action": "mossfeather-responses",
+    "frame": 0,
+    "source": "mossfeather-responses-v1.png",
+    "sha256": "be958d56f32845c68beafb3956b71765b6e9406bdfed351dd48e6d4947bdf65d",
+    "scale": 0.63,
+    "source_bbox": [
+      59,
+      21,
+      543,
+      637
+    ],
+    "foot_roi": [
+      150,
+      550,
+      510,
+      644
+    ],
+    "ground_y": 636,
+    "offset": [
+      100,
+      159
+    ],
+    "result_bbox": [
+      137,
+      171,
+      443,
+      560
+    ]
+  },
+  {
+    "action": "mossfeather-responses",
+    "frame": 1,
+    "source": "mossfeather-responses-v1.png",
+    "sha256": "be958d56f32845c68beafb3956b71765b6e9406bdfed351dd48e6d4947bdf65d",
+    "scale": 0.63,
+    "source_bbox": [
+      760,
+      17,
+      1271,
+      633
+    ],
+    "foot_roi": [
+      840,
+      550,
+      1270,
+      642
+    ],
+    "ground_y": 632,
+    "offset": [
+      -328,
+      162
+    ],
+    "result_bbox": [
+      150,
+      172,
+      473,
+      561
+    ]
+  },
+  {
+    "action": "mossfeather-responses",
+    "frame": 2,
+    "source": "mossfeather-responses-v1.png",
+    "sha256": "be958d56f32845c68beafb3956b71765b6e9406bdfed351dd48e6d4947bdf65d",
+    "scale": 0.63,
+    "source_bbox": [
+      77,
+      670,
+      607,
+      1111
+    ],
+    "foot_roi": [
+      80,
+      1040,
+      550,
+      1117
+    ],
+    "ground_y": 1110,
+    "offset": [
+      94,
+      -139
+    ],
+    "result_bbox": [
+      142,
+      282,
+      477,
+      561
+    ]
+  },
+  {
+    "action": "mossfeather-responses",
+    "frame": 3,
+    "source": "mossfeather-responses-v1.png",
+    "sha256": "be958d56f32845c68beafb3956b71765b6e9406bdfed351dd48e6d4947bdf65d",
+    "scale": 0.63,
+    "source_bbox": [
+      682,
+      888,
+      1345,
+      1107
+    ],
+    "foot_roi": [
+      680,
+      1040,
+      1345,
+      1115
+    ],
+    "ground_y": 1106,
+    "offset": [
+      -322,
+      -137
+    ],
+    "result_bbox": [
+      107,
+      421,
+      526,
+      560
+    ]
+  }
+]

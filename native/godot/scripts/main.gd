@@ -32,6 +32,8 @@ func _ready() -> void:
 	get_viewport().size_changed.connect(apply_safe_area)
 
 func show_home() -> void:
+	if run.threats != null:
+		run.threats.clear_all() # 返回首页同样是战斗生命周期边界，不能留下旧箭或落点。
 	room.populate(FBData.all().stage.rooms[0], {})
 	room.hero.position = Vector2(740, 472)
 	room.hero.previous_position = room.hero.position

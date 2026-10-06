@@ -1,0 +1,482 @@
+[
+  {
+    "action": "redmane-move",
+    "frame": 0,
+    "source": "redmane-move-keyposes-v2.png",
+    "sha256": "bd4fc1a4afc51145a9ec08b54e6808ee0456f92bae02e5b81c39fa33dc9398fe",
+    "scale": 0.65,
+    "source_bbox": [
+      37,
+      27,
+      609,
+      629
+    ],
+    "foot_roi": [
+      70,
+      550,
+      550,
+      632
+    ],
+    "ground_y": 628,
+    "offset": [
+      103,
+      152
+    ],
+    "result_bbox": [
+      127,
+      169,
+      499,
+      561
+    ]
+  },
+  {
+    "action": "redmane-move",
+    "frame": 1,
+    "source": "redmane-move-keyposes-v2.png",
+    "sha256": "bd4fc1a4afc51145a9ec08b54e6808ee0456f92bae02e5b81c39fa33dc9398fe",
+    "scale": 0.65,
+    "source_bbox": [
+      660,
+      32,
+      1234,
+      629
+    ],
+    "foot_roi": [
+      800,
+      550,
+      1010,
+      632
+    ],
+    "ground_y": 628,
+    "offset": [
+      -302,
+      152
+    ],
+    "result_bbox": [
+      126,
+      172,
+      500,
+      562
+    ]
+  },
+  {
+    "action": "redmane-move",
+    "frame": 2,
+    "source": "redmane-move-keyposes-v2.png",
+    "sha256": "bd4fc1a4afc51145a9ec08b54e6808ee0456f92bae02e5b81c39fa33dc9398fe",
+    "scale": 0.65,
+    "source_bbox": [
+      40,
+      630,
+      609,
+      1221
+    ],
+    "foot_roi": [
+      410,
+      1130,
+      580,
+      1225
+    ],
+    "ground_y": 1220,
+    "offset": [
+      103,
+      -233
+    ],
+    "result_bbox": [
+      129,
+      176,
+      499,
+      561
+    ]
+  },
+  {
+    "action": "redmane-move",
+    "frame": 3,
+    "source": "redmane-move-keyposes-v2.png",
+    "sha256": "bd4fc1a4afc51145a9ec08b54e6808ee0456f92bae02e5b81c39fa33dc9398fe",
+    "scale": 0.65,
+    "source_bbox": [
+      659,
+      629,
+      1234,
+      1219
+    ],
+    "foot_roi": [
+      950,
+      1130,
+      1090,
+      1225
+    ],
+    "ground_y": 1218,
+    "offset": [
+      -302,
+      -232
+    ],
+    "result_bbox": [
+      126,
+      175,
+      500,
+      561
+    ]
+  },
+  {
+    "action": "redmane-slash",
+    "frame": 0,
+    "source": "redmane-slash-keyposes-v1.png",
+    "sha256": "c07ed538b153712188a6974fcbd663305abc5e4a266e954656093f4e2a5292e9",
+    "scale": 0.74,
+    "source_bbox": [
+      61,
+      29,
+      571,
+      617
+    ],
+    "foot_roi": [
+      60,
+      550,
+      575,
+      623
+    ],
+    "ground_y": 616,
+    "offset": [
+      75,
+      104
+    ],
+    "result_bbox": [
+      119,
+      125,
+      498,
+      561
+    ]
+  },
+  {
+    "action": "redmane-slash",
+    "frame": 1,
+    "source": "redmane-slash-keyposes-v1.png",
+    "sha256": "c07ed538b153712188a6974fcbd663305abc5e4a266e954656093f4e2a5292e9",
+    "scale": 0.74,
+    "source_bbox": [
+      605,
+      93,
+      1229,
+      619
+    ],
+    "foot_roi": [
+      610,
+      550,
+      1060,
+      625
+    ],
+    "ground_y": 618,
+    "offset": [
+      -308,
+      103
+    ],
+    "result_bbox": [
+      140,
+      171,
+      602,
+      562
+    ]
+  },
+  {
+    "action": "redmane-slash",
+    "frame": 2,
+    "source": "redmane-slash-keyposes-v1.png",
+    "sha256": "c07ed538b153712188a6974fcbd663305abc5e4a266e954656093f4e2a5292e9",
+    "scale": 0.74,
+    "source_bbox": [
+      53,
+      648,
+      693,
+      1196
+    ],
+    "foot_roi": [
+      50,
+      1130,
+      580,
+      1205
+    ],
+    "ground_y": 1195,
+    "offset": [
+      75,
+      -324
+    ],
+    "result_bbox": [
+      114,
+      155,
+      588,
+      561
+    ]
+  },
+  {
+    "action": "redmane-slash",
+    "frame": 3,
+    "source": "redmane-slash-keyposes-v1.png",
+    "sha256": "c07ed538b153712188a6974fcbd663305abc5e4a266e954656093f4e2a5292e9",
+    "scale": 0.74,
+    "source_bbox": [
+      675,
+      627,
+      1224,
+      1203
+    ],
+    "foot_roi": [
+      680,
+      1130,
+      1130,
+      1210
+    ],
+    "ground_y": 1202,
+    "offset": [
+      -358,
+      -329
+    ],
+    "result_bbox": [
+      141,
+      135,
+      548,
+      562
+    ]
+  },
+  {
+    "action": "mossfeather-shoot",
+    "frame": 0,
+    "source": "mossfeather-shot-keyposes-v2.png",
+    "sha256": "27df7890ce742e151136f318c116a18a52506370c30d645e65218f2bd90f70c2",
+    "scale": 0.88,
+    "source_bbox": [
+      145,
+      78,
+      569,
+      612
+    ],
+    "foot_roi": [
+      180,
+      540,
+      510,
+      618
+    ],
+    "ground_y": 611,
+    "offset": [
+      11,
+      22
+    ],
+    "result_bbox": [
+      138,
+      90,
+      513,
+      561
+    ]
+  },
+  {
+    "action": "mossfeather-shoot",
+    "frame": 1,
+    "source": "mossfeather-shot-keyposes-v2.png",
+    "sha256": "27df7890ce742e151136f318c116a18a52506370c30d645e65218f2bd90f70c2",
+    "scale": 0.88,
+    "source_bbox": [
+      692,
+      39,
+      1177,
+      612
+    ],
+    "foot_roi": [
+      735,
+      540,
+      1085,
+      618
+    ],
+    "ground_y": 611,
+    "offset": [
+      -491,
+      22
+    ],
+    "result_bbox": [
+      117,
+      56,
+      546,
+      561
+    ]
+  },
+  {
+    "action": "mossfeather-shoot",
+    "frame": 2,
+    "source": "mossfeather-shot-keyposes-v2.png",
+    "sha256": "27df7890ce742e151136f318c116a18a52506370c30d645e65218f2bd90f70c2",
+    "scale": 0.88,
+    "source_bbox": [
+      152,
+      681,
+      585,
+      1188
+    ],
+    "foot_roi": [
+      185,
+      1110,
+      530,
+      1200
+    ],
+    "ground_y": 1187,
+    "offset": [
+      0,
+      -485
+    ],
+    "result_bbox": [
+      133,
+      114,
+      516,
+      562
+    ]
+  },
+  {
+    "action": "mossfeather-shoot",
+    "frame": 3,
+    "source": "mossfeather-shot-keyposes-v2.png",
+    "sha256": "27df7890ce742e151136f318c116a18a52506370c30d645e65218f2bd90f70c2",
+    "scale": 0.88,
+    "source_bbox": [
+      713,
+      664,
+      1128,
+      1190
+    ],
+    "foot_roi": [
+      750,
+      1110,
+      1090,
+      1200
+    ],
+    "ground_y": 1189,
+    "offset": [
+      -504,
+      -486
+    ],
+    "result_bbox": [
+      123,
+      98,
+      490,
+      562
+    ]
+  },
+  {
+    "action": "whitemask-cast",
+    "frame": 0,
+    "source": "whitemask-cast-keyposes-v1.png",
+    "sha256": "411b266b96fcc0c4d561afe8ef11874652e3a50f8988505be55705cf787f7091",
+    "scale": 0.65,
+    "source_bbox": [
+      68,
+      40,
+      567,
+      625
+    ],
+    "foot_roi": [
+      220,
+      550,
+      450,
+      630
+    ],
+    "ground_y": 624,
+    "offset": [
+      87,
+      154
+    ],
+    "result_bbox": [
+      131,
+      180,
+      456,
+      561
+    ]
+  },
+  {
+    "action": "whitemask-cast",
+    "frame": 1,
+    "source": "whitemask-cast-keyposes-v1.png",
+    "sha256": "411b266b96fcc0c4d561afe8ef11874652e3a50f8988505be55705cf787f7091",
+    "scale": 0.65,
+    "source_bbox": [
+      695,
+      8,
+      1193,
+      624
+    ],
+    "foot_roi": [
+      780,
+      550,
+      1115,
+      628
+    ],
+    "ground_y": 623,
+    "offset": [
+      -306,
+      155
+    ],
+    "result_bbox": [
+      145,
+      159,
+      470,
+      561
+    ]
+  },
+  {
+    "action": "whitemask-cast",
+    "frame": 2,
+    "source": "whitemask-cast-keyposes-v1.png",
+    "sha256": "411b266b96fcc0c4d561afe8ef11874652e3a50f8988505be55705cf787f7091",
+    "scale": 0.65,
+    "source_bbox": [
+      55,
+      683,
+      716,
+      1213
+    ],
+    "foot_roi": [
+      120,
+      1150,
+      530,
+      1217
+    ],
+    "ground_y": 1212,
+    "offset": [
+      90,
+      -228
+    ],
+    "result_bbox": [
+      125,
+      216,
+      556,
+      561
+    ]
+  },
+  {
+    "action": "whitemask-cast",
+    "frame": 3,
+    "source": "whitemask-cast-keyposes-v1.png",
+    "sha256": "411b266b96fcc0c4d561afe8ef11874652e3a50f8988505be55705cf787f7091",
+    "scale": 0.65,
+    "source_bbox": [
+      691,
+      644,
+      1175,
+      1219
+    ],
+    "foot_roi": [
+      850,
+      1150,
+      1060,
+      1222
+    ],
+    "ground_y": 1218,
+    "offset": [
+      -319,
+      -232
+    ],
+    "result_bbox": [
+      129,
+      186,
+      445,
+      561
+    ]
+  }
+]

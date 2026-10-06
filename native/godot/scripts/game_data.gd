@@ -9,7 +9,19 @@ static func all() -> Dictionary:
 		var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://data/first_stage.json"))
 		assert(parsed is Dictionary and parsed.get("schema") == 1, "首关数据缺失或版本错误")
 		cache = parsed
+		# 原生三类型规则独立保存；旧 Web 导出器重建 first_stage 时不会覆盖这批动作和房间。
+		var roster: Variant = JSON.parse_string(FileAccess.get_file_as_string("res://data/enemy_roster.json"))
+		assert(roster is Dictionary and roster.get("schema") == 1, "怪物配置缺失或版本错误")
+		cache.enemies.merge(roster.enemies, true)
+		cache.enemy_actions.merge(roster.enemy_actions, true)
+		cache.stage.rooms = roster.rooms
 	return cache
+
+static func room_index(kind: String) -> int:
+	for i in all().stage.rooms.size():
+		if all().stage.rooms[i].kind == kind:
+			return i
+	return -1
 
 static func action(id: String, hero: bool) -> Dictionary:
 	if hero and yone().actions.has(id):

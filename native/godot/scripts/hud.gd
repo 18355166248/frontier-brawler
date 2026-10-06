@@ -106,9 +106,10 @@ func refresh(run: FBRun) -> void:
 		boss_bar.max_value = boss.max_hp
 		boss_bar.value = boss.hp
 		boss_name.text = "铜 面 守 卫" + ("  ·  破阵" if boss.boss_phase == 2 else "")
-	var hints := ["向前踏入雾中  →", "连按 J 衔接出刀，K 闪避", "上下走位绕到敌人身侧", "片刻休整，选择一份馈赠", "留意守卫举刃，离开地面预警"]
+	# 教学提示绑定房间身份，新增法师房不会把奖励和 Boss 文案错位或越界。
+	var hints := {"v0": "向前踏入雾中  →", "v1": "连按 J 衔接出刀，K 闪避", "v2": "避开箭线 · 上下走位或跳跃，突进打断弓手", "vm": "离开白灯落点 · 趁施法收势切入", "vr": "片刻休整，选择一份馈赠", "v3": "留意守卫举刃，离开地面预警"}
 	# 清场提示优先于刚结束的连招通知，避免门已开却仍显示战斗指示。
-	hint.text = run.room.exit_cue() if run.phase == "cleared" and run.room.redesigned() else (notice if notice_time > 0 else ("前路已开  ·  继续向右 →" if run.phase == "cleared" and run.room_index > 0 else hints[run.room_index]))
+	hint.text = run.room.exit_cue() if run.phase == "cleared" and run.room.redesigned() else (notice if notice_time > 0 else ("前路已开  ·  继续向右 →" if run.phase == "cleared" and run.room_index > 0 else str(hints.get(run.room.room_id, "继续向前"))))
 	if notice_time <= 0 and (run.phase != "cleared" or not run.room.redesigned()):
 		for actor in run.room.actors:
 			if actor.kind != "hero" and actor.launch_remaining > 0:
@@ -324,6 +325,6 @@ func apply_safe_insets(insets: Vector4) -> void:
 func _draw() -> void:
 	if _run == null or _run.phase == "home" or overlay.visible:
 		return
-	for i in 5:
+	for i in FBData.all().stage.rooms.size():
 		var at := Vector2(974 + i * 17, 48)
 		draw_circle(at, 2.5, GOLD if i <= _run.room_index else Color(0.6, 0.7, 0.7, 0.3))

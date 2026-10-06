@@ -13,6 +13,7 @@ for (const [args, marker] of [
   [['--headless', '--path', project, '--script', 'tests/copper_guard_checks.gd'], 'COPPER_GUARD_CHECKS_PASS'],
   [['--headless', '--path', project, '--script', 'tests/yone_mvp_checks.gd'], 'YONE_MVP_CHECKS_PASS'],
   [['--headless', '--path', project, '--script', 'tests/environment_checks.gd'], 'ENVIRONMENT_CHECKS_PASS'],
+  [['--headless', '--path', project, '--script', 'tests/enemy_roster_checks.gd'], 'ENEMY_ROSTER_CHECKS_PASS'],
 ]) {
   const result = spawnSync(binary, args, { encoding: 'utf8', timeout: 120000, maxBuffer: 8 * 1024 * 1024 });
   const output = (result.stdout || '') + (result.stderr || '');

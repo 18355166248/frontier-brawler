@@ -1,0 +1,362 @@
+[
+  {
+    "action": "redmane-slash",
+    "frame": 0,
+    "source": "redmane-slash-keyposes-v1.png",
+    "sha256": "c07ed538b153712188a6974fcbd663305abc5e4a266e954656093f4e2a5292e9",
+    "scale": 0.74,
+    "source_bbox": [
+      61,
+      29,
+      571,
+      617
+    ],
+    "foot_roi": [
+      60,
+      550,
+      575,
+      623
+    ],
+    "ground_y": 616,
+    "offset": [
+      75,
+      104
+    ],
+    "result_bbox": [
+      119,
+      125,
+      498,
+      561
+    ]
+  },
+  {
+    "action": "redmane-slash",
+    "frame": 1,
+    "source": "redmane-slash-keyposes-v1.png",
+    "sha256": "c07ed538b153712188a6974fcbd663305abc5e4a266e954656093f4e2a5292e9",
+    "scale": 0.74,
+    "source_bbox": [
+      605,
+      93,
+      1229,
+      619
+    ],
+    "foot_roi": [
+      610,
+      550,
+      1060,
+      625
+    ],
+    "ground_y": 618,
+    "offset": [
+      -308,
+      103
+    ],
+    "result_bbox": [
+      140,
+      171,
+      602,
+      562
+    ]
+  },
+  {
+    "action": "redmane-slash",
+    "frame": 2,
+    "source": "redmane-slash-keyposes-v1.png",
+    "sha256": "c07ed538b153712188a6974fcbd663305abc5e4a266e954656093f4e2a5292e9",
+    "scale": 0.74,
+    "source_bbox": [
+      53,
+      648,
+      693,
+      1196
+    ],
+    "foot_roi": [
+      50,
+      1130,
+      580,
+      1205
+    ],
+    "ground_y": 1195,
+    "offset": [
+      75,
+      -324
+    ],
+    "result_bbox": [
+      114,
+      155,
+      588,
+      561
+    ]
+  },
+  {
+    "action": "redmane-slash",
+    "frame": 3,
+    "source": "redmane-slash-keyposes-v1.png",
+    "sha256": "c07ed538b153712188a6974fcbd663305abc5e4a266e954656093f4e2a5292e9",
+    "scale": 0.74,
+    "source_bbox": [
+      675,
+      627,
+      1224,
+      1203
+    ],
+    "foot_roi": [
+      680,
+      1130,
+      1130,
+      1210
+    ],
+    "ground_y": 1202,
+    "offset": [
+      -358,
+      -329
+    ],
+    "result_bbox": [
+      141,
+      135,
+      548,
+      562
+    ]
+  },
+  {
+    "action": "redmane-move",
+    "frame": 0,
+    "source": "redmane-move-repair-v3.png",
+    "sha256": "e17d4c11ad2334bc384789a919b27944e3a117d95d55e59980456fdb6066e8e3",
+    "scale": 0.65,
+    "source_bbox": [
+      37,
+      26,
+      610,
+      631
+    ],
+    "foot_roi": [
+      70,
+      550,
+      550,
+      635
+    ],
+    "ground_y": 630,
+    "offset": [
+      103,
+      150
+    ],
+    "result_bbox": [
+      126,
+      166,
+      500,
+      561
+    ]
+  },
+  {
+    "action": "redmane-move",
+    "frame": 1,
+    "source": "redmane-move-repair-v3.png",
+    "sha256": "e17d4c11ad2334bc384789a919b27944e3a117d95d55e59980456fdb6066e8e3",
+    "scale": 0.65,
+    "source_bbox": [
+      654,
+      31,
+      1233,
+      631
+    ],
+    "foot_roi": [
+      800,
+      550,
+      1010,
+      635
+    ],
+    "ground_y": 630,
+    "offset": [
+      -303,
+      150
+    ],
+    "result_bbox": [
+      121,
+      169,
+      499,
+      561
+    ]
+  },
+  {
+    "action": "redmane-move",
+    "frame": 2,
+    "source": "redmane-move-repair-v3.png",
+    "sha256": "e17d4c11ad2334bc384789a919b27944e3a117d95d55e59980456fdb6066e8e3",
+    "scale": 0.65,
+    "source_bbox": [
+      38,
+      629,
+      610,
+      1221
+    ],
+    "foot_roi": [
+      410,
+      1130,
+      580,
+      1225
+    ],
+    "ground_y": 1220,
+    "offset": [
+      103,
+      -233
+    ],
+    "result_bbox": [
+      127,
+      175,
+      500,
+      561
+    ]
+  },
+  {
+    "action": "redmane-move",
+    "frame": 3,
+    "source": "redmane-move-repair-v3.png",
+    "sha256": "e17d4c11ad2334bc384789a919b27944e3a117d95d55e59980456fdb6066e8e3",
+    "scale": 0.65,
+    "source_bbox": [
+      655,
+      629,
+      1233,
+      1213
+    ],
+    "foot_roi": [
+      800,
+      1130,
+      950,
+      1220
+    ],
+    "ground_y": 1212,
+    "offset": [
+      -303,
+      -228
+    ],
+    "result_bbox": [
+      122,
+      180,
+      499,
+      561
+    ]
+  },
+  {
+    "action": "redmane-responses",
+    "frame": 0,
+    "source": "redmane-responses-v1.png",
+    "sha256": "d62d7fb38380d48bdf624b4a35f2b196be5575118c4ca7684270c3689f51e543",
+    "scale": 0.59,
+    "source_bbox": [
+      57,
+      49,
+      613,
+      710
+    ],
+    "foot_roi": [
+      110,
+      650,
+      550,
+      715
+    ],
+    "ground_y": 709,
+    "offset": [
+      116,
+      142
+    ],
+    "result_bbox": [
+      149,
+      170,
+      478,
+      561
+    ]
+  },
+  {
+    "action": "redmane-responses",
+    "frame": 1,
+    "source": "redmane-responses-v1.png",
+    "sha256": "d62d7fb38380d48bdf624b4a35f2b196be5575118c4ca7684270c3689f51e543",
+    "scale": 0.59,
+    "source_bbox": [
+      683,
+      111,
+      1227,
+      710
+    ],
+    "foot_roi": [
+      800,
+      650,
+      1190,
+      715
+    ],
+    "ground_y": 709,
+    "offset": [
+      -252,
+      142
+    ],
+    "result_bbox": [
+      150,
+      207,
+      472,
+      562
+    ]
+  },
+  {
+    "action": "redmane-responses",
+    "frame": 2,
+    "source": "redmane-responses-v1.png",
+    "sha256": "d62d7fb38380d48bdf624b4a35f2b196be5575118c4ca7684270c3689f51e543",
+    "scale": 0.59,
+    "source_bbox": [
+      50,
+      769,
+      594,
+      1202
+    ],
+    "foot_roi": [
+      50,
+      1100,
+      590,
+      1208
+    ],
+    "ground_y": 1201,
+    "offset": [
+      113,
+      -149
+    ],
+    "result_bbox": [
+      142,
+      304,
+      464,
+      561
+    ]
+  },
+  {
+    "action": "redmane-responses",
+    "frame": 3,
+    "source": "redmane-responses-v1.png",
+    "sha256": "d62d7fb38380d48bdf624b4a35f2b196be5575118c4ca7684270c3689f51e543",
+    "scale": 0.59,
+    "source_bbox": [
+      636,
+      978,
+      1240,
+      1201
+    ],
+    "foot_roi": [
+      640,
+      1150,
+      1240,
+      1207
+    ],
+    "ground_y": 1200,
+    "offset": [
+      -241,
+      -148
+    ],
+    "result_bbox": [
+      134,
+      429,
+      491,
+      562
+    ]
+  }
+]

@@ -69,7 +69,7 @@ func validate() -> void:
 	check(game.audio.muted and not game.audio._ambience.playing, "mute button stops active ambient audio")
 	await click_button(game.hud.get_node("Top/Mute"))
 	check(not game.audio.muted and game.audio._ambience.playing, "unmute restores current combat ambience")
-	game.run.room_index = 3
+	game.run.room_index = FBData.room_index("reward")
 	game.run.enter_room({})
 	await process_frame
 	await process_frame

@@ -1,0 +1,221 @@
+{
+  "status": "needs-human-review",
+  "warnings": [],
+  "measurements": [
+    {
+      "label": "redmane-move / 1",
+      "bbox": [
+        125,
+        167,
+        501,
+        563
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "redmane-move / 2",
+      "bbox": [
+        124,
+        170,
+        503,
+        564
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "redmane-move / 3",
+      "bbox": [
+        126,
+        174,
+        501,
+        563
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "redmane-move / 4",
+      "bbox": [
+        124,
+        173,
+        503,
+        563
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "redmane-slash / 1",
+      "bbox": [
+        117,
+        123,
+        501,
+        563
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "redmane-slash / 2",
+      "bbox": [
+        137,
+        171,
+        604,
+        564
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "redmane-slash / 3",
+      "bbox": [
+        112,
+        153,
+        590,
+        563
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "redmane-slash / 4",
+      "bbox": [
+        139,
+        133,
+        550,
+        564
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "mossfeather-shoot / 1",
+      "bbox": [
+        135,
+        88,
+        513,
+        564
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "mossfeather-shoot / 2",
+      "bbox": [
+        115,
+        54,
+        547,
+        563
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "mossfeather-shoot / 3",
+      "bbox": [
+        132,
+        112,
+        516,
+        564
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "mossfeather-shoot / 4",
+      "bbox": [
+        122,
+        96,
+        491,
+        564
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "whitemask-cast / 1",
+      "bbox": [
+        129,
+        178,
+        458,
+        563
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "whitemask-cast / 2",
+      "bbox": [
+        143,
+        157,
+        472,
+        563
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "whitemask-cast / 3",
+      "bbox": [
+        123,
+        214,
+        558,
+        563
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "whitemask-cast / 4",
+      "bbox": [
+        127,
+        184,
+        447,
+        563
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    }
+  ],
+  "manualChecks": [
+    "角色身份、朝向及跨动作尺寸是否一致",
+    "脚底是否漂移、武器是否裁切；bbox 不是接触点证明",
+    "走跑时左右腿是否交替落地、承重、经过和蹬离；不同图片不等于完整步态",
+    "循环接缝和单次动作的前摇、命中、收招",
+    "在目标游戏运行后另存证据；此处未验证碰撞或命中窗口"
+  ]
+}

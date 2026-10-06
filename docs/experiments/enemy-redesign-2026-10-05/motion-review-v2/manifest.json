@@ -1,0 +1,387 @@
+{
+  "version": 1,
+  "toolVersion": "1.0",
+  "kind": "motion",
+  "title": "怪物动作关键姿态 · 草稿",
+  "source": {
+    "provider": "codex-builtin-imagegen",
+    "calls": 12,
+    "note": "三身份已认可；近战 move 待修；攻击关键姿态待用户验收，缺中间帧和受击死亡；未接入游戏"
+  },
+  "release": {
+    "status": "draft",
+    "runtimeEvidence": null
+  },
+  "atlas": "atlas.png",
+  "anchor": [
+    0.48125,
+    0.875
+  ],
+  "anchorConvention": "normalized-from-top-left; metadata only, no automatic foot alignment",
+  "states": [
+    {
+      "name": "redmane-slash",
+      "loop": false,
+      "frames": [
+        {
+          "x": 0,
+          "y": 0,
+          "w": 640,
+          "h": 640,
+          "durationMs": 133
+        },
+        {
+          "x": 640,
+          "y": 0,
+          "w": 640,
+          "h": 640,
+          "durationMs": 84
+        },
+        {
+          "x": 1280,
+          "y": 0,
+          "w": 640,
+          "h": 640,
+          "durationMs": 83
+        },
+        {
+          "x": 1920,
+          "y": 0,
+          "w": 640,
+          "h": 640,
+          "durationMs": 100
+        }
+      ],
+      "sourceFrames": [
+        0,
+        1,
+        2,
+        3
+      ]
+    },
+    {
+      "name": "mossfeather-shoot",
+      "loop": false,
+      "frames": [
+        {
+          "x": 0,
+          "y": 640,
+          "w": 640,
+          "h": 640,
+          "durationMs": 200
+        },
+        {
+          "x": 640,
+          "y": 640,
+          "w": 640,
+          "h": 640,
+          "durationMs": 500
+        },
+        {
+          "x": 1280,
+          "y": 640,
+          "w": 640,
+          "h": 640,
+          "durationMs": 80
+        },
+        {
+          "x": 1920,
+          "y": 640,
+          "w": 640,
+          "h": 640,
+          "durationMs": 420
+        }
+      ],
+      "sourceFrames": [
+        4,
+        5,
+        6,
+        7
+      ]
+    },
+    {
+      "name": "whitemask-cast",
+      "loop": false,
+      "frames": [
+        {
+          "x": 0,
+          "y": 1280,
+          "w": 640,
+          "h": 640,
+          "durationMs": 250
+        },
+        {
+          "x": 640,
+          "y": 1280,
+          "w": 640,
+          "h": 640,
+          "durationMs": 650
+        },
+        {
+          "x": 1280,
+          "y": 1280,
+          "w": 640,
+          "h": 640,
+          "durationMs": 150
+        },
+        {
+          "x": 1920,
+          "y": 1280,
+          "w": 640,
+          "h": 640,
+          "durationMs": 600
+        }
+      ],
+      "sourceFrames": [
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    {
+      "name": "redmane-move",
+      "loop": true,
+      "frames": [
+        {
+          "x": 0,
+          "y": 1920,
+          "w": 640,
+          "h": 640,
+          "durationMs": 180
+        },
+        {
+          "x": 640,
+          "y": 1920,
+          "w": 640,
+          "h": 640,
+          "durationMs": 180
+        },
+        {
+          "x": 1280,
+          "y": 1920,
+          "w": 640,
+          "h": 640,
+          "durationMs": 180
+        },
+        {
+          "x": 1920,
+          "y": 1920,
+          "w": 640,
+          "h": 640,
+          "durationMs": 180
+        }
+      ],
+      "sourceFrames": [
+        12,
+        13,
+        14,
+        15
+      ]
+    },
+    {
+      "name": "mossfeather-move",
+      "loop": true,
+      "frames": [
+        {
+          "x": 0,
+          "y": 2560,
+          "w": 640,
+          "h": 640,
+          "durationMs": 180
+        },
+        {
+          "x": 640,
+          "y": 2560,
+          "w": 640,
+          "h": 640,
+          "durationMs": 180
+        },
+        {
+          "x": 1280,
+          "y": 2560,
+          "w": 640,
+          "h": 640,
+          "durationMs": 180
+        },
+        {
+          "x": 1920,
+          "y": 2560,
+          "w": 640,
+          "h": 640,
+          "durationMs": 180
+        }
+      ],
+      "sourceFrames": [
+        16,
+        17,
+        18,
+        19
+      ]
+    },
+    {
+      "name": "whitemask-move",
+      "loop": true,
+      "frames": [
+        {
+          "x": 0,
+          "y": 3200,
+          "w": 640,
+          "h": 640,
+          "durationMs": 180
+        },
+        {
+          "x": 640,
+          "y": 3200,
+          "w": 640,
+          "h": 640,
+          "durationMs": 180
+        },
+        {
+          "x": 1280,
+          "y": 3200,
+          "w": 640,
+          "h": 640,
+          "durationMs": 180
+        },
+        {
+          "x": 1920,
+          "y": 3200,
+          "w": 640,
+          "h": 640,
+          "durationMs": 180
+        }
+      ],
+      "sourceFrames": [
+        20,
+        21,
+        22,
+        23
+      ]
+    },
+    {
+      "name": "redmane-responses",
+      "loop": false,
+      "frames": [
+        {
+          "x": 0,
+          "y": 3840,
+          "w": 640,
+          "h": 640,
+          "durationMs": 800
+        },
+        {
+          "x": 640,
+          "y": 3840,
+          "w": 640,
+          "h": 640,
+          "durationMs": 200
+        },
+        {
+          "x": 1280,
+          "y": 3840,
+          "w": 640,
+          "h": 640,
+          "durationMs": 180
+        },
+        {
+          "x": 1920,
+          "y": 3840,
+          "w": 640,
+          "h": 640,
+          "durationMs": 220
+        }
+      ],
+      "sourceFrames": [
+        24,
+        25,
+        26,
+        27
+      ]
+    },
+    {
+      "name": "mossfeather-responses",
+      "loop": false,
+      "frames": [
+        {
+          "x": 0,
+          "y": 4480,
+          "w": 640,
+          "h": 640,
+          "durationMs": 800
+        },
+        {
+          "x": 640,
+          "y": 4480,
+          "w": 640,
+          "h": 640,
+          "durationMs": 200
+        },
+        {
+          "x": 1280,
+          "y": 4480,
+          "w": 640,
+          "h": 640,
+          "durationMs": 180
+        },
+        {
+          "x": 1920,
+          "y": 4480,
+          "w": 640,
+          "h": 640,
+          "durationMs": 220
+        }
+      ],
+      "sourceFrames": [
+        28,
+        29,
+        30,
+        31
+      ]
+    },
+    {
+      "name": "whitemask-responses",
+      "loop": false,
+      "frames": [
+        {
+          "x": 0,
+          "y": 5120,
+          "w": 640,
+          "h": 640,
+          "durationMs": 800
+        },
+        {
+          "x": 640,
+          "y": 5120,
+          "w": 640,
+          "h": 640,
+          "durationMs": 200
+        },
+        {
+          "x": 1280,
+          "y": 5120,
+          "w": 640,
+          "h": 640,
+          "durationMs": 180
+        },
+        {
+          "x": 1920,
+          "y": 5120,
+          "w": 640,
+          "h": 640,
+          "durationMs": 220
+        }
+      ],
+      "sourceFrames": [
+        32,
+        33,
+        34,
+        35
+      ]
+    }
+  ],
+  "exports": [
+    "aseprite.json",
+    "grid.json"
+  ]
+}

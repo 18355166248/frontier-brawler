@@ -24,17 +24,19 @@ func validate() -> void:
 	var room: FBMistwardRoom = game.room
 	check(room.gate_layers.size() == 4, "all aligned gate layers load")
 	check(room.stone_edge != null, "stone-edge runtime texture loads")
-	for index in 5:
+	for index in FBData.all().stage.rooms.size():
+		var definition: Dictionary = FBData.all().stage.rooms[index]
+		var boss: bool = definition.kind == "boss"
 		game.run.room_index = index
 		game.run.enter_room({})
-		check(room.has_east_exit == (index < 4), "exit visual follows actual topology, including Boss without exit")
-		check(room.exit_leads_to_boss == (index == 3), "Boss accent belongs to the preceding reward-room exit")
-		check(room.hero.position == Vector2(155, 450 if index == 4 else 455), "presentation keeps original spawn")
-		check(room.arena == Rect2(40, 365 if index == 4 else 390, 1540 if index == 2 else 1360, 170 if index == 4 else 130), "presentation keeps original combat bounds")
-		check(room.alive_enemies() == [0, 2, 3, 0, 1][index], "presentation keeps original encounter")
-		check(room.exit_anchor() == Vector2(room.arena.end.x - 45, room.arena.get_center().y), "visual anchor aligns with existing trigger")
-		if index == 4:
-			check(room.exit_cue().is_empty(), "Boss has no misleading onward cue")
+		check(room.has_east_exit == definition.doors.has("east"), "exit follows room topology")
+		check(room.exit_leads_to_boss == (definition.kind == "reward"), "Boss accent belongs to reward exit")
+		check(room.hero.position == Vector2(155, 450 if boss else 455), "spawn stays grounded")
+		check(room.arena == Rect2(40, 365 if boss else 390, 1540 if definition.size == "wide" else 1360, 170 if boss else 130), "combat bounds follow room size")
+		check(room.alive_enemies() == definition.encounter.size(), "actual enemies match the configured encounter")
+		check(room.exit_anchor() == Vector2(room.arena.end.x - 45, room.arena.get_center().y), "exit anchor follows trigger")
+		if boss:
+			check(room.exit_cue().is_empty(), "Boss has no onward cue")
 
 	# 缺图是实际资源失败路径，不能留下部分图层或改变关卡状态。
 	var directory := room.gate_directory
@@ -81,10 +83,10 @@ func validate() -> void:
 		room.door_open = false
 		room._process(0.01)
 		check(gate.opening_progress == 0 and gate.barrier.visible, "closing interrupts the old presentation immediately")
-		game.run.room_index = 3
+		game.run.room_index = FBData.room_index("reward")
 		game.run.enter_room({})
 		check(gate.opening_progress == 0 and gate.pennant.visible, "new reward-room gate resets and signals the Boss approach")
-		game.run.room_index = 4
+		game.run.room_index = FBData.room_index("boss")
 		game.run.enter_room({})
 		check(not gate.visible, "Boss room does not invent an east gate")
 		game._command("start")

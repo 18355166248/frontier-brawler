@@ -73,7 +73,7 @@ func review() -> void:
 	game.toggle_pause()
 	await shot("paused")
 	game.toggle_pause()
-	game.run.room_index = 3
+	game.run.room_index = FBData.room_index("reward")
 	game.run.enter_room({})
 	await create_timer(0.3).timeout
 	await shot("reward")

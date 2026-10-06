@@ -14,7 +14,7 @@ func capture() -> void:
 	game.set_physics_process(false)
 	game.audio.muted = true
 	game.run.start()
-	game.run.room_index = 4
+	game.run.room_index = FBData.room_index("boss")
 	game.run.enter_room({})
 	# Physics is disabled above; leave the normal HUD visible for gameplay framing.
 	game.run.paused = false

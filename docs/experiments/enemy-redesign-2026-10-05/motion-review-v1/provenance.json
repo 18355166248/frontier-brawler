@@ -1,0 +1,65 @@
+{
+  "toolVersion": "1.0",
+  "inputMode": "aseprite",
+  "recipe": {
+    "version": 1,
+    "kind": "motion",
+    "title": "怪物动作关键姿态 · 草稿",
+    "cell": [
+      640,
+      640
+    ],
+    "anchor": [
+      0.48125,
+      0.875
+    ],
+    "resample": "lanczos",
+    "background": "keep",
+    "source": {
+      "provider": "codex-builtin-imagegen",
+      "calls": 6,
+      "note": "三身份已认可；近战 move 待修；攻击关键姿态待用户验收，缺中间帧和受击死亡；未接入游戏"
+    },
+    "states": [
+      {
+        "name": "redmane-move",
+        "loop": true
+      },
+      {
+        "name": "redmane-slash",
+        "loop": false
+      },
+      {
+        "name": "mossfeather-shoot",
+        "loop": false
+      },
+      {
+        "name": "whitemask-cast",
+        "loop": false
+      }
+    ]
+  },
+  "sourceRoot": "/Users/xmly/Swell/code/game-workspace/frontier-brawler/docs/experiments/enemy-redesign-2026-10-05/motion-registered-v1/source.json",
+  "inputs": [
+    {
+      "path": "/Users/xmly/Swell/code/game-workspace/frontier-brawler/docs/experiments/enemy-redesign-2026-10-05/motion-registered-v1/recipe.json",
+      "sha256": "d47e79a18400960f0679176938b785ba7a8ac9a92a3ad36e3e6861e9419bc073"
+    },
+    {
+      "path": "/Users/xmly/Swell/code/game-workspace/frontier-brawler/docs/experiments/enemy-redesign-2026-10-05/motion-registered-v1/source.json",
+      "sha256": "f6be2bb7a42788aa355fb069d9eb63bf3d83de5801fd66baf79065773501537c"
+    },
+    {
+      "path": "/Users/xmly/Swell/code/game-workspace/frontier-brawler/docs/experiments/enemy-redesign-2026-10-05/motion-registered-v1/source.png",
+      "sha256": "08d54b601899b9c090146b4f1270a28b830e803eb77a8b05d590648e4d4641da"
+    }
+  ],
+  "reproduce": {
+    "recipe": "/Users/xmly/Swell/code/game-workspace/frontier-brawler/docs/experiments/enemy-redesign-2026-10-05/motion-registered-v1/recipe.json",
+    "input": "/Users/xmly/Swell/code/game-workspace/frontier-brawler/docs/experiments/enemy-redesign-2026-10-05/motion-registered-v1/source.json",
+    "aseprite": true
+  },
+  "environment": {
+    "pillow": "12.3.0"
+  }
+}

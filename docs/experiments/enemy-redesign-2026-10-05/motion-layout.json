@@ -1,0 +1,181 @@
+{
+  "generation_calls": 6,
+  "actions": [
+    {
+      "name": "redmane-move",
+      "image": "redmane-move-keyposes-v2.png",
+      "scale": 0.65,
+      "anchors_x": [
+        315,
+        939,
+        315,
+        939
+      ],
+      "foot_rois": [
+        [
+          70,
+          550,
+          550,
+          632
+        ],
+        [
+          800,
+          550,
+          1010,
+          632
+        ],
+        [
+          410,
+          1130,
+          580,
+          1225
+        ],
+        [
+          950,
+          1130,
+          1090,
+          1225
+        ]
+      ],
+      "durations_ms": [
+        180,
+        180,
+        180,
+        180
+      ],
+      "loop": true
+    },
+    {
+      "name": "redmane-slash",
+      "image": "redmane-slash-keyposes-v1.png",
+      "scale": 0.74,
+      "anchors_x": [
+        315,
+        832,
+        315,
+        900
+      ],
+      "foot_rois": [
+        [
+          60,
+          550,
+          575,
+          623
+        ],
+        [
+          610,
+          550,
+          1060,
+          625
+        ],
+        [
+          50,
+          1130,
+          580,
+          1205
+        ],
+        [
+          680,
+          1130,
+          1130,
+          1210
+        ]
+      ],
+      "durations_ms": [
+        133,
+        84,
+        83,
+        100
+      ],
+      "loop": false
+    },
+    {
+      "name": "mossfeather-shoot",
+      "image": "mossfeather-shot-keyposes-v2.png",
+      "scale": 0.88,
+      "anchors_x": [
+        337,
+        908,
+        350,
+        923
+      ],
+      "foot_rois": [
+        [
+          180,
+          540,
+          510,
+          618
+        ],
+        [
+          735,
+          540,
+          1085,
+          618
+        ],
+        [
+          185,
+          1110,
+          530,
+          1200
+        ],
+        [
+          750,
+          1110,
+          1090,
+          1200
+        ]
+      ],
+      "durations_ms": [
+        200,
+        500,
+        80,
+        420
+      ],
+      "loop": false
+    },
+    {
+      "name": "whitemask-cast",
+      "image": "whitemask-cast-keyposes-v1.png",
+      "scale": 0.65,
+      "anchors_x": [
+        340,
+        945,
+        335,
+        965
+      ],
+      "foot_rois": [
+        [
+          220,
+          550,
+          450,
+          630
+        ],
+        [
+          780,
+          550,
+          1115,
+          628
+        ],
+        [
+          120,
+          1150,
+          530,
+          1217
+        ],
+        [
+          850,
+          1150,
+          1060,
+          1222
+        ]
+      ],
+      "durations_ms": [
+        250,
+        650,
+        150,
+        600
+      ],
+      "loop": false
+    }
+  ]
+}

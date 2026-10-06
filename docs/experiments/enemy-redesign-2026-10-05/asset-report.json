@@ -1,0 +1,20 @@
+{
+  "size": [
+    1254,
+    1254
+  ],
+  "mode": "RGBA",
+  "alpha_range": [
+    0,
+    255
+  ],
+  "alpha_bbox": [
+    19,
+    8,
+    1176,
+    1221
+  ],
+  "bytes": 1202902,
+  "review": "candidate-user-review-pending",
+  "runtime_integrated": false
+}

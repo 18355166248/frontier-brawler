@@ -1,0 +1,156 @@
+{
+  "schema": 1,
+  "enemies": {
+    "archer": {
+      "kind": "archer",
+      "label": "苔羽弓妖",
+      "hp": 28,
+      "speed": 1.15,
+      "radius": 14,
+      "reach": 320,
+      "standoff": 245,
+      "attackAction": "archerAim",
+      "tokenCooldown": 90
+    },
+    "mage": {
+      "kind": "mage",
+      "label": "白面灯巫",
+      "hp": 38,
+      "speed": 0.95,
+      "radius": 14,
+      "reach": 340,
+      "standoff": 275,
+      "attackAction": "lanternCast",
+      "tokenCooldown": 120
+    }
+  },
+  "enemy_actions": {
+    "archerAim": {
+      "id": "archerAim",
+      "frames": 42,
+      "loop": false,
+      "cancelable": false,
+      "hitboxes": [],
+      "next": "archerShoot"
+    },
+    "archerShoot": {
+      "id": "archerShoot",
+      "frames": 30,
+      "loop": false,
+      "cancelable": false,
+      "hitboxes": []
+    },
+    "lanternCast": {
+      "id": "lanternCast",
+      "frames": 99,
+      "loop": false,
+      "cancelable": false,
+      "hitboxes": [],
+      "releaseFrame": 54
+    }
+  },
+  "rooms": [
+    {
+      "id": "v0",
+      "gridX": 0,
+      "gridY": 0,
+      "kind": "start",
+      "size": "standard",
+      "encounter": [],
+      "doors": {
+        "east": "v1"
+      }
+    },
+    {
+      "id": "v1",
+      "gridX": 1,
+      "gridY": 0,
+      "kind": "normal",
+      "size": "standard",
+      "encounter": [
+        "grunt",
+        "grunt",
+        "grunt",
+        "grunt",
+        "grunt",
+        "grunt"
+      ],
+      "doors": {
+        "west": "v0",
+        "east": "v2"
+      }
+    },
+    {
+      "id": "v2",
+      "gridX": 2,
+      "gridY": 0,
+      "kind": "normal",
+      "size": "wide",
+      "encounter": [
+        "grunt",
+        "grunt",
+        "grunt",
+        "grunt",
+        "grunt",
+        "grunt",
+        "grunt",
+        "archer"
+      ],
+      "doors": {
+        "west": "v1",
+        "east": "vm"
+      }
+    },
+    {
+      "id": "vm",
+      "gridX": 3,
+      "gridY": 0,
+      "kind": "normal",
+      "size": "wide",
+      "encounter": [
+        "grunt",
+        "grunt",
+        "grunt",
+        "grunt",
+        "grunt",
+        "grunt",
+        "grunt",
+        "grunt",
+        "grunt",
+        "mage"
+      ],
+      "doors": {
+        "west": "v2",
+        "east": "vr"
+      }
+    },
+    {
+      "id": "vr",
+      "gridX": 4,
+      "gridY": 0,
+      "kind": "reward",
+      "size": "standard",
+      "encounter": [],
+      "doors": {
+        "west": "vm",
+        "east": "v3"
+      }
+    },
+    {
+      "id": "v3",
+      "gridX": 5,
+      "gridY": 0,
+      "kind": "boss",
+      "size": "deep",
+      "encounter": [
+        "boss",
+        "grunt",
+        "grunt",
+        "grunt"
+      ],
+      "doors": {
+        "west": "vr"
+      }
+    }
+  ]
+}

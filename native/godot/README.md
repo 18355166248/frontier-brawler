@@ -28,7 +28,7 @@ Android/iOS/HarmonyOS 导出与真实设备输入、音频、字体、安全区�
 
 ## 当前内容与结构
 
-完整一关：山门起步 → 两处战斗 → 三选一成长 → 铜面守卫 → 遗物 → 结算 → 重开。
+完整一关：山门起步 → 三处战斗 → 三选一成长 → 铜面守卫 → 遗物 → 结算 → 重开。
 遗物是本次旅程的通关纪念，尚无跨局装备/存档。本轮只制作这一关。
 
 - `scenes/main.tscn`：全屏世界视口、输入、HUD、流程、音频。
@@ -80,3 +80,9 @@ godot --path native/godot --script tests/landscape_review.gd \
 输出在 `native/godot/output/wudu-import/`；包含测试前置目标，不能当成手动通关录像。
 
 关卡门当前为checkpoint-v3石木关隘，清场时栅门在0.38秒内升起；原过门规则不等待动画。重启游戏生效。`--previous-gate`可回退前一门表现，详见[环境与门说明](docs/environment-redesign-2026-10-04.md)。
+
+## 三类怪物与群战
+
+普通房间依次为 6 个刀妖、7 个刀妖 + 1 个弓妖、9 个刀妖 + 1 个灯巫；Boss 房为铜面守卫 + 3 个刀妖。所有敌人共用两个攻击名额，远程威胁最多一个，Boss 和小兵全部击败后进入掉落。原生配置位于 `data/enemy_roster.json`。用户已自行启动试玩并反馈通过。
+
+美术来源、候选边界与实际引擎预览见 `../../docs/experiments/enemy-redesign-2026-10-05/CURRENT-STATUS.md`。

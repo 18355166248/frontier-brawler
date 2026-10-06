@@ -1,7 +1,13 @@
 class_name FBActor
 extends Node2D
 
-@export_enum("hero", "grunt", "boss") var kind := "hero"
+@export_enum("hero", "grunt", "archer", "mage", "boss") var kind := "hero"
+var attack_serial := 0
+var attack_origin := Vector2.ZERO
+var attack_target := Vector2.ZERO
+var attack_direction := Vector2.RIGHT
+var retreat_frames := 0
+var retreat_cooldown := 0
 var state := FBActionState.new()
 var hp := 160.0
 var max_hp := 160.0
@@ -76,6 +82,7 @@ func tick(input: Dictionary, execute_target: FBActor = null) -> void:
 	dash_cooldown = maxi(0, dash_cooldown - 1)
 	jump_cooldown = maxi(0, jump_cooldown - 1)
 	attack_cooldown = maxi(0, attack_cooldown - 1)
+	retreat_cooldown = maxi(0, retreat_cooldown - 1)
 	invulnerability = maxi(0, invulnerability - 1)
 	launch_remaining = maxi(0, launch_remaining - 1)
 	position += knockback
@@ -96,7 +103,13 @@ func tick(input: Dictionary, execute_target: FBActor = null) -> void:
 			apply_player_intent(movement, execute_target)
 		state.decay()
 	elif input.get("attack", false) and state.id in ["idle", "move"]:
-		state.change("bossSlam" if kind == "boss" else "slash")
+		# 起手冻结原点和目标；预警、释放和判定共同读取它们，不在放箭时重新偷瞄。
+		attack_serial += 1
+		attack_origin = position
+		attack_target = input.get("target", position + Vector2(facing * 240, 0))
+		attack_direction = (attack_target - attack_origin).normalized()
+		locomotion_velocity = Vector2.ZERO
+		state.change(str(FBData.all().enemies[kind].attackAction))
 	var motion: Array = state.definition().get("motion", [])
 	if state.frame < motion.size() and motion[state.frame] != 0:
 		var direction := locked_direction if state.id in ["dash", "jump"] else Vector2(facing, 0)

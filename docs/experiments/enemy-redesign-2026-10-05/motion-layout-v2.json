@@ -1,0 +1,401 @@
+{
+  "generation_calls": 12,
+  "actions": [
+    {
+      "name": "redmane-slash",
+      "image": "redmane-slash-keyposes-v1.png",
+      "scale": 0.74,
+      "anchors_x": [
+        315,
+        832,
+        315,
+        900
+      ],
+      "foot_rois": [
+        [
+          60,
+          550,
+          575,
+          623
+        ],
+        [
+          610,
+          550,
+          1060,
+          625
+        ],
+        [
+          50,
+          1130,
+          580,
+          1205
+        ],
+        [
+          680,
+          1130,
+          1130,
+          1210
+        ]
+      ],
+      "durations_ms": [
+        133,
+        84,
+        83,
+        100
+      ],
+      "loop": false
+    },
+    {
+      "name": "mossfeather-shoot",
+      "image": "mossfeather-shot-keyposes-v2.png",
+      "scale": 0.88,
+      "anchors_x": [
+        337,
+        908,
+        350,
+        923
+      ],
+      "foot_rois": [
+        [
+          180,
+          540,
+          510,
+          618
+        ],
+        [
+          735,
+          540,
+          1085,
+          618
+        ],
+        [
+          185,
+          1110,
+          530,
+          1200
+        ],
+        [
+          750,
+          1110,
+          1090,
+          1200
+        ]
+      ],
+      "durations_ms": [
+        200,
+        500,
+        80,
+        420
+      ],
+      "loop": false
+    },
+    {
+      "name": "whitemask-cast",
+      "image": "whitemask-cast-keyposes-v1.png",
+      "scale": 0.65,
+      "anchors_x": [
+        340,
+        945,
+        335,
+        965
+      ],
+      "foot_rois": [
+        [
+          220,
+          550,
+          450,
+          630
+        ],
+        [
+          780,
+          550,
+          1115,
+          628
+        ],
+        [
+          120,
+          1150,
+          530,
+          1217
+        ],
+        [
+          850,
+          1150,
+          1060,
+          1222
+        ]
+      ],
+      "durations_ms": [
+        250,
+        650,
+        150,
+        600
+      ],
+      "loop": false
+    },
+    {
+      "name": "redmane-move",
+      "image": "redmane-move-repair-v3.png",
+      "scale": 0.65,
+      "anchors_x": [
+        315,
+        940,
+        315,
+        940
+      ],
+      "foot_rois": [
+        [
+          70,
+          550,
+          550,
+          635
+        ],
+        [
+          800,
+          550,
+          1010,
+          635
+        ],
+        [
+          410,
+          1130,
+          580,
+          1225
+        ],
+        [
+          800,
+          1130,
+          950,
+          1220
+        ]
+      ],
+      "loop": true,
+      "durations_ms": [
+        180,
+        180,
+        180,
+        180
+      ]
+    },
+    {
+      "name": "mossfeather-move",
+      "image": "mossfeather-move-v1.png",
+      "scale": 0.68,
+      "anchors_x": [
+        350,
+        935,
+        350,
+        950
+      ],
+      "foot_rois": [
+        [
+          440,
+          540,
+          570,
+          615
+        ],
+        [
+          810,
+          540,
+          940,
+          615
+        ],
+        [
+          450,
+          1140,
+          600,
+          1212
+        ],
+        [
+          840,
+          1140,
+          975,
+          1213
+        ]
+      ],
+      "loop": true,
+      "durations_ms": [
+        180,
+        180,
+        180,
+        180
+      ]
+    },
+    {
+      "name": "whitemask-move",
+      "image": "whitemask-move-v1.png",
+      "scale": 0.7,
+      "anchors_x": [
+        380,
+        930,
+        380,
+        930
+      ],
+      "foot_rois": [
+        [
+          420,
+          530,
+          520,
+          602
+        ],
+        [
+          830,
+          530,
+          945,
+          598
+        ],
+        [
+          410,
+          1120,
+          525,
+          1183
+        ],
+        [
+          830,
+          1120,
+          945,
+          1184
+        ]
+      ],
+      "loop": true,
+      "durations_ms": [
+        180,
+        180,
+        180,
+        180
+      ]
+    },
+    {
+      "name": "redmane-responses",
+      "image": "redmane-responses-v1.png",
+      "scale": 0.59,
+      "anchors_x": [
+        325,
+        950,
+        330,
+        930
+      ],
+      "foot_rois": [
+        [
+          110,
+          650,
+          550,
+          715
+        ],
+        [
+          800,
+          650,
+          1190,
+          715
+        ],
+        [
+          50,
+          1100,
+          590,
+          1208
+        ],
+        [
+          640,
+          1150,
+          1240,
+          1207
+        ]
+      ],
+      "loop": false,
+      "durations_ms": [
+        800,
+        200,
+        180,
+        220
+      ]
+    },
+    {
+      "name": "mossfeather-responses",
+      "image": "mossfeather-responses-v1.png",
+      "scale": 0.63,
+      "anchors_x": [
+        330,
+        1010,
+        340,
+        1000
+      ],
+      "foot_rois": [
+        [
+          150,
+          550,
+          510,
+          644
+        ],
+        [
+          840,
+          550,
+          1270,
+          642
+        ],
+        [
+          80,
+          1040,
+          550,
+          1117
+        ],
+        [
+          680,
+          1040,
+          1345,
+          1115
+        ]
+      ],
+      "loop": false,
+      "durations_ms": [
+        800,
+        200,
+        180,
+        220
+      ]
+    },
+    {
+      "name": "whitemask-responses",
+      "image": "whitemask-responses-v1.png",
+      "scale": 0.57,
+      "anchors_x": [
+        320,
+        930,
+        350,
+        940
+      ],
+      "foot_rois": [
+        [
+          220,
+          640,
+          450,
+          719
+        ],
+        [
+          760,
+          640,
+          1080,
+          715
+        ],
+        [
+          120,
+          1100,
+          550,
+          1185
+        ],
+        [
+          610,
+          1120,
+          1240,
+          1193
+        ]
+      ],
+      "loop": false,
+      "durations_ms": [
+        800,
+        200,
+        180,
+        220
+      ]
+    }
+  ]
+}

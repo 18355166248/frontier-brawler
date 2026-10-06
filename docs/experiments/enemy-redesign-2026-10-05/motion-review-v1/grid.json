@@ -1,0 +1,20 @@
+{
+  "sheet": "atlas.png",
+  "columns": 4,
+  "rows": 4,
+  "cellWidth": 640,
+  "cellHeight": 640,
+  "rowOrder": [
+    "redmane-move",
+    "redmane-slash",
+    "mossfeather-shoot",
+    "whitemask-cast"
+  ],
+  "frameCounts": {
+    "redmane-move": 4,
+    "redmane-slash": 4,
+    "mossfeather-shoot": 4,
+    "whitemask-cast": 4
+  },
+  "padding": "repeat-last; use manifest for timing and true frame counts"
+}

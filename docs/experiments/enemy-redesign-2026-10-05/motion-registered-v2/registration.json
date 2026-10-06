@@ -1,0 +1,1082 @@
+[
+  {
+    "action": "redmane-slash",
+    "frame": 0,
+    "source": "redmane-slash-keyposes-v1.png",
+    "sha256": "c07ed538b153712188a6974fcbd663305abc5e4a266e954656093f4e2a5292e9",
+    "scale": 0.74,
+    "source_bbox": [
+      61,
+      29,
+      571,
+      617
+    ],
+    "foot_roi": [
+      60,
+      550,
+      575,
+      623
+    ],
+    "ground_y": 616,
+    "offset": [
+      75,
+      104
+    ],
+    "result_bbox": [
+      119,
+      125,
+      498,
+      561
+    ]
+  },
+  {
+    "action": "redmane-slash",
+    "frame": 1,
+    "source": "redmane-slash-keyposes-v1.png",
+    "sha256": "c07ed538b153712188a6974fcbd663305abc5e4a266e954656093f4e2a5292e9",
+    "scale": 0.74,
+    "source_bbox": [
+      605,
+      93,
+      1229,
+      619
+    ],
+    "foot_roi": [
+      610,
+      550,
+      1060,
+      625
+    ],
+    "ground_y": 618,
+    "offset": [
+      -308,
+      103
+    ],
+    "result_bbox": [
+      140,
+      171,
+      602,
+      562
+    ]
+  },
+  {
+    "action": "redmane-slash",
+    "frame": 2,
+    "source": "redmane-slash-keyposes-v1.png",
+    "sha256": "c07ed538b153712188a6974fcbd663305abc5e4a266e954656093f4e2a5292e9",
+    "scale": 0.74,
+    "source_bbox": [
+      53,
+      648,
+      693,
+      1196
+    ],
+    "foot_roi": [
+      50,
+      1130,
+      580,
+      1205
+    ],
+    "ground_y": 1195,
+    "offset": [
+      75,
+      -324
+    ],
+    "result_bbox": [
+      114,
+      155,
+      588,
+      561
+    ]
+  },
+  {
+    "action": "redmane-slash",
+    "frame": 3,
+    "source": "redmane-slash-keyposes-v1.png",
+    "sha256": "c07ed538b153712188a6974fcbd663305abc5e4a266e954656093f4e2a5292e9",
+    "scale": 0.74,
+    "source_bbox": [
+      675,
+      627,
+      1224,
+      1203
+    ],
+    "foot_roi": [
+      680,
+      1130,
+      1130,
+      1210
+    ],
+    "ground_y": 1202,
+    "offset": [
+      -358,
+      -329
+    ],
+    "result_bbox": [
+      141,
+      135,
+      548,
+      562
+    ]
+  },
+  {
+    "action": "mossfeather-shoot",
+    "frame": 0,
+    "source": "mossfeather-shot-keyposes-v2.png",
+    "sha256": "27df7890ce742e151136f318c116a18a52506370c30d645e65218f2bd90f70c2",
+    "scale": 0.88,
+    "source_bbox": [
+      145,
+      78,
+      569,
+      612
+    ],
+    "foot_roi": [
+      180,
+      540,
+      510,
+      618
+    ],
+    "ground_y": 611,
+    "offset": [
+      11,
+      22
+    ],
+    "result_bbox": [
+      138,
+      90,
+      513,
+      561
+    ]
+  },
+  {
+    "action": "mossfeather-shoot",
+    "frame": 1,
+    "source": "mossfeather-shot-keyposes-v2.png",
+    "sha256": "27df7890ce742e151136f318c116a18a52506370c30d645e65218f2bd90f70c2",
+    "scale": 0.88,
+    "source_bbox": [
+      692,
+      39,
+      1177,
+      612
+    ],
+    "foot_roi": [
+      735,
+      540,
+      1085,
+      618
+    ],
+    "ground_y": 611,
+    "offset": [
+      -491,
+      22
+    ],
+    "result_bbox": [
+      117,
+      56,
+      546,
+      561
+    ]
+  },
+  {
+    "action": "mossfeather-shoot",
+    "frame": 2,
+    "source": "mossfeather-shot-keyposes-v2.png",
+    "sha256": "27df7890ce742e151136f318c116a18a52506370c30d645e65218f2bd90f70c2",
+    "scale": 0.88,
+    "source_bbox": [
+      152,
+      681,
+      585,
+      1188
+    ],
+    "foot_roi": [
+      185,
+      1110,
+      530,
+      1200
+    ],
+    "ground_y": 1187,
+    "offset": [
+      0,
+      -485
+    ],
+    "result_bbox": [
+      133,
+      114,
+      516,
+      562
+    ]
+  },
+  {
+    "action": "mossfeather-shoot",
+    "frame": 3,
+    "source": "mossfeather-shot-keyposes-v2.png",
+    "sha256": "27df7890ce742e151136f318c116a18a52506370c30d645e65218f2bd90f70c2",
+    "scale": 0.88,
+    "source_bbox": [
+      713,
+      664,
+      1128,
+      1190
+    ],
+    "foot_roi": [
+      750,
+      1110,
+      1090,
+      1200
+    ],
+    "ground_y": 1189,
+    "offset": [
+      -504,
+      -486
+    ],
+    "result_bbox": [
+      123,
+      98,
+      490,
+      562
+    ]
+  },
+  {
+    "action": "whitemask-cast",
+    "frame": 0,
+    "source": "whitemask-cast-keyposes-v1.png",
+    "sha256": "411b266b96fcc0c4d561afe8ef11874652e3a50f8988505be55705cf787f7091",
+    "scale": 0.65,
+    "source_bbox": [
+      68,
+      40,
+      567,
+      625
+    ],
+    "foot_roi": [
+      220,
+      550,
+      450,
+      630
+    ],
+    "ground_y": 624,
+    "offset": [
+      87,
+      154
+    ],
+    "result_bbox": [
+      131,
+      180,
+      456,
+      561
+    ]
+  },
+  {
+    "action": "whitemask-cast",
+    "frame": 1,
+    "source": "whitemask-cast-keyposes-v1.png",
+    "sha256": "411b266b96fcc0c4d561afe8ef11874652e3a50f8988505be55705cf787f7091",
+    "scale": 0.65,
+    "source_bbox": [
+      695,
+      8,
+      1193,
+      624
+    ],
+    "foot_roi": [
+      780,
+      550,
+      1115,
+      628
+    ],
+    "ground_y": 623,
+    "offset": [
+      -306,
+      155
+    ],
+    "result_bbox": [
+      145,
+      159,
+      470,
+      561
+    ]
+  },
+  {
+    "action": "whitemask-cast",
+    "frame": 2,
+    "source": "whitemask-cast-keyposes-v1.png",
+    "sha256": "411b266b96fcc0c4d561afe8ef11874652e3a50f8988505be55705cf787f7091",
+    "scale": 0.65,
+    "source_bbox": [
+      55,
+      683,
+      716,
+      1213
+    ],
+    "foot_roi": [
+      120,
+      1150,
+      530,
+      1217
+    ],
+    "ground_y": 1212,
+    "offset": [
+      90,
+      -228
+    ],
+    "result_bbox": [
+      125,
+      216,
+      556,
+      561
+    ]
+  },
+  {
+    "action": "whitemask-cast",
+    "frame": 3,
+    "source": "whitemask-cast-keyposes-v1.png",
+    "sha256": "411b266b96fcc0c4d561afe8ef11874652e3a50f8988505be55705cf787f7091",
+    "scale": 0.65,
+    "source_bbox": [
+      691,
+      644,
+      1175,
+      1219
+    ],
+    "foot_roi": [
+      850,
+      1150,
+      1060,
+      1222
+    ],
+    "ground_y": 1218,
+    "offset": [
+      -319,
+      -232
+    ],
+    "result_bbox": [
+      129,
+      186,
+      445,
+      561
+    ]
+  },
+  {
+    "action": "redmane-move",
+    "frame": 0,
+    "source": "redmane-move-repair-v3.png",
+    "sha256": "e17d4c11ad2334bc384789a919b27944e3a117d95d55e59980456fdb6066e8e3",
+    "scale": 0.65,
+    "source_bbox": [
+      37,
+      26,
+      610,
+      631
+    ],
+    "foot_roi": [
+      70,
+      550,
+      550,
+      635
+    ],
+    "ground_y": 630,
+    "offset": [
+      103,
+      150
+    ],
+    "result_bbox": [
+      126,
+      166,
+      500,
+      561
+    ]
+  },
+  {
+    "action": "redmane-move",
+    "frame": 1,
+    "source": "redmane-move-repair-v3.png",
+    "sha256": "e17d4c11ad2334bc384789a919b27944e3a117d95d55e59980456fdb6066e8e3",
+    "scale": 0.65,
+    "source_bbox": [
+      654,
+      31,
+      1233,
+      631
+    ],
+    "foot_roi": [
+      800,
+      550,
+      1010,
+      635
+    ],
+    "ground_y": 630,
+    "offset": [
+      -303,
+      150
+    ],
+    "result_bbox": [
+      121,
+      169,
+      499,
+      561
+    ]
+  },
+  {
+    "action": "redmane-move",
+    "frame": 2,
+    "source": "redmane-move-repair-v3.png",
+    "sha256": "e17d4c11ad2334bc384789a919b27944e3a117d95d55e59980456fdb6066e8e3",
+    "scale": 0.65,
+    "source_bbox": [
+      38,
+      629,
+      610,
+      1221
+    ],
+    "foot_roi": [
+      410,
+      1130,
+      580,
+      1225
+    ],
+    "ground_y": 1220,
+    "offset": [
+      103,
+      -233
+    ],
+    "result_bbox": [
+      127,
+      175,
+      500,
+      561
+    ]
+  },
+  {
+    "action": "redmane-move",
+    "frame": 3,
+    "source": "redmane-move-repair-v3.png",
+    "sha256": "e17d4c11ad2334bc384789a919b27944e3a117d95d55e59980456fdb6066e8e3",
+    "scale": 0.65,
+    "source_bbox": [
+      655,
+      629,
+      1233,
+      1213
+    ],
+    "foot_roi": [
+      800,
+      1130,
+      950,
+      1220
+    ],
+    "ground_y": 1212,
+    "offset": [
+      -303,
+      -228
+    ],
+    "result_bbox": [
+      122,
+      180,
+      499,
+      561
+    ]
+  },
+  {
+    "action": "mossfeather-move",
+    "frame": 0,
+    "source": "mossfeather-move-v1.png",
+    "sha256": "99476afa3866f5a01b1c145f9ab2f4646937fadb2f68e6e96408d935f6c4b883",
+    "scale": 0.68,
+    "source_bbox": [
+      85,
+      32,
+      637,
+      608
+    ],
+    "foot_roi": [
+      440,
+      540,
+      570,
+      615
+    ],
+    "ground_y": 607,
+    "offset": [
+      70,
+      147
+    ],
+    "result_bbox": [
+      127,
+      168,
+      504,
+      561
+    ]
+  },
+  {
+    "action": "mossfeather-move",
+    "frame": 1,
+    "source": "mossfeather-move-v1.png",
+    "sha256": "99476afa3866f5a01b1c145f9ab2f4646937fadb2f68e6e96408d935f6c4b883",
+    "scale": 0.68,
+    "source_bbox": [
+      674,
+      32,
+      1227,
+      608
+    ],
+    "foot_roi": [
+      810,
+      540,
+      940,
+      615
+    ],
+    "ground_y": 607,
+    "offset": [
+      -328,
+      147
+    ],
+    "result_bbox": [
+      130,
+      168,
+      507,
+      561
+    ]
+  },
+  {
+    "action": "mossfeather-move",
+    "frame": 2,
+    "source": "mossfeather-move-v1.png",
+    "sha256": "99476afa3866f5a01b1c145f9ab2f4646937fadb2f68e6e96408d935f6c4b883",
+    "scale": 0.68,
+    "source_bbox": [
+      89,
+      633,
+      664,
+      1208
+    ],
+    "foot_roi": [
+      450,
+      1140,
+      600,
+      1212
+    ],
+    "ground_y": 1207,
+    "offset": [
+      70,
+      -261
+    ],
+    "result_bbox": [
+      130,
+      169,
+      522,
+      561
+    ]
+  },
+  {
+    "action": "mossfeather-move",
+    "frame": 3,
+    "source": "mossfeather-move-v1.png",
+    "sha256": "99476afa3866f5a01b1c145f9ab2f4646937fadb2f68e6e96408d935f6c4b883",
+    "scale": 0.68,
+    "source_bbox": [
+      684,
+      629,
+      1247,
+      1209
+    ],
+    "foot_roi": [
+      840,
+      1140,
+      975,
+      1213
+    ],
+    "ground_y": 1208,
+    "offset": [
+      -338,
+      -261
+    ],
+    "result_bbox": [
+      127,
+      166,
+      511,
+      562
+    ]
+  },
+  {
+    "action": "whitemask-move",
+    "frame": 0,
+    "source": "whitemask-move-v1.png",
+    "sha256": "499a471963a48ddd3f6665430901c08216f778386b0073aca9172143e7276f3a",
+    "scale": 0.7,
+    "source_bbox": [
+      88,
+      31,
+      622,
+      597
+    ],
+    "foot_roi": [
+      420,
+      530,
+      520,
+      602
+    ],
+    "ground_y": 596,
+    "offset": [
+      42,
+      143
+    ],
+    "result_bbox": [
+      103,
+      164,
+      478,
+      561
+    ]
+  },
+  {
+    "action": "whitemask-move",
+    "frame": 1,
+    "source": "whitemask-move-v1.png",
+    "sha256": "499a471963a48ddd3f6665430901c08216f778386b0073aca9172143e7276f3a",
+    "scale": 0.7,
+    "source_bbox": [
+      631,
+      30,
+      1149,
+      590
+    ],
+    "foot_roi": [
+      830,
+      530,
+      945,
+      598
+    ],
+    "ground_y": 589,
+    "offset": [
+      -343,
+      148
+    ],
+    "result_bbox": [
+      98,
+      169,
+      461,
+      562
+    ]
+  },
+  {
+    "action": "whitemask-move",
+    "frame": 2,
+    "source": "whitemask-move-v1.png",
+    "sha256": "499a471963a48ddd3f6665430901c08216f778386b0073aca9172143e7276f3a",
+    "scale": 0.7,
+    "source_bbox": [
+      77,
+      622,
+      624,
+      1179
+    ],
+    "foot_roi": [
+      410,
+      1120,
+      525,
+      1183
+    ],
+    "ground_y": 1178,
+    "offset": [
+      42,
+      -265
+    ],
+    "result_bbox": [
+      95,
+      170,
+      479,
+      561
+    ]
+  },
+  {
+    "action": "whitemask-move",
+    "frame": 3,
+    "source": "whitemask-move-v1.png",
+    "sha256": "499a471963a48ddd3f6665430901c08216f778386b0073aca9172143e7276f3a",
+    "scale": 0.7,
+    "source_bbox": [
+      642,
+      623,
+      1159,
+      1180
+    ],
+    "foot_roi": [
+      830,
+      1120,
+      945,
+      1184
+    ],
+    "ground_y": 1179,
+    "offset": [
+      -343,
+      -265
+    ],
+    "result_bbox": [
+      105,
+      171,
+      468,
+      561
+    ]
+  },
+  {
+    "action": "redmane-responses",
+    "frame": 0,
+    "source": "redmane-responses-v1.png",
+    "sha256": "d62d7fb38380d48bdf624b4a35f2b196be5575118c4ca7684270c3689f51e543",
+    "scale": 0.59,
+    "source_bbox": [
+      57,
+      49,
+      613,
+      710
+    ],
+    "foot_roi": [
+      110,
+      650,
+      550,
+      715
+    ],
+    "ground_y": 709,
+    "offset": [
+      116,
+      142
+    ],
+    "result_bbox": [
+      149,
+      170,
+      478,
+      561
+    ]
+  },
+  {
+    "action": "redmane-responses",
+    "frame": 1,
+    "source": "redmane-responses-v1.png",
+    "sha256": "d62d7fb38380d48bdf624b4a35f2b196be5575118c4ca7684270c3689f51e543",
+    "scale": 0.59,
+    "source_bbox": [
+      683,
+      111,
+      1227,
+      710
+    ],
+    "foot_roi": [
+      800,
+      650,
+      1190,
+      715
+    ],
+    "ground_y": 709,
+    "offset": [
+      -252,
+      142
+    ],
+    "result_bbox": [
+      150,
+      207,
+      472,
+      562
+    ]
+  },
+  {
+    "action": "redmane-responses",
+    "frame": 2,
+    "source": "redmane-responses-v1.png",
+    "sha256": "d62d7fb38380d48bdf624b4a35f2b196be5575118c4ca7684270c3689f51e543",
+    "scale": 0.59,
+    "source_bbox": [
+      50,
+      769,
+      594,
+      1202
+    ],
+    "foot_roi": [
+      50,
+      1100,
+      590,
+      1208
+    ],
+    "ground_y": 1201,
+    "offset": [
+      113,
+      -149
+    ],
+    "result_bbox": [
+      142,
+      304,
+      464,
+      561
+    ]
+  },
+  {
+    "action": "redmane-responses",
+    "frame": 3,
+    "source": "redmane-responses-v1.png",
+    "sha256": "d62d7fb38380d48bdf624b4a35f2b196be5575118c4ca7684270c3689f51e543",
+    "scale": 0.59,
+    "source_bbox": [
+      636,
+      978,
+      1240,
+      1201
+    ],
+    "foot_roi": [
+      640,
+      1150,
+      1240,
+      1207
+    ],
+    "ground_y": 1200,
+    "offset": [
+      -241,
+      -148
+    ],
+    "result_bbox": [
+      134,
+      429,
+      491,
+      562
+    ]
+  },
+  {
+    "action": "mossfeather-responses",
+    "frame": 0,
+    "source": "mossfeather-responses-v1.png",
+    "sha256": "be958d56f32845c68beafb3956b71765b6e9406bdfed351dd48e6d4947bdf65d",
+    "scale": 0.63,
+    "source_bbox": [
+      59,
+      21,
+      543,
+      637
+    ],
+    "foot_roi": [
+      150,
+      550,
+      510,
+      644
+    ],
+    "ground_y": 636,
+    "offset": [
+      100,
+      159
+    ],
+    "result_bbox": [
+      137,
+      171,
+      443,
+      560
+    ]
+  },
+  {
+    "action": "mossfeather-responses",
+    "frame": 1,
+    "source": "mossfeather-responses-v1.png",
+    "sha256": "be958d56f32845c68beafb3956b71765b6e9406bdfed351dd48e6d4947bdf65d",
+    "scale": 0.63,
+    "source_bbox": [
+      760,
+      17,
+      1271,
+      633
+    ],
+    "foot_roi": [
+      840,
+      550,
+      1270,
+      642
+    ],
+    "ground_y": 632,
+    "offset": [
+      -328,
+      162
+    ],
+    "result_bbox": [
+      150,
+      172,
+      473,
+      561
+    ]
+  },
+  {
+    "action": "mossfeather-responses",
+    "frame": 2,
+    "source": "mossfeather-responses-v1.png",
+    "sha256": "be958d56f32845c68beafb3956b71765b6e9406bdfed351dd48e6d4947bdf65d",
+    "scale": 0.63,
+    "source_bbox": [
+      77,
+      670,
+      607,
+      1111
+    ],
+    "foot_roi": [
+      80,
+      1040,
+      550,
+      1117
+    ],
+    "ground_y": 1110,
+    "offset": [
+      94,
+      -139
+    ],
+    "result_bbox": [
+      142,
+      282,
+      477,
+      561
+    ]
+  },
+  {
+    "action": "mossfeather-responses",
+    "frame": 3,
+    "source": "mossfeather-responses-v1.png",
+    "sha256": "be958d56f32845c68beafb3956b71765b6e9406bdfed351dd48e6d4947bdf65d",
+    "scale": 0.63,
+    "source_bbox": [
+      682,
+      888,
+      1345,
+      1107
+    ],
+    "foot_roi": [
+      680,
+      1040,
+      1345,
+      1115
+    ],
+    "ground_y": 1106,
+    "offset": [
+      -322,
+      -137
+    ],
+    "result_bbox": [
+      107,
+      421,
+      526,
+      560
+    ]
+  },
+  {
+    "action": "whitemask-responses",
+    "frame": 0,
+    "source": "whitemask-responses-v1.png",
+    "sha256": "2cdbdb7e8330dbfa68cc077903110c1c016c1d8c99d6c0201821023ee8861f2a",
+    "scale": 0.57,
+    "source_bbox": [
+      21,
+      34,
+      594,
+      713
+    ],
+    "foot_roi": [
+      220,
+      640,
+      450,
+      719
+    ],
+    "ground_y": 712,
+    "offset": [
+      126,
+      154
+    ],
+    "result_bbox": [
+      137,
+      173,
+      465,
+      561
+    ]
+  },
+  {
+    "action": "whitemask-responses",
+    "frame": 1,
+    "source": "whitemask-responses-v1.png",
+    "sha256": "2cdbdb7e8330dbfa68cc077903110c1c016c1d8c99d6c0201821023ee8861f2a",
+    "scale": 0.57,
+    "source_bbox": [
+      638,
+      95,
+      1229,
+      706
+    ],
+    "foot_roi": [
+      760,
+      640,
+      1080,
+      715
+    ],
+    "ground_y": 705,
+    "offset": [
+      -222,
+      158
+    ],
+    "result_bbox": [
+      141,
+      212,
+      479,
+      561
+    ]
+  },
+  {
+    "action": "whitemask-responses",
+    "frame": 2,
+    "source": "whitemask-responses-v1.png",
+    "sha256": "2cdbdb7e8330dbfa68cc077903110c1c016c1d8c99d6c0201821023ee8861f2a",
+    "scale": 0.57,
+    "source_bbox": [
+      24,
+      752,
+      652,
+      1179
+    ],
+    "foot_roi": [
+      120,
+      1100,
+      550,
+      1185
+    ],
+    "ground_y": 1178,
+    "offset": [
+      109,
+      -111
+    ],
+    "result_bbox": [
+      122,
+      317,
+      481,
+      561
+    ]
+  },
+  {
+    "action": "whitemask-responses",
+    "frame": 3,
+    "source": "whitemask-responses-v1.png",
+    "sha256": "2cdbdb7e8330dbfa68cc077903110c1c016c1d8c99d6c0201821023ee8861f2a",
+    "scale": 0.57,
+    "source_bbox": [
+      606,
+      1034,
+      1241,
+      1188
+    ],
+    "foot_roi": [
+      610,
+      1120,
+      1240,
+      1193
+    ],
+    "ground_y": 1187,
+    "offset": [
+      -228,
+      -117
+    ],
+    "result_bbox": [
+      117,
+      472,
+      480,
+      561
+    ]
+  }
+]

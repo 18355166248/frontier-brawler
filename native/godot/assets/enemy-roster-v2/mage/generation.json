@@ -1,0 +1,65 @@
+{
+  "calls": 6,
+  "jobs": [
+    {
+      "id": "redmane-responses-v1",
+      "refs": [
+        "/Users/xmly/Swell/code/game-workspace/frontier-brawler/docs/experiments/enemy-redesign-2026-10-05/redmane-blade-v2.png"
+      ],
+      "prompt": "Use case: identity-preserve. Transparent 2D painterly game sprite sheet. Reference is the approved identity and must preserve face, costume, proportions, camera and bright readable rendering. Exactly four complete isolated figures in two rows by two columns on genuine transparent background. All face right, slight three-quarter orthographic camera. Fixed body and camera scale across all four poses. At least 10 percent transparent margin at canvas edges and gutters. Full feet and full weapon, no clipping. No words, borders, shadows, effects, extra limbs or weapons. Identity: wolf-ogre with red-orange mane, slate blue skin, bronze shoulder armor, cream wraps, orange sash, ONE curved dao in near hand. Four states, NOT a sequential attack. Top left: calm upright idle guard, weapon lowered safely. Top right: clear hurt recoil backward with bent knees and tense torso, retain weapon connected to same hand, no blood. Bottom left: defeated collapsing onto one knee, torso bows low, head and weapon lowered. Bottom right: final defeated body lying on its side on ground, face still oriented right, weapon remains connected or resting immediately alongside; compact corpse silhouette below normal pelvis height, complete head/body/legs readable. Same scale of head and limb lengths even when lying down. Avoid a standing fourth pose.",
+      "elapsedMs": 67385,
+      "outputPath": "/Users/xmly/Swell/code/game-workspace/frontier-brawler/docs/experiments/enemy-redesign-2026-10-05/redmane-responses-v1.png",
+      "generatedPath": "/Users/xmly/.codex/generated_images/01a10c7f-676f-72d0-93b7-f8ea14c4bbc1/exec-b70692a9-4370-4c32-ae57-00caf217455a.png"
+    },
+    {
+      "id": "mossfeather-responses-v1",
+      "refs": [
+        "/Users/xmly/Swell/code/game-workspace/frontier-brawler/docs/experiments/enemy-redesign-2026-10-05/mossfeather-archer-v2.png"
+      ],
+      "prompt": "Use case: identity-preserve. Transparent 2D painterly game sprite sheet. Reference is the approved identity and must preserve face, costume, proportions, camera and bright readable rendering. Exactly four complete isolated figures in two rows by two columns on genuine transparent background. All face right, slight three-quarter orthographic camera. Fixed body and camera scale across all four poses. At least 10 percent transparent margin at canvas edges and gutters. Full feet and full weapon, no clipping. No words, borders, shadows, effects, extra limbs or weapons. Identity: bird beak face, green feather cloak, cream tunic, talon feet, honey wood longbow and quiver; bow remains one continuous stave with string. Four states, NOT a sequential attack. Top left: calm upright idle guard, weapon lowered safely. Top right: clear hurt recoil backward with bent knees and tense torso, retain weapon connected to same hand, no blood. Bottom left: defeated collapsing onto one knee, torso bows low, head and weapon lowered. Bottom right: final defeated body lying on its side on ground, face still oriented right, weapon remains connected or resting immediately alongside; compact corpse silhouette below normal pelvis height, complete head/body/legs readable. Same scale of head and limb lengths even when lying down. Avoid a standing fourth pose.",
+      "elapsedMs": 124194,
+      "outputPath": "/Users/xmly/Swell/code/game-workspace/frontier-brawler/docs/experiments/enemy-redesign-2026-10-05/mossfeather-responses-v1.png",
+      "generatedPath": "/Users/xmly/.codex/generated_images/01a10c7f-676f-72d0-93b7-f8ea14c4bbc1/exec-d5e84b94-60e1-4505-828a-ed52eeff26bd.png"
+    },
+    {
+      "id": "whitemask-responses-v1",
+      "refs": [
+        "/Users/xmly/Swell/code/game-workspace/frontier-brawler/docs/experiments/enemy-redesign-2026-10-05/whitemask-lantern-mage-v2.png"
+      ],
+      "prompt": "Use case: identity-preserve. Transparent 2D painterly game sprite sheet. Reference is the approved identity and must preserve face, costume, proportions, camera and bright readable rendering. Exactly four complete isolated figures in two rows by two columns on genuine transparent background. All face right, slight three-quarter orthographic camera. Fixed body and camera scale across all four poses. At least 10 percent transparent margin at canvas edges and gutters. Full feet and full weapon, no clipping. No words, borders, shadows, effects, extra limbs or weapons. Identity: white porcelain mask, tall narrow ivory ritual hat, ivory violet robe, paper talismans, ONE crooked lantern staff with cyan paper lantern. Four states, NOT a sequential attack. Top left: calm upright idle guard, weapon lowered safely. Top right: clear hurt recoil backward with bent knees and tense torso, retain weapon connected to same hand, no blood. Bottom left: defeated collapsing onto one knee, torso bows low, head and weapon lowered. Bottom right: final defeated body lying on its side on ground, face still oriented right, weapon remains connected or resting immediately alongside; compact corpse silhouette below normal pelvis height, complete head/body/legs readable. Same scale of head and limb lengths even when lying down. Avoid a standing fourth pose.",
+      "elapsedMs": 189001,
+      "outputPath": "/Users/xmly/Swell/code/game-workspace/frontier-brawler/docs/experiments/enemy-redesign-2026-10-05/whitemask-responses-v1.png",
+      "generatedPath": "/Users/xmly/.codex/generated_images/01a10c7f-676f-72d0-93b7-f8ea14c4bbc1/exec-cf931caf-9710-4bdb-bb8b-ac4192c63c7d.png"
+    },
+    {
+      "id": "mossfeather-move-v1",
+      "refs": [
+        "/Users/xmly/Swell/code/game-workspace/frontier-brawler/docs/experiments/enemy-redesign-2026-10-05/mossfeather-archer-v2.png"
+      ],
+      "prompt": "Use case: identity-preserve. Transparent 2D painterly game sprite sheet. Reference is the approved identity and must preserve face, costume, proportions, camera and bright readable rendering. Exactly four complete isolated figures in two rows by two columns on genuine transparent background. All face right, slight three-quarter orthographic camera. Fixed body and camera scale across all four poses. At least 10 percent transparent margin at canvas edges and gutters. Full feet and full weapon, no clipping. No words, borders, shadows, effects, extra limbs or weapons. Identity: bird beak face, green feather cloak, cream tunic, talon feet, honey wood longbow and quiver; bow remains one continuous stave with string. A full alternating forward walk cycle with relaxed weapon carry. Top left: near leg FORWARD to right in contact, far leg BACK to left. Top right: near leg planted beneath pelvis, far knee swinging forward and foot in front of support ankle. Bottom left: OPPOSITE contact: near leg BACK left, far leg FORWARD right. Bottom right: far leg planted, near knee swinging forward and foot right of support ankle. Anatomically continuous two legs with clear alternating foreground/background occlusion. Opposite half cycles must exchange legs, not four versions of same stance. Cloak follows body without covering both talon feet; bow carried lowered diagonally forward, no nocked arrow.",
+      "elapsedMs": 247736,
+      "outputPath": "/Users/xmly/Swell/code/game-workspace/frontier-brawler/docs/experiments/enemy-redesign-2026-10-05/mossfeather-move-v1.png",
+      "generatedPath": "/Users/xmly/.codex/generated_images/01a10c7f-676f-72d0-93b7-f8ea14c4bbc1/exec-58b615c6-f5f8-4f82-bb8f-be2f1a4aa3c1.png"
+    },
+    {
+      "id": "whitemask-move-v1",
+      "refs": [
+        "/Users/xmly/Swell/code/game-workspace/frontier-brawler/docs/experiments/enemy-redesign-2026-10-05/whitemask-lantern-mage-v2.png"
+      ],
+      "prompt": "Use case: identity-preserve. Transparent 2D painterly game sprite sheet. Reference is the approved identity and must preserve face, costume, proportions, camera and bright readable rendering. Exactly four complete isolated figures in two rows by two columns on genuine transparent background. All face right, slight three-quarter orthographic camera. Fixed body and camera scale across all four poses. At least 10 percent transparent margin at canvas edges and gutters. Full feet and full weapon, no clipping. No words, borders, shadows, effects, extra limbs or weapons. Identity: white porcelain mask, tall narrow ivory ritual hat, ivory violet robe, paper talismans, ONE crooked lantern staff with cyan paper lantern. A full alternating forward walk cycle with relaxed weapon carry. Top left: near leg FORWARD to right in contact, far leg BACK to left. Top right: near leg planted beneath pelvis, far knee swinging forward and foot in front of support ankle. Bottom left: OPPOSITE contact: near leg BACK left, far leg FORWARD right. Bottom right: far leg planted, near knee swinging forward and foot right of support ankle. Anatomically continuous two legs with clear alternating foreground/background occlusion. Opposite half cycles must exchange legs, not four versions of same stance. Robe hem parts slightly to reveal which boot is support and which lifts; hat and staff stay upright.",
+      "elapsedMs": 370970,
+      "outputPath": "/Users/xmly/Swell/code/game-workspace/frontier-brawler/docs/experiments/enemy-redesign-2026-10-05/whitemask-move-v1.png",
+      "generatedPath": "/Users/xmly/.codex/generated_images/01a10c7f-676f-72d0-93b7-f8ea14c4bbc1/exec-1d2407b1-4b55-4ffb-9fe5-c9afb4f9d526.png"
+    },
+    {
+      "id": "redmane-move-repair-v3",
+      "refs": [
+        "/Users/xmly/Swell/code/game-workspace/frontier-brawler/docs/experiments/enemy-redesign-2026-10-05/redmane-move-keyposes-v2.png"
+      ],
+      "prompt": "Use case: identity-preserve. Transparent 2D painterly game sprite sheet. Reference is the approved identity and must preserve face, costume, proportions, camera and bright readable rendering. Exactly four complete isolated figures in two rows by two columns on genuine transparent background. All face right, slight three-quarter orthographic camera. Fixed body and camera scale across all four poses. At least 10 percent transparent margin at canvas edges and gutters. Full feet and full weapon, no clipping. No words, borders, shadows, effects, extra limbs or weapons. Edit the supplied walking sheet. Freeze identity, same exact armor and grid. Upper row has support and swing; lower row MUST exchange FOREGROUND and BACKGROUND legs. Foreground leg is the leg with larger bronze shin armor. Bottom left: foreground armored leg strides forward to right, crosses ahead of background leg and plants flat. Background leg extends back left. Bottom right: foreground armored knee swings up FORWARD to right, foreground boot appears to RIGHT of vertically planted background ankle; not folded backward at left. Make front/back leg crossing unmistakable at pelvis, rather than keeping foreground foot on same screen side in every pose. Preserve all heads, torso, hands and sword placement. Entire bodies and weapons complete within quadrants.",
+      "elapsedMs": 442673,
+      "outputPath": "/Users/xmly/Swell/code/game-workspace/frontier-brawler/docs/experiments/enemy-redesign-2026-10-05/redmane-move-repair-v3.png",
+      "generatedPath": "/Users/xmly/.codex/generated_images/01a10c7f-676f-72d0-93b7-f8ea14c4bbc1/exec-73085707-6553-42f4-b79f-60c094e336f6.png"
+    }
+  ]
+}

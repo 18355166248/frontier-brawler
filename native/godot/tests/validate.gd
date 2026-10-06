@@ -196,7 +196,7 @@ func validate() -> void:
 	game._notification(Node.NOTIFICATION_APPLICATION_FOCUS_IN)
 	check(run.paused, "manual resume required")
 	game._command("start")
-	run.room_index = 3
+	run.room_index = FBData.room_index("reward")
 	run.enter_room({})
 	var hp := room.hero.hp
 	run.choose_upgrade("guardian")

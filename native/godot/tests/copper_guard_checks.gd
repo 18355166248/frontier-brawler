@@ -78,7 +78,7 @@ func run() -> void:
 	var hero := actor("hero")
 	var grunt := actor("grunt")
 	check(hero.get_node("Visual").uses_pack and not hero.get_node("Visual").uses_boss_pack, "hero keeps existing 12-action pack")
-	check(not grunt.get_node("Visual").uses_pack and not grunt.get_node("Visual").uses_boss_pack, "grunt keeps original illustrated rendering")
+	check(grunt.get_node("Visual").uses_enemy_pack and not grunt.get_node("Visual").uses_pack and not grunt.get_node("Visual").uses_boss_pack, "grunt uses its own roster pack; hero and Boss packs remain separate")
 	var legacy := actor("boss", false)
 	check(not legacy.get_node("Visual").uses_boss_pack and legacy.get_node("Visual").boss_root == null, "explicit Boss rollback creates no sprite nodes")
 	# Native ticks and combat resolution are identical for modern/rollback actors.
@@ -105,17 +105,19 @@ func run() -> void:
 		combat_a.resolve(current)
 		combat_b.resolve(previous)
 		check(boss.position == legacy.position and boss.state.id == legacy.state.id and boss.state.frame == legacy.state.frame and modern_target.hp == old_target.hp and combat_a.freeze_frames == combat_b.freeze_frames, "modern/rollback native motion and damage match")
-	# Real boss-room clear still enters loot on exactly tick 40, corpse stays visible.
+	# 全部敌人死亡后仍在第 40 帧进入掉落；Boss 尸体保持可见。
 	var game = load("res://scenes/main.tscn").instantiate()
 	root.add_child(game)
 	game.set_physics_process(false)
 	game.audio.muted = true
 	game.run.start()
-	game.run.room_index = 4
+	game.run.room_index = FBData.room_index("boss")
 	game.run.enter_room({})
 	var dead: FBActor = game.room.actors[1]
 	dead.get_node("Visual").set_process(false)
-	dead.hp = 0
+	for enemy in game.room.actors:
+		if enemy.kind != "hero":
+			enemy.hp = 0
 	for i in 39:
 		game.run.step({})
 		dead.get_node("Visual")._process(1.0/60)
@@ -129,7 +131,7 @@ func run() -> void:
 		dead.get_node("Visual")._process(1.0/60)
 	check(dead.dead_frames == 40 and dead.get_node("Visual").boss_frame == 3 and dead.get_node("Visual").modulate.a == 1.0, "loot freezes final corpse instead of advancing gameplay")
 	game.run.start()
-	game.run.room_index = 4
+	game.run.room_index = FBData.room_index("boss")
 	game.run.enter_room({})
 	var restarted: FBActor = game.room.actors[1]
 	check(restarted.hp == 280 and restarted.dead_frames == 0 and restarted.get_node("Visual").boss_action == "idle", "restart creates fresh alive Boss")

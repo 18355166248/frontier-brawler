@@ -1,0 +1,193 @@
+{
+  "version": 1,
+  "kind": "mage",
+  "canvas_px": [
+    640,
+    640
+  ],
+  "pivot_px": [
+    308,
+    560
+  ],
+  "art_scale": 0.3,
+  "stride_world_px": 58,
+  "animations": {
+    "idle": {
+      "sheet": "idle.png",
+      "frames": [
+        {
+          "rect_px": [
+            0,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 800,
+          "source": "whitemask-responses-0",
+          "sha256": "c98d3dd12f26a1fd2c0c8cf758d8f1ce32eb830270e604b7ddea66e1e8012950"
+        }
+      ],
+      "duration_ms": 800,
+      "loop": true,
+      "frame_count": 1
+    },
+    "move": {
+      "sheet": "move.png",
+      "frames": [
+        {
+          "rect_px": [
+            0,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 180,
+          "source": "whitemask-move-0",
+          "sha256": "e69ab5827d1fb09515192d47d506ba1925b5de34ceb17776a7e41b2a50aefe55"
+        },
+        {
+          "rect_px": [
+            640,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 180,
+          "source": "whitemask-move-1",
+          "sha256": "198428845b1ca6644d61cd8c5c3c4f660559ae1034329dc9b4670e1de8bb9d59"
+        },
+        {
+          "rect_px": [
+            1280,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 180,
+          "source": "whitemask-move-2",
+          "sha256": "e49bd697b686a534b1cc1748320ef05af91f782cf68032f8fcd6de0dd0a02d8d"
+        },
+        {
+          "rect_px": [
+            1920,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 180,
+          "source": "whitemask-move-3",
+          "sha256": "f24004e6720bdbd6b6249fd5f878c458d4c37295cd0c67b957e58c0bba5bbc4c"
+        }
+      ],
+      "duration_ms": 720,
+      "loop": true,
+      "frame_count": 4
+    },
+    "hit": {
+      "sheet": "hit.png",
+      "frames": [
+        {
+          "rect_px": [
+            0,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 333,
+          "source": "whitemask-responses-1",
+          "sha256": "10a99d288f4c2667f58f174b4542b3f4dce0c7e5f7882aa1f659a8251bfebe58"
+        }
+      ],
+      "duration_ms": 333,
+      "loop": false,
+      "frame_count": 1
+    },
+    "death": {
+      "sheet": "death.png",
+      "frames": [
+        {
+          "rect_px": [
+            0,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 180,
+          "source": "whitemask-responses-2",
+          "sha256": "e5a60ee97e1e155a16225e412fe36e7482804294c33fe9c41856ecc1c533bd0d"
+        },
+        {
+          "rect_px": [
+            640,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 220,
+          "source": "whitemask-responses-3",
+          "sha256": "3824e0b9adfeeb6cc030058c4ce644f1545b9091e713d76bec0904edf68b0782"
+        }
+      ],
+      "duration_ms": 400,
+      "loop": false,
+      "frame_count": 2
+    },
+    "lanternCast": {
+      "sheet": "lanternCast.png",
+      "frames": [
+        {
+          "rect_px": [
+            0,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 250,
+          "source": "whitemask-cast-0",
+          "sha256": "e1520f16d63a6c6a0044d248a067813bc1dbc86ac8c6575696ad0210824034be"
+        },
+        {
+          "rect_px": [
+            640,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 650,
+          "source": "whitemask-cast-1",
+          "sha256": "9cb043ecdb81879620f958dd9ad46c4a197d55c8c2fd7ba80d892b499f58af07"
+        },
+        {
+          "rect_px": [
+            1280,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 150,
+          "source": "whitemask-cast-2",
+          "sha256": "6e6098e745d4feaf337773d9768dbb66a3c0945ba7868ccfb3599a895c2fd94a"
+        },
+        {
+          "rect_px": [
+            1920,
+            0,
+            640,
+            640
+          ],
+          "duration_ms": 600,
+          "source": "whitemask-cast-3",
+          "sha256": "1a5fc87b418e891680c74298bb96e69f6ea8be909bf98b2175eab59b33b7a158"
+        }
+      ],
+      "duration_ms": 1650,
+      "loop": false,
+      "frame_count": 4
+    }
+  },
+  "status": "integrated-candidate",
+  "identity_approval": "user-approved",
+  "attack_approval": "user: 合适 继续",
+  "new_motion_approval": "pending",
+  "idle_note": "single generated guard pose held; not a generated breathing animation"
+}

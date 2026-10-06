@@ -1,0 +1,8 @@
+<!doctype html><html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>三类怪物 · Godot 实景</title>
+<style>body{margin:0;background:#edf0ea;color:#24383e;font:16px/1.7 system-ui,sans-serif}main{max-width:1120px;margin:auto;padding:24px}h1{font-size:26px;margin:0 0 8px}h2{font-size:20px;margin-top:28px}p{margin:8px 0 16px}img{display:block;width:100%;height:auto;border-radius:10px}a{color:#146779}.badge{font-size:13px;background:#d4e2d6;padding:5px 10px;border-radius:8px}.grid{display:grid;grid-template-columns:1fr 1fr;gap:20px}figure{margin:0}figcaption{padding:8px 0;font-size:14px}@media(max-width:650px){main{padding:14px}.grid{grid-template-columns:1fr}}</style>
+<main><h1>三类怪物 · Godot 实景</h1><span class="badge">身份与攻击已认可 · 新动作及手感待试玩</span><p>本页使用真实 Godot 主场景截图与战斗逻辑短片。审阅站位手动安排；短片中的 AI、箭矢、落点、伤害和定格由 Run.step 推进。三类同屏用于对照，首关按近战 → 弓手 → 法师分别介绍。</p>
+<img src="runtime-motion.gif" alt="真实战斗逻辑推进的三类怪物短片"><p>三秒短片循环播放。移动目前为四关键姿态，新步态仍偏僵；近战前后腿遮挡仍待改进，未通过完整步态验收。</p>
+<h2>身份与剪影</h2><img src="three-types.png" alt="赤鬃刀妖、白面灯巫、苔羽弓妖实际场景对照">
+<h2>不同攻击规则</h2><div class="grid"><figure><img src="archer-aim.png" alt="弓手锁定箭线"><figcaption>弓手：700ms 锁线预警 → 单箭 → 收招。箭不追踪，支持跳跃/闪避规避。</figcaption></figure><figure><img src="mage-warning.png" alt="法师固定地面预警"><figcaption>法师：900ms 固定落点 → 一次爆发 → 收招。起手受击或死亡取消法术。</figcaption></figure></div>
+<p>运行时加入受击与倒地候选，idle 为静态守势原画。当前四姿态移动和攻击没有宣称补齐平滑中间帧。未提交代码，未作移动端或人工手感验收。</p>
+<p><a href="../motion-review-v2/preview.html">查看原画逐帧与慢放</a> · <a href="validation.log">Godot 回归日志</a> · <a href="render.log">真实渲染记录</a></p></main></html>

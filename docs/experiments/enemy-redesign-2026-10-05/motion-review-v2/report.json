@@ -1,0 +1,481 @@
+{
+  "status": "needs-human-review",
+  "warnings": [],
+  "measurements": [
+    {
+      "label": "redmane-slash / 1",
+      "bbox": [
+        117,
+        123,
+        501,
+        563
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "redmane-slash / 2",
+      "bbox": [
+        137,
+        171,
+        604,
+        564
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "redmane-slash / 3",
+      "bbox": [
+        112,
+        153,
+        590,
+        563
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "redmane-slash / 4",
+      "bbox": [
+        139,
+        133,
+        550,
+        564
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "mossfeather-shoot / 1",
+      "bbox": [
+        135,
+        88,
+        513,
+        564
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "mossfeather-shoot / 2",
+      "bbox": [
+        115,
+        54,
+        547,
+        563
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "mossfeather-shoot / 3",
+      "bbox": [
+        132,
+        112,
+        516,
+        564
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "mossfeather-shoot / 4",
+      "bbox": [
+        122,
+        96,
+        491,
+        564
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "whitemask-cast / 1",
+      "bbox": [
+        129,
+        178,
+        458,
+        563
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "whitemask-cast / 2",
+      "bbox": [
+        143,
+        157,
+        472,
+        563
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "whitemask-cast / 3",
+      "bbox": [
+        123,
+        214,
+        558,
+        563
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "whitemask-cast / 4",
+      "bbox": [
+        127,
+        184,
+        447,
+        563
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "redmane-move / 1",
+      "bbox": [
+        124,
+        164,
+        502,
+        563
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "redmane-move / 2",
+      "bbox": [
+        119,
+        167,
+        501,
+        563
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "redmane-move / 3",
+      "bbox": [
+        125,
+        173,
+        502,
+        563
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "redmane-move / 4",
+      "bbox": [
+        120,
+        179,
+        501,
+        563
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "mossfeather-move / 1",
+      "bbox": [
+        125,
+        166,
+        506,
+        563
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "mossfeather-move / 2",
+      "bbox": [
+        128,
+        166,
+        509,
+        563
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "mossfeather-move / 3",
+      "bbox": [
+        129,
+        167,
+        524,
+        563
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "mossfeather-move / 4",
+      "bbox": [
+        126,
+        166,
+        513,
+        564
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "whitemask-move / 1",
+      "bbox": [
+        101,
+        162,
+        480,
+        563
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "whitemask-move / 2",
+      "bbox": [
+        96,
+        167,
+        463,
+        564
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "whitemask-move / 3",
+      "bbox": [
+        93,
+        167,
+        481,
+        563
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "whitemask-move / 4",
+      "bbox": [
+        104,
+        169,
+        470,
+        563
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "redmane-responses / 1",
+      "bbox": [
+        147,
+        169,
+        480,
+        563
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "redmane-responses / 2",
+      "bbox": [
+        148,
+        205,
+        474,
+        564
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "redmane-responses / 3",
+      "bbox": [
+        140,
+        302,
+        466,
+        563
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "redmane-responses / 4",
+      "bbox": [
+        132,
+        427,
+        493,
+        562
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "mossfeather-responses / 1",
+      "bbox": [
+        136,
+        169,
+        445,
+        563
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "mossfeather-responses / 2",
+      "bbox": [
+        148,
+        170,
+        476,
+        563
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "mossfeather-responses / 3",
+      "bbox": [
+        142,
+        280,
+        479,
+        563
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "mossfeather-responses / 4",
+      "bbox": [
+        105,
+        419,
+        528,
+        562
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "whitemask-responses / 1",
+      "bbox": [
+        135,
+        171,
+        467,
+        563
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "whitemask-responses / 2",
+      "bbox": [
+        139,
+        210,
+        482,
+        563
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "whitemask-responses / 3",
+      "bbox": [
+        120,
+        315,
+        484,
+        564
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    },
+    {
+      "label": "whitemask-responses / 4",
+      "bbox": [
+        115,
+        470,
+        482,
+        563
+      ],
+      "alphaRange": [
+        0,
+        255
+      ]
+    }
+  ],
+  "manualChecks": [
+    "角色身份、朝向及跨动作尺寸是否一致",
+    "脚底是否漂移、武器是否裁切；bbox 不是接触点证明",
+    "走跑时左右腿是否交替落地、承重、经过和蹬离；不同图片不等于完整步态",
+    "循环接缝和单次动作的前摇、命中、收招",
+    "在目标游戏运行后另存证据；此处未验证碰撞或命中窗口"
+  ]
+}

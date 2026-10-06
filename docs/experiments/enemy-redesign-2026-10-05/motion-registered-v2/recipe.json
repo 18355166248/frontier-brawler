@@ -1,0 +1,58 @@
+{
+  "version": 1,
+  "kind": "motion",
+  "title": "怪物动作关键姿态 · 草稿",
+  "cell": [
+    640,
+    640
+  ],
+  "anchor": [
+    0.48125,
+    0.875
+  ],
+  "resample": "lanczos",
+  "background": "keep",
+  "source": {
+    "provider": "codex-builtin-imagegen",
+    "calls": 12,
+    "note": "三身份已认可；近战 move 待修；攻击关键姿态待用户验收，缺中间帧和受击死亡；未接入游戏"
+  },
+  "states": [
+    {
+      "name": "redmane-slash",
+      "loop": false
+    },
+    {
+      "name": "mossfeather-shoot",
+      "loop": false
+    },
+    {
+      "name": "whitemask-cast",
+      "loop": false
+    },
+    {
+      "name": "redmane-move",
+      "loop": true
+    },
+    {
+      "name": "mossfeather-move",
+      "loop": true
+    },
+    {
+      "name": "whitemask-move",
+      "loop": true
+    },
+    {
+      "name": "redmane-responses",
+      "loop": false
+    },
+    {
+      "name": "mossfeather-responses",
+      "loop": false
+    },
+    {
+      "name": "whitemask-responses",
+      "loop": false
+    }
+  ]
+}

@@ -1,0 +1,70 @@
+{
+  "generationCallsThisTurn": 5,
+  "supersededImages": 2,
+  "runtimeIntegrated": false,
+  "images": [
+    {
+      "file": "redmane-blade-v2.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        255
+      ],
+      "alphaBBox": [
+        0,
+        21,
+        1224,
+        1232
+      ],
+      "bytes": 1504024,
+      "sha256": "854cd21e52c942d6aed3bf3b0224e674082194c1472889448016ab4b7d03a157",
+      "status": "identity-candidate-user-review-pending"
+    },
+    {
+      "file": "mossfeather-archer-v2.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        255
+      ],
+      "alphaBBox": [
+        0,
+        0,
+        1210,
+        1241
+      ],
+      "bytes": 1459099,
+      "sha256": "83f5cbd6ed7ba4bd09d226606691371482d240bcadefca13eabecdc16c8b1172",
+      "status": "identity-candidate-user-review-pending"
+    },
+    {
+      "file": "whitemask-lantern-mage-v2.png",
+      "size": [
+        1254,
+        1254
+      ],
+      "mode": "RGBA",
+      "alphaRange": [
+        0,
+        255
+      ],
+      "alphaBBox": [
+        61,
+        21,
+        1232,
+        1206
+      ],
+      "bytes": 1354013,
+      "sha256": "1ac5d24d7d9b4a54ffa113c2add2f489154da097f2e46e873cf05221d56f1b7b",
+      "status": "identity-candidate-user-review-pending"
+    }
+  ]
+}

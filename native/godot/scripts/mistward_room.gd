@@ -23,6 +23,7 @@ const ROOM_LOOKS := {
 	"v0": {"title": "松影初径", "tint": Color(0.78, 0.88, 0.90), "fog": Color(0.46, 0.70, 0.73), "far_stones": [0.16, 0.66], "near_stones": [0.32, 0.77]},
 	"v1": {"title": "守灯古道", "tint": Color(0.76, 0.87, 0.88), "fog": Color(0.42, 0.66, 0.68), "far_stones": [0.28, 0.72], "near_stones": [0.15, 0.54]},
 	"v2": {"title": "风过石坪", "tint": Color(0.74, 0.85, 0.91), "fog": Color(0.49, 0.65, 0.78), "far_stones": [0.18, 0.62, 0.85], "near_stones": [0.32, 0.77]},
+	"vm": {"title": "白灯幽径", "tint": Color(0.82, 0.86, 0.94), "fog": Color(0.60, 0.62, 0.82), "far_stones": [0.18, 0.62], "near_stones": [0.32, 0.77]},
 	"vr": {"title": "灯下小憩", "tint": Color(0.86, 0.89, 0.85), "fog": Color(0.66, 0.71, 0.61), "far_stones": [0.26], "near_stones": [0.50]},
 	"v3": {"title": "铜面山门", "tint": Color(0.71, 0.81, 0.88), "fog": Color(0.39, 0.54, 0.66), "far_stones": [0.10, 0.63], "near_stones": [0.28, 0.80]}
 }
@@ -122,6 +123,15 @@ func populate(definition: Dictionary, profile: Dictionary, stress_count := 0) ->
 		var kind: String = definition.encounter[i] if stress_count == 0 else "grunt"
 		var x := arena.position.x + arena.size.x * (0.48 + 0.36 * float(i % 7) / 7)
 		var y := arena.position.y + 25 + fmod(i * 49.0, maxf(50, arena.size.y - 50))
+		# 普通遭遇按三条纵深错位排兵，远程留在后排；扩容时不再重复七列坐标。
+		# 压测与 Boss 房沿用原有散开坐标，避免改变压测负载和 Boss 出生点。
+		if stress_count == 0 and definition.kind == "normal":
+			if kind in ["archer", "mage"]:
+				x = arena.position.x + arena.size.x * 0.78
+				y = arena.get_center().y
+			else:
+				x = arena.position.x + arena.size.x * 0.45 + floorf(i / 3.0) * 92 + (i % 3) * 18
+				y = arena.get_center().y + ((i % 3) - 1) * 36
 		spawn(kind, Vector2(x, y))
 	look_ahead = 70
 	camera.position = Vector2(470, 290)

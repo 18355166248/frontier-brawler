@@ -17,6 +17,7 @@ var stress := false
 var paused := false
 var completions := 0
 var total_perfect := 0
+var threats: FBEnemyThreats
 
 func start(stress_mode := false) -> void:
 	stress = stress_mode
@@ -38,6 +39,11 @@ func set_phase(next: String) -> void:
 	phase_changed.emit(phase)
 
 func enter_room(profile: Dictionary) -> void:
+	# room 由主场景 ready 注入；延迟到首次进房初始化，避免子节点 ready 先于父节点。
+	if threats == null:
+		threats = FBEnemyThreats.new()
+		room.add_child(threats)
+	threats.clear_all()
 	director = FBEnemyDirector.new()
 	combat.freeze_frames = 0
 	clear_delay = 40
@@ -77,19 +83,25 @@ func step(input: Dictionary) -> void:
 		combat.freeze_frames -= 1
 		return
 	var hero := room.hero
-	director.update(room.actors, hero)
+	var half_view := room.get_viewport_rect().size.x / room.camera.zoom.x * 0.5
+	director.visible_x = Vector2(room.camera.position.x - half_view + 45, room.camera.position.x + half_view - 45)
+	director.update(room.actors, hero, threats.remote_owner())
 	for actor in room.actors:
 		var intent := input if actor == hero else director.intent(actor, hero)
 		actor.tick(intent, combat.execute_target(hero, room.actors) if actor == hero else null)
 	combat.resolve(room.actors)
+	# 近战命中先取消未释放法术，再推进弹丸；沿用同一暂停/定格时钟。
+	threats.step(room.actors, hero, combat)
 	director.separate(room.actors, room.arena)
 	if hero.is_dead():
+		threats.clear_all()
 		set_phase("dead")
 		return
 	if phase == "fighting" and room.alive_enemies() == 0:
+		threats.clear_all()
 		clear_delay -= 1
 		if clear_delay <= 0:
-			if room_index == 4:
+			if FBData.all().stage.rooms[room_index].kind == "boss":
 				set_phase("loot")
 			else:
 				room.door_open = true
@@ -98,7 +110,7 @@ func step(input: Dictionary) -> void:
 		advance_room()
 
 func advance_room() -> void:
-	if phase != "cleared" or room_index >= 4:
+	if phase != "cleared" or room_index >= FBData.all().stage.rooms.size() - 1:
 		return
 	var h := room.hero
 	var profile := {"hp": h.hp, "max_hp": h.max_hp, "energy": h.energy, "yone_cooldowns": h.skills.cooldowns.duplicate()}

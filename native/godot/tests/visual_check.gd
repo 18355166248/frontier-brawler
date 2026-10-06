@@ -24,7 +24,7 @@ func capture() -> void:
 	await create_timer(1.0).timeout
 	game.run.paused = false
 	await shot("combat")
-	game.run.room_index = 3
+	game.run.room_index = FBData.room_index("reward")
 	game.run.enter_room({})
 	await shot("reward")
 	game.run.choose_upgrade("guardian")

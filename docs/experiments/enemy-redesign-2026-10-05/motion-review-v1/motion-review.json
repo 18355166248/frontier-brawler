@@ -1,0 +1,24 @@
+{
+  "status": "draft",
+  "generationCalls": 6,
+  "userIdentityApproval": "可以继续",
+  "userMotionApproval": "user-approved attack key poses: 合适 继续; move approval pending",
+  "runtimeIntegration": false,
+  "reviews": {
+    "redmane-move": "needs-repair: opposing near/far leg support and swing still ambiguous",
+    "redmane-slash": "key structure readable; four-pose transition and hand continuity require visual review",
+    "mossfeather-shoot": "v1 rejected clipped upper bow; v2 complete; string/arrow continuity pending",
+    "whitemask-cast": "key gesture sequence readable; robe/staff scale continuity pending"
+  },
+  "missing": [
+    "idle animation",
+    "transition poses",
+    "archer/mage movement",
+    "hit",
+    "death",
+    "Godot behaviors and lifecycle",
+    "runtime visual review"
+  ],
+  "gifNote": "261px cell approximates 640px art * 0.30 world scale * 1.36 camera; attacks repeat with 900ms preview-only pause",
+  "supersededBy": "../motion-review-v2/"
+}

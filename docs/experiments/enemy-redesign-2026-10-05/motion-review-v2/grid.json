@@ -1,0 +1,30 @@
+{
+  "sheet": "atlas.png",
+  "columns": 4,
+  "rows": 9,
+  "cellWidth": 640,
+  "cellHeight": 640,
+  "rowOrder": [
+    "redmane-slash",
+    "mossfeather-shoot",
+    "whitemask-cast",
+    "redmane-move",
+    "mossfeather-move",
+    "whitemask-move",
+    "redmane-responses",
+    "mossfeather-responses",
+    "whitemask-responses"
+  ],
+  "frameCounts": {
+    "redmane-slash": 4,
+    "mossfeather-shoot": 4,
+    "whitemask-cast": 4,
+    "redmane-move": 4,
+    "mossfeather-move": 4,
+    "whitemask-move": 4,
+    "redmane-responses": 4,
+    "mossfeather-responses": 4,
+    "whitemask-responses": 4
+  },
+  "padding": "repeat-last; use manifest for timing and true frame counts"
+}
