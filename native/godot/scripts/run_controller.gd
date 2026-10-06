@@ -120,6 +120,7 @@ func step(input: Dictionary) -> void:
 		clear_delay -= 1
 		if clear_delay <= 0:
 			if FBData.all().stage.rooms[room_index].kind == "boss":
+				save_checkpoint("loot")
 				set_phase("loot")
 			elif room.room_id == "v1" and upgrade.is_empty():
 				# 首战后即获得构筑，使后续两场群战也能体验成长；旧休整房不重复发奖。
@@ -185,50 +186,39 @@ func claim_loot(id: String) -> void:
 func summary() -> String:
 	return "用时 %02d:%02d   击败 %d\n完美取消 %d   处决 %d" % [elapsed_frames / 3600, (elapsed_frames / 60) % 60, combat.kills, total_perfect + room.hero.perfect_count, combat.executes]
 
-func save_checkpoint() -> void:
-	# 检查点只在房间入口保存，恢复时整房重置敌人，不序列化招式或临时引用。
+func save_checkpoint(saved_phase := "entry") -> void:
+	# 入口档重建敌人，胜利档保留待领奖与最终成绩；不序列化招式或临时引用。
 	var h := room.hero
-	progress.data.checkpoint = {"room_id": room.room_id, "hp": h.hp, "energy": h.energy, "upgrade": upgrade,
-		"elapsed_frames": elapsed_frames, "kills": combat.kills, "executes": combat.executes, "perfect": total_perfect,
+	progress.data.checkpoint = {"room_id": room.room_id, "phase": saved_phase, "hp": h.hp, "energy": h.energy, "upgrade": upgrade,
+		"elapsed_frames": elapsed_frames, "kills": combat.kills, "executes": combat.executes, "perfect": total_perfect + (h.perfect_count if saved_phase == "loot" else 0),
 		"cooldowns": h.skills.cooldowns.duplicate()}
 	progress.save_progress()
 
 func can_resume() -> bool:
-	var c: Dictionary = progress.data.checkpoint
-	if c.is_empty() or not c.get("room_id", "") is String or c.get("upgrade", "") not in ["", "offense", "arcane", "guardian"]:
-		return false
-	for key in ["hp", "energy", "elapsed_frames", "kills", "executes", "perfect"]:
-		if not c.get(key) is float and not c.get(key) is int:
-			return false
-	if c.hp <= 0 or c.hp > 300 or c.energy < 0 or c.energy > 100:
-		return false
-	for key in ["elapsed_frames", "kills", "executes", "perfect"]:
-		if c[key] < 0 or c[key] > 10000000:
-			return false
-	if not c.get("cooldowns") is Dictionary:
-		return false
-	for key in ["q", "w", "e", "r"]:
-		var value: Variant = c.cooldowns.get(key)
-		if (not value is float and not value is int) or value < 0 or value > 10000:
-			return false
-	for definition in FBData.all().stage.rooms:
-		if definition.id == c.room_id:
-			return true
-	return false
+	return not FBProgressStore.checkpoint(progress.data.checkpoint).is_empty()
 
 func resume() -> void:
 	if not can_resume():
 		return
-	var c: Dictionary = progress.data.checkpoint.duplicate(true)
+	var c := FBProgressStore.checkpoint(progress.data.checkpoint)
 	restoring_checkpoint = true
 	start() # 先重建所有生命周期状态，再还原房间起点的纯数据。
 	for i in FBData.all().stage.rooms.size():
 		if FBData.all().stage.rooms[i].id == c.room_id:
 			room_index = i
-	restoring_checkpoint = false
 	upgrade = c.upgrade
 	elapsed_frames = int(c.elapsed_frames)
 	combat.kills = int(c.kills)
 	combat.executes = int(c.executes)
 	total_perfect = int(c.perfect)
 	enter_room({"hp":float(c.hp),"energy":float(c.energy),"yone_cooldowns":c.cooldowns})
+	if c.phase == "loot":
+		# 胜利待领取时恢复结算场景，不复活敌人；领取仍由原阶段门防止重复奖励。
+		for enemy in room.actors:
+			if enemy.kind != "hero":
+				enemy.hp = 0
+				enemy.dead_frames = 40
+		threats.clear_all()
+		set_phase("loot")
+	restoring_checkpoint = false
+	save_checkpoint(c.phase)

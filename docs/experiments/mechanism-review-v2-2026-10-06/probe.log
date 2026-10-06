@@ -1,0 +1,13 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+REVIEW_EXECUTE_DEPTH offered=true distance=50.9901962280273 hp_after=8.0 executes=0
+REVIEW_MISSING_UPGRADE can_resume=true
+SCRIPT ERROR: Invalid access to property or key 'upgrade' on a base object of type 'Dictionary'.
+          at: FBRun.resume (res://scripts/run_controller.gd:229)
+          GDScript backtrace (most recent call first):
+              [0] resume (res://scripts/run_controller.gd:229)
+              [1] probe (res://output/review-v2/probe.gd:34)
+REVIEW_AFTER_RESUME phase=cleared room=v0
+REVIEW_WAIT_SLOTS index=1,7 same_intent=true intent={ "move": (-0.729537, -0.683941) }
+REVIEW_BOSS_ARMOR superarmor=true after_launch=hit stun=30
+REVIEW_LOOT_RESUME before=loot after=fighting alive=4

@@ -9,11 +9,16 @@ var kills := 0
 var executes := 0
 var damage_taken := 0.0
 
+static func executable(hero: FBActor, target: FBActor) -> bool:
+	# 提示与触达共享资格：空中/无敌不可处决，纵深必须落在真实命中框内。
+	var box: Dictionary = FBData.action("execute", true).hitboxes[0]
+	return target.kind != "hero" and not target.is_dead() and target.hp / target.max_hp < 0.25 and target.invulnerability == 0 and not target.state.in_window("invuln") and not target.state.in_window("airborne") and target.launch_remaining == 0 and target.position.distance_to(hero.position) <= 62 and absf(target.position.y - hero.position.y) <= float(box.halfDepth) + roundf(target.radius * 0.78)
+
 func execute_target(hero: FBActor, actors: Array[FBActor]) -> FBActor:
 	var best: FBActor = null
 	var distance := 62.0
 	for actor in actors:
-		if actor.kind == "hero" or actor.is_dead() or actor.hp / actor.max_hp >= 0.25:
+		if not executable(hero, actor):
 			continue
 		var d := hero.position.distance_to(actor.position)
 		if d <= distance:
@@ -57,7 +62,7 @@ func resolve(actors: Array[FBActor]) -> void:
 func deal(attacker: FBActor, target: FBActor, box: Dictionary) -> void:
 	# 处决起手与命中之间目标可死亡、回血或离开；必须复核唯一目标与资格。
 	if attacker.kind == "hero" and attacker.state.id == "execute":
-		if target.get_instance_id() != attacker.execution_target_id or target.is_dead() or target.hp / target.max_hp >= 0.25 or target.position.distance_to(attacker.position) > 62:
+		if target.get_instance_id() != attacker.execution_target_id or not executable(attacker, target):
 			return
 	var damage: float = box.damage
 	if attacker.kind == "hero":

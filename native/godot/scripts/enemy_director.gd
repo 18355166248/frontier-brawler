@@ -8,6 +8,8 @@ var waiting: Dictionary = {}
 var granted_at: Dictionary = {}
 var visible_x := Vector2(-100000, 100000)
 var active_remote: FBActor
+var wait_slots: Dictionary = {}
+var wait_owners: Dictionary = {}
 
 static func is_remote(actor: FBActor) -> bool:
 	return actor.kind in ["archer", "mage"]
@@ -15,6 +17,24 @@ static func is_remote(actor: FBActor) -> bool:
 func update(actors: Array[FBActor], hero: FBActor, remote: FBActor = null) -> void:
 	tick_count += 1
 	active_remote = remote
+	# 死亡/失效或开始攻击即释放位置，其他等候者保持原位，避免全队每帧重排。
+	var occupied: Array[Vector2] = []
+	for key in wait_slots.keys():
+		var holder: FBActor = wait_owners[key].get_ref()
+		if not is_instance_valid(holder) or holder.is_dead() or tokens.has(holder):
+			wait_slots.erase(key)
+			wait_owners.erase(key)
+			continue
+		# 墙边裁切可能把不同格位压到同一点，只重排受影响的位置。
+		var point := (hero.position + waiting_offset(int(wait_slots[key]))).clamp(holder.arena_bounds.position, holder.arena_bounds.end)
+		var usable := point.distance_to(hero.position) >= hero.radius + holder.radius
+		for used in occupied:
+			usable = usable and point.distance_to(used) >= holder.radius * 2
+		if not usable:
+			wait_slots.erase(key)
+			wait_owners.erase(key)
+		else:
+			occupied.append(point)
 	# 一次攻击释放后才交还名额，防止同屏敌人同时打出不可反击的硬直链。
 	for actor in tokens.duplicate():
 		if is_instance_valid(actor) and actor.state.id not in ["idle", "move", "hit"]:
@@ -55,6 +75,8 @@ func update(actors: Array[FBActor], hero: FBActor, remote: FBActor = null) -> vo
 				remote_busy = remote_busy or is_remote(holder)
 			if remote_busy:
 				continue
+		wait_slots.erase(actor.get_instance_id())
+		wait_owners.erase(actor.get_instance_id())
 		tokens.append(actor)
 		waiting[actor.get_instance_id()] = 0
 		granted_at[actor.get_instance_id()] = tick_count
@@ -96,9 +118,28 @@ func intent(actor: FBActor, hero: FBActor) -> Dictionary:
 	var standoff: float = 68.0 if actor.kind == "grunt" else float(profile.standoff)
 	if actor.kind == "grunt":
 		# 等候小兵使用不同纵深/前后排位置；获攻击名额后仍沿用直接近身，保留扫群手感。
-		var index := actor.get_index() - 1
-		var side := 1.0 if actor.position.x >= hero.position.x else -1.0
-		var offset := Vector2(side * (standoff + (int(index / 3) % 2) * 22), ((index % 3) - 1) * 30)
+		var key := actor.get_instance_id()
+		if not wait_slots.has(key):
+			var best := -1
+			var nearest := INF
+			for slot in 18:
+				if wait_slots.values().has(slot):
+					continue
+				var point := (hero.position + waiting_offset(slot)).clamp(actor.arena_bounds.position, actor.arena_bounds.end)
+				var usable := point.distance_to(hero.position) >= hero.radius + actor.radius
+				for held in wait_slots.values():
+					var used := (hero.position + waiting_offset(int(held))).clamp(actor.arena_bounds.position, actor.arena_bounds.end)
+					usable = usable and point.distance_to(used) >= actor.radius * 2
+				if not usable:
+					continue
+				if point.distance_squared_to(actor.position) < nearest:
+					nearest = point.distance_squared_to(actor.position)
+					best = slot
+			if best < 0:
+				return {} # 超出房间容量时原地等候，不复用已有位置。
+			wait_slots[key] = best
+			wait_owners[key] = weakref(actor)
+		var offset := waiting_offset(int(wait_slots[key]))
 		var destination := (hero.position + offset).clamp(actor.arena_bounds.position, actor.arena_bounds.end)
 		var to_slot := destination - actor.position
 		return {"move": to_slot.normalized() * minf(1.0, to_slot.length() / 18)}
@@ -130,3 +171,8 @@ func separate(actors: Array[FBActor], arena: Rect2) -> void:
 			b.position += push
 	for actor in actors:
 		actor.position = actor.position.clamp(arena.position, arena.end)
+
+static func waiting_offset(slot: int) -> Vector2:
+	var side := 1.0 if int(slot / 3) % 2 == 0 else -1.0
+	# 内圈仍可被近战扫到；后排按角色体型拉开，避免唯一格位仍视觉叠成一团。
+	return Vector2(side * (68 + int(slot / 6) * 72), ((slot % 3) - 1) * 50)

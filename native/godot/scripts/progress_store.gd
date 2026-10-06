@@ -12,6 +12,39 @@ var write_failed := false
 var future_version := false
 var data := {"version": 2, "completions": 0, "best_frames": 0, "unlocked": [], "equipped": "", "muted": false, "reduced_motion": false, "checkpoint": {}}
 
+static func checkpoint(raw: Variant) -> Dictionary:
+	# 保存读取、继续按钮和恢复共用一份校验，不能先重建场景再发现缺字段。
+	if not raw is Dictionary or raw.is_empty():
+		return {}
+	for key in ["room_id", "upgrade", "hp", "energy", "elapsed_frames", "kills", "executes", "perfect", "cooldowns"]:
+		if not raw.has(key):
+			return {}
+	if not raw.room_id is String or not raw.upgrade is String or raw.upgrade not in ["", "offense", "arcane", "guardian"]:
+		return {}
+	for key in ["hp", "energy", "elapsed_frames", "kills", "executes", "perfect"]:
+		if (not raw[key] is float and not raw[key] is int) or not is_finite(float(raw[key])):
+			return {}
+	if raw.hp <= 0 or raw.hp > 300 or raw.energy < 0 or raw.energy > 100:
+		return {}
+	for key in ["elapsed_frames", "kills", "executes", "perfect"]:
+		if raw[key] < 0 or raw[key] > 10000000 or float(raw[key]) != int(raw[key]):
+			return {}
+	if not raw.cooldowns is Dictionary:
+		return {}
+	for key in ["q", "w", "e", "r"]:
+		var value: Variant = raw.cooldowns.get(key)
+		if (not value is float and not value is int) or not is_finite(float(value)) or value < 0 or value > 10000 or float(value) != int(value):
+			return {}
+	var phase: Variant = raw.get("phase", "entry") # 兼容已发布的版本2房间入口档。
+	if phase not in ["entry", "loot"]:
+		return {}
+	for definition in FBData.all().stage.rooms:
+		if definition.id == raw.room_id and (phase != "loot" or definition.kind == "boss"):
+			var result: Dictionary = raw.duplicate(true)
+			result.phase = phase
+			return result
+	return {}
+
 func decode(file_path: String) -> Dictionary:
 	if not FileAccess.file_exists(file_path):
 		return {}
@@ -47,6 +80,11 @@ func decode(file_path: String) -> Dictionary:
 			return {}
 	if result.equipped != "" and not result.unlocked.has(result.equipped):
 		return {}
+	if not result.checkpoint.is_empty():
+		var normalized := checkpoint(result.checkpoint)
+		if normalized.is_empty():
+			return {} # 主档检查点损坏时尝试上一份完整备份，而不是展示无法恢复的继续按钮。
+		result.checkpoint = normalized
 	return result
 
 func load_progress() -> void:

@@ -229,6 +229,12 @@ func lock_direction(movement: Vector2) -> void:
 func launch(frames: int, height: float) -> void:
 	if is_dead():
 		return
+	# Boss 霸体招式保留出招；非霸体窗口允许短控制，普通敌人仍完整击飞。
+	if kind == "boss":
+		if state.definition().get("superArmor", false):
+			return
+		frames = mini(frames, 12)
+		height = minf(height, 18)
 	launch_duration = frames
 	launch_remaining = frames
 	launch_height = height

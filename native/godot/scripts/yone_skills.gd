@@ -137,6 +137,8 @@ func on_hit(target: FBActor) -> void:
 			shield = maxf(shield, minf(w.shield_cap, w.shield_base + (cast_hits - 1) * w.shield_per_extra))
 			shield_remaining = int(w.shield_duration)
 		"fateSever":
+			# 霸体招式保留原预警位置；伤害已结算，只跳过聚拢和击飞。
+			if target.kind == "boss" and target.state.definition().get("superArmor", false): return
 			if r_slots.has(target.get_instance_id()):
 				target.position = r_slots[target.get_instance_id()]
 				target.previous_position = target.position # 聚拢用程序风线，避免敌人身体横穿整屏。

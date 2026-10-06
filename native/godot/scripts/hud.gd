@@ -160,7 +160,7 @@ func show_phase(run: FBRun) -> void:
 		add_label("通关 %d 次" % run.completions + (" · 最快 %02d:%02d" % [int(run.progress.data.best_frames) / 3600, (int(run.progress.data.best_frames) / 60) % 60] if run.progress.data.best_frames > 0 else ""), 15, MUTED, false)
 		add_button("踏入雾中    →", "start", true)
 		if run.can_resume():
-			add_button("从房间起点继续", "resume")
+			add_button("继续领取遗物" if FBProgressStore.checkpoint(run.progress.data.checkpoint).phase == "loot" else "从房间起点继续", "resume")
 		# 遗物另列在右侧，不让继续按钮和三件遗物把首页操作挤出画布。
 		var primary := content
 		if not run.progress.data.unlocked.is_empty():
