@@ -30,13 +30,18 @@ func update(actors: Array[FBActor], hero: FBActor, remote: FBActor = null) -> vo
 		if actor.kind != "hero" and not actor.is_dead() and actor.attack_cooldown == 0 and not tokens.has(actor):
 			var key := actor.get_instance_id()
 			waiting[key] = int(waiting.get(key, 0)) + 1
-			if actor.stun > 0 or actor.state.id not in ["idle", "move"]:
+			if actor.engagement_delay > 0 or actor.stun > 0 or actor.state.id not in ["idle", "move"]:
 				continue
 			if is_remote(actor) and (actor.position.x < visible_x.x or actor.position.x > visible_x.y):
 				continue
 			candidates.append(actor)
 	# 等待时间优先，距离仅用于平局；远程不能因为站得远而永远拿不到攻击名额。
 	candidates.sort_custom(func(a: FBActor, b: FBActor):
+		# Boss 最长等候 90 帧后优先获取一个名额，护卫仍共享另一个名额。
+		var ap: bool = a.kind == "boss" and int(waiting.get(a.get_instance_id(), 0)) >= 90
+		var bp: bool = b.kind == "boss" and int(waiting.get(b.get_instance_id(), 0)) >= 90
+		if ap != bp:
+			return ap
 		var aw: int = waiting.get(a.get_instance_id(), 0)
 		var bw: int = waiting.get(b.get_instance_id(), 0)
 		return aw > bw if aw != bw else a.position.distance_squared_to(hero.position) < b.position.distance_squared_to(hero.position))
@@ -56,7 +61,7 @@ func update(actors: Array[FBActor], hero: FBActor, remote: FBActor = null) -> vo
 
 func intent(actor: FBActor, hero: FBActor) -> Dictionary:
 	# 玩家取消窗口不等于 AI 可以重复起手；敌人先完成收招再归还名额和进入冷却。
-	if actor.state.id not in ["idle", "move"]:
+	if actor.engagement_delay > 0 or actor.state.id not in ["idle", "move"]:
 		return {}
 	var delta := hero.position - actor.position
 	var distance := maxf(0.001, delta.length())
@@ -76,11 +81,27 @@ func intent(actor: FBActor, hero: FBActor) -> Dictionary:
 			actor.facing = 1 if delta.x > 0 else -1
 		if is_remote(actor) and (actor.position.x < visible_x.x or actor.position.x > visible_x.y):
 			return {"move": delta / distance}
+		# 一阶段先教重砸；二阶段轮换近身爆发、重砸、锁方向冲锋，避免只改提示。
+		if actor.kind == "boss" and actor.boss_phase == 2:
+			var next := (actor.attack_serial + 1) % 3
+			var action := "bossCharge" if next == 0 or (next == 1 and distance > 125) else ("bossNova" if next == 1 else "bossSlam")
+			var reach := 360.0 if action == "bossCharge" else (125.0 if action == "bossNova" else 96.0)
+			if distance <= reach and absf(delta.y) < (60 if action == "bossCharge" else 50):
+				return {"attack": true, "target": hero.position, "action": action}
+			return {"move": delta / distance}
 		if distance <= profile.reach and absf(delta.y) < (140 if actor.kind == "mage" else (40 if actor.kind == "boss" else 22)):
 			return {"attack": true, "target": hero.position.clamp(actor.arena_bounds.position + Vector2(44, 18), actor.arena_bounds.end - Vector2(44, 18)) if actor.kind == "mage" else hero.position}
 		return {"move": delta / distance}
 	# 小兵等候圈靠近刀锋覆盖范围，方便一刀扫中多人；攻击资格仍由两个名额控制。
 	var standoff: float = 68.0 if actor.kind == "grunt" else float(profile.standoff)
+	if actor.kind == "grunt":
+		# 等候小兵使用不同纵深/前后排位置；获攻击名额后仍沿用直接近身，保留扫群手感。
+		var index := actor.get_index() - 1
+		var side := 1.0 if actor.position.x >= hero.position.x else -1.0
+		var offset := Vector2(side * (standoff + (int(index / 3) % 2) * 22), ((index % 3) - 1) * 30)
+		var destination := (hero.position + offset).clamp(actor.arena_bounds.position, actor.arena_bounds.end)
+		var to_slot := destination - actor.position
+		return {"move": to_slot.normalized() * minf(1.0, to_slot.length() / 18)}
 	if not is_remote(actor) and distance < standoff * 0.85:
 		return {"move": -delta / distance}
 	if distance > standoff * 1.25:

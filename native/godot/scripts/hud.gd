@@ -22,6 +22,7 @@ var _run: FBRun
 var _transition: Tween
 var skill_buttons: Dictionary = {}
 var skill_status: Label
+var remaining: Label
 
 func _ready() -> void:
 	mouse_filter = Control.MOUSE_FILTER_IGNORE
@@ -34,6 +35,7 @@ func _ready() -> void:
 	title = label_at(top, "Title", "行 者", Vector2(40, 26), Vector2(250, 28), 18, PAPER)
 	health = bar_at(top, "Health", Rect2(40, 63, 232, 8), Color("cda17e"))
 	energy = bar_at(top, "Energy", Rect2(40, 78, 164, 4), Color("79b9b6"))
+	remaining = label_at(top, "Remaining", "", Vector2(40, 118), Vector2(290, 25), 13, MUTED)
 	status = label_at(top, "Status", "", Vector2(40, 91), Vector2(300, 25), 13, MUTED)
 	var pause_button := button_at(top, "Pause", "暂停", Rect2(1172, 30, 70, 36), "pause")
 	pause_button.focus_mode = Control.FOCUS_NONE
@@ -87,6 +89,7 @@ func refresh(run: FBRun) -> void:
 	health.max_value = h.max_hp
 	health.value = h.hp
 	energy.value = h.energy
+	remaining.text = "剩余敌人 %d" % run.room.alive_enemies() if run.phase == "fighting" else ""
 	title.text = "行 者   /   " + run.room.presentation_title()
 	status.text = "生命 %d / %d     剑意 %d" % [h.hp, h.max_hp, h.energy]
 	var names := {"q": "1 蓄风刺击", "w": "2 护盾横扫", "e": "3 灵体出击", "r": "4 封命斩"}
@@ -109,12 +112,17 @@ func refresh(run: FBRun) -> void:
 	# 教学提示绑定房间身份，新增法师房不会把奖励和 Boss 文案错位或越界。
 	var hints := {"v0": "向前踏入雾中  →", "v1": "连按 J 衔接出刀，K 闪避", "v2": "避开箭线 · 上下走位或跳跃，突进打断弓手", "vm": "离开白灯落点 · 趁施法收势切入", "vr": "片刻休整，选择一份馈赠", "v3": "留意守卫举刃，离开地面预警"}
 	# 清场提示优先于刚结束的连招通知，避免门已开却仍显示战斗指示。
+	if run.progress.write_failed:
+		notice = "进度保存失败 · 当前游戏可继续"
+		notice_time = 1
 	hint.text = run.room.exit_cue() if run.phase == "cleared" and run.room.redesigned() else (notice if notice_time > 0 else ("前路已开  ·  继续向右 →" if run.phase == "cleared" and run.room_index > 0 else str(hints.get(run.room.room_id, "继续向前"))))
 	if notice_time <= 0 and (run.phase != "cleared" or not run.room.redesigned()):
 		for actor in run.room.actors:
 			if actor.kind != "hero" and actor.launch_remaining > 0:
 				hint.text = "稍候接 2 横扫  ·  J / 跳劈等敌人落地"
 				break
+	if run.room.room_id == "v3" and boss == null and run.room.alive_enemies() > 0:
+		hint.text = "守卫已倒下 · 清理剩余护卫 %d" % run.room.alive_enemies()
 	if run.stress:
 		hint.text = "演武场  ·  五十人同屏"
 	var in_game := not run.paused and run.phase in ["fighting", "cleared"]
@@ -149,8 +157,27 @@ func show_phase(run: FBRun) -> void:
 		add_label("M I S T W A R D", 18, GOLD, false)
 		add_label("雾 渡", 78, PAPER, false)
 		add_label("第一章   /   雾隐古道", 23, PAPER, false)
-		add_label("松风入夜，长路无声。\n执剑穿过古道，叩开山门。", 17, MUTED, false)
+		add_label("通关 %d 次" % run.completions + (" · 最快 %02d:%02d" % [int(run.progress.data.best_frames) / 3600, (int(run.progress.data.best_frames) / 60) % 60] if run.progress.data.best_frames > 0 else ""), 15, MUTED, false)
 		add_button("踏入雾中    →", "start", true)
+		if run.can_resume():
+			add_button("从房间起点继续", "resume")
+		# 遗物另列在右侧，不让继续按钮和三件遗物把首页操作挤出画布。
+		var primary := content
+		if not run.progress.data.unlocked.is_empty():
+			content = VBoxContainer.new()
+			content.position = Vector2(860, 210)
+			content.size.x = 330
+			content.add_theme_constant_override("separation", 14)
+			overlay.add_child(content)
+			add_label("携带一件遗物", 22, PAPER, false)
+			for unlocked in run.progress.data.unlocked:
+				add_button(("已携带 · " if unlocked == run.progress.data.equipped else "携带 · ") + FBProgressStore.RELICS[unlocked].label, "equip:" + unlocked)
+			var relic: String = run.progress.data.equipped
+			if FBProgressStore.RELICS.has(relic):
+				add_label(FBProgressStore.RELICS[relic].description, 14, MUTED, false)
+		content = primary
+		if run.progress.write_failed or run.progress.future_version:
+			add_label("存档无法更新 · 当前游戏可继续", 14, GOLD, false)
 		add_label("WASD 移动 · J 出刀 · K 闪避\nL 跳跃 · U 剑气 · I 处决\n1 蓄风 · 2 护盾 · 3 灵体/回归 · 4 封命", 14, MUTED, false)
 	else:
 		var center := CenterContainer.new()
@@ -172,13 +199,13 @@ func show_phase(run: FBRun) -> void:
 					var data: Dictionary = FBData.all().upgrades[id]
 					add_card(cards, data.label, data.description.replace("\n", "\n\n"), id)
 			"loot":
-				add_label("带走一件遗物，纪念这次旅途。", 17)
+				add_label("带走一件遗物，下次出行生效。", 17)
 				var cards := HBoxContainer.new()
 				cards.add_theme_constant_override("separation", 18)
 				content.add_child(cards)
-				add_card(cards, "疾风双刃", "刃上仍有风声。\n\n通关纪念", "wind-sabers")
-				add_card(cards, "斥候轻甲", "松针落在旧甲之上。\n\n通关纪念", "scout-coat")
-				add_card(cards, "处决护符", "一缕残光，系在剑柄。\n\n通关纪念", "execution-charm")
+				add_card(cards, "疾风双刃", FBProgressStore.RELICS["wind-sabers"].description, "wind-sabers")
+				add_card(cards, "斥候轻甲", FBProgressStore.RELICS["scout-coat"].description, "scout-coat")
+				add_card(cards, "处决护符", FBProgressStore.RELICS["execution-charm"].description, "execution-charm")
 			"dead", "complete":
 				add_label(run.summary(), 18)
 				add_button("再赴古道", "start", true)
@@ -186,6 +213,7 @@ func show_phase(run: FBRun) -> void:
 			"paused":
 				add_label("山风未歇，等你归来。", 17)
 				add_button("继续前行", "pause", true)
+				add_button("减少震屏：" + ("开" if run.progress.data.reduced_motion else "关"), "reduce_motion")
 				add_button("重新出发", "start")
 				add_button("返回山门", "home")
 	if _transition and _transition.is_running():

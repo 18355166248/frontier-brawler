@@ -124,7 +124,8 @@ func _process(delta: float) -> void:
 	enemy_body.region_rect = Rect2(rect[0], rect[1], rect[2], rect[3])
 	enemy_root.scale = Vector2(actor.facing * 0.30, 0.30)
 	enemy_root.position.y = -render_lift
-	modulate.a = 1.0
+	# 尸体先完整展示两秒，再用一秒淡出；死亡动画与清场判断继续使用原逻辑。
+	modulate.a = clampf((180.0 - actor.dead_frames) / 60.0, 0, 1) if actor.is_dead() else 1.0
 	queue_redraw()
 
 func _draw() -> void:

@@ -3,6 +3,7 @@ extends Node2D
 
 @export_enum("hero", "grunt", "archer", "mage", "boss") var kind := "hero"
 var attack_serial := 0
+var execution_target_id := 0
 var attack_origin := Vector2.ZERO
 var attack_target := Vector2.ZERO
 var attack_direction := Vector2.RIGHT
@@ -27,6 +28,8 @@ var dead_frames := 0
 var damage_multiplier := 1.0
 var skill_multiplier := 1.0
 var skill_cost_multiplier := 1.0
+var cooldown_multiplier := 1.0
+var engagement_delay := 0
 var heal_bonus := 0.0
 var perfect_count := 0
 # 只供表现层读取，由同一逻辑 tick 推进；暂停/命中定格时不会继续下落。
@@ -81,6 +84,7 @@ func tick(input: Dictionary, execute_target: FBActor = null) -> void:
 		state.capture(input)
 	dash_cooldown = maxi(0, dash_cooldown - 1)
 	jump_cooldown = maxi(0, jump_cooldown - 1)
+	engagement_delay = maxi(0, engagement_delay - 1)
 	attack_cooldown = maxi(0, attack_cooldown - 1)
 	retreat_cooldown = maxi(0, retreat_cooldown - 1)
 	invulnerability = maxi(0, invulnerability - 1)
@@ -109,7 +113,7 @@ func tick(input: Dictionary, execute_target: FBActor = null) -> void:
 		attack_target = input.get("target", position + Vector2(facing * 240, 0))
 		attack_direction = (attack_target - attack_origin).normalized()
 		locomotion_velocity = Vector2.ZERO
-		state.change(str(FBData.all().enemies[kind].attackAction))
+		state.change(str(input.get("action", FBData.all().enemies[kind].attackAction)))
 	var motion: Array = state.definition().get("motion", [])
 	if state.frame < motion.size() and motion[state.frame] != 0:
 		var direction := locked_direction if state.id in ["dash", "jump"] else Vector2(facing, 0)
@@ -180,6 +184,7 @@ func apply_player_intent(movement: Vector2, target: FBActor) -> void:
 	if state.has_buffer("execute") and not airborne and is_instance_valid(target):
 		if absf(target.position.x - position.x) > 1:
 			facing = 1 if target.position.x > position.x else -1
+		execution_target_id = target.get_instance_id()
 		state.change("execute")
 		state.consume("execute")
 	elif state.has_buffer("dash") and not airborne and state.id != "dash" and dash_cooldown == 0:
@@ -206,10 +211,10 @@ func apply_player_intent(movement: Vector2, target: FBActor) -> void:
 		# 连段起手可重新瞄准，生效帧内保持面向锁定，视觉转身不改变正在结算的命中盒。
 		face_movement(movement)
 		var chain: Array = state.definition().get("cancelInto", [])
-		if not chain.is_empty() and state.in_window("perfectCancelWindow"):
-			state.perfect_pending = true
+		var perfect := not chain.is_empty() and state.in_window("perfectCancelWindow")
+		if perfect:
 			perfect_count += 1
-		state.change(str(chain[0]) if not chain.is_empty() else "slash")
+		state.change(str(chain[0]) if not chain.is_empty() else "slash", perfect)
 		state.consume("attack")
 
 func face_movement(movement: Vector2) -> void:

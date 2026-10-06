@@ -47,6 +47,48 @@
       "cancelable": false,
       "hitboxes": [],
       "releaseFrame": 54
+    },
+    "bossCharge": {
+      "id": "bossCharge",
+      "frames": 24,
+      "loop": false,
+      "cancelable": false,
+      "hitboxes": [],
+      "motion": [
+        -0.5,
+        -0.5,
+        -0.4,
+        -0.4,
+        -0.3,
+        -0.3,
+        -0.2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "telegraph": {
+        "shape": {
+          "kind": "line",
+          "length": 360,
+          "width": 56
+        },
+        "until": 24
+      },
+      "next": "bossRush"
     }
   },
   "rooms": [
@@ -152,5 +194,41 @@
         "west": "vr"
       }
     }
-  ]
+  ],
+  "upgrades": {
+    "offense": {
+      "label": "锋芒",
+      "description": "普攻伤害 +12%",
+      "stats": {
+        "damageMultiplier": 1.12,
+        "skillDamageMultiplier": 1,
+        "skillCostMultiplier": 1,
+        "executeHealBonus": 0,
+        "maxHpMultiplier": 1
+      }
+    },
+    "arcane": {
+      "label": "玄术",
+      "description": "技能伤害 +15%\n1–4 冷却 -15% · U 消耗 -15%",
+      "stats": {
+        "damageMultiplier": 1,
+        "skillDamageMultiplier": 1.15,
+        "skillCostMultiplier": 0.85,
+        "executeHealBonus": 0,
+        "maxHpMultiplier": 1,
+        "cooldownMultiplier": 0.85
+      }
+    },
+    "guardian": {
+      "label": "守元",
+      "description": "最大生命 +15%\n处决回复 +4",
+      "stats": {
+        "damageMultiplier": 1,
+        "skillDamageMultiplier": 1,
+        "skillCostMultiplier": 1,
+        "executeHealBonus": 4,
+        "maxHpMultiplier": 1.15
+      }
+    }
+  }
 }

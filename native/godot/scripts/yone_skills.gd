@@ -69,7 +69,7 @@ func try_intent(movement: Vector2) -> bool:
 		cast_hits = 0
 		owner.state.perfect_pending = false
 		owner.locomotion_velocity = Vector2.ZERO
-		cooldowns[key] = int(FBData.yone()[key].cooldown)
+		cooldowns[key] = maxi(1, roundi(float(FBData.yone()[key].cooldown) * owner.cooldown_multiplier))
 		match key:
 			"q":
 				if q_stacks == 2:

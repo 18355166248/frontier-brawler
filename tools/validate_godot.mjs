@@ -14,6 +14,10 @@ for (const [args, marker] of [
   [['--headless', '--path', project, '--script', 'tests/yone_mvp_checks.gd'], 'YONE_MVP_CHECKS_PASS'],
   [['--headless', '--path', project, '--script', 'tests/environment_checks.gd'], 'ENVIRONMENT_CHECKS_PASS'],
   [['--headless', '--path', project, '--script', 'tests/enemy_roster_checks.gd'], 'ENEMY_ROSTER_CHECKS_PASS'],
+  [['--headless', '--path', project, '--script', 'tests/mechanism_checks.gd'], 'MECHANISM_CHECKS_PASS'],
+  [['--headless', '--path', project, '--script', 'tests/progress_checks.gd'], 'PROGRESS_CHECKS_PASS'],
+  [['--headless', '--path', project, '--script', 'tests/progress_roundtrip.gd', '--', '--write-progress'], 'PROGRESS_WRITE_PASS'],
+  [['--headless', '--path', project, '--script', 'tests/progress_roundtrip.gd', '--', '--progress-path=res://output/progress-roundtrip/data.json'], 'PROGRESS_READ_PASS'],
 ]) {
   const result = spawnSync(binary, args, { encoding: 'utf8', timeout: 120000, maxBuffer: 8 * 1024 * 1024 });
   const output = (result.stdout || '') + (result.stderr || '');

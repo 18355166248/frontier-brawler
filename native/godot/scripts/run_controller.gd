@@ -4,6 +4,7 @@ extends Node
 signal phase_changed(phase: String)
 signal impact(target: FBActor, damage: float, killed: bool, perfect: bool)
 signal boss_changed(actor: FBActor)
+signal shield_absorbed(actor: FBActor, amount: float)
 var phase := "home"
 var room: FBRoom
 var combat := FBCombat.new()
@@ -17,7 +18,17 @@ var stress := false
 var paused := false
 var completions := 0
 var total_perfect := 0
+var restoring_checkpoint := false
+var progress := FBProgressStore.new()
 var threats: FBEnemyThreats
+
+func _ready() -> void:
+	for arg in OS.get_cmdline_user_args():
+		if arg.begins_with("--progress-path="):
+			progress.path = arg.trim_prefix("--progress-path=")
+			progress.persistent = true
+	progress.load_progress()
+	completions = int(progress.data.completions)
 
 func start(stress_mode := false) -> void:
 	stress = stress_mode
@@ -29,6 +40,7 @@ func start(stress_mode := false) -> void:
 	loot = ""
 	combat = FBCombat.new()
 	combat.hit.connect(func(a: FBActor, d: float, k: bool, p: bool): impact.emit(a, d, k, p))
+	combat.shielded.connect(func(a: FBActor, d: float): shield_absorbed.emit(a, d))
 	combat.phase_shift.connect(func(a: FBActor): boss_changed.emit(a))
 	enter_room({})
 
@@ -50,12 +62,18 @@ func enter_room(profile: Dictionary) -> void:
 	var definition: Dictionary = FBData.all().stage.rooms[room_index]
 	room.populate(definition, profile, 50 if stress else 0)
 	apply_upgrade()
+	# 继续前可能在首页换下轻甲，恢复生命不能超过本次携带装备的上限。
+	room.hero.hp = minf(room.hero.hp, room.hero.max_hp)
+	if profile.is_empty():
+		room.hero.hp = room.hero.max_hp
+	if not stress and not restoring_checkpoint:
+		save_checkpoint()
 	if stress:
 		# 压力模式只测负载；角色持续存活，不写正式进度。
 		for actor in room.actors:
 			actor.hp = 1000000
 			actor.max_hp = 1000000
-	if definition.kind == "reward":
+	if definition.kind == "reward" and upgrade.is_empty():
 		set_phase("reward")
 	elif room.alive_enemies() == 0:
 		room.door_open = true
@@ -103,6 +121,9 @@ func step(input: Dictionary) -> void:
 		if clear_delay <= 0:
 			if FBData.all().stage.rooms[room_index].kind == "boss":
 				set_phase("loot")
+			elif room.room_id == "v1" and upgrade.is_empty():
+				# 首战后即获得构筑，使后续两场群战也能体验成长；旧休整房不重复发奖。
+				set_phase("reward")
 			else:
 				room.door_open = true
 				set_phase("cleared")
@@ -119,7 +140,7 @@ func advance_room() -> void:
 	enter_room(profile)
 
 func choose_upgrade(id: String) -> void:
-	if phase != "reward" or not FBData.all().upgrades.has(id):
+	if phase != "reward" or not upgrade.is_empty() or not FBData.all().upgrades.has(id):
 		return
 	upgrade = id
 	var previous_max := room.hero.max_hp
@@ -129,23 +150,85 @@ func choose_upgrade(id: String) -> void:
 	set_phase("cleared")
 
 func apply_upgrade() -> void:
+	var stats: Dictionary = FBData.all().upgrades[upgrade if not upgrade.is_empty() else "offense"].stats.duplicate()
 	if upgrade.is_empty():
-		return
-	var stats: Dictionary = FBData.all().upgrades[upgrade].stats
+		stats = {"maxHpMultiplier":1.0,"damageMultiplier":1.0,"skillDamageMultiplier":1.0,"skillCostMultiplier":1.0,"executeHealBonus":0.0}
 	var hero := room.hero
-	hero.max_hp = 160 * stats.maxHpMultiplier
+	hero.max_hp = (176 if progress.data.equipped == "scout-coat" and not stress else 160) * stats.maxHpMultiplier
 	hero.damage_multiplier = stats.damageMultiplier
 	hero.skill_multiplier = stats.skillDamageMultiplier
 	hero.skill_cost_multiplier = stats.skillCostMultiplier
 	hero.heal_bonus = stats.executeHealBonus
+	hero.cooldown_multiplier = float(stats.get("cooldownMultiplier", 1.0))
+	if not stress:
+		if progress.data.equipped == "wind-sabers":
+			hero.damage_multiplier *= 1.08
+		elif progress.data.equipped == "execution-charm":
+			hero.heal_bonus += 6
 
 func claim_loot(id: String) -> void:
 	if phase != "loot" or id not in ["wind-sabers", "scout-coat", "execution-charm"]:
 		return
-	# 首关演示只领取战利品并结算；装备生效与跨局存档留给全量迁移。
+	# 领取只在 loot 阶段执行一次；遗物下次出行生效，不在结算时改当前战斗数值。
 	loot = id
 	completions += 1
+	progress.data.completions = completions
+	if not progress.data.unlocked.has(id):
+		progress.data.unlocked.append(id)
+	progress.data.equipped = id
+	var best: int = int(progress.data.best_frames)
+	progress.data.best_frames = elapsed_frames if best == 0 else mini(best, elapsed_frames)
+	progress.data.checkpoint = {}
+	progress.save_progress()
 	set_phase("complete")
 
 func summary() -> String:
 	return "用时 %02d:%02d   击败 %d\n完美取消 %d   处决 %d" % [elapsed_frames / 3600, (elapsed_frames / 60) % 60, combat.kills, total_perfect + room.hero.perfect_count, combat.executes]
+
+func save_checkpoint() -> void:
+	# 检查点只在房间入口保存，恢复时整房重置敌人，不序列化招式或临时引用。
+	var h := room.hero
+	progress.data.checkpoint = {"room_id": room.room_id, "hp": h.hp, "energy": h.energy, "upgrade": upgrade,
+		"elapsed_frames": elapsed_frames, "kills": combat.kills, "executes": combat.executes, "perfect": total_perfect,
+		"cooldowns": h.skills.cooldowns.duplicate()}
+	progress.save_progress()
+
+func can_resume() -> bool:
+	var c: Dictionary = progress.data.checkpoint
+	if c.is_empty() or not c.get("room_id", "") is String or c.get("upgrade", "") not in ["", "offense", "arcane", "guardian"]:
+		return false
+	for key in ["hp", "energy", "elapsed_frames", "kills", "executes", "perfect"]:
+		if not c.get(key) is float and not c.get(key) is int:
+			return false
+	if c.hp <= 0 or c.hp > 300 or c.energy < 0 or c.energy > 100:
+		return false
+	for key in ["elapsed_frames", "kills", "executes", "perfect"]:
+		if c[key] < 0 or c[key] > 10000000:
+			return false
+	if not c.get("cooldowns") is Dictionary:
+		return false
+	for key in ["q", "w", "e", "r"]:
+		var value: Variant = c.cooldowns.get(key)
+		if (not value is float and not value is int) or value < 0 or value > 10000:
+			return false
+	for definition in FBData.all().stage.rooms:
+		if definition.id == c.room_id:
+			return true
+	return false
+
+func resume() -> void:
+	if not can_resume():
+		return
+	var c: Dictionary = progress.data.checkpoint.duplicate(true)
+	restoring_checkpoint = true
+	start() # 先重建所有生命周期状态，再还原房间起点的纯数据。
+	for i in FBData.all().stage.rooms.size():
+		if FBData.all().stage.rooms[i].id == c.room_id:
+			room_index = i
+	restoring_checkpoint = false
+	upgrade = c.upgrade
+	elapsed_frames = int(c.elapsed_frames)
+	combat.kills = int(c.kills)
+	combat.executes = int(c.executes)
+	total_perfect = int(c.perfect)
+	enter_room({"hp":float(c.hp),"energy":float(c.energy),"yone_cooldowns":c.cooldowns})

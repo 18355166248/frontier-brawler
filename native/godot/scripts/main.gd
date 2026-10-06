@@ -14,6 +14,8 @@ func _ready() -> void:
 	run.room = room
 	run.phase_changed.connect(_phase_changed)
 	run.impact.connect(_impact)
+	run.shield_absorbed.connect(func(_actor: FBActor, amount: float):
+		hud.announce("护盾吸收 %d" % roundi(amount), 0.6))
 	run.boss_changed.connect(func(_actor: FBActor):
 		hud.announce("守卫破阵 · 留意连续攻击")
 		audio.play("boss"))
@@ -21,7 +23,13 @@ func _ready() -> void:
 	hud.command.connect(_command)
 	room.populated.connect(func():
 		effects.reset()
+		hud.notice = ""
+		hud.notice_time = 0.0
 		foot_distance = 0.0)
+	audio.muted = run.progress.data.muted
+	hud.get_node("Top/Mute").set_pressed_no_signal(audio.muted)
+	hud.get_node("Top/Mute").text = "静音" if audio.muted else "声音"
+	effects.reduced_motion = run.progress.data.reduced_motion
 	show_home()
 	var args := OS.get_cmdline_user_args()
 	if "--stress" in args:
@@ -101,6 +109,13 @@ func _command(id: String) -> void:
 		if controls.enabled:
 			controls.pending[id] = true
 		return
+	if id.begins_with("equip:") and run.phase == "home":
+		var relic := id.trim_prefix("equip:")
+		if run.progress.data.unlocked.has(relic):
+			run.progress.data.equipped = relic
+			run.progress.save_progress()
+			hud.show_phase(run)
+		return
 	match id:
 		"start", "stress":
 			effects.reset()
@@ -108,6 +123,14 @@ func _command(id: String) -> void:
 			controls.clear()
 			frame_samples.clear()
 			run.start(id == "stress")
+		"resume":
+			effects.reset()
+			run.resume()
+		"reduce_motion":
+			effects.reduced_motion = not effects.reduced_motion
+			run.progress.data.reduced_motion = effects.reduced_motion
+			run.progress.save_progress()
+			hud.show_phase(run)
 		"pause":
 			toggle_pause()
 		"home":
@@ -116,6 +139,8 @@ func _command(id: String) -> void:
 			show_home()
 		"mute", "unmute":
 			audio.muted = id == "mute"
+			run.progress.data.muted = audio.muted
+			run.progress.save_progress()
 		"offense", "arcane", "guardian":
 			run.choose_upgrade(id)
 		_:

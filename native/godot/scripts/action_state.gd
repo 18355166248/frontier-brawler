@@ -12,10 +12,12 @@ const BUFFER_FRAMES := 8
 func definition() -> Dictionary:
 	return FBData.action(id, hero)
 
-func change(next: String) -> void:
+func change(next: String, perfect := false) -> void:
 	id = next
 	frame = 0
 	hit_targets.clear()
+	# 完美属性属于本次攻击，换动作即失效；群体命中期间不按目标消耗。
+	perfect_pending = perfect
 
 func can_interrupt() -> bool:
 	var d := definition()

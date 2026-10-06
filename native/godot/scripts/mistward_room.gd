@@ -132,7 +132,10 @@ func populate(definition: Dictionary, profile: Dictionary, stress_count := 0) ->
 			else:
 				x = arena.position.x + arena.size.x * 0.45 + floorf(i / 3.0) * 92 + (i % 3) * 18
 				y = arena.get_center().y + ((i % 3) - 1) * 36
-		spawn(kind, Vector2(x, y))
+		var enemy := spawn(kind, Vector2(x, y))
+		# 总人数保持不变，后排按 0.75 秒间隔接敌，避免进房瞬间所有立绘挤成一团。
+		if stress_count == 0 and definition.kind == "normal" and kind == "grunt":
+			enemy.engagement_delay = int(i / 3) * 45
 	look_ahead = 70
 	camera.position = Vector2(470, 290)
 	camera.reset_smoothing()

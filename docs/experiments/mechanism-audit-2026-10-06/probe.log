@@ -1,0 +1,7 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+AUDIT_EXECUTE selected=grunt low_hp=0.0 boss_hp=0.0 executes=2 hero_hp=128.0
+AUDIT_PERFECT first_damage=20.7 second_damage=18.0
+AUDIT_PERFECT_AFTER_INTERRUPTION pending=true
+AUDIT_FULL_SHIELD hp_lost=0.0 state=hit stun=12 freeze=5
+AUDIT_BOSS_PHASE2 states=["move", "idle", "bossSlam"]

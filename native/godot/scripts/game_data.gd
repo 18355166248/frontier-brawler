@@ -15,6 +15,7 @@ static func all() -> Dictionary:
 		cache.enemies.merge(roster.enemies, true)
 		cache.enemy_actions.merge(roster.enemy_actions, true)
 		cache.stage.rooms = roster.rooms
+		cache.upgrades.merge(roster.get("upgrades", {}), true)
 	return cache
 
 static func room_index(kind: String) -> int:

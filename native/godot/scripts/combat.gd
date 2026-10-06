@@ -3,6 +3,7 @@ extends RefCounted
 
 signal hit(target: FBActor, damage: float, killed: bool, perfect: bool)
 signal phase_shift(actor: FBActor)
+signal shielded(target: FBActor, amount: float)
 var freeze_frames := 0
 var kills := 0
 var executes := 0
@@ -54,18 +55,28 @@ func resolve(actors: Array[FBActor]) -> void:
 			settle_echo(actor, actors)
 
 func deal(attacker: FBActor, target: FBActor, box: Dictionary) -> void:
+	# 处决起手与命中之间目标可死亡、回血或离开；必须复核唯一目标与资格。
+	if attacker.kind == "hero" and attacker.state.id == "execute":
+		if target.get_instance_id() != attacker.execution_target_id or target.is_dead() or target.hp / target.max_hp >= 0.25 or target.position.distance_to(attacker.position) > 62:
+			return
 	var damage: float = box.damage
 	if attacker.kind == "hero":
 		damage *= attacker.skill_multiplier if attacker.state.id == "skill" or box.get("ability", false) else attacker.damage_multiplier
 	var perfect := attacker.state.perfect_pending
 	if perfect:
 		damage *= 1.15
-		attacker.state.perfect_pending = false
 	var execution := attacker.state.id == "execute"
 	if execution:
 		damage = target.hp
+		attacker.execution_target_id = 0 # 一次处决只能结算一次回血和计数。
 	if target.kind == "hero":
+		var incoming := damage
 		damage = target.skills.absorb(damage)
+		if incoming > damage:
+			shielded.emit(target, incoming - damage)
+		# 完全被护盾吸收时不打断动作，不击退、不刷无敌或全局定格。
+		if damage <= 0:
+			return
 	var actual_damage := minf(target.hp, damage)
 	target.hp = maxf(0, target.hp - damage)
 	if target.state.definition().get("superArmor", false):

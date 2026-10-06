@@ -1,0 +1,113 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+BOT_SUMMARY 用时 01:40   击败 28 | 完美取消 256   处决 0
+HEADLESS_50_UNITS_MS_PER_TICK 0.78309666666667
+GODOT_VALIDATION_PASS checks=137
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ILLUSTRATED_POSE_PASS: 7020 quarter-frame samples; continuous strikes; alternating grounded stride
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ILLUSTRATED_INTERPOLATION_PASS checks=951 (slow input, acceleration, depth movement, freeze at 120/240 Hz)
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FEEDBACK_CHECKS_PASS checks=72 bounded_pools=3 voices=8 pcm_peak<=0.72
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+LANDSCAPE_UI_PASS checks=17
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+WUDU_HERO_CHECKS_PASS checks=98
+WARNING: Wudu hero assets invalid or missing; using original illustrated hero.
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _ready (res://scripts/wudu_hero_visual.gd:38)
+         [1] _ready (res://scripts/copper_guard_visual.gd:27)
+         [2] _ready (res://scripts/enemy_roster_visual.gd:21)
+         [3] check_broken_pack (res://tests/wudu_hero_checks.gd:149)
+         [4] run (res://tests/wudu_hero_checks.gd:120)
+WARNING: Wudu hero assets invalid or missing; using original illustrated hero.
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _ready (res://scripts/wudu_hero_visual.gd:38)
+         [1] _ready (res://scripts/copper_guard_visual.gd:27)
+         [2] _ready (res://scripts/enemy_roster_visual.gd:21)
+         [3] check_broken_pack (res://tests/wudu_hero_checks.gd:149)
+         [4] run (res://tests/wudu_hero_checks.gd:120)
+         [5] check_broken_pack (res://tests/wudu_hero_checks.gd:156)
+WARNING: Wudu hero assets invalid or missing; using original illustrated hero.
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _ready (res://scripts/wudu_hero_visual.gd:38)
+         [1] _ready (res://scripts/copper_guard_visual.gd:27)
+         [2] _ready (res://scripts/enemy_roster_visual.gd:21)
+         [3] check_broken_pack (res://tests/wudu_hero_checks.gd:149)
+         [4] run (res://tests/wudu_hero_checks.gd:120)
+         [5] check_broken_pack (res://tests/wudu_hero_checks.gd:156)
+WARNING: Wudu hero assets invalid or missing; using original illustrated hero.
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _ready (res://scripts/wudu_hero_visual.gd:38)
+         [1] _ready (res://scripts/copper_guard_visual.gd:27)
+         [2] _ready (res://scripts/enemy_roster_visual.gd:21)
+         [3] check_broken_pack (res://tests/wudu_hero_checks.gd:149)
+         [4] run (res://tests/wudu_hero_checks.gd:120)
+         [5] check_broken_pack (res://tests/wudu_hero_checks.gd:156)
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+COPPER_GUARD_CHECKS_PASS checks=478
+WARNING: Copper guard pack invalid; using original illustrated boss.
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _ready (res://scripts/copper_guard_visual.gd:31)
+         [1] _ready (res://scripts/enemy_roster_visual.gd:21)
+         [2] run (res://tests/copper_guard_checks.gd:148)
+WARNING: Copper guard pack invalid; using original illustrated boss.
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _ready (res://scripts/copper_guard_visual.gd:31)
+         [1] _ready (res://scripts/enemy_roster_visual.gd:21)
+         [2] run (res://tests/copper_guard_checks.gd:148)
+WARNING: Copper guard pack invalid; using original illustrated boss.
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _ready (res://scripts/copper_guard_visual.gd:31)
+         [1] _ready (res://scripts/enemy_roster_visual.gd:21)
+         [2] run (res://tests/copper_guard_checks.gd:148)
+WARNING: Copper guard pack invalid; using original illustrated boss.
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _ready (res://scripts/copper_guard_visual.gd:31)
+         [1] _ready (res://scripts/enemy_roster_visual.gd:21)
+         [2] run (res://tests/copper_guard_checks.gd:154)
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+YONE_MVP_CHECKS_PASS checks=55
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+--Main Shader--
+    1 | shader_type canvas_item;
+    2 | uniform float opening = 0.0;
+E   3-> void fragment() { COLOR = NONEXISTENT_REVIEW_SYMBOL; }
+    4 | 
+ENVIRONMENT_CHECKS_PASS checks=82
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ENEMY_ROSTER_CHECKS_PASS checks=76
+WARNING: Enemy pack invalid; falling back to illustrated enemy: archer
+     at: push_warning (core/variant/variant_utility.cpp:1033)
+     GDScript backtrace (most recent call first):
+         [0] _ready (res://scripts/enemy_roster_visual.gd:25)
+         [1] run_checks (res://tests/enemy_roster_checks.gd:44)
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+MECHANISM_CHECKS_PASS checks=18
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PROGRESS_CHECKS_PASS checks=35
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PROGRESS_WRITE_PASS
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PROGRESS_READ_PASS
